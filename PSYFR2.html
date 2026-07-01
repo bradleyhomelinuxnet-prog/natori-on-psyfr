@@ -1,0 +1,449 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NATORI-ON-PSYFR · Field Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#07070c;--bg2:#0d0d18;--ink:#ece5d2;--dim:#9c947c;--gold:#d8a943;--gold2:#f3d27a;
+    --red:#d3402f;--cyan:#54b8c9;--green:#7faa5a;--violet:#9b7fd0;
+    --line:rgba(216,169,67,.2);--panel:rgba(20,20,32,.55);--panel2:rgba(20,20,32,.75);--zoom:1;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    zoom:var(--zoom,1);
+    background:
+      radial-gradient(1100px 560px at 84% -8%, rgba(211,64,47,.10), transparent 60%),
+      radial-gradient(900px 480px at 6% 108%, rgba(84,184,201,.07), transparent 60%),
+      repeating-linear-gradient(0deg, rgba(216,169,67,.022) 0 1px, transparent 1px 46px),
+      repeating-linear-gradient(90deg, rgba(216,169,67,.022) 0 1px, transparent 1px 46px),
+      var(--bg);
+    color:var(--ink);font-family:'EB Garamond',serif;line-height:1.65;font-size:17px;min-height:100vh;
+  }
+  .wrap{max-width:920px;margin:0 auto;padding:clamp(14px,3vw,34px)}
+  a:focus-visible,button:focus-visible,summary:focus-visible{outline:2.5px solid var(--cyan);outline-offset:2px;border-radius:3px}
+  @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*,*::before,*::after{transition-duration:.001ms!important;animation-duration:.001ms!important}}
+
+  nav{position:sticky;top:0;z-index:60;display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center;
+      background:rgba(7,7,12,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:11px clamp(14px,3vw,34px)}
+  nav .brand{font-family:'Cinzel',serif;font-weight:800;color:var(--gold2);font-size:14px;letter-spacing:.03em}
+  nav .brand span{color:var(--red)}
+  nav .links{margin-left:auto;display:flex;gap:13px;flex-wrap:wrap}
+  nav a{color:var(--dim);text-decoration:none;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;cursor:pointer}
+  nav a:hover{color:var(--gold2)}
+  .navctl{display:flex;gap:10px;align-items:center}
+  .tsize{display:flex;border:1px solid var(--line);border-radius:4px;overflow:hidden}
+  .navbtn{background:transparent;border:0;color:var(--dim);font-family:'IBM Plex Mono',monospace;font-size:11px;padding:6px 10px;cursor:pointer;transition:.15s;white-space:nowrap}
+  .tsize .navbtn{border-right:1px solid var(--line)}.tsize .navbtn:last-child{border-right:0}
+  .navbtn:hover{color:var(--gold2);background:rgba(216,169,67,.1)}
+  #themeBtn{border:1px solid var(--line);border-radius:4px;color:var(--gold2)}
+  #themeBtn:hover{background:var(--gold);color:#100c02}
+
+  header{text-align:center;padding:clamp(34px,7vw,72px) 0 clamp(10px,3vw,26px)}
+  .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.4em;color:var(--gold);text-transform:uppercase}
+  h1{font-family:'Cinzel',serif;font-weight:800;font-size:clamp(30px,7vw,62px);line-height:.96;margin:.18em 0;letter-spacing:.02em;overflow-wrap:break-word;
+     background:linear-gradient(180deg,#fff,var(--gold2) 50%,var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .tagline{font-family:'Cinzel',serif;color:var(--dim);letter-spacing:.18em;text-transform:uppercase;font-size:12px;margin-top:6px}
+  .sub{font-style:italic;color:var(--dim);max-width:58ch;margin:16px auto 0;font-size:16px}
+
+  section{padding:clamp(24px,4vw,40px) 0;border-top:1px solid var(--line)}
+  .sec-no{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.3em;color:var(--red);text-transform:uppercase}
+  h2{font-family:'Cinzel',serif;font-weight:600;font-size:clamp(22px,4vw,34px);margin:.1em 0 .5em;color:var(--gold2);line-height:1.05}
+  h3{font-family:'Cinzel',serif;font-weight:600;font-size:19px;color:var(--ink);margin:1.3em 0 .3em}
+  p{margin:0 0 .9em;color:#ddd6c4;max-width:72ch}
+  .lead{font-size:18px;color:var(--ink);max-width:72ch}.lead b{color:var(--gold2)}
+  .hl{color:var(--gold2)}
+  b.c{color:var(--cyan)}b.r{color:var(--red)}b.v{color:var(--violet)}b.g{color:var(--gold2)}
+
+  /* steps */
+  .steps{counter-reset:step;display:flex;flex-direction:column;gap:12px;margin:16px 0}
+  .step{display:grid;grid-template-columns:42px 1fr;gap:14px;align-items:start;border:1px solid var(--line);background:var(--panel);border-radius:5px;padding:14px 16px}
+  .step::before{counter-increment:step;content:counter(step);font-family:'Cinzel',serif;font-weight:800;font-size:24px;color:var(--gold2);
+    width:42px;height:42px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:50%;background:#05050a}
+  .step h4{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:3px}
+  .step p{margin:0;font-size:15px}
+
+  /* concept cards */
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin:14px 0}
+  .card{border:1px solid var(--line);background:var(--panel);border-radius:5px;padding:14px 16px}
+  .card .k{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.08em;color:var(--cyan);text-transform:uppercase;margin-bottom:5px}
+  .card p{font-size:14px;margin:0}
+
+  /* formula cookbook */
+  .fgroup{margin:18px 0}
+  .fgroup h3{display:flex;align-items:baseline;gap:10px;border-bottom:1px solid var(--line);padding-bottom:6px}
+  .fgroup h3 small{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--dim);font-weight:400;letter-spacing:.04em;text-transform:none}
+  .frow{display:grid;grid-template-columns:1fr;gap:6px;border:1px solid var(--line);background:var(--panel);border-radius:5px;padding:11px 13px;margin:8px 0}
+  .fcode{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .fcode code{font-family:'IBM Plex Mono',monospace;font-size:13.5px;color:var(--cyan);background:#05050a;border:1px solid var(--line);
+    padding:7px 11px;border-radius:4px;cursor:pointer;flex:1 1 auto;word-break:break-all;transition:.12s}
+  .fcode code:hover{border-color:var(--cyan);color:var(--gold2)}
+  .copybtn{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold2);
+    background:transparent;border:1px solid var(--line);border-radius:4px;padding:7px 11px;cursor:pointer;white-space:nowrap;transition:.15s}
+  .copybtn:hover{background:var(--gold);color:#100c02;border-color:var(--gold)}
+  .copybtn.done{background:var(--green);color:#06140a;border-color:var(--green)}
+  .fdesc{font-size:13.5px;color:var(--dim);font-style:italic}
+  .fdesc b{color:var(--ink);font-style:normal}
+
+  /* tables */
+  table{width:100%;border-collapse:collapse;font-size:14px;margin:14px 0;background:var(--panel);border:1px solid var(--line);border-radius:5px;overflow:hidden}
+  th,td{text-align:left;padding:9px 13px;border-bottom:1px solid rgba(216,169,67,.1);vertical-align:top}
+  th{font-family:'IBM Plex Mono',monospace;color:var(--gold);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase}
+  td.mono,.mono{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--cyan);white-space:nowrap}
+  td b{color:var(--ink)}
+
+  /* tag key */
+  .tagkey{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:8px;margin:14px 0}
+  .tki{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);background:var(--panel);border-radius:5px;padding:10px 12px}
+  .rt{font-size:8.5px;letter-spacing:.05em;padding:3px 6px;border-radius:3px;border:1px solid;text-transform:uppercase;white-space:nowrap;font-family:'IBM Plex Mono',monospace;align-self:center}
+  .rt.phx{color:var(--red);border-color:var(--red)}.rt.ev{color:var(--green);border-color:var(--green)}
+  .rt.pal{color:var(--gold2);border-color:var(--gold2)}.rt.s138{color:#ff9d8f;border-color:#ff9d8f;background:rgba(211,64,47,.12)}
+  .rt.s19{color:#9fe0ea;border-color:#9fe0ea;background:rgba(84,184,201,.1)}.rt.met{color:var(--cyan);border-color:var(--cyan)}
+  .rt.msrf{color:var(--violet);border-color:var(--violet)}.rt.sol{color:var(--gold2);border-color:var(--gold2);background:rgba(243,210,122,.1)}
+  .rt.lun{color:#8fb0c9;border-color:#8fb0c9}.rt.echo{color:var(--dim);border-color:var(--dim);border-style:dashed}
+  .tki span{font-size:13.5px;color:#ddd6c4}.tki span b{color:var(--ink)}
+
+  /* FAQ */
+  details{border:1px solid var(--line);background:var(--panel);border-radius:5px;margin:8px 0;overflow:hidden}
+  summary{cursor:pointer;padding:13px 16px;font-family:'Cinzel',serif;font-size:16px;color:var(--gold2);list-style:none;display:flex;gap:10px;align-items:center}
+  summary::-webkit-details-marker{display:none}
+  summary::before{content:'+';font-family:'IBM Plex Mono',monospace;color:var(--red);font-size:18px;transition:.2s}
+  details[open] summary::before{content:'–'}
+  details[open] summary{border-bottom:1px solid var(--line)}
+  .faqbody{padding:12px 16px 14px}
+  .faqbody p{font-size:14.5px;margin:0 0 .7em}.faqbody p:last-child{margin:0}
+
+  .note-card{border:1px solid var(--cyan);background:linear-gradient(180deg,rgba(84,184,201,.08),transparent);border-radius:5px;padding:15px 17px;margin:14px 0}
+  .note-card h4{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--cyan);margin-bottom:6px}
+  .note-card p{font-size:14px;color:#cdc6b2;font-style:italic;margin:0}
+
+  footer{border-top:1px solid var(--line);padding:24px 0 14px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--dim);line-height:1.8}
+  footer b{color:var(--gold)}
+  .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(140%);background:var(--bg2);border:1px solid var(--green);color:var(--green);
+    font-family:'IBM Plex Mono',monospace;font-size:12px;padding:11px 18px;border-radius:5px;z-index:200;transition:.3s;box-shadow:0 8px 30px -8px #000}
+  .toast.show{transform:translateX(-50%) translateY(0)}
+
+  /* worked examples */
+  .ex{border:1px solid var(--line);background:var(--panel);border-radius:6px;padding:16px 18px;margin:16px 0}
+  .ex .extitle{font-family:'Cinzel',serif;font-weight:600;color:var(--gold2);font-size:19px;margin-bottom:4px}
+  .ex .setup{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--dim);background:#05050a;border:1px solid var(--line);border-radius:4px;padding:9px 12px;margin:8px 0;line-height:1.7}
+  .ex .setup b{color:var(--cyan)}
+  .ex ol{margin:10px 0 12px 1.2em;color:#ddd6c4;font-size:14.5px;line-height:1.6}
+  .ex ol li{margin:.3em 0}
+  .ex ol b{color:var(--gold2)}
+  .ex .result{border-left:3px solid var(--green);padding:8px 0 8px 16px;margin-top:8px}
+  .ex .result h5{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--green);margin-bottom:5px}
+  .ex .result p{font-size:14.5px;margin:0 0 .5em}
+  .ex .result .big{font-family:'Cinzel',serif;color:var(--gold2);font-size:17px}
+  :root[data-theme="light"] .ex .setup{background:#fffdf6}
+  /* ---------- LIGHT THEME ---------- */
+  :root[data-theme="light"]{
+    --bg:#ece0c6;--bg2:#e0d2b2;--ink:#2c2317;--dim:#6a5f45;
+    --gold:#9a6f14;--gold2:#7d5410;--red:#b32a1a;--cyan:#1d6c7d;--green:#4d7730;--violet:#69479c;
+    --line:rgba(90,60,15,.30);--panel:rgba(255,251,242,.7);--panel2:rgba(255,251,242,.92);
+  }
+  :root[data-theme="light"] body{background:
+    radial-gradient(1100px 560px at 84% -8%, rgba(179,42,26,.07), transparent 60%),
+    radial-gradient(900px 480px at 6% 108%, rgba(29,108,125,.06), transparent 60%),
+    repeating-linear-gradient(0deg, rgba(90,60,15,.03) 0 1px, transparent 1px 46px),
+    repeating-linear-gradient(90deg, rgba(90,60,15,.03) 0 1px, transparent 1px 46px), var(--bg);}
+  :root[data-theme="light"] nav{background:rgba(236,224,198,.93)}
+  :root[data-theme="light"] h1{background:linear-gradient(180deg,#5a3d0a,#8a5a12 55%,#a8791a);-webkit-background-clip:text;background-clip:text;color:transparent}
+  :root[data-theme="light"] p{color:#3a3020}
+  :root[data-theme="light"] .fcode code,
+  :root[data-theme="light"] .step::before{background:#fffdf6;color:var(--cyan)}
+  :root[data-theme="light"] .navbtn:hover{background:rgba(154,111,20,.14)}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="brand">NATORI-ON-PSYFR <span>· Field Guide</span></div>
+  <div class="links">
+    <a href="#start" data-go="start">Quick Start</a><a href="#concepts" data-go="concepts">Concepts</a><a href="#cookbook" data-go="cookbook">Formulas</a><a href="#grammar" data-go="grammar">Grammar</a><a href="#tags" data-go="tags">Tags</a><a href="#examples" data-go="examples">Examples</a><a href="#faq" data-go="faq">FAQ</a><a href="PSYFR1.html" target="_blank" rel="noopener" style="color:var(--gold2)">↗ Engine</a>
+  </div>
+  <div class="navctl">
+    <div class="tsize" role="group" aria-label="Text size">
+      <button id="tsDown" class="navbtn" type="button" aria-label="Decrease text size" title="Smaller">A−</button>
+      <button id="tsReset" class="navbtn" type="button" aria-label="Reset text size" title="Default">A</button>
+      <button id="tsUp" class="navbtn" type="button" aria-label="Increase text size" title="Larger">A+</button>
+    </div>
+    <button id="themeBtn" class="navbtn" type="button" aria-label="Toggle light or dark theme" aria-pressed="false">☾ Dark</button>
+  </div>
+</nav>
+
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">The Operator's Codex · companion to the engine</div>
+  <h1>Field Guide</h1>
+  <div class="tagline">How to read the serpent · formulas to pop into the fields</div>
+  <p class="sub">A quick reference for casting NATORI-ON-PSYFR: the workflow, the vocabulary, a cookbook of copy-ready operations, and answers to the questions that come up first. Tap any formula to copy it, then paste into the engine's <b>Custom operation</b> field.</p>
+</header>
+
+<!-- QUICK START -->
+<section id="start">
+  <div class="sec-no">§1 · Quick Start</div>
+  <h2>Cast in four moves</h2>
+  <div class="steps">
+    <div class="step"><div><h4>Seed your anchors</h4><p>In <b class="g">The Oracle</b>, add two or more <b>anchor dates</b> — type them in, or scroll to <b class="g">The Ledger</b> and hit <b>seed ⚓</b> on any documented event. Two anchors is the minimum; more anchors = more interval pairs to project from.</p></div></div>
+    <div class="step"><div><h4>Choose your operations</h4><p>The <b class="v">19-Operation Pack</b> loads by default. Swap it for a themed pack (138, 19 Metonic, Phoenix Lattice, Golden) with the violet buttons, or paste your own from the <a href="#cookbook" data-go="cookbook" style="color:var(--cyan)">cookbook below</a>.</p></div></div>
+    <div class="step"><div><h4>Cast the Oracle</h4><p>Press <b class="r">⟳ Cast the Oracle</b>. Every anchor-pair interval is run through every operation, and each projected date is scored against the chronology. Switch the <b>scoring lens</b> (V8 / V7) to re-rank live.</p></div></div>
+    <div class="step"><div><h4>Read the agreement</h4><p>Scroll to <b class="v">The Convergence</b> — where several independent operations land on the same date. That agreement is the real signal. Click any result to read it on <b class="c">The Wheels</b>.</p></div></div>
+  </div>
+  <div class="note-card"><h4>The one habit that matters</h4><p>After a cast, hit <b>✦ NOVEL ONLY</b> to hide the ECHO rows (projections that just land back on an input). What remains are the dates the chronology didn't already hand you — that's where the discoveries live.</p></div>
+</section>
+
+<!-- CONCEPTS -->
+<section id="concepts">
+  <div class="sec-no">§2 · The Vocabulary</div>
+  <h2>Seven words to know</h2>
+  <div class="cards">
+    <div class="card"><div class="k">X-Date</div><p>An <b style="color:var(--ink)">anchor</b> — a known date you feed the engine. Every cast needs at least two.</p></div>
+    <div class="card"><div class="k">Y · the interval</div><p>The number of <b style="color:var(--ink)">axial rotations</b> (days) between a pair of X-Dates. Counting turns of the Earth, not years — the Archaix way.</p></div>
+    <div class="card"><div class="k">Operation</div><p>An equation that transforms <b class="mono" style="font-size:12px">Y</b> into a day-offset. Always begins <b class="mono" style="font-size:12px">X1+</b> or <b class="mono" style="font-size:12px">X2+</b>.</p></div>
+    <div class="card"><div class="k">Z-Date</div><p>A <b style="color:var(--ink)">projected</b> date — the output. Offset applied to X1 or X2, then read across every calendar.</p></div>
+    <div class="card"><div class="k">Echo</div><p>A Z-Date that lands back on an input anchor (±1 day). A confirmation, not a discovery — dimmed and tagged.</p></div>
+    <div class="card"><div class="k">Convergence</div><p>When several <b style="color:var(--ink)">different operations</b> agree on one date. The strongest signal in the whole instrument.</p></div>
+    <div class="card"><div class="k">MSRF</div><p>The resonance number-set (138, 831, 19 …). A projection whose interval or offset matches one scores extra.</p></div>
+  </div>
+</section>
+
+<!-- COOKBOOK -->
+<section id="cookbook">
+  <div class="sec-no">§3 · The Formula Cookbook</div>
+  <h2>Operations to pop into the field</h2>
+  <p class="lead">Tap any formula to copy it, then paste into the engine's <b>Custom operation</b> box and press <b>+ Operation</b>. Every one below is validated against the grammar — none will throw an error. <b class="c">Y</b> is the interval in days.</p>
+
+  <div class="fgroup">
+    <h3>Isometric <small>the baseline — the same interval, again</small></h3>
+    <div class="frow"><div class="fcode"><code>X2+oph_round(Y)</code><button class="copybtn">copy</button></div><div class="fdesc"><b>The Isometric Date.</b> Project the exact interval forward from the later anchor — the simplest Archaix projection.</div></div>
+    <div class="frow"><div class="fcode"><code>X1+Y</code><button class="copybtn">copy</button></div><div class="fdesc">The same interval forward from the <b>earlier</b> anchor.</div></div>
+  </div>
+
+  <div class="fgroup">
+    <h3>Mirror · Palindrome <small>oph_flip reverses the digits</small></h3>
+    <div class="frow"><div class="fcode"><code>X2+oph_flip(oph_round(Y))</code><button class="copybtn">copy</button></div><div class="fdesc"><b>The Holo-mirror.</b> Reverse the interval's digits and project — the palindromic heart of the engine.</div></div>
+    <div class="frow"><div class="fcode"><code>X1+oph_flip(oph_round(Y))</code><button class="copybtn">copy</button></div><div class="fdesc">Same mirror, projected from the earlier anchor.</div></div>
+    <div class="frow"><div class="fcode"><code>X1+oph_flip(oph_round(Y/OPH_PHI))</code><button class="copybtn">copy</button></div><div class="fdesc">The <b>golden mirror</b> — divide by φ first, then reflect. A recursive favourite.</div></div>
+    <div class="frow"><div class="fcode"><code>X2+oph_flip(Y)+19</code><button class="copybtn">copy</button></div><div class="fdesc">Mirror the interval, then seal it with a Metonic <b>19</b>.</div></div>
+  </div>
+
+  <div class="fgroup">
+    <h3>The 138 Lattice <small>the Phoenix number</small></h3>
+    <div class="frow"><div class="fcode"><code>X2+oph_round(Y/138)*138</code><button class="copybtn">copy</button></div><div class="fdesc"><b>Snap to the 138-grid.</b> Round the interval to the nearest whole Phoenix-count, then project.</div></div>
+    <div class="frow"><div class="fcode"><code>X2+Y+138</code><button class="copybtn">copy</button></div><div class="fdesc">One Phoenix number (138 days) beyond the isometric date.</div></div>
+    <div class="frow"><div class="fcode"><code>X2+Y*138/100</code><button class="copybtn">copy</button></div><div class="fdesc">Scale the interval by <b>1.38</b>.</div></div>
+    <div class="frow"><div class="fcode"><code>X1+oph_round(Y/414)*414</code><button class="copybtn">copy</button></div><div class="fdesc">Snap to <b>414</b> — 138 × 3, the "cursed time" multiple.</div></div>
+  </div>
+
+  <div class="fgroup">
+    <h3>The 19 Metonic <small>the moon's gear</small></h3>
+    <div class="frow"><div class="fcode"><code>X1+oph_round(Y/19)*19</code><button class="copybtn">copy</button></div><div class="fdesc"><b>Snap to the 19-grid.</b> Round the interval to the nearest 19-multiple.</div></div>
+    <div class="frow"><div class="fcode"><code>X2+Y+19</code><button class="copybtn">copy</button></div><div class="fdesc">A Metonic <b>19</b> beyond the isometric date.</div></div>
+    <div class="frow"><div class="fcode"><code>X1+Y*19/10</code><button class="copybtn">copy</button></div><div class="fdesc">Scale the interval by <b>1.9</b>.</div></div>
+    <div class="frow"><div class="fcode"><code>X2+oph_round(Y/6940)*6940</code><button class="copybtn">copy</button></div><div class="fdesc">Snap to whole <b>Metonic cycles</b> — 19 years ≈ 6,940 days, 235 lunations.</div></div>
+  </div>
+
+  <div class="fgroup">
+    <h3>Golden · Pi · Curvature <small>OPH_PHI 1.618 · OPH_PI 3.14 · OPH_CRV 5.08</small></h3>
+    <div class="frow"><div class="fcode"><code>X2+Y/OPH_PHI</code><button class="copybtn">copy</button></div><div class="fdesc"><b>Golden division.</b> The interval ÷ φ.</div></div>
+    <div class="frow"><div class="fcode"><code>X1+Y*OPH_PHI</code><button class="copybtn">copy</button></div><div class="fdesc">Golden <b>expansion</b> — the interval × φ.</div></div>
+    <div class="frow"><div class="fcode"><code>X1+(Y/2)*OPH_PI</code><button class="copybtn">copy</button></div><div class="fdesc">The <b>pi half-arc</b> — half the interval, swept by π.</div></div>
+    <div class="frow"><div class="fcode"><code>X2+Y/OPH_CRV</code><button class="copybtn">copy</button></div><div class="fdesc">Divide by the <b>curvature</b> constant, 5.08.</div></div>
+    <div class="frow"><div class="fcode"><code>X2+oph_round(Y/OPH_PHI/OPH_PHI)</code><button class="copybtn">copy</button></div><div class="fdesc">Divide by <b>φ²</b> — a tighter golden step.</div></div>
+  </div>
+
+  <div class="fgroup">
+    <h3>Cycle Snaps <small>lock onto the great wheels</small></h3>
+    <div class="frow"><div class="fcode"><code>X2+oph_round(Y/792)*792</code><button class="copybtn">copy</button></div><div class="fdesc">Snap to <b>792</b> — the Nemesis number.</div></div>
+    <div class="frow"><div class="fcode"><code>X1+oph_round(Y/600)*600</code><button class="copybtn">copy</button></div><div class="fdesc">Snap to <b>600</b> — the Anunnaki NER.</div></div>
+    <div class="frow"><div class="fcode"><code>X2+Y*360/365.2422</code><button class="copybtn">copy</button></div><div class="fdesc">Reframe the interval into the <b>360-day Draconian year</b> — the pre-Flood orbit.</div></div>
+  </div>
+</section>
+
+<!-- GRAMMAR -->
+<section id="grammar">
+  <div class="sec-no">§4 · The Grammar &amp; Constants</div>
+  <h2>What's legal in an operation</h2>
+  <p class="lead">Three rules: it must <b>start with <span class="mono">X1+</span> or <span class="mono">X2+</span></b>; it may use only <b>Y</b>, numbers, the constants, the <span class="mono">oph_</span> functions, and arithmetic <span class="mono">+ − * / ( )</span>; and it must evaluate to a number. Anything else is rejected.</p>
+  <table>
+    <thead><tr><th>Token</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">X1 / X2</td><td>The <b>earlier</b> / <b>later</b> anchor of the pair. Your equation begins with one of them, plus an offset.</td></tr>
+      <tr><td class="mono">Y</td><td>The interval between the two anchors, in <b>days</b> (axial rotations).</td></tr>
+      <tr><td class="mono">OPH_PHI</td><td>Golden ratio — <b>1.61803398875</b></td></tr>
+      <tr><td class="mono">OPH_PI</td><td>Archaix π — <b>3.14</b></td></tr>
+      <tr><td class="mono">OPH_CRV</td><td>The curvature constant — <b>5.08</b></td></tr>
+      <tr><td class="mono">oph_flip(n)</td><td>Reverse the digits — <b>138 → 831</b>, 19 → 91. The palindrome maker.</td></tr>
+      <tr><td class="mono">oph_round(n)</td><td>Nearest whole day. Use it to keep offsets clean.</td></tr>
+      <tr><td class="mono">oph_floor / oph_ceil</td><td>Round down / up to a whole day.</td></tr>
+      <tr><td class="mono">oph_abs / oph_sqrt</td><td>Absolute value / square root (of the absolute value).</td></tr>
+    </tbody>
+  </table>
+  <p style="font-size:13.5px;color:var(--dim);font-style:italic">Tip: a bare <span class="mono" style="color:var(--cyan)">x</span> between terms is read as multiply, the same as <span class="mono" style="color:var(--cyan)">*</span>. So <span class="mono" style="color:var(--cyan)">X2+YxOPH_PI</span> and <span class="mono" style="color:var(--cyan)">X2+Y*OPH_PI</span> are identical.</p>
+</section>
+
+<!-- TAGS -->
+<section id="tags">
+  <div class="sec-no">§5 · Reading the Resonance</div>
+  <h2>What the tags mean</h2>
+  <p class="lead">Each projected date earns tags for what it lands on. The score is their sum, weighted by your chosen lens.</p>
+  <div class="tagkey">
+    <div class="tki"><span class="rt phx">Phoenix Node</span><span><b>mod 138 = 108.</b> The date sits exactly on the Phoenix reset lattice — the heaviest chronological hit.</span></div>
+    <div class="tki"><span class="rt ev">Documented</span><span>The projected year is a <b>recorded event</b> in the Chronicon ledger.</span></div>
+    <div class="tki"><span class="rt pal">Palindrome ⮌</span><span>The year, the Annus Mundi count, or the Julian day reads the <b>same both ways</b>.</span></div>
+    <div class="tki"><span class="rt s138">138</span><span>The digits <b>138</b> appear in the year, AM, or Long-Count.</span></div>
+    <div class="tki"><span class="rt s19">19</span><span>The digits <b>19</b> appear in the year or AM.</span></div>
+    <div class="tki"><span class="rt met">Metonic·19</span><span>The date is a whole number of <b>19-year cycles</b> from today — same moon phase.</span></div>
+    <div class="tki"><span class="rt msrf">MSRF</span><span>The interval or offset matches a <b>resonance number</b> (138, 792, 831, 19 …).</span></div>
+    <div class="tki"><span class="rt sol">☉ Solar</span><span>A real <b>solar eclipse</b> fell within ±1 day (data covers ~1–3000 CE).</span></div>
+    <div class="tki"><span class="rt lun">☾ Lunar</span><span>A real <b>lunar eclipse</b> fell within ±1 day.</span></div>
+    <div class="tki"><span class="rt echo">Echo</span><span>Lands back on an <b>input anchor</b> — a confirmation, not a new date.</span></div>
+  </div>
+</section>
+
+<!-- WORKED EXAMPLES -->
+<section id="examples">
+  <div class="sec-no">§6 · Worked Examples</div>
+  <h2>Three casts, start to finish</h2>
+  <p class="lead">Real results from the default engine — follow along and you'll see the same numbers.</p>
+
+  <div class="ex">
+    <div class="extitle">① The 2040 Convergence</div>
+    <div class="setup"><b>Anchors:</b> Great Flood · Phoenix 2040 · Today &nbsp;|&nbsp; <b>Pack:</b> Default 19 &nbsp;|&nbsp; <b>Lens:</b> V8</div>
+    <ol>
+      <li>Open the engine — these three anchors load by default.</li>
+      <li>Press <b>⟳ Cast the Oracle</b>.</li>
+      <li>Scroll to <b>The Convergence</b> and set the window to <b>Same year</b>.</li>
+      <li>Back in the results, click the <b>ECLIPSE</b> filter.</li>
+    </ol>
+    <div class="result"><h5>What you'll see</h5>
+      <p>A <span class="big">strength-4 convergence on 2040</span> — four independent operations, from two different anchor pairs, all land on the Phoenix year. That agreement is the signal.</p>
+      <p>And the eclipse filter lights up two projections sitting on the documented cataclysm: <b>15 May 2040 on a total lunar eclipse</b> (score 11) and <b>10 May 2040 on a partial solar</b> (score 12). The engine found that the Phoenix date carries a real eclipse.</p>
+    </div>
+  </div>
+
+  <div class="ex">
+    <div class="extitle">② The deep past names a modern event</div>
+    <div class="setup"><b>Anchors:</b> Nemesis Cataclysm (5239 BC) · Great Flood (2239 BC) &nbsp;|&nbsp; <b>Pack:</b> Default 19 &nbsp;|&nbsp; <b>Lens:</b> V8 &nbsp;|&nbsp; <b>Filter:</b> ✦ Novel only</div>
+    <ol>
+      <li>Remove the three default anchors (the ✕ on each).</li>
+      <li>In <b>The Ledger</b>, hit <b>seed ⚓</b> on the <b>Nemesis Cataclysm</b> and the <b>Great Flood</b>.</li>
+      <li>Cast, then click <b>✦ NOVEL ONLY</b>.</li>
+    </ol>
+    <div class="result"><h5>What you'll see</h5>
+      <p>The operation <span class="mono" style="color:var(--cyan)">X2+Y*138/100</span> projects onto <span class="big">1902 CE</span> (score 11) — a <b>Phoenix node</b> that is also a <b>documented event</b> (Charles Fort's "other Dark Age"). The two oldest cataclysms, scaled by 1.38, point straight at a recorded modern Phoenix year.</p>
+      <p>You'll also notice the engine re-deriving the Flood itself nearby — a confirmation the chronology is internally consistent.</p>
+    </div>
+  </div>
+
+  <div class="ex">
+    <div class="extitle">③ Numbers vs history — flip the lens</div>
+    <div class="setup"><b>Anchors:</b> the three defaults &nbsp;|&nbsp; <b>Pack:</b> Default 19 &nbsp;|&nbsp; <b>Filter:</b> ✦ Novel only</div>
+    <ol>
+      <li>Cast with the <b>V8</b> lens and note the top novel row.</li>
+      <li>Click <b>V7 · Numbers-first</b> — the table re-scores instantly.</li>
+    </ol>
+    <div class="result"><h5>What you'll see</h5>
+      <p>Under <b class="g">V8</b>, the top novel projection is <span class="big">10 May 2040</span> (score 12) — a Phoenix node, documented, on a solar eclipse. <b>History wins.</b></p>
+      <p>Flip to <b class="v">V7</b> and the ranking inverts to <span class="big">1 June 2026</span> (score 6) — a date that <b>wears 138</b> and aligns Metonically. <b>The numbers win.</b> Same cast, two different questions.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="sec-no">§7 · FAQ</div>
+  <h2>Questions that come up first</h2>
+
+  <details><summary>Why do my top results all say ECHO?</summary><div class="faqbody">
+    <p>Because one of your anchors is reproducible by the operations. If you seed 2040 and an operation projects right back onto 2040, that's an <b>echo</b> — true, but circular. It's the engine confirming its own input.</p>
+    <p>Hit <b class="v">✦ NOVEL ONLY</b> to hide echoes, or remove the anchor that's being re-derived and re-cast to hunt for genuinely new convergences.</p>
+  </div></details>
+
+  <details><summary>What's the difference between the V8 and V7 scoring lenses?</summary><div class="faqbody">
+    <p><b class="g">V8 · Chronology-first</b> (default) rewards landing on the real timeline — Phoenix nodes and documented events score highest. Use it to ask <i>"which projections resonate with history?"</i></p>
+    <p><b class="v">V7 · Numbers-first</b> lets the sacred numbers lead — 138 in the digits, palindromes, and MSRF outrank a documented cataclysm. Use it to ask <i>"which projections resonate with the signatures?"</i> The same cast can rank completely differently under each.</p>
+  </div></details>
+
+  <details><summary>What does convergence "strength" mean, and which window should I use?</summary><div class="faqbody">
+    <p>Strength is the number of <b>distinct operations</b> that independently landed in the same window. Strength 4 means four different equations agree — far stronger than any single high-scoring projection.</p>
+    <p>Start at <b>± 30 days</b>. Tighten to <b>exact day</b> for the rarest coincidences; widen to <b>Same year</b> to see which years the whole pack points at. Wider windows find more (and looser) agreement.</p>
+  </div></details>
+
+  <details><summary>Why don't BC dates get eclipse tags?</summary><div class="faqbody">
+    <p>The precomputed eclipse tables cover roughly <b>1–3000 CE</b>. Projections outside that range simply carry no eclipse tag — the engine degrades gracefully rather than guessing. Most future-facing casts (2040, 2046 …) are well inside coverage.</p>
+  </div></details>
+
+  <details><summary>Are the dates actually correct per the Chronicon?</summary><div class="faqbody">
+    <p>Yes — the date engine was verified against every known Archaix anchor before release: today reads <b>AM 5920 / LC 5138</b>, the Great Flood lands on <b>AM 1656</b>, Petrie's survey year on <b>AM 5776</b>, and all 24 Phoenix events sit exactly on the 138-lattice (mod 138 = 108). The šar is reckoned as a turning of the stars — a day — per Breshears.</p>
+  </div></details>
+
+  <details><summary>Can I save a setup and reuse it?</summary><div class="faqbody">
+    <p>Yes. <b>⤓ Save .json</b> writes your whole cast — anchors, operations, scoring lens, and convergence window — to a file. <b>⤒ Load</b> reads one back. It's the same portable model as the original Ophis <span class="mono">.oph</span> files, so you can keep a 138-pack, a 19-pack, and a Phoenix-pack as named configurations and share them.</p>
+  </div></details>
+
+  <details><summary>How do I read a result on the calendars?</summary><div class="faqbody">
+    <p>Click any row in the results or convergence table, or any ledger entry. The date is sent to <b class="c">The Wheels</b>, where all seven reckonings re-read that moment — Phoenix, Nemesis, NER, Annus Mundi, Mayan Long-Count, Anunna turnings, and the Metonic moon. You can also drag the dial directly.</p>
+  </div></details>
+
+  <details><summary>Is this asserting the model as science?</summary><div class="faqbody">
+    <p>No. This is a <b>worldbuilding and study instrument</b> that renders Jason Breshears' Archaix thesis as living predictive calendrics. The chronology, the šar-as-day reckoning, and the cycle lattice are presented as that thesis — not as established archaeology. Deep-past conversions are cycle-true rather than historically observed.</p>
+  </div></details>
+
+  <details><summary>Nothing happens when I cast — what's wrong?</summary><div class="faqbody">
+    <p>You need at least <b>two active anchors</b> (the ✓ box lit) and at least <b>one active operation</b>. If the results are empty after a cast, the filter may be too tight — click <b>ALL</b>, or widen the convergence window. The engine also skips intervals over ~3,000,000 days and projections outside roughly 5400 BC – 4000 CE.</p>
+  </div></details>
+</section>
+
+<div class="note-card"><h4>Keyboard &amp; reading</h4><p>Tab moves between every control; Space or Enter toggles the ✓ checkboxes and buttons. The <b>☾/☀</b> switch flips light/dark (it follows your system on first visit), and <b>A− / A / A+</b> scales everything — both remembered between sessions. Reduced-motion settings are honoured.</p></div>
+
+<footer>
+  <b>NATORI-ON-PSYFR · Field Guide.</b> Companion to the Predictive Chronology Engine — Ophis grammar × Chronicon calendrics over the Breshears lattice (Phoenix 138 · Nemesis 792 · NER 600 · Metonic 19). A worldbuilding &amp; study instrument after the Archaix thesis of Jason Breshears (Archaix.com); presented as that thesis, not as established science. Self-contained — nothing leaves this page.
+</footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const $=id=>document.getElementById(id);
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),1700);}
+
+/* copy-to-clipboard for every formula */
+function copyText(txt,btn){
+  const done=()=>{toast('Copied — paste into the Custom operation field');if(btn){const o=btn.textContent;btn.textContent='copied ✓';btn.classList.add('done');setTimeout(()=>{btn.textContent=o;btn.classList.remove('done');},1300);}};
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(done).catch(()=>fallback(txt,done));}
+  else fallback(txt,done);
+}
+function fallback(txt,done){try{const ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);done();}catch(e){toast('Copy not supported — select & copy manually');}}
+document.querySelectorAll('.frow').forEach(row=>{
+  const code=row.querySelector('code'), btn=row.querySelector('.copybtn');
+  const fire=()=>copyText(code.textContent,btn);
+  if(btn)btn.onclick=fire;
+  if(code){code.onclick=fire;code.title='Click to copy';}
+});
+
+/* nav smooth-scroll */
+document.querySelectorAll('[data-go]').forEach(a=>a.onclick=()=>{const el=$(a.dataset.go);if(el)el.scrollIntoView({behavior:'smooth'});});
+
+/* theme + text size (mirrors the engine; shares the same stored keys) */
+const _root=document.documentElement;
+function applyTheme(t){_root.setAttribute('data-theme',t);const b=$('themeBtn');b.textContent=t==='light'?'☀ Light':'☾ Dark';b.setAttribute('aria-pressed',t==='light'?'true':'false');try{localStorage.setItem('ophion-theme',t);}catch(e){}}
+function applyZoom(z){_root.style.setProperty('--zoom',z);try{localStorage.setItem('ophion-zoom',String(z));}catch(e){}}
+let _zoom=1;try{const z=parseFloat(localStorage.getItem('ophion-zoom'));if(z>=0.8&&z<=1.5)_zoom=z;}catch(e){}
+let _theme=null;try{_theme=localStorage.getItem('ophion-theme');}catch(e){}
+if(_theme!=='light'&&_theme!=='dark')_theme=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';
+applyTheme(_theme);applyZoom(_zoom);
+$('themeBtn').onclick=()=>applyTheme(_root.getAttribute('data-theme')==='light'?'dark':'light');
+$('tsUp').onclick=()=>{_zoom=Math.min(1.5,Math.round((_zoom+0.1)*10)/10);applyZoom(_zoom);};
+$('tsDown').onclick=()=>{_zoom=Math.max(0.8,Math.round((_zoom-0.1)*10)/10);applyZoom(_zoom);};
+$('tsReset').onclick=()=>{_zoom=1;applyZoom(_zoom);};
+</script>
+</body>
+</html>
