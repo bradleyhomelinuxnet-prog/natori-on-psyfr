@@ -10,13 +10,24 @@ import { jdn, today } from '../core/jdn.js';
 import { compileOperation } from '../core/equation/index.js';
 import { DEFAULT_PACK_NAME, PACKS } from '../data/packs.js';
 import { DEFAULT_LENS } from '../core/scoring/lenses.js';
+import { DEFAULT_MSRF_SET } from '../data/msrf.js';
 
 let nextId = 1;
 export const uid = () => `id${nextId++}`;
 
-/** Build an anchor record, deriving its Julian Day and display label. */
+/**
+ * Build an anchor record, deriving its Julian Day and display label.
+ *
+ * A non-numeric field would otherwise produce a NaN Julian day: the row renders
+ * as "NaN CE" and contributes nothing to any cast, silently. Mirror how a bad
+ * equation is handled — keep the record, disable it, and carry the reason.
+ */
 export function makeAnchor(ay, m, d, label, enabled = true) {
-  return { id: uid(), ay, m, d, label: label || '', enabled, jd: jdn(ay, m, d) };
+  const usable = Number.isFinite(ay) && Number.isFinite(m) && Number.isFinite(d);
+  if (!usable) {
+    return { id: uid(), ay, m, d, label: label || '', enabled: false, jd: NaN, error: 'not a usable date' };
+  }
+  return { id: uid(), ay, m, d, label: label || '', enabled, jd: jdn(ay, m, d), error: null };
 }
 
 /** Compile an equation into an operation record. Never throws; carries `error`. */
@@ -29,9 +40,20 @@ export function makeOperation(eq, enabled = true) {
   }
 }
 
+/**
+ * Operations for a named pack, or null if there is no such pack.
+ *
+ * Returning null rather than falling back matters: after an import, packName is
+ * something like "Imported · Giza", and a silent fallback would let "reset pack"
+ * swap the user's imported equations for the default nineteen.
+ */
 export function packOperations(name) {
-  return (PACKS[name] ?? PACKS[DEFAULT_PACK_NAME]).map((eq) => makeOperation(eq));
+  const pack = PACKS[name];
+  return pack ? pack.map((eq) => makeOperation(eq)) : null;
 }
+
+/** True when `name` is one of the built-in packs — i.e. something resettable. */
+export const isKnownPack = (name) => Object.hasOwn(PACKS, name);
 
 const T = today();
 
@@ -41,10 +63,18 @@ export const state = {
   operations: packOperations(DEFAULT_PACK_NAME),
   packName: DEFAULT_PACK_NAME,
   lens: DEFAULT_LENS,
+  msrfSet: DEFAULT_MSRF_SET,
 
   /* --- outputs --- */
   results: [],
   hasCast: false,
+  /**
+   * The inputs the standing results were cast from, copied at cast time.
+   * Switching the lens or the resonance set re-scores THESE, so an edit made
+   * since the last cast cannot be folded in behind the user's back.
+   * @type {?{anchors: object[], operations: object[], msrfSet: string}}
+   */
+  lastCast: null,
 
   /* --- results view --- */
   filter: 'all',

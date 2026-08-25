@@ -1,22 +1,32 @@
 /**
  * The operations panel: the loaded equation pack, the custom-equation editor,
- * the pack switcher, and the scoring-lens toggle.
+ * the pack switcher, the scoring-lens toggle and the resonance-set toggle.
  *
- * Changing the LENS re-runs the cast in place (same projections, new weights),
- * because that is a pure re-score the user expects to see immediately.
+ * Changing the LENS or the RESONANCE SET re-runs the cast in place (same
+ * projections, new weights), because that is a pure re-score the user expects
+ * to see immediately.
  * Changing the OPERATIONS does not — a different pack projects different dates,
  * which is a new cast the user asks for with the Cast button.
  */
 
 import { $, el, replace, setActive, toggleGroup } from '../dom.js';
 import { toast } from '../chrome.js';
-import { makeOperation, packOperations, set, state, subscribe, touch } from '../../state/store.js';
+import {
+  isKnownPack,
+  makeOperation,
+  packOperations,
+  set,
+  state,
+  subscribe,
+  touch,
+} from '../../state/store.js';
 import { validateOperation } from '../../core/equation/index.js';
 import { getLens, lensList } from '../../core/scoring/index.js';
 import { cast } from '../../core/cast.js';
 import { PACKS } from '../../data/packs.js';
+import { MSRF_SETS } from '../../data/msrf.js';
 
-const WATCHED = new Set(['operations', 'packName', 'lens']);
+const WATCHED = new Set(['operations', 'packName', 'lens', 'msrfSet']);
 
 const plural = (n, word) => `${n} ${word}${n === 1 ? '' : 's'}`;
 
@@ -106,17 +116,36 @@ function removeOperation(op) {
 }
 
 function loadPack(name) {
-  if (!PACKS[name]) {
+  const ops = packOperations(name);
+  if (!ops) {
     setActive(ui.packBar, 'pack', state.packName);
     return;
   }
-  set({ operations: packOperations(name), packName: name });
-  toast(`Loaded "${name}" (${plural(state.operations.length, 'op')})`);
+  set({ operations: ops, packName: name });
+  toast(`Loaded "${name}" (${plural(ops.length, 'op')})`);
 }
 
 function resetPack() {
-  set({ operations: packOperations(state.packName) });
-  toast(`Restored "${state.packName}" (${plural(state.operations.length, 'op')})`);
+  // After an import, packName is something like "Imported · Giza" and there is
+  // nothing to restore it to. Refusing beats silently loading the default pack.
+  const ops = packOperations(state.packName);
+  if (!ops) {
+    toast(`"${state.packName}" isn't a built-in pack — load one below to replace it.`);
+    return;
+  }
+  set({ operations: ops });
+  toast(`Restored "${state.packName}" (${plural(ops.length, 'op')})`);
+}
+
+/** The reset button only means something for a built-in pack. */
+function syncResetButton() {
+  if (!ui.reset) return;
+  const known = isKnownPack(state.packName);
+  ui.reset.disabled = !known;
+  ui.reset.style.opacity = known ? '' : '0.45';
+  ui.reset.title = known
+    ? `Restore the ${state.packName} pack`
+    : 'This set was imported — there is no pack to restore it to';
 }
 
 /* ---------- custom equation editor ---------- */
@@ -161,23 +190,63 @@ function addFromInput() {
   toast('Operation added');
 }
 
-/* ---------- scoring lens ---------- */
+/* ---------- scoring lens & resonance set ---------- */
+
+/**
+ * Re-score the standing projections under a patched lens / resonance set.
+ *
+ * Both are pure re-scores of the same dates, so they apply without a new cast —
+ * which means re-running against the SNAPSHOT the last cast was built from, not
+ * against the live inputs. Reading live state here would silently fold in any
+ * anchor or operation edited since, destroying projections the user never asked
+ * to recast.
+ */
+function rescore(patch, note) {
+  const snapshot = state.lastCast;
+  const recast = state.hasCast && snapshot;
+  if (recast) {
+    const next = { ...state, ...patch };
+    patch.results = cast(
+      snapshot.anchors,
+      snapshot.operations,
+      next.lens,
+      state.referenceYear,
+      MSRF_SETS[next.msrfSet].numbers
+    );
+    // The resonance set is part of what the standing results were scored under.
+    if (patch.msrfSet) patch.lastCast = { ...snapshot, msrfSet: patch.msrfSet };
+  }
+  set(patch);
+  if (recast) toast(`Re-scored · ${note}`);
+}
 
 function pickLens(id) {
   const lens = getLens(id);
-  const patch = { lens: lens.id };
-  const rescore = state.hasCast;
-  if (rescore) {
-    patch.results = cast(state.anchors, state.operations, lens.id, state.referenceYear);
+  rescore({ lens: lens.id }, lens.id);
+}
+
+function pickMsrfSet(name) {
+  if (!MSRF_SETS[name]) {
+    setActive(ui.msrfTog, 'mset', state.msrfSet);
+    return;
   }
-  set(patch);
-  if (rescore) toast(`Re-scored · ${lens.id}`);
+  rescore({ msrfSet: name }, MSRF_SETS[name].label);
 }
 
 function renderLens() {
   const lens = getLens(state.lens);
   setActive(ui.sysTog, 'sys', lens.id);
   if (ui.sysNote) ui.sysNote.textContent = lens.note;
+}
+
+function renderMsrfSet() {
+  setActive(ui.msrfTog, 'mset', state.msrfSet);
+  if (ui.msrfNote) {
+    const { numbers, tiered } = MSRF_SETS[state.msrfSet];
+    ui.msrfNote.textContent = tiered
+      ? `${numbers.size} numbers, tiered by dimensions of arithmetic`
+      : `${numbers.size} numbers, untiered`;
+  }
 }
 
 /* ---------- one-time construction ---------- */
@@ -204,6 +273,17 @@ function buildLensToggle() {
   toggleGroup(ui.sysTog, 'sys', pickLens);
 }
 
+function buildMsrfToggle() {
+  if (!ui.msrfTog) return;
+  replace(
+    ui.msrfTog,
+    Object.entries(MSRF_SETS).map(([name, s]) =>
+      el('button', { type: 'button', data: { mset: name }, text: s.label })
+    )
+  );
+  toggleGroup(ui.msrfTog, 'mset', pickMsrfSet);
+}
+
 function wireEditor() {
   if (!ui.input) return;
   ui.input.addEventListener('input', reviewInput);
@@ -219,7 +299,9 @@ function render() {
   renderList();
   renderSummary();
   setActive(ui.packBar, 'pack', state.packName);
+  syncResetButton();
   renderLens();
+  renderMsrfSet();
 }
 
 export function initOperations() {
@@ -234,11 +316,14 @@ export function initOperations() {
     packBar: $('packBar'),
     sysTog: $('sysTog'),
     sysNote: $('sysNote'),
+    msrfTog: $('msrfTog'),
+    msrfNote: $('msrfNote'),
   };
   if (!ui.list) return;
 
   buildPackBar();
   buildLensToggle();
+  buildMsrfToggle();
   wireEditor();
   ui.reset?.addEventListener('click', resetPack);
 

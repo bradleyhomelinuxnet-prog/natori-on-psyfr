@@ -14,6 +14,7 @@ import { jdn } from '../core/jdn.js';
 import { state, set, makeAnchor, makeOperation } from '../state/store.js';
 import { LENSES, DEFAULT_LENS } from '../core/scoring/lenses.js';
 import { DEFAULT_PACK_NAME } from '../data/packs.js';
+import { MSRF_SETS, DEFAULT_MSRF_SET } from '../data/msrf.js';
 import { downloadText, stamp } from './download.js';
 
 export const FORMAT = 'natori-on-psyfr/1';
@@ -27,6 +28,7 @@ export function serializeConfig() {
       saved: new Date().toISOString(),
       packName: state.packName,
       lens: state.lens,
+      msrfSet: state.msrfSet,
       convTol: state.convTol,
       anchors: state.anchors.map(({ ay, m, d, label, enabled }) => ({ ay, m, d, label, enabled })),
       operations: state.operations.map(({ eq, enabled }) => ({ eq, enabled })),
@@ -78,9 +80,19 @@ function fromOph(doc) {
   if (ev.scope && ev.scope !== 'EVENT_SCOPE__DAYS') skipped.push(`scope ${ev.scope}`);
   if (events.length > 1) skipped.push(`${events.length - 1} further event(s)`);
 
+  // Desktop operations carry an ALPHA/beta weight that this scoring model has no
+  // slot for. Dropping it is fine; dropping it silently is not.
+  const weighted = (ev.operations ?? []).filter((o) => o.weight !== undefined && o.weight !== 1);
+  if (weighted.length) {
+    skipped.push(`ALPHA/beta weights on ${weighted.length} operation(s)`);
+  }
+  if (ev.scoring_system) skipped.push(`scoring system ${ev.scoring_system}`);
+
   return {
     anchors,
     operations,
+    hasAnchors: Array.isArray(ev.x_dates),
+    hasOperations: Array.isArray(ev.operations),
     // The desktop scoring systems don't map onto the Chronicon lenses, so fall
     // back to the default rather than guessing.
     lens: DEFAULT_LENS,
@@ -93,19 +105,40 @@ function fromOph(doc) {
 /* ------------------------------------------------------------------ native */
 
 function fromNative(doc) {
-  const anchors = (doc.anchors ?? []).map((a) =>
-    makeAnchor(Number(a.ay), Number(a.m), Number(a.d), String(a.label ?? ''), a.enabled !== false)
-  );
+  const skipped = [];
+
+  const anchors = [];
+  for (const a of doc.anchors ?? []) {
+    const ay = Number(a?.ay);
+    const m = Number(a?.m);
+    const d = Number(a?.d);
+    // A malformed anchor would otherwise become a NaN Julian day, which renders
+    // as "NaN CE" and silently contributes nothing to the cast. Drop it and say so.
+    if (!Number.isFinite(ay) || !Number.isFinite(m) || !Number.isFinite(d)) {
+      skipped.push(`an anchor with no usable date${a?.label ? ` ("${a.label}")` : ''}`);
+      continue;
+    }
+    anchors.push(makeAnchor(ay, m, d, String(a.label ?? ''), a.enabled !== false));
+  }
+
   const operations = (doc.operations ?? []).map((o) =>
-    makeOperation(String(o.eq ?? ''), o.enabled !== false)
+    makeOperation(String(o?.eq ?? ''), o?.enabled !== false)
   );
+
+  const packName = doc.packName ?? DEFAULT_PACK_NAME;
+
   return {
     anchors,
     operations,
+    // Distinguish "the file said none" from "the file didn't mention them" —
+    // an empty list is a legitimate saved state and must round-trip.
+    hasAnchors: Array.isArray(doc.anchors),
+    hasOperations: Array.isArray(doc.operations),
     lens: LENSES[doc.lens] ? doc.lens : DEFAULT_LENS,
-    packName: doc.packName ?? DEFAULT_PACK_NAME,
+    packName,
+    msrfSet: MSRF_SETS[doc.msrfSet] ? doc.msrfSet : DEFAULT_MSRF_SET,
     convTol: doc.convTol,
-    skipped: [],
+    skipped,
     source: 'native',
   };
 }
@@ -127,8 +160,8 @@ export function loadConfigText(text) {
 
   const parsed = doc.iso_events ? fromOph(doc) : fromNative(doc);
 
-  if (!parsed.anchors.length && !parsed.operations.length) {
-    throw new Error('no anchors or operations found in that file');
+  if (!parsed.hasAnchors && !parsed.hasOperations) {
+    throw new Error('that file has no anchors and no operations');
   }
 
   const patch = {
@@ -136,10 +169,14 @@ export function loadConfigText(text) {
     packName: parsed.packName,
     results: [],
     hasCast: false,
+    lastCast: null,
     selectedZ: null,
   };
-  if (parsed.anchors.length) patch.anchors = parsed.anchors;
-  if (parsed.operations.length) patch.operations = parsed.operations;
+  if (parsed.msrfSet) patch.msrfSet = parsed.msrfSet;
+  // Keyed on presence, not length: a setup saved with no operations is a real
+  // state to restore, and quietly keeping the previous ones would be a lie.
+  if (parsed.hasAnchors) patch.anchors = parsed.anchors;
+  if (parsed.hasOperations) patch.operations = parsed.operations;
   if (parsed.convTol !== undefined) patch.convTol = parsed.convTol;
   set(patch);
 

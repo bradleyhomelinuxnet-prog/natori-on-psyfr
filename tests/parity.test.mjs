@@ -18,7 +18,8 @@ import { findConvergences } from '../src/core/convergence.js';
 import { phoenixInfo, nemesisInfo, nerInfo, am, lcYear } from '../src/core/cycles.js';
 import { eclipseNear, coverage } from '../src/core/eclipses.js';
 import { DEFAULT_OPS, PACKS } from '../src/data/packs.js';
-import { MSRF } from '../src/data/msrf.js';
+import { MSRF, MSRF_SETS, DEFAULT_MSRF_SET } from '../src/data/msrf.js';
+import { MSRF_TIERS, MSRF_TIER_INDEX, MSRF_FULL, msrfTier } from '../src/data/msrf-tiers.js';
 import { LEDGER, EVENT_YEARS } from '../src/data/ledger.js';
 
 /** The reference build hardcoded 2026 as "today"; pin it so tests never drift. */
@@ -223,6 +224,73 @@ test('data tables match the reference sizes', () => {
   assert.equal(Object.keys(PACKS).length, 5);
 });
 
+/* --------------------------------------------------------- the tiered MSRF table */
+
+test('each tier holds the count its own source states', () => {
+  const counts = Object.fromEntries(MSRF_TIERS.map((t) => [t.tier, t.numbers.length]));
+  assert.deepEqual(counts, {
+    I: 281,
+    II: 139,
+    III: 75,
+    IV: 27,
+    V: 14,
+    VI: 13,
+    'VII.ceta': 5,
+    'VII.beta': 5,
+    'VII.alpha': 7,
+  });
+
+  const apex = MSRF_TIERS.filter((t) => t.apex);
+  assert.equal(apex.length, 3, 'Tier VII splits three ways');
+  assert.equal(apex.reduce((n, t) => n + t.numbers.length, 0), 17, 'Tier VII holds 17');
+});
+
+test('tiers climb one dimension of arithmetic at a time', () => {
+  assert.deepEqual(
+    MSRF_TIERS.map((t) => t.dimensions),
+    [2, 3, 4, 5, 6, 7, 8, 8, 8]
+  );
+});
+
+test('the two duplicates in the source survive transcription but not the index', () => {
+  const tierI = MSRF_TIERS[0].numbers;
+  assert.equal(tierI.filter((n) => n === 468).length, 2, '468 is listed twice in Tier I');
+  assert.equal(msrfTier(468).tier, 'I');
+
+  // 480 is listed under both Tier I and Tier III; the index keeps the higher.
+  assert.ok(tierI.includes(480));
+  assert.ok(MSRF_TIERS[2].numbers.includes(480));
+  assert.equal(msrfTier(480).tier, 'III');
+
+  // 566 transcribed entries, less the two duplicate listings.
+  assert.equal(MSRF_FULL.size, 564);
+  assert.equal(MSRF_TIER_INDEX.size, 564);
+});
+
+test('known numbers land in their documented tiers', () => {
+  assert.deepEqual(msrfTier(504), {
+    tier: 'VII.alpha',
+    dimensions: 8,
+    apex: true,
+    label: 'Tier VII · alpha',
+    short: 'VII α',
+  });
+  assert.equal(msrfTier(84).tier, 'V');
+  assert.equal(msrfTier(2556).tier, 'II', 'the 7-year projection window');
+  assert.equal(msrfTier(1656).tier, 'VI');
+  assert.equal(msrfTier(1080).tier, 'VII.ceta');
+  assert.equal(msrfTier(2160).tier, 'VII.beta');
+  assert.equal(msrfTier(7), null, 'a number outside the table has no tier');
+});
+
+test('the resonance sets wrap the two number sets without altering them', () => {
+  assert.equal(DEFAULT_MSRF_SET, 'PSYFR 87');
+  assert.equal(MSRF_SETS[DEFAULT_MSRF_SET].numbers, MSRF);
+  assert.equal(MSRF_SETS[DEFAULT_MSRF_SET].tiered, false);
+  assert.equal(MSRF_SETS['Ophis full'].numbers, MSRF_FULL);
+  assert.equal(MSRF_SETS['Ophis full'].tiered, true);
+});
+
 /* ------------------------------------------------------- the golden full cast */
 
 test('the golden cast reproduces the reference exactly', () => {
@@ -258,6 +326,38 @@ test('the golden cast reproduces the reference exactly', () => {
   ];
 
   assert.deepEqual(results.slice(0, expected.length).map(row), expected);
+});
+
+test('passing the default resonance set explicitly changes nothing', () => {
+  const implicit = cast(GOLDEN_ANCHORS, goldenOps(), 'V8', REF_YEAR);
+  const explicit = cast(
+    GOLDEN_ANCHORS,
+    goldenOps(),
+    'V8',
+    REF_YEAR,
+    MSRF_SETS[DEFAULT_MSRF_SET].numbers
+  );
+  assert.deepEqual(explicit, implicit);
+  assert.ok(
+    implicit.every((r) => r.tags.every(([label]) => label === 'MSRF' || !label.startsWith('MSRF'))),
+    'the untiered set tags plain MSRF'
+  );
+});
+
+test('the tiered set names the tier on the MSRF tag', () => {
+  const tiered = cast(
+    GOLDEN_ANCHORS,
+    goldenOps(),
+    'V8',
+    REF_YEAR,
+    MSRF_SETS['Ophis full'].numbers
+  );
+  const msrfTags = tiered.flatMap((r) => r.tags.filter(([, cls]) => cls === 'msrf'));
+  assert.ok(msrfTags.length, 'the full table hits at least once in the golden cast');
+  for (const [label, cls] of msrfTags) {
+    assert.equal(cls, 'msrf', 'the CSS class is untouched');
+    assert.match(label, /^MSRF · TIER (I{1,3}|IV|VI?|VII (ceta|β|α))$/);
+  }
 });
 
 test('the same date via a different anchor pair is kept, not deduplicated', () => {

@@ -11,6 +11,7 @@ import { set, state, subscribe } from '../../state/store.js';
 import { cast } from '../../core/cast.js';
 import { fmtYear, isPalindrome, jdn } from '../../core/jdn.js';
 import { exportResultsCsv } from '../../io/csv.js';
+import { MSRF_SETS } from '../../data/msrf.js';
 
 const COLSPAN = 7;
 
@@ -219,8 +220,23 @@ function runCast() {
     return;
   }
 
-  const results = cast(state.anchors, state.operations, state.lens, state.referenceYear);
-  set({ results, hasCast: true });
+  // Copy the inputs this cast is built from. Anchors and operations are mutated
+  // in place elsewhere (enable/disable), so a live reference would let an edit
+  // made after the cast leak into a later re-score.
+  const snapshot = {
+    anchors: state.anchors.filter((a) => a.enabled).map((a) => ({ ...a })),
+    operations: state.operations.filter((o) => o.enabled).map((o) => ({ ...o })),
+    msrfSet: state.msrfSet,
+  };
+
+  const results = cast(
+    snapshot.anchors,
+    snapshot.operations,
+    state.lens,
+    state.referenceYear,
+    MSRF_SETS[snapshot.msrfSet].numbers
+  );
+  set({ results, hasCast: true, lastCast: snapshot });
   toast(`${results.length} projections cast`);
 }
 

@@ -1,0 +1,351 @@
+SET SIZES: NORMAL=325 IMPORTANT=53 VORTEX=12 FINAL=390
+
+--- X-DATE EPOCH MILLIS (UTC midnight) ---
+X1 07/04/2026 = 1783123200000
+X2 08/20/2026 = 1787184000000
+X3 03/09/2027 = 1804550400000
+X4 03/16/2027 = 1805155200000
+X5 07/17/2027 = 1815782400000
+
+--- Y-STRUCTS (pair order) ---
+y0: X1(07/04/2026) -> X2(08/20/2026)  Y=47
+y1: X1(07/04/2026) -> X3(03/09/2027)  Y=248
+y2: X2(08/20/2026) -> X3(03/09/2027)  Y=201
+y3: X1(07/04/2026) -> X4(03/16/2027)  Y=255
+y4: X2(08/20/2026) -> X4(03/16/2027)  Y=208
+y5: X3(03/09/2027) -> X4(03/16/2027)  Y=7
+y6: X1(07/04/2026) -> X5(07/17/2027)  Y=378
+y7: X2(08/20/2026) -> X5(07/17/2027)  Y=331
+y8: X3(03/09/2027) -> X5(07/17/2027)  Y=130
+y9: X4(03/16/2027) -> X5(07/17/2027)  Y=123
+
+--- TOTAL DISTINCT Z-DATES BEFORE FILTERING: 153 (from 10 pairs x 16 ops = 160 operation results) ---
+--- SURVIVING AFTER FILTERS: 114 ---
+
+=== FULL SCORED LIST, SORTED BY DATE (z_ordinal order) ===
+Z#  | key(ms)       | date       | hits | score | opScore | mult | base | MSRF matches
+Z 1 | 1816214400000 | 07/22/2027 |    2 |   1.5 |       1 |  1.5 |    1 | 128.6->129(N)
+Z 2 | 1816732800000 | 07/28/2027 |    1 |   0.5 |     0.5 |    1 |  0.5 | 
+Z 3 | 1817683200000 | 08/08/2027 |    1 |   0.5 |     0.5 |    1 |  0.5 | 
+Z 4 | 1817769600000 | 08/09/2027 |    2 |     2 |       1 |    2 |    1 | 153.3->153(I)
+Z 5 | 1817856000000 | 08/10/2027 |    2 |  0.75 |     0.5 |  1.5 |  0.5 | 24.2->24(N)
+Z 6 | 1817942400000 | 08/11/2027 |    1 |   0.5 |     0.5 |    1 |  0.5 | 
+Z 7 | 1818460800000 | 08/17/2027 |    1 |     1 |       1 |    1 |    1 | 
+Z 8 | 1818547200000 | 08/18/2027 |    1 |     1 |       1 |    1 |    1 | 
+Z 9 | 1818720000000 | 08/20/2027 |    1 |     1 |       1 |    1 |    1 | 
+Z10 | 1819670400000 | 08/31/2027 |    2 |   1.5 |       1 |  1.5 |    1 | 168.3->168(N)
+Z11 | 1821398400000 | 09/20/2027 |    2 |     1 |     0.5 |    2 |  0.5 | 65.2->65.3(V)
+Z12 | 1821830400000 | 09/25/2027 |    2 |   1.5 |     1.5 |    1 |  1.5 | 
+Z13 | 1821916800000 | 09/26/2027 |    1 |     1 |       1 |    1 |    1 | 
+Z14 | 1822176000000 | 09/29/2027 |    4 |     3 |       1 |  1.5 |    2 | 204.1->204(N) 74.4->74(N)
+Z15 | 1822348800000 | 10/01/2027 |    2 |   1.5 |       1 |  1.5 |    1 | 76->76(N)
+Z16 | 1822694400000 | 10/05/2027 |    2 |   1.5 |       1 |  1.5 |    1 | 80.4->80(N)
+Z17 | 1822953600000 | 10/08/2027 |    1 |     1 |       1 |    1 |    1 | 
+Z18 | 1823126400000 | 10/10/2027 |    1 |     1 |       1 |    1 |    1 | 
+Z19 | 1824336000000 | 10/24/2027 |    1 |     1 |       1 |    1 |    1 | 
+Z20 | 1824854400000 | 10/30/2027 |    2 |   1.5 |       1 |  1.5 |    1 | 105.2->105(N)
+Z21 | 1825977600000 | 11/12/2027 |    1 |     1 |       1 |    1 |    1 | 
+Z22 | 1826409600000 | 11/17/2027 |    1 |     1 |       1 |    1 |    1 | 
+Z23 | 1827014400000 | 11/24/2027 |    1 |     1 |       1 |    1 |    1 | 
+Z24 | 1827187200000 | 11/26/2027 |    2 |   1.5 |       1 |  1.5 |    1 | 255->255(N)
+Z25 | 1827273600000 | 11/27/2027 |    2 |   1.5 |       1 |  1.5 |    1 | 133->133(N)
+Z26 | 1831248000000 | 01/12/2028 |    1 |   0.5 |     0.5 |    1 |  0.5 | 
+Z27 | 1831766400000 | 01/18/2028 |    1 |   0.5 |     0.5 |    1 |  0.5 | 
+Z28 | 1832025600000 | 01/21/2028 |    2 |  0.75 |     0.5 |  1.5 |  0.5 | 519.7->520(N)
+Z29 | 1832112000000 | 01/22/2028 |    2 |  0.75 |     0.5 |  1.5 |  0.5 | 312.4->312(N)
+Z30 | 1832457600000 | 01/26/2028 |    1 |   0.5 |     0.5 |    1 |  0.5 | 
+Z31 | 1832630400000 | 01/28/2028 |    1 |     1 |       1 |    1 |    1 | 
+Z32 | 1832803200000 | 01/30/2028 |    1 |   0.5 |     0.5 |    1 |  0.5 | 
+Z33 | 1832976000000 | 02/01/2028 |    1 |     1 |       1 |    1 |    1 | 
+Z34 | 1833062400000 | 02/02/2028 |    2 |  0.75 |     0.5 |  1.5 |  0.5 | 330.2->330(N)
+Z35 | 1833321600000 | 02/05/2028 |    2 |     1 |     0.5 |    2 |  0.5 | 326.6->326.7(V)
+Z36 | 1833408000000 | 02/06/2028 |    3 |  2.25 |     1.5 |  1.5 |  1.5 | 204.1->204(N)
+Z37 | 1833926400000 | 02/12/2028 |    2 |     2 |       1 |    2 |    1 | 210.3->210(I)
+Z38 | 1834185600000 | 02/15/2028 |    1 |     1 |       1 |    1 |    1 | 
+Z39 | 1834358400000 | 02/17/2028 |    1 |   0.5 |     0.5 |    1 |  0.5 | 
+Z40 | 1835913600000 | 03/06/2028 |    2 |   1.5 |       1 |  1.5 |    1 | 233.6->234(N)
+Z41 | 1837468800000 | 03/24/2028 |    2 |     1 |     0.5 |    2 |  0.5 | 629.9->630(I)
+Z42 | 1838160000000 | 04/01/2028 |    1 |   0.5 |     0.5 |    1 |  0.5 | 
+Z43 | 1838505600000 | 04/05/2028 |    1 |     1 |       1 |    1 |    1 | 
+Z44 | 1838851200000 | 04/09/2028 |    1 |     1 |       1 |    1 |    1 | 
+Z45 | 1839024000000 | 04/11/2028 |    2 |     1 |     0.5 |    2 |  0.5 | 647.7->648(I)
+Z46 | 1839196800000 | 04/13/2028 |    1 |     1 |       1 |    1 |    1 | 
+Z47 | 1839715200000 | 04/19/2028 |    1 |   0.5 |     0.5 |    1 |  0.5 | 
+Z48 | 1839801600000 | 04/20/2028 |    1 |     1 |       1 |    1 |    1 | 
+Z49 | 1840752000000 | 05/01/2028 |    1 |     1 |       1 |    1 |    1 | 
+Z50 | 1841702400000 | 05/12/2028 |    1 |     1 |       1 |    1 |    1 | 
+Z51 | 1842134400000 | 05/17/2028 |    2 |     2 |       1 |    2 |    1 | 305.8->306(I)
+Z52 | 1842739200000 | 05/24/2028 |    2 |  0.75 |     0.5 |  1.5 |  0.5 | 312.4->312(N)
+Z53 | 1843516800000 | 06/02/2028 |    1 |     1 |       1 |    1 |    1 | 
+Z54 | 1843603200000 | 06/03/2028 |    1 |     1 |       1 |    1 |    1 | 
+Z55 | 1844294400000 | 06/11/2028 |    2 |  0.75 |     0.5 |  1.5 |  0.5 | 330.2->330(N)
+Z56 | 1844380800000 | 06/12/2028 |    1 |     1 |       1 |    1 |    1 | 
+Z57 | 1848441600000 | 07/29/2028 |    2 |     2 |       1 |    2 |    1 | 378->378(I)
+Z58 | 1848614400000 | 07/31/2028 |    1 |   0.5 |     0.5 |    1 |  0.5 | 
+Z59 | 1849132800000 | 08/06/2028 |    1 |   0.5 |     0.5 |    1 |  0.5 | 
+Z60 | 1850342400000 | 08/20/2028 |    1 |     1 |       1 |    1 |    1 | 
+Z61 | 1850774400000 | 08/25/2028 |    1 |   0.5 |     0.5 |    1 |  0.5 | 
+Z62 | 1851033600000 | 08/28/2028 |    1 |   0.5 |     0.5 |    1 |  0.5 | 
+Z63 | 1852243200000 | 09/11/2028 |    2 |   1.5 |       1 |  1.5 |    1 | 800.7->801(N)
+Z64 | 1852848000000 | 09/18/2028 |    2 |   1.5 |       1 |  1.5 |    1 | 552->552(N)
+Z65 | 1858896000000 | 11/27/2028 |    2 |     1 |     0.5 |    2 |  0.5 | 629.9->630(I)
+Z66 | 1859068800000 | 11/29/2028 |    2 |     1 |       1 |    1 |    1 | 
+Z67 | 1859760000000 | 12/07/2028 |    1 |   0.5 |     0.5 |    1 |  0.5 | 
+Z68 | 1860624000000 | 12/17/2028 |    2 |  0.75 |     0.5 |  1.5 |  0.5 | 519.7->520(N)
+Z69 | 1861056000000 | 12/22/2028 |    2 |     1 |     0.5 |    2 |  0.5 | 647.7->648(I)
+Z70 | 1861574400000 | 12/28/2028 |    3 |   1.5 |       1 |  1.5 |    1 | 660.4->660(N)
+Z71 | 1862006400000 | 01/02/2029 |    1 |     1 |       1 |    1 |    1 | 
+Z72 | 1866067200000 | 02/18/2029 |    2 |  0.75 |     0.5 |  1.5 |  0.5 | 960.1->960(N)
+Z73 | 1867017600000 | 03/01/2029 |    1 |   0.5 |     0.5 |    1 |  0.5 | 
+Z74 | 1868572800000 | 03/19/2029 |    2 |     2 |       1 |    2 |    1 | 611.6->612(I)
+Z75 | 1869696000000 | 04/01/2029 |    1 |   0.5 |     0.5 |    1 |  0.5 | 
+Z76 | 1871769600000 | 04/25/2029 |    1 |   0.5 |     0.5 |    1 |  0.5 | 
+Z77 | 1872806400000 | 05/07/2029 |    2 |  0.75 |     0.5 |  1.5 |  0.5 | 660.4->660(N)
+Z78 | 1874275200000 | 05/24/2029 |    2 |  0.75 |     0.5 |  1.5 |  0.5 | 800.7->801(N)
+Z79 | 1874448000000 | 05/26/2029 |    1 |     1 |       1 |    1 |    1 | 
+Z80 | 1875398400000 | 06/06/2029 |    1 |   0.5 |     0.5 |    1 |  0.5 | 
+Z81 | 1876953600000 | 06/24/2029 |    1 |     1 |       1 |    1 |    1 | 
+Z82 | 1877299200000 | 06/28/2029 |    1 |     1 |       1 |    1 |    1 | 
+Z83 | 1878422400000 | 07/11/2029 |    1 |   0.5 |     0.5 |    1 |  0.5 | 
+Z84 | 1879632000000 | 07/25/2029 |    1 |     1 |       1 |    1 |    1 | 
+Z85 | 1883260800000 | 09/05/2029 |    1 |     1 |       1 |    1 |    1 | 
+Z86 | 1885593600000 | 10/02/2029 |    1 |     1 |       1 |    1 |    1 | 
+Z87 | 1888358400000 | 11/03/2029 |    1 |   0.5 |     0.5 |    1 |  0.5 | 
+Z88 | 1890259200000 | 11/25/2029 |    1 |     1 |       1 |    1 |    1 | 
+Z89 | 1891209600000 | 12/06/2029 |    1 |     1 |       1 |    1 |    1 | 
+Z90 | 1891900800000 | 12/14/2029 |    2 |     1 |     0.5 |    2 |  0.5 | 1259.8->1260(I)
+Z91 | 1892764800000 | 12/24/2029 |    1 |   0.5 |     0.5 |    1 |  0.5 | 
+Z92 | 1894492800000 | 01/13/2030 |    1 |     1 |       1 |    1 |    1 | 
+Z93 | 1895011200000 | 01/19/2030 |    1 |   0.5 |     0.5 |    1 |  0.5 | 
+Z94 | 1896393600000 | 02/04/2030 |    1 |   0.5 |     0.5 |    1 |  0.5 | 
+Z95 | 1898726400000 | 03/03/2030 |    2 |  0.75 |     0.5 |  1.5 |  0.5 | 960.1->960(N)
+Z96 | 1905552000000 | 05/21/2030 |    1 |   0.5 |     0.5 |    1 |  0.5 | 
+Z97 | 1908921600000 | 06/29/2030 |    1 |     1 |       1 |    1 |    1 | 
+Z98 | 1913155200000 | 08/17/2030 |    1 |     1 |       1 |    1 |    1 | 
+Z99 | 1913328000000 | 08/19/2030 |    2 |     1 |     0.5 |    2 |  0.5 | 1259.8->1260(I)
+Z100 | 1917043200000 | 10/01/2030 |    1 |   0.5 |     0.5 |    1 |  0.5 | 
+Z101 | 1918252800000 | 10/15/2030 |    1 |   0.5 |     0.5 |    1 |  0.5 | 
+Z102 | 1926288000000 | 01/16/2031 |    1 |     1 |       1 |    1 |    1 | 
+Z103 | 1931126400000 | 03/13/2031 |    1 |     1 |       1 |    1 |    1 | 
+Z104 | 1932422400000 | 03/28/2031 |    1 |   0.5 |     0.5 |    1 |  0.5 | 
+Z105 | 1933286400000 | 04/07/2031 |    1 |     1 |       1 |    1 |    1 | 
+Z106 | 1937520000000 | 05/26/2031 |    1 |     1 |       1 |    1 |    1 | 
+Z107 | 1949011200000 | 10/06/2031 |    2 |  0.75 |     0.5 |  1.5 |  0.5 | 1920.2->1920(N)
+Z108 | 1954713600000 | 12/11/2031 |    1 |     1 |       1 |    1 |    1 | 
+Z109 | 1959552000000 | 02/05/2032 |    1 |     1 |       1 |    1 |    1 | 
+Z110 | 1961020800000 | 02/22/2032 |    1 |   0.5 |     0.5 |    1 |  0.5 | 
+Z111 | 1981670400000 | 10/18/2032 |    2 |  0.75 |     0.5 |  1.5 |  0.5 | 1920.2->1920(N)
+Z112 | 1987632000000 | 12/26/2032 |    1 |     1 |       1 |    1 |    1 | 
+Z113 | 2011996800000 | 10/04/2033 |    1 |     1 |       1 |    1 |    1 | 
+Z114 | 2016230400000 | 11/22/2033 |    1 |     1 |       1 |    1 |    1 | 
+
+=== processed_z_dates, SORT_TYPE__MSRF (the file's saved sort) ===
+ 1. Z14 09/29/2027 score=3 hits=4 msrfSub=1 msrfNumSum=278
+ 2. Z107 10/06/2031 score=0.75 hits=2 msrfSub=0 msrfNumSum=1920
+ 3. Z111 10/18/2032 score=0.75 hits=2 msrfSub=0 msrfNumSum=1920
+ 4. Z90 12/14/2029 score=1 hits=2 msrfSub=0 msrfNumSum=1260
+ 5. Z99 08/19/2030 score=1 hits=2 msrfSub=0 msrfNumSum=1260
+ 6. Z72 02/18/2029 score=0.75 hits=2 msrfSub=0 msrfNumSum=960
+ 7. Z95 03/03/2030 score=0.75 hits=2 msrfSub=0 msrfNumSum=960
+ 8. Z63 09/11/2028 score=1.5 hits=2 msrfSub=0 msrfNumSum=801
+ 9. Z78 05/24/2029 score=0.75 hits=2 msrfSub=0 msrfNumSum=801
+10. Z70 12/28/2028 score=1.5 hits=3 msrfSub=0 msrfNumSum=660
+11. Z77 05/07/2029 score=0.75 hits=2 msrfSub=0 msrfNumSum=660
+12. Z45 04/11/2028 score=1 hits=2 msrfSub=0 msrfNumSum=648
+13. Z69 12/22/2028 score=1 hits=2 msrfSub=0 msrfNumSum=648
+14. Z41 03/24/2028 score=1 hits=2 msrfSub=0 msrfNumSum=630
+15. Z65 11/27/2028 score=1 hits=2 msrfSub=0 msrfNumSum=630
+16. Z74 03/19/2029 score=2 hits=2 msrfSub=0 msrfNumSum=612
+17. Z64 09/18/2028 score=1.5 hits=2 msrfSub=0 msrfNumSum=552
+18. Z28 01/21/2028 score=0.75 hits=2 msrfSub=0 msrfNumSum=520
+19. Z68 12/17/2028 score=0.75 hits=2 msrfSub=0 msrfNumSum=520
+20. Z57 07/29/2028 score=2 hits=2 msrfSub=0 msrfNumSum=378
+21. Z34 02/02/2028 score=0.75 hits=2 msrfSub=0 msrfNumSum=330
+22. Z55 06/11/2028 score=0.75 hits=2 msrfSub=0 msrfNumSum=330
+23. Z35 02/05/2028 score=1 hits=2 msrfSub=0 msrfNumSum=326.7
+24. Z29 01/22/2028 score=0.75 hits=2 msrfSub=0 msrfNumSum=312
+25. Z52 05/24/2028 score=0.75 hits=2 msrfSub=0 msrfNumSum=312
+26. Z51 05/17/2028 score=2 hits=2 msrfSub=0 msrfNumSum=306
+27. Z24 11/26/2027 score=1.5 hits=2 msrfSub=0 msrfNumSum=255
+28. Z40 03/06/2028 score=1.5 hits=2 msrfSub=0 msrfNumSum=234
+29. Z37 02/12/2028 score=2 hits=2 msrfSub=0 msrfNumSum=210
+30. Z36 02/06/2028 score=2.25 hits=3 msrfSub=0 msrfNumSum=204
+31. Z10 08/31/2027 score=1.5 hits=2 msrfSub=0 msrfNumSum=168
+32. Z4 08/09/2027 score=2 hits=2 msrfSub=0 msrfNumSum=153
+33. Z25 11/27/2027 score=1.5 hits=2 msrfSub=0 msrfNumSum=133
+34. Z1 07/22/2027 score=1.5 hits=2 msrfSub=0 msrfNumSum=129
+35. Z20 10/30/2027 score=1.5 hits=2 msrfSub=0 msrfNumSum=105
+36. Z16 10/05/2027 score=1.5 hits=2 msrfSub=0 msrfNumSum=80
+37. Z15 10/01/2027 score=1.5 hits=2 msrfSub=0 msrfNumSum=76
+38. Z11 09/20/2027 score=1 hits=2 msrfSub=0 msrfNumSum=65.3
+39. Z5 08/10/2027 score=0.75 hits=2 msrfSub=0 msrfNumSum=24
+40. Z2 07/28/2027 score=0.5 hits=1 msrfSub=0 msrfNumSum=0
+41. Z3 08/08/2027 score=0.5 hits=1 msrfSub=0 msrfNumSum=0
+42. Z6 08/11/2027 score=0.5 hits=1 msrfSub=0 msrfNumSum=0
+43. Z7 08/17/2027 score=1 hits=1 msrfSub=0 msrfNumSum=0
+44. Z8 08/18/2027 score=1 hits=1 msrfSub=0 msrfNumSum=0
+45. Z9 08/20/2027 score=1 hits=1 msrfSub=0 msrfNumSum=0
+46. Z12 09/25/2027 score=1.5 hits=2 msrfSub=0 msrfNumSum=0
+47. Z13 09/26/2027 score=1 hits=1 msrfSub=0 msrfNumSum=0
+48. Z17 10/08/2027 score=1 hits=1 msrfSub=0 msrfNumSum=0
+49. Z18 10/10/2027 score=1 hits=1 msrfSub=0 msrfNumSum=0
+50. Z19 10/24/2027 score=1 hits=1 msrfSub=0 msrfNumSum=0
+51. Z21 11/12/2027 score=1 hits=1 msrfSub=0 msrfNumSum=0
+52. Z22 11/17/2027 score=1 hits=1 msrfSub=0 msrfNumSum=0
+53. Z23 11/24/2027 score=1 hits=1 msrfSub=0 msrfNumSum=0
+54. Z26 01/12/2028 score=0.5 hits=1 msrfSub=0 msrfNumSum=0
+55. Z27 01/18/2028 score=0.5 hits=1 msrfSub=0 msrfNumSum=0
+56. Z30 01/26/2028 score=0.5 hits=1 msrfSub=0 msrfNumSum=0
+57. Z31 01/28/2028 score=1 hits=1 msrfSub=0 msrfNumSum=0
+58. Z32 01/30/2028 score=0.5 hits=1 msrfSub=0 msrfNumSum=0
+59. Z33 02/01/2028 score=1 hits=1 msrfSub=0 msrfNumSum=0
+60. Z38 02/15/2028 score=1 hits=1 msrfSub=0 msrfNumSum=0
+61. Z39 02/17/2028 score=0.5 hits=1 msrfSub=0 msrfNumSum=0
+62. Z42 04/01/2028 score=0.5 hits=1 msrfSub=0 msrfNumSum=0
+63. Z43 04/05/2028 score=1 hits=1 msrfSub=0 msrfNumSum=0
+64. Z44 04/09/2028 score=1 hits=1 msrfSub=0 msrfNumSum=0
+65. Z46 04/13/2028 score=1 hits=1 msrfSub=0 msrfNumSum=0
+66. Z47 04/19/2028 score=0.5 hits=1 msrfSub=0 msrfNumSum=0
+67. Z48 04/20/2028 score=1 hits=1 msrfSub=0 msrfNumSum=0
+68. Z49 05/01/2028 score=1 hits=1 msrfSub=0 msrfNumSum=0
+69. Z50 05/12/2028 score=1 hits=1 msrfSub=0 msrfNumSum=0
+70. Z53 06/02/2028 score=1 hits=1 msrfSub=0 msrfNumSum=0
+71. Z54 06/03/2028 score=1 hits=1 msrfSub=0 msrfNumSum=0
+72. Z56 06/12/2028 score=1 hits=1 msrfSub=0 msrfNumSum=0
+73. Z58 07/31/2028 score=0.5 hits=1 msrfSub=0 msrfNumSum=0
+74. Z59 08/06/2028 score=0.5 hits=1 msrfSub=0 msrfNumSum=0
+75. Z60 08/20/2028 score=1 hits=1 msrfSub=0 msrfNumSum=0
+76. Z61 08/25/2028 score=0.5 hits=1 msrfSub=0 msrfNumSum=0
+77. Z62 08/28/2028 score=0.5 hits=1 msrfSub=0 msrfNumSum=0
+78. Z66 11/29/2028 score=1 hits=2 msrfSub=0 msrfNumSum=0
+79. Z67 12/07/2028 score=0.5 hits=1 msrfSub=0 msrfNumSum=0
+80. Z71 01/02/2029 score=1 hits=1 msrfSub=0 msrfNumSum=0
+81. Z73 03/01/2029 score=0.5 hits=1 msrfSub=0 msrfNumSum=0
+82. Z75 04/01/2029 score=0.5 hits=1 msrfSub=0 msrfNumSum=0
+83. Z76 04/25/2029 score=0.5 hits=1 msrfSub=0 msrfNumSum=0
+84. Z79 05/26/2029 score=1 hits=1 msrfSub=0 msrfNumSum=0
+85. Z80 06/06/2029 score=0.5 hits=1 msrfSub=0 msrfNumSum=0
+86. Z81 06/24/2029 score=1 hits=1 msrfSub=0 msrfNumSum=0
+87. Z82 06/28/2029 score=1 hits=1 msrfSub=0 msrfNumSum=0
+88. Z83 07/11/2029 score=0.5 hits=1 msrfSub=0 msrfNumSum=0
+89. Z84 07/25/2029 score=1 hits=1 msrfSub=0 msrfNumSum=0
+90. Z85 09/05/2029 score=1 hits=1 msrfSub=0 msrfNumSum=0
+91. Z86 10/02/2029 score=1 hits=1 msrfSub=0 msrfNumSum=0
+92. Z87 11/03/2029 score=0.5 hits=1 msrfSub=0 msrfNumSum=0
+93. Z88 11/25/2029 score=1 hits=1 msrfSub=0 msrfNumSum=0
+94. Z89 12/06/2029 score=1 hits=1 msrfSub=0 msrfNumSum=0
+95. Z91 12/24/2029 score=0.5 hits=1 msrfSub=0 msrfNumSum=0
+96. Z92 01/13/2030 score=1 hits=1 msrfSub=0 msrfNumSum=0
+97. Z93 01/19/2030 score=0.5 hits=1 msrfSub=0 msrfNumSum=0
+98. Z94 02/04/2030 score=0.5 hits=1 msrfSub=0 msrfNumSum=0
+99. Z96 05/21/2030 score=0.5 hits=1 msrfSub=0 msrfNumSum=0
+100. Z97 06/29/2030 score=1 hits=1 msrfSub=0 msrfNumSum=0
+101. Z98 08/17/2030 score=1 hits=1 msrfSub=0 msrfNumSum=0
+102. Z100 10/01/2030 score=0.5 hits=1 msrfSub=0 msrfNumSum=0
+103. Z101 10/15/2030 score=0.5 hits=1 msrfSub=0 msrfNumSum=0
+104. Z102 01/16/2031 score=1 hits=1 msrfSub=0 msrfNumSum=0
+105. Z103 03/13/2031 score=1 hits=1 msrfSub=0 msrfNumSum=0
+106. Z104 03/28/2031 score=0.5 hits=1 msrfSub=0 msrfNumSum=0
+107. Z105 04/07/2031 score=1 hits=1 msrfSub=0 msrfNumSum=0
+108. Z106 05/26/2031 score=1 hits=1 msrfSub=0 msrfNumSum=0
+109. Z108 12/11/2031 score=1 hits=1 msrfSub=0 msrfNumSum=0
+110. Z109 02/05/2032 score=1 hits=1 msrfSub=0 msrfNumSum=0
+111. Z110 02/22/2032 score=0.5 hits=1 msrfSub=0 msrfNumSum=0
+112. Z112 12/26/2032 score=1 hits=1 msrfSub=0 msrfNumSum=0
+113. Z113 10/04/2033 score=1 hits=1 msrfSub=0 msrfNumSum=0
+114. Z114 11/22/2033 score=1 hits=1 msrfSub=0 msrfNumSum=0
+
+=== top by SCORE (reference) ===
+1. 09/29/2027 score=3 hits=4
+2. 02/06/2028 score=2.25 hits=3
+3. 08/09/2027 score=2 hits=2
+4. 02/12/2028 score=2 hits=2
+5. 05/17/2028 score=2 hits=2
+6. 07/29/2028 score=2 hits=2
+7. 03/19/2029 score=2 hits=2
+8. 12/28/2028 score=1.5 hits=3
+9. 07/22/2027 score=1.5 hits=2
+10. 08/31/2027 score=1.5 hits=2
+
+=== PER-OPERATION Z VALUES FOR Y=47 (pair X1 07/04/2026 -> X2 08/20/2026) ===
+op# | equation                    | w   | zRaw(full)        | z_value(2dp) | rot_z(1dp) | msrf      | Z-Date
+  0 | X2+oph_round(Y)             | 1   | 47                | 47           | 47         | none      | 10/06/2026
+  1 | X2+oph_flip(oph_round(Y))   | 1   | 74                | 74           | 74         | NORMAL 74 | 11/02/2026
+  2 | X2+Y/OPH_CRV                | 0.5 | 9.251968503937007 | 9.25         | 9.3        | none      | 08/29/2026
+  3 | X1+(Y/2.0)xOPH_PI           | 0.5 | 73.79             | 73.79        | 73.8       | NORMAL 74 | 09/15/2026
+  4 | X2+Y/OPH_PHI                | 1   | 29.048207663782446 | 29.05        | 29.1       | none      | 09/18/2026
+  5 | X2+(Y/2.0)xOPH_PHI          | 1   | 38.023            | 38.02        | 38         | none      | 09/27/2026
+  6 | X1+(Y/2.0)xOPH_CRV          | 0.5 | 119.38            | 119.38       | 119.4      | NORMAL 119 | 10/31/2026
+  7 | X2+(Y/2.0)xOPH_PI           | 0.5 | 73.79             | 73.79        | 73.8       | NORMAL 74 | 11/01/2026
+  8 | X2+YxOPH_PHI                | 1   | 76.046            | 76.05        | 76.1       | NORMAL 76 | 11/04/2026
+  9 | X1+YxOPH_PI                 | 1   | 147.58            | 147.58       | 147.6      | none      | 11/28/2026
+ 10 | X2+(Y/2.0)xOPH_CRV          | 0.5 | 119.38            | 119.38       | 119.4      | NORMAL 119 | 12/17/2026
+ 11 | X2+YxOPH_PI                 | 0.5 | 147.58            | 147.58       | 147.6      | none      | 01/14/2027
+ 12 | X1+YxOPH_CRV                | 0.5 | 238.76            | 238.76       | 238.8      | none      | 02/27/2027
+ 13 | X2+YxOPH_CRV                | 0.5 | 238.76            | 238.76       | 238.8      | none      | 04/15/2027
+ 14 | X1+YxOPH_HEP                | 1   | 329.46999999999997 | 329.47       | 329.5      | none      | 05/29/2027
+ 15 | X2+YxOPH_HEP                | 1   | 329.46999999999997 | 329.47       | 329.5      | none      | 07/15/2027
+
+=== oph_flip PARITY TABLE ===
+oph_flip(123) = 321
+oph_flip(7) = 7
+oph_flip(0) = 0
+oph_flip(100) = 1
+oph_flip(1000) = 1
+oph_flip(120) = 21
+oph_flip(12.5) = 52.1
+oph_flip(120.5) = 502.1
+oph_flip(10.25) = 52.01
+oph_flip(0.5) = 5
+oph_flip(0.1) = 1
+oph_flip(3.14) = 4.13
+oph_flip(46) = 64
+oph_flip(10) = 1
+oph_flip(-12) = NaN
+oph_flip(-0.5) = NaN
+oph_flip(1e+21) = NaN
+oph_flip(47) = 74
+oph_flip(-35) = NaN
+
+=== getMsrfMatch PARITY TABLE ===
+getMsrfMatch(12.5) = null
+getMsrfMatch(12.4) = NORMAL 12 pts=1 mult=1.5
+getMsrfMatch(21.6) = VORTEX 21.7 pts=2 mult=2
+getMsrfMatch(21.7) = VORTEX 21.7 pts=2 mult=2
+getMsrfMatch(21.8) = null
+getMsrfMatch(21.4) = NORMAL 21 pts=1 mult=1.5
+getMsrfMatch(21) = NORMAL 21 pts=1 mult=1.5
+getMsrfMatch(76.1) = NORMAL 76 pts=1 mult=1.5
+getMsrfMatch(76.2) = VORTEX 76.2 pts=2 mult=2
+getMsrfMatch(76.3) = VORTEX 76.2 pts=2 mult=2
+getMsrfMatch(76.4) = NORMAL 76 pts=1 mult=1.5
+getMsrfMatch(43.5) = VORTEX 43.5 pts=2 mult=2
+getMsrfMatch(32.5) = null
+getMsrfMatch(32.6) = VORTEX 32.6 pts=2 mult=2
+getMsrfMatch(217.9) = VORTEX 217.8 pts=2 mult=2
+getMsrfMatch(84) = IMPORTANT 84 pts=2 mult=2
+getMsrfMatch(83.6) = IMPORTANT 84 pts=2 mult=2
+getMsrfMatch(83.5) = null
+getMsrfMatch(36500) = null
+getMsrfMatch(0) = null
+getMsrfMatch(2559) = NORMAL 2559 pts=1 mult=1.5
+getMsrfMatch(1574) = NORMAL 1574 pts=1 mult=1.5
+getMsrfMatch(19) = null
+getMsrfMatch(235) = null
+
+=== SELF-CHECK (every filter number matches its own tier) ===
+PASS — all 390 numbers round-trip to their own tier
+
+=== VORTEX ±0.1 WINDOW (exhaustive over 1-dp probes) ===
+21.7: matches 21.6, 21.7
+32.6: matches 32.6
+43.5: matches 43.5
+65.3: matches 65.2, 65.3
+76.2: matches 76.2, 76.3
+87.1: matches 87, 87.1
+217.8: matches 217.8, 217.9
+326.7: matches 326.6, 326.7
+435.6: matches 435.6, 435.7
+653.4: matches 653.4
+762.3: matches 762.2, 762.3
+871.2: matches 871.2, 871.3

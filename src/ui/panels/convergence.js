@@ -99,9 +99,14 @@ function render(sel, body, count) {
     state.convTol
   );
 
-  count.textContent = clusters.length
-    ? `${clusters.length} convergence${clusters.length === 1 ? '' : 's'}`
-    : 'no operations agree at this window';
+  const n = (v) => v.toLocaleString();
+  // Past the cap the table is a window onto the clusters, so don't claim to be
+  // listing them all.
+  count.textContent = !clusters.length
+    ? 'no operations agree at this window'
+    : clusters.length > MAX_ROWS
+      ? `${n(clusters.length)} convergences · drawing the strongest ${n(MAX_ROWS)}`
+      : `${n(clusters.length)} convergence${clusters.length === 1 ? '' : 's'}`;
 
   if (!clusters.length) {
     replace(

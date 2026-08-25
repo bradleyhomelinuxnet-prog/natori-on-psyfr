@@ -1,0 +1,12 @@
+jdn(-2238,5,15) = 903782 (expect 903782)
+jdn(2026,8,25)  = 2461278 (expect 2461278)
+jdn(2040,5,15)  = 2466290 (expect 2466290)
+jdToDate(2466290) = {"year":2040,"month":5,"day":15}
+Y(GreatFlood->Today)  = 1557496 (expect 1557496)
+Y(GreatFlood->Phx2040)= 1562508 (expect 1562508)
+Y(Today->Phx2040)     = 5012 (expect 5012)
+AM(2026)= 5920 LC(2026)= 5138 cat= 7264
+phoenix node 2040? true  mod= 108
+X1+oph_round(Y/19)*19 @Y=1562508 off= 1562503  ZJD= 2466285 {"year":2040,"month":5,"day":10}
+X1+oph_round(Y/19)*19 @Y=5012 off= 5016  ZJD= 2466294 {"year":2040,"month":5,"day":19}
+X1+Y*360/365.2422 @Y=5012 off= 4940.064428480608  ZJD= 2466218 {"year":2040,"month":3,"day":4}

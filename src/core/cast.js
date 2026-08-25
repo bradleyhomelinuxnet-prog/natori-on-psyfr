@@ -21,6 +21,7 @@ import { am, lcYear } from './cycles.js';
 import { scoreDate, tagFor, getLens } from './scoring/index.js';
 import { eclipseNear, coverage, ECL_TYPE_NAME } from './eclipses.js';
 import { MSRF } from '../data/msrf.js';
+import { msrfTier } from '../data/msrf-tiers.js';
 
 /** Guard rails, so a pathological equation cannot spin the loop forever. */
 export const LIMITS = {
@@ -35,13 +36,32 @@ export const LIMITS = {
 };
 
 /**
+ * The tier half of an MSRF tag, e.g. "· TIER VII α", or '' for no tier.
+ *
+ * The default 87-number set predates the tiered table and is what the parity
+ * tests pin, so a cast against it keeps the bare "MSRF" tag; only a set the
+ * caller swapped in reports tiers. Where both the interval and the offset hit,
+ * the stronger of the two is the one worth naming.
+ */
+function tierSuffix(msrfSet, matched) {
+  if (msrfSet === MSRF) return '';
+  let best = null;
+  for (const n of matched) {
+    const rec = n === null ? null : msrfTier(n);
+    if (rec && (!best || rec.dimensions > best.dimensions)) best = rec;
+  }
+  return best ? `· TIER ${best.short}` : '';
+}
+
+/**
  * @param {Array<{enabled:boolean, jd:number, label:string}>} anchors
  * @param {Array<{enabled:boolean, eq:string, start:'X1'|'X2', fn:(Y:number)=>number}>} operations
  * @param {string} lensId
  * @param {number} referenceYear the "today" the Metonic test measures from
+ * @param {Set<number>} [msrfSet] resonance numbers; the shipped 87 by default
  * @returns {Array<object>} results, ranked
  */
-export function cast(anchors, operations, lensId, referenceYear) {
+export function cast(anchors, operations, lensId, referenceYear, msrfSet = MSRF) {
   const A = anchors.filter((a) => a.enabled);
   const O = operations.filter((o) => o.enabled);
   const lens = getLens(lensId);
@@ -82,9 +102,12 @@ export function cast(anchors, operations, lensId, referenceYear) {
 
         // MSRF resonance matches on EITHER the interval or the offset.
         const offAbs = Math.abs(Math.round(off));
-        if (MSRF.has(Y) || MSRF.has(offAbs)) {
+        const hitY = msrfSet.has(Y);
+        const hitOff = msrfSet.has(offAbs);
+        if (hitY || hitOff) {
           sc.pts += lens.msrf;
-          sc.tags.push(tagFor('msrf'));
+          const matched = [hitY ? Y : null, hitOff ? offAbs : null];
+          sc.tags.push(tagFor('msrf', tierSuffix(msrfSet, matched)));
         }
 
         const echo = anchorJDs.some((jd) => Math.abs(jd - ZJD) <= LIMITS.echoTolerance);

@@ -107,6 +107,10 @@ What is deliberately *different* — no `eval`, no arbitrary-path writes, no cli
 theatre, and "today" read from the clock rather than baked in — is listed in
 **[docs/DEVIATIONS.md](docs/DEVIATIONS.md)**.
 
+The vocabulary and the system model — PREPS, the A/B/C → E/F/G pipeline, the 14 operations mapped
+onto the shipped equations, the six MSRF filters and their tiers, and what the author never
+disclosed — are in **[docs/DOMAIN.md](docs/DOMAIN.md)**.
+
 The full study, subsystem by subsystem, is in [`docs/reverse/`](docs/reverse/).
 
 ---

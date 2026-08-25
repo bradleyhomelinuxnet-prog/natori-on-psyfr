@@ -15,7 +15,7 @@
 import { $, el, replace } from '../dom.js';
 import { state, subscribe } from '../../state/store.js';
 import { fmtYear, eraYear, isPalindrome, jdn } from '../../core/jdn.js';
-import { am, lcYear, sinceCataclysm } from '../../core/cycles.js';
+import { am, lcYear, sinceCataclysm, phoenixInfo } from '../../core/cycles.js';
 import { lensList, TRAIT_META } from '../../core/scoring/index.js';
 import {
   CONSTANTS,
@@ -38,9 +38,12 @@ function setText(id, value) {
   if (node) node.textContent = String(value);
 }
 
-function setFlag(id, on) {
+function setFlag(id, on, label, title) {
   const node = $(id);
-  if (node) node.classList.toggle('on', on);
+  if (!node) return;
+  node.classList.toggle('on', on);
+  if (label) node.textContent = label;
+  if (title) node.title = title;
 }
 
 const hasDigits = (needle, ...numbers) => numbers.some((n) => String(n).includes(needle));
@@ -87,12 +90,30 @@ function renderMoment() {
     );
   }
 
-  setFlag('flag138', hasDigits('138', longCount, annus, era));
+  // A Phoenix NODE and the digits 138 are different claims, and the Phoenix wheel
+  // on the same page is the authority on nodes — so the flag says which one it
+  // means rather than lighting "138 NODE" on a digit match.
+  const node = phoenixInfo(y).node;
+  const digits138 = hasDigits('138', longCount, annus, era);
+  setFlag(
+    'flag138',
+    node || digits138,
+    node ? '138 NODE' : '138 LATTICE',
+    node
+      ? `${fmtYear(y)} is a Phoenix node — one every 138 years.`
+      : '138 appears in the Long-Count year, the Annus Mundi year, or the era year.'
+  );
+
   // The reference tested mod(today − dialYear, 19), which is trivially true once
   // the strip reads today. The digit test is the one that still says something.
-  setFlag('flag19', hasDigits('19', era, annus));
-  setFlag('flagPal', isPalindrome(era) || isPalindrome(annus) || isPalindrome(jdn(y, m, d)));
-  setFlag('flagEv', EVENT_YEARS.has(y));
+  setFlag('flag19', hasDigits('19', era, annus), null, '19 appears in the era year or the Annus Mundi year.');
+  setFlag(
+    'flagPal',
+    isPalindrome(era) || isPalindrome(annus) || isPalindrome(jdn(y, m, d)),
+    null,
+    'The era year, the Annus Mundi year, or the Julian day reads the same both ways.'
+  );
+  setFlag('flagEv', EVENT_YEARS.has(y), null, 'This year is named in the documented ledger.');
 
   setText(
     'youAreHere',

@@ -113,12 +113,35 @@
       <dd>The whole number of days between a pair of anchors. Called <em>rotations</em> in the
       thesis — axial turnings of the Earth. No time of day, no timezone.</dd>
 
+      <dt>Axial rotation</dt>
+      <dd>One turning of the Earth — one day. The thesis measures every distance in rotations
+      rather than days because the rotation is the physical constant and the day is only the name
+      we hung on it. Y is a count of rotations.</dd>
+
       <dt>Z-Date · the projection</dt>
       <dd>The date an operation lands on: an anchor plus a day-offset derived from Y.</dd>
 
       <dt>Operation</dt>
       <dd>One formula, e.g. <code>X2+YxOPH_PHI</code>. Always begins <code>X1+</code> or
       <code>X2+</code>, naming which anchor it measures from.</dd>
+
+      <dt>Protocol Prime</dt>
+      <dd>The third control date in the original method — <em>the day the projection is
+      conducted</em>. It is an input, not a timestamp: with three controls, two of the three
+      intervals exist only because of it, and every projection falls after it. Seed today as your
+      third anchor and the cast is the documented one.</dd>
+
+      <dt>Isometric Projection</dt>
+      <dd>The simplest Ophis operation: lay the interval down again from the far anchor, like a
+      palindrome, to reach an equidistant future date. Weak on its own, useful with three or more
+      anchors. Ships as <code>X2+oph_round(Y)</code>.</dd>
+
+      <dt>Holofractal Recognition</dt>
+      <dd>An operation that stands outside the twelve-formula Core Algorithm. Y is rebuilt in a
+      different order of arithmetic and read back as a date, so no arithmetic link is visible from
+      this side between the anchors and the result. Ships as
+      <code>X2+oph_flip(oph_round(Y))</code>. Not the same thing as the <em>Holoflective</em>
+      filter, which the thesis keeps deliberately separate.</dd>
 
       <dt>Echo</dt>
       <dd>A projection that lands back on one of your own input anchors (±1 day). It is a
@@ -130,9 +153,12 @@
       between unrelated formulas is the strongest signal the method produces.</dd>
 
       <dt>MSRF</dt>
-      <dd>The Ophis resonance number set — 87 numbers the thesis treats as significant. A
-      projection scores an MSRF hit when either the interval Y <em>or</em> the day-offset is one of
-      them.</dd>
+      <dd><b>Multidimensional Spatial Recognition Filter</b> — six independent filters (Annular
+      Chronometric · Geodetic Chronometry · Hydrogen Spacing Angle · Fibonacci Sequence ·
+      Intra-Decimal Matrix · Vortex Holography) whose job is to strike out projections the pattern
+      does not support. A number's <em>tier</em> is how many of the six it appears in: Tier I is two
+      filters, up to Tier VII — the Apex Projections — at eight or more. A projection scores an MSRF
+      hit when either the interval Y <em>or</em> the day-offset is one of the set's numbers.</dd>
 
       <dt>Phoenix node</dt>
       <dd>A year where <code>year mod 138 = 108</code>. 1902, 2040, 2178. The 138-year Phoenix /

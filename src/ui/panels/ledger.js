@@ -83,12 +83,14 @@ function ledgerRow(entry) {
   ]);
 }
 
-function render(body, count) {
+function render(body, count, shown) {
   const kind = state.ledgerFilter;
   const rows = kind === 'all' ? LEDGER : LEDGER.filter((e) => e[1] === kind);
 
-  // The original always printed 69 here; the count now tracks the filter.
-  if (count) count.textContent = String(rows.length);
+  // #ledgerCount sits inside "The full dated spine … — N events", so it must stay
+  // the size of the whole ledger. The filtered count goes beside the filter chips.
+  if (count) count.textContent = String(LEDGER.length);
+  if (shown) shown.textContent = kind === 'all' ? '' : `${rows.length} of ${LEDGER.length} listed`;
 
   replace(body, rows.length ? rows.map(ledgerRow) : [emptyRow(COLUMNS, 'No events match this filter.')]);
 }
@@ -99,6 +101,7 @@ export function initLedger() {
 
   const filt = $('ledFilt');
   const count = $('ledgerCount');
+  const shown = $('ledShown');
 
   toggleGroup(filt, 'k', (kind) => set({ ledgerFilter: kind }));
   setActive(filt, 'k', state.ledgerFilter);
@@ -106,8 +109,8 @@ export function initLedger() {
   subscribe((_, keys) => {
     if (!keys.includes('ledgerFilter')) return;
     setActive(filt, 'k', state.ledgerFilter);
-    render(body, count);
+    render(body, count, shown);
   });
 
-  render(body, count);
+  render(body, count, shown);
 }
