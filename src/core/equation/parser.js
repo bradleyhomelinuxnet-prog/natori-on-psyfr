@@ -20,8 +20,16 @@ import { FUNCTIONS } from './functions.js';
  *   { t: 'bin',  op: '+'|'-'|'*'|'/', l: node, r: node }
  */
 
-/** Parse an equation body into an AST. Throws EquationError on anything unknown. */
-export function parseBody(src) {
+/**
+ * Parse an equation body into an AST. Throws EquationError on anything unknown.
+ *
+ * `env` names the constant and function tables to resolve identifiers against,
+ * so the same parser serves both reckonings. It defaults to the chronicon
+ * tables, which is what every existing caller and fixture expects.
+ */
+export function parseBody(src, env = { constants: CONSTANTS, functions: FUNCTIONS }) {
+  const constants = env.constants ?? CONSTANTS;
+  const functions = env.functions ?? FUNCTIONS;
   const tokens = tokenize(src);
   let pos = 0;
 
@@ -84,9 +92,9 @@ export function parseBody(src) {
 
       if (name === 'Y') return { t: 'var', name: 'Y' };
 
-      if (Object.hasOwn(CONSTANTS, name)) return { t: 'const', name };
+      if (Object.hasOwn(constants, name)) return { t: 'const', name };
 
-      if (Object.hasOwn(FUNCTIONS, name)) {
+      if (Object.hasOwn(functions, name)) {
         if (!at(TOKEN.LPAREN)) throw new EquationError(`"${name}" needs an argument in parentheses`, t.pos);
         next();
 
@@ -98,7 +106,7 @@ export function parseBody(src) {
         if (!at(TOKEN.RPAREN)) throw new EquationError(`missing ")" after ${name}(`, peek().pos);
         next();
 
-        const arity = FUNCTIONS[name].length;
+        const arity = functions[name].length;
         if (args.length !== arity) {
           throw new EquationError(
             `${name}() takes ${arity} argument${arity === 1 ? '' : 's'}, got ${args.length}`,
