@@ -1,0 +1,31 @@
+{
+  "format": "natori-on-psyfr/1",
+  "saved": "2026-08-25T05:47:52.615Z",
+  "packName": "Default 19",
+  "lens": "V8",
+  "convTol": 30,
+  "anchors": [
+    {
+      "ay": -2238,
+      "m": 5,
+      "d": 15,
+      "label": "Great Flood",
+      "enabled": true
+    },
+    {
+      "ay": 2026,
+      "m": 8,
+      "d": 25,
+      "label": "Today",
+      "enabled": true
+    },
+    {
+      "ay": 2040,
+      "m": 5,
+      "d": 15,
+      "label": "Phoenix 2040",
+      "enabled": true
+    }
+  ],
+  "operations": []
+}

@@ -23,6 +23,12 @@ This also lets `index.html` ship a Content-Security-Policy without `'unsafe-eval
 **Verified:** all 49 shipped equations across all five packs, at six values of Y, produce
 byte-identical output to the original (compared by SHA-256 of the canonicalised results).
 
+**Prior art.** This approach was not invented here. `Ophis_v12_Hardened_Engine_Lab.html` in the
+study folder is an earlier proof-of-fix that already replaced `new Function` with an AST walker and
+self-verified both parity and injection resistance in the browser. The rewrite productionises that
+prototype: same idea, split into a tokeniser, parser and evaluator, with arity checking, positioned
+error messages, and the parity check moved into a test suite that CI runs.
+
 ---
 
 ## 2. No arbitrary-path file writes
