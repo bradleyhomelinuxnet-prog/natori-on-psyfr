@@ -700,7 +700,7 @@ Requiring a reproduction converts a list of suspicions into a work queue.
 | Scoring arithmetic | 8/8 worked examples, every intermediate term |
 | Resonance table, independently checked | Important 53/53 and Vortex 12/12 exact against the author's workbook |
 | Vendor sanity anchors | 4/4 hold |
-| Test suite | 84 assertions, all passing |
+| Test suite | 94 assertions, all passing — including the complete 114-row desktop golden asserted field for field against an independent from-spec reference implementation, and a seeded 800-equation printer→parser→evaluator round-trip property |
 | Dynamic code-evaluation sinks | 0 (was 1) |
 | Markup sinks in application code | 0 |
 | Runtime dependencies | 0 |
@@ -745,9 +745,11 @@ an approximation where the original had a library, and a reader working at high 
 the ±65° clamp both share.
 
 **Equation agreement is not total behavioural equivalence.** The digest covers the shipped equation
-corpus at six intervals — a large and well-chosen sample, not a proof. Property-based testing over
-randomly generated equations and intervals would strengthen the claim materially and has not been
-done.
+corpus at six intervals — a large and well-chosen sample, not a proof. A seeded property suite now
+round-trips 800 randomly generated equations through the printer, tokeniser, parser and evaluator
+against an independent tree walker, bit-identically — which pins the grammar's whole space for
+internal consistency. The *differential* form of that claim — the same random corpus through the
+original's engine — still requires the original runnable, and has not been done.
 
 **The desktop end-to-end fixture is one cast, not a corpus.** It exercises ten anchor pairs, all
 sixteen operations, both resonance boundary cases and every scoring branch, and it is pinned to the
@@ -869,7 +871,7 @@ together.
 ```bash
 git clone https://github.com/bradleyhomelinuxnet-prog/natori-on-psyfr
 cd natori-on-psyfr
-npm test                               # 84 assertions, no dependencies
+npm test                               # 94 assertions, no dependencies
 python -m http.server 8777             # then open http://localhost:8777/
 ```
 

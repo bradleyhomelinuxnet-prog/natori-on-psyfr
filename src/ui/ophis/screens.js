@@ -702,8 +702,8 @@ export function renderAbout(host) {
           'The author’s flow chart takes three controls, not two: the two historical dates, and ' +
           'the date the projection is being conducted on. That third control produces two more spans ' +
           'and triples the projections — fourteen operations across three spans give the forty-two ' +
-          'future dates the chart describes. Nothing in the software enforces it; enter today as a ' +
-          'third X-Date and the engine does the rest.',
+          'future dates the chart describes. The original never mentioned it; here, the X-Dates ' +
+          'panel has a one-click ☉ Today button for it.',
       }),
 
       el('h2', { text: 'What is deliberately different' }),
@@ -743,8 +743,7 @@ export function renderAbout(host) {
         style: 'margin-top:12px',
         text:
           'The Field Guide is a ten-minute tour and the fastest way to learn what the numbers mean. ' +
-          'It also covers Protocol Prime, which is the single most useful thing to know and which ' +
-          'nothing else in this application mentions.',
+          'It also explains Protocol Prime — the reason the X-Dates panel carries a ☉ Today button.',
       }),
     ]),
   ]);

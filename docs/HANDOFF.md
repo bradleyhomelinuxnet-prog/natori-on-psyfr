@@ -32,8 +32,13 @@ If you are changing the maths deliberately, change the fixture **and say so in t
 message**. A silently updated parity fixture makes the entire suite worthless, because nobody can
 then tell which numbers were ever checked.
 
+One labelled exception: the `HH:MM regression pin` group in `tests/ophis.test.mjs` is pinned to
+*this* implementation, because no original reference output for the sunset-bounded scope was
+recoverable. Its header says so. Everything else derives from the original or from the independent
+from-spec reference in `docs/reverse/fixtures/`.
+
 ```bash
-npm test        # 84 assertions, no dependencies, ~1s
+npm test        # 94 assertions, no dependencies, ~2s
 ```
 
 ---
@@ -59,10 +64,15 @@ Verification, in brief:
 
 - 49/49 shipped equations × 6 intervals, byte-identical to the original (SHA-256).
 - 56/56 desktop operations across four packs compile and evaluate.
-- End to end: 10 anchor pairs → 160 projections → 153 distinct dates → **114 survivors, 39 hidden**,
-  top score 3, peak hit count 4 — every figure matching the original.
+- End to end: 10 anchor pairs → 160 projections → 153 distinct dates → **114 survivors, 39 hidden** —
+  and the complete 114-row golden asserted **field for field** against an independent from-spec
+  reference implementation (`tests/golden.test.mjs`).
+- 800 seeded random equations round-trip the printer → tokeniser → parser → evaluator chain
+  bit-identically against an independent tree walker; 400 mutated strings can only compile or raise
+  `EquationError` (`tests/property.test.mjs`).
 - The author's own lookup workbook independently confirms the resonance table: Important 53/53 and
   Vortex 12/12 exact.
+- The sunset-bounded scope carries an end-to-end regression pin (implementation-derived, labelled).
 
 ---
 
@@ -143,24 +153,24 @@ another, add it to this table and to `DEVIATIONS.md`, with a fixture.
 
 Nothing is blocking. In rough order of value:
 
-**1 — Surface Protocol Prime in the app.**
-The author's flow chart takes three controls: the two historical dates *and the date you are
-projecting from*. That third control produces two more spans and triples the output — fourteen
-operations across three spans is the forty-two projections the chart describes. The engine already
-supports it, because it pairs all anchors; nothing in the UI tells you to do it. A one-click "add
-today as a control" affordance on the work surface would be the highest-value small change in the
-project. The field guide explains it; the instrument does not.
-
-**2 — The offline map.** The only capability from the original that is absent. Worth it only if
+**1 — The offline map.** The only capability from the original that is absent. Worth it only if
 someone actually works in `HH_MM` scope at coordinates they cannot type.
 
-**3 — Property-based testing of the equation engine.** The parity digest covers the shipped corpus
-at six intervals. Randomly generated equations compared against a reference evaluator would turn a
-large sample into something much closer to a proof.
+**2 — An `HH_MM` fixture from the original.** The scope now carries an end-to-end regression pin,
+but it is pinned to this implementation. If the original can ever be run again, capture its output
+for the same three controls and promote the pin to a parity fixture.
 
-**4 — An `HH_MM` end-to-end fixture.** That scope is covered by unit tests, not by an end-to-end
-comparison, because no reference output for it was recoverable. If the original can be run again,
-capture one.
+**3 — Differential property testing against the original.** The seeded property suite proves the
+printer → parser → evaluator chain self-consistent; running the same random corpus through the
+original's engine would upgrade that to a differential claim. Needs the original runnable.
+
+### Done since the first handoff
+
+- **Protocol Prime is in the app** — the `☉ Today · Protocol Prime` button in the X-Dates panel
+  adds the projection date as a control, refuses a duplicate, and follows the Current-date
+  override. The guide, the About screen and the button's own tooltip explain it.
+- The full 114-row golden, the property suite, and the `HH:MM` pin (items 3 and 4 above, as far
+  as they can go without the original).
 
 ### Explicitly decided against
 

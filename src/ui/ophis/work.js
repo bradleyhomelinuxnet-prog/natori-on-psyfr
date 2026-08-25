@@ -214,6 +214,28 @@ function datesPanel({ key, title, note, addLabel }) {
     touch();
   };
 
+  /**
+   * Protocol Prime — the author's own operating procedure, absent from the
+   * original software entirely: enter the date the projection is being
+   * conducted on as a control alongside the historical dates. A third control
+   * gives three spans instead of one, which is the flow chart's forty-two
+   * projections rather than fourteen. "Today" here is the engine's injected
+   * now, so the Current-date override carries through.
+   */
+  const addToday = () => {
+    const t = new Date(now());
+    const y = t.getUTCFullYear();
+    const m = t.getUTCMonth() + 1;
+    const d = t.getUTCDate();
+    if (list.some((x) => x.enabled && x.y === y && x.m === m && x.d === d)) {
+      toast('Today is already a control.');
+      return;
+    }
+    list.push(makeXDate(y, m, d));
+    touch();
+    toast('Added today as a control — every historical date now casts against it.');
+  };
+
   return panel(title, {
     count: `${list.filter((x) => x.enabled).length} / ${list.length}`,
     actions: [
@@ -248,6 +270,19 @@ function datesPanel({ key, title, note, addLabel }) {
         el('div.field', {}, [el('label', { text: 'Year' }), yInput]),
         el('button.btn.primary', { type: 'button', text: addLabel, onclick: add }),
       ]),
+      key === 'x_dates'
+        ? el('div.formrow', { style: 'margin-top:6px' }, [
+            el('button.btn', {
+              type: 'button',
+              text: '☉ Today · Protocol Prime',
+              title:
+                'The author’s operating procedure: enter the date the projection is being ' +
+                'conducted as a control alongside the historical dates. Three controls give ' +
+                'three spans — and three times the projections.',
+              onclick: addToday,
+            }),
+          ])
+        : null,
     ],
   });
 }
