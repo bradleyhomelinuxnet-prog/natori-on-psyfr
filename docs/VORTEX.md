@@ -56,11 +56,33 @@ The loop and its two mirrors form a closed family of four:
 | 6534 | 99 × 66 | 4356 | 2178 | 9 |
 | 8712 | 99 × 88 | 2178 | 6534 | 9 |
 
+Strictly, the *cycle* is the pair `{2178, 6534}`; `4356` and `8712` are their reverses, which map
+into it in one step. The four together are what the table treats as the family.
+
 `2178 = 2 × 3² × 11²`. The nine and the eleven the documentation calls "9 and 11-dimensional
 distributions" are sitting right there: **99 = 9 × 11**, and every member is `99 × 22k`.
 
 Nine governs the family through the digital root — every member sums to 18, and 1 + 8 = 9 — while
 never appearing as a digit in any of them.
+
+### The cleaner basis: 1089
+
+`1089 = 99 × 11 = 33²`, and the whole family is `1089 × k`:
+
+| k | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |
+|---|---|---|---|---|---|---|---|---|---|
+| `1089k` | 1089 | **2178** | **3267** | **4356** | 5445 | **6534** | **7623** | **8712** | 9801 |
+| in the table | — | ✅ | ✅ | ✅ | — | ✅ | ✅ | ✅ | — |
+
+The six the table carries are exactly `k ∈ {2, 3, 4, 6, 7, 8}`. The three it omits are the three that
+cannot belong:
+
+- **k = 5** → `5445`, a **palindrome**: it collapses to zero on the first step.
+- **k = 1** and **k = 9** → `1089` and `9801`, which are each other's reverse. They sit at the ends
+  of the family rather than inside it.
+
+That the omissions are precisely `{1, 5, 9}` — the fixed points and the palindrome — is what makes
+the reconstruction more than a coincidence of arithmetic.
 
 ## 3. The community claims, tested
 
@@ -102,17 +124,13 @@ one decimal place — not rounded, which is why `32.67` is written `32.6`:
 | `76.2` | 7623 / 100 | 99 × 77 | `762.3` | 7623 / 10 | 99 × 77 |
 | `87.1` | 8712 / 100 | 99 × 88 · loop | `871.2` | 8712 / 10 | 99 × 88 |
 
-Twelve entries, **six distinct numbers**: `99 × {22, 33, 44, 66, 77, 88}`. Four are the loop itself;
-`3267` and `7623` are a mirror pair that enters it in one step (`|3267 − 7623| = 4356`).
+Twelve entries, **six distinct numbers**: `99 × {22, 33, 44, 66, 77, 88}`. Two of them — `2178` and
+`6534` — are the cycle itself. `4356` and `8712` are their reverses, one step out. `3267` and `7623`
+are a further mirror pair, two steps out (`|3267 − 7623| = 4356`, and `|4356 − 6534| = 2178`).
 
-The three multiples that are *absent* are absent for a reason:
-
-- `99 × 55 = 5445` is a **palindrome**, so it collapses to zero immediately and is not immortal.
-- `99 × 11 = 1089` and `99 × 99 = 9801` are each other's reverse and fall into the loop, but sit at
-  the edges of the family rather than inside it.
-
-The exclusion of 5445 is the detail that convinces: whoever built this table was running the
-process, not choosing pretty numbers.
+Equivalently — and more cleanly — they are `1089 × {2, 3, 4, 6, 7, 8}`, the nine multiples of 1089
+minus the three that cannot belong (§2). The exclusion of `5445`, the palindrome, is the detail that
+convinces: whoever built this table was running the process, not choosing pretty numbers.
 
 ## 5. Why this matters for the software
 
