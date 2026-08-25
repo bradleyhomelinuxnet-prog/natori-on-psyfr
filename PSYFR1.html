@@ -1,0 +1,1219 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NATORI-ON-PSYFR · The Predictive Chronology Engine</title>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com; script-src 'self' 'unsafe-inline' 'unsafe-eval';">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#07070c;--bg2:#0d0d18;--ink:#ece5d2;--dim:#8a8470;--gold:#d8a943;--gold2:#f3d27a;
+    --red:#d3402f;--cyan:#54b8c9;--green:#7faa5a;--violet:#9b7fd0;
+    --line:rgba(216,169,67,.2);--panel:rgba(20,20,32,.55);--panel2:rgba(20,20,32,.75);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:
+      radial-gradient(1100px 560px at 84% -8%, rgba(211,64,47,.10), transparent 60%),
+      radial-gradient(900px 480px at 6% 108%, rgba(84,184,201,.07), transparent 60%),
+      repeating-linear-gradient(0deg, rgba(216,169,67,.022) 0 1px, transparent 1px 46px),
+      repeating-linear-gradient(90deg, rgba(216,169,67,.022) 0 1px, transparent 1px 46px),
+      var(--bg);
+    color:var(--ink);font-family:'EB Garamond',serif;line-height:1.6;font-size:17px;min-height:100vh;
+  }
+  .wrap{max-width:1240px;margin:0 auto;padding:clamp(14px,3vw,34px)}
+  nav{position:sticky;top:0;z-index:60;display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center;
+      background:rgba(7,7,12,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:11px clamp(14px,3vw,34px)}
+  nav .brand{font-family:'Cinzel',serif;font-weight:800;color:var(--gold2);font-size:15px;letter-spacing:.04em}
+  nav .brand span{color:var(--red)}
+  nav .links{margin-left:auto;display:flex;gap:15px;flex-wrap:wrap}
+  nav a{color:var(--dim);text-decoration:none;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;cursor:pointer}
+  nav a:hover{color:var(--gold2)}
+
+  header{text-align:center;padding:clamp(34px,7vw,72px) 0 clamp(12px,3vw,30px)}
+  .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.42em;color:var(--gold);text-transform:uppercase}
+  h1{font-family:'Cinzel',serif;font-weight:800;font-size:clamp(40px,10vw,96px);line-height:.9;margin:.16em 0;letter-spacing:.02em;
+     background:linear-gradient(180deg,#fff,var(--gold2) 50%,var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .tagline{font-family:'Cinzel',serif;color:var(--dim);letter-spacing:.2em;text-transform:uppercase;font-size:12px;margin-top:8px}
+  .tagline b{color:var(--cyan)}.tagline em{color:var(--red);font-style:normal}
+  .sub{font-style:italic;color:var(--dim);max-width:62ch;margin:18px auto 0;font-size:16px}
+
+  .moment{margin:22px 0 4px;display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 16px;border-left:3px solid var(--red);
+    padding:12px 18px;background:linear-gradient(90deg,rgba(211,64,47,.10),transparent);border-radius:0 4px 4px 0}
+  .moment .y{font-family:'Cinzel',serif;font-weight:800;font-size:clamp(22px,4vw,34px);color:var(--gold2)}
+  .moment .tag{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--dim)}
+  .moment .tag b{color:var(--cyan)}
+  .flags{display:flex;gap:7px;flex-wrap:wrap;margin-left:auto}
+  .flag{font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.1em;padding:4px 9px;border:1px solid;border-radius:999px;opacity:.3;transition:.2s}
+  .flag.on{opacity:1;box-shadow:0 0 13px -2px currentColor}
+  .f138{color:var(--red);border-color:var(--red)}.f19{color:var(--cyan);border-color:var(--cyan)}
+  .fpal{color:var(--gold2);border-color:var(--gold2)}.fev{color:var(--green);border-color:var(--green)}
+
+  section{padding:clamp(26px,4vw,46px) 0;border-top:1px solid var(--line)}
+  .sec-no{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.32em;color:var(--red);text-transform:uppercase}
+  h2{font-family:'Cinzel',serif;font-weight:600;font-size:clamp(24px,4.4vw,38px);margin:.12em 0 .4em;color:var(--gold2);line-height:1.05}
+  .lead{font-size:18px;color:var(--ink);max-width:74ch}.lead b{color:var(--gold2)}
+  p{margin:0 0 .9em;color:#ddd6c4;max-width:76ch}
+  .hl{color:var(--gold2);font-weight:500}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:880px){.grid2{grid-template-columns:1fr}}
+  .panel{border:1px solid var(--line);background:var(--panel);border-radius:5px;padding:16px 18px}
+  .panel h3{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:4px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .panel .ph-sub{font-size:13px;color:var(--dim);font-style:italic;margin-bottom:12px}
+
+  label.fld{font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.18em;color:var(--gold);text-transform:uppercase;display:block;margin:0 0 4px}
+  input[type=number],input[type=text],select{
+    background:#05050a;border:1px solid var(--line);color:var(--ink);font-family:'IBM Plex Mono',monospace;
+    font-size:14px;padding:7px 9px;border-radius:3px;width:100%}
+  select{cursor:pointer}
+  input:focus,select:focus{outline:0;border-color:var(--gold)}
+
+  .btn{background:transparent;border:1px solid var(--line);color:var(--gold2);font-family:'IBM Plex Mono',monospace;
+    font-size:11px;letter-spacing:.07em;padding:8px 13px;border-radius:3px;cursor:pointer;transition:.15s;text-transform:uppercase}
+  .btn:hover{background:var(--gold);color:#100c02;border-color:var(--gold)}
+  .btn.sm{font-size:10px;padding:5px 9px}
+  .btn.red{border-color:var(--red);color:#ff9d8f}.btn.red:hover{background:var(--red);color:#fff}
+  .btn.cyan{border-color:var(--cyan);color:#9fe0ea}.btn.cyan:hover{background:var(--cyan);color:#04141a}
+  .btn.cast{font-family:'Cinzel',serif;font-weight:600;font-size:15px;letter-spacing:.14em;padding:13px 26px;border-color:var(--red);color:var(--gold2);
+    background:linear-gradient(180deg,rgba(211,64,47,.18),rgba(20,20,32,.4));text-transform:uppercase}
+  .btn.cast:hover{background:var(--red);color:#fff;box-shadow:0 0 24px -4px var(--red)}
+
+  .rowlist{display:flex;flex-direction:column;gap:8px;margin:10px 0}
+  .arow{display:grid;grid-template-columns:26px 1fr auto;gap:8px;align-items:center;background:var(--panel2);border:1px solid var(--line);border-radius:4px;padding:8px 10px}
+  .arow.off{opacity:.4}
+  .arow .ord{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--gold);text-align:center}
+  .arow .lbl{font-size:14.5px;color:var(--ink)}
+  .arow .lbl small{display:block;font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--dim);margin-top:2px}
+  .arow .lbl .mono{font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--cyan)}
+  .arow .ctrls{display:flex;gap:5px;align-items:center}
+  .chk{width:16px;height:16px;border:1px solid var(--gold);border-radius:3px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:11px;color:var(--gold);background:#05050a}
+  .chk.on{background:var(--gold);color:#100c02}
+  .xbtn{background:none;border:0;color:var(--dim);cursor:pointer;font-size:15px;padding:0 4px}
+  .xbtn:hover{color:var(--red)}
+  .addbar{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;margin-top:10px;padding-top:10px;border-top:1px dashed var(--line)}
+  .addbar .ctl{display:flex;flex-direction:column;gap:3px;flex:1 1 120px}
+
+  .sysrow{display:flex;gap:14px;align-items:center;justify-content:center;flex-wrap:wrap;margin:16px 0 4px}
+  .systog{display:flex;border:1px solid var(--line);border-radius:4px;overflow:hidden}
+  .systog button{background:#05050a;color:var(--dim);border:0;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;padding:9px 15px;cursor:pointer;transition:.15s;text-transform:uppercase}
+  .systog button.on{background:var(--violet);color:#0a0612;font-weight:600}
+  .systog button.on[data-sys=V8]{background:var(--gold);color:#100c02}
+  .sysnote{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--dim);font-style:italic;max-width:34ch}
+
+  .resbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:8px}
+  .filt{display:flex;gap:5px;flex-wrap:wrap}
+  .filt button{background:transparent;border:1px solid var(--line);color:var(--dim);font-family:'IBM Plex Mono',monospace;font-size:9.5px;padding:5px 9px;cursor:pointer;border-radius:3px;letter-spacing:.06em}
+  .filt button.on{background:var(--gold);color:#100c02;border-color:var(--gold);font-weight:600}
+  .filt button[data-k=phx].on{background:var(--red);border-color:var(--red);color:#fff}
+  .filt button[data-k=pal].on{background:var(--gold2);border-color:var(--gold2)}
+  .filt button[data-k=ev].on{background:var(--green);border-color:var(--green)}
+  .filt button[data-k=met].on{background:var(--cyan);border-color:var(--cyan);color:#04141a}
+  .filt button[data-k=novel].on{background:var(--violet);border-color:var(--violet);color:#0a0612}
+
+  .tbl-wrap{border:1px solid var(--line);border-radius:5px;overflow:hidden;background:var(--panel)}
+  .scroll{max-height:560px;overflow:auto}
+  table{width:100%;border-collapse:collapse;font-family:'IBM Plex Mono',monospace;font-size:12.5px}
+  th,td{text-align:left;padding:8px 11px;border-bottom:1px solid rgba(216,169,67,.1);white-space:nowrap;vertical-align:middle}
+  th{position:sticky;top:0;background:#0b0b14;color:var(--gold);font-size:9px;letter-spacing:.14em;text-transform:uppercase;z-index:2;cursor:pointer;user-select:none}
+  th:hover{color:var(--gold2)}
+  tr.zr{cursor:pointer;transition:.1s}
+  tr.zr:hover{background:rgba(216,169,67,.07)}
+  tr.zr.sel{background:rgba(211,64,47,.14);box-shadow:inset 3px 0 0 var(--red)}
+  tr.zr.echo{opacity:.62}
+  tr.zr.echo td.dt{color:var(--dim)}
+  td.dt{color:var(--gold2);font-weight:600}
+  td.sc{font-weight:600}
+  .restags{display:flex;gap:4px;flex-wrap:wrap}
+  .rt{font-size:8.5px;letter-spacing:.05em;padding:2px 5px;border-radius:3px;border:1px solid;text-transform:uppercase}
+  .rt.phx{color:var(--red);border-color:var(--red)} .rt.pal{color:var(--gold2);border-color:var(--gold2)}
+  .rt.ev{color:var(--green);border-color:var(--green)} .rt.met{color:var(--cyan);border-color:var(--cyan)}
+  .rt.s138{color:#ff9d8f;border-color:#ff9d8f;background:rgba(211,64,47,.12)} .rt.s19{color:#9fe0ea;border-color:#9fe0ea;background:rgba(84,184,201,.1)}
+  .rt.msrf{color:var(--violet);border-color:var(--violet)} .rt.ner{color:var(--green);border-color:rgba(127,170,90,.5)}
+  .rt.nem{color:var(--violet);border-color:rgba(155,127,208,.5)} .rt.bak{color:var(--cyan);border-color:rgba(84,184,201,.5)}
+  .rt.echo{color:var(--dim);border-color:var(--dim);border-style:dashed}
+  .scorebar{display:inline-block;width:42px;height:6px;background:#05050a;border:1px solid var(--line);border-radius:99px;overflow:hidden;vertical-align:middle;margin-left:6px}
+  .scorebar i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--red));box-shadow:0 0 8px -1px var(--red)}
+  .empty{padding:30px;text-align:center;color:var(--dim);font-style:italic;font-family:'EB Garamond',serif}
+
+  .wheelgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:14px}
+  .clock{border:1px solid var(--line);background:var(--panel);padding:14px;border-radius:4px;position:relative;overflow:hidden}
+  .clock::after{content:"";position:absolute;right:-30px;top:-30px;width:88px;height:88px;border-radius:50%;background:radial-gradient(circle,var(--accent),transparent 70%);opacity:.13}
+  .clock .name{font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent)}
+  .clock .big{font-family:'Cinzel',serif;font-weight:600;font-size:clamp(22px,3vw,30px);margin:5px 0 2px;color:var(--ink);line-height:1}
+  .clock .big small{font-size:.42em;color:var(--dim);font-family:'IBM Plex Mono',monospace}
+  .clock .meta{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--dim);line-height:1.65}
+  .clock .meta b{color:var(--ink)}
+  .bar{height:5px;background:#05050a;border:1px solid var(--line);border-radius:99px;margin-top:8px;overflow:hidden}
+  .bar i{display:block;height:100%;background:var(--accent);box-shadow:0 0 9px -1px var(--accent)}
+  .c-phx{--accent:var(--red)}.c-nem{--accent:var(--violet)}.c-ner{--accent:var(--green)}
+  .c-am{--accent:var(--gold)}.c-may{--accent:var(--cyan)}.c-anu{--accent:var(--gold2)}.c-moon{--accent:#8fb0c9}
+
+  .dialbar{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end;border:1px solid var(--line);background:var(--panel);padding:14px;border-radius:5px;margin-top:6px}
+  .dialbar .ctl{display:flex;flex-direction:column;gap:4px}
+  .era-toggle{display:flex;border:1px solid var(--line);border-radius:3px;overflow:hidden}
+  .era-toggle button{background:#05050a;color:var(--dim);border:0;font-family:'IBM Plex Mono',monospace;font-size:12px;padding:7px 11px;cursor:pointer}
+  .era-toggle button.on{background:var(--gold);color:#100c02;font-weight:600}
+  input[type=range]{width:100%;accent-color:var(--red);height:4px;cursor:ew-resize}
+
+  td.ev{white-space:normal;font-family:'EB Garamond',serif;font-size:14px;color:var(--ink);min-width:280px}
+  .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;vertical-align:middle}
+  .d-phx{background:var(--red)}.d-nem{background:var(--violet)}.d-ner{background:var(--green)}.d-may{background:var(--cyan)}.d-key{background:var(--gold)}.d-note{background:#4a4a55}
+  .seedbtn{font-family:'IBM Plex Mono',monospace;font-size:9px;padding:3px 7px;border:1px solid var(--gold);color:var(--gold2);background:transparent;border-radius:3px;cursor:pointer}
+  .seedbtn:hover{background:var(--gold);color:#100c02}
+  .pal{color:var(--gold2)}
+
+  .note-card{border:1px solid var(--cyan);background:linear-gradient(180deg,rgba(84,184,201,.08),transparent);border-radius:5px;padding:16px 18px;margin-top:14px}
+  .note-card h4{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--cyan);margin-bottom:6px}
+  .note-card p{font-size:14.5px;color:#cdc6b2;font-style:italic}
+
+  footer{border-top:1px solid var(--line);padding:26px 0 14px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--dim);line-height:1.8}
+  footer b{color:var(--gold)}
+  .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(140%);background:var(--bg2);border:1px solid var(--gold);color:var(--gold2);
+    font-family:'IBM Plex Mono',monospace;font-size:12px;padding:11px 18px;border-radius:5px;z-index:200;transition:.3s;box-shadow:0 8px 30px -8px #000}
+  .toast.show{transform:translateX(-50%) translateY(0)}
+  .rt.sol{color:var(--gold2);border-color:var(--gold2);background:rgba(243,210,122,.1)}
+  .rt.lun{color:#8fb0c9;border-color:#8fb0c9}
+  .toolbar{display:flex;gap:14px;align-items:center;flex-wrap:wrap;justify-content:center;margin:14px 0 0;padding:12px;border:1px solid var(--line);background:var(--panel);border-radius:5px}
+  .toolbar .grp{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+  .toolbar .glabel{font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.16em;color:var(--gold);text-transform:uppercase}
+  .toolbar .sep{width:1px;height:22px;background:var(--line)}
+  #packBar .btn{border-color:rgba(155,127,208,.5);color:#c9b8e8}
+  #packBar .btn:hover{background:var(--violet);color:#0a0612;border-color:var(--violet)}
+  .convstrength{display:inline-flex;align-items:center;gap:7px}
+  .convstrength b{font-family:'Cinzel',serif;font-size:22px;color:var(--violet);line-height:1}
+  .cbar{display:inline-block;width:38px;height:6px;background:#05050a;border:1px solid var(--line);border-radius:99px;overflow:hidden}
+  .cbar i{display:block;height:100%;background:linear-gradient(90deg,var(--violet),var(--cyan));box-shadow:0 0 8px -1px var(--violet)}
+  .cpairs{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--dim);margin-top:3px}
+  .cspan{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--dim);margin-top:2px}
+  .opchips{display:flex;gap:4px;flex-wrap:wrap;max-width:340px}
+  .opchip{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--cyan);border:1px solid rgba(84,184,201,.35);border-radius:3px;padding:2px 5px;white-space:nowrap}
+  .convsel{background:#05050a;border:1px solid var(--line);color:var(--ink);font-family:'IBM Plex Mono',monospace;font-size:11px;padding:6px 9px;border-radius:3px;cursor:pointer}
+
+  /* ---------- folds · progressive disclosure ---------- */
+  details.fold{border:1px solid var(--line);background:var(--panel);border-radius:5px;margin:14px 0 0;overflow:hidden}
+  details.fold>summary{cursor:pointer;list-style:none;display:flex;gap:10px;align-items:center;padding:12px 16px;
+    font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+  details.fold>summary::-webkit-details-marker{display:none}
+  details.fold>summary::before{content:'▸';color:var(--red);flex:0 0 auto}
+  details.fold[open]>summary::before{content:'▾'}
+  details.fold>summary:hover{color:var(--gold2)}
+  details.fold>summary .hint{margin-left:auto;color:var(--dim);font-size:10px;letter-spacing:.06em;text-transform:none;font-style:italic;font-family:'EB Garamond',serif;text-align:right}
+  details.fold>.foldbody{padding:2px 16px 14px}
+  details.fold.bare{border:0;background:transparent}
+  details.fold.bare>summary{padding:10px 0}
+  details.fold.bare>.foldbody{padding:2px 0 6px}
+
+  /* ---------- guided cast flow ---------- */
+  .castflow{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:16px 0 4px}
+  .cstep{display:flex;gap:11px;align-items:center;border:1px solid var(--line);background:var(--panel);border-radius:5px;padding:11px 13px}
+  .cstep b.n{font-family:'Cinzel',serif;font-weight:800;font-size:19px;color:var(--gold2);width:30px;height:30px;flex:0 0 30px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:50%;background:#05050a}
+  .cstep span{font-size:13.5px;color:#ddd6c4;line-height:1.4}
+  .cstep span b{color:var(--gold2)}
+  :root[data-theme="light"] .cstep b.n{background:#fffdf6}
+  :root[data-theme="light"] .cstep span{color:#3a3020}
+
+  /* ================= ACCESSIBILITY & THEME ================= */
+  :root{--zoom:1}
+  body{zoom:var(--zoom,1)}
+  /* keyboard focus ring for every interactive control */
+  a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,[tabindex]:focus-visible{
+    outline:2.5px solid var(--cyan);outline-offset:2px;border-radius:3px}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto}
+    *,*::before,*::after{transition-duration:.001ms!important;animation-duration:.001ms!important}
+  }
+  /* nav controls */
+  .navctl{display:flex;gap:10px;align-items:center;margin-left:14px}
+  .tsize{display:flex;border:1px solid var(--line);border-radius:4px;overflow:hidden}
+  .navbtn{background:transparent;border:0;color:var(--dim);font-family:'IBM Plex Mono',monospace;
+    font-size:11px;letter-spacing:.04em;padding:6px 10px;cursor:pointer;transition:.15s;white-space:nowrap}
+  .tsize .navbtn{border-right:1px solid var(--line)}
+  .tsize .navbtn:last-child{border-right:0}
+  .navbtn:hover{color:var(--gold2);background:rgba(216,169,67,.1)}
+  #themeBtn{border:1px solid var(--line);border-radius:4px;color:var(--gold2)}
+  #themeBtn:hover{background:var(--gold);color:#100c02}
+  /* simple / full view toggle */
+  #modeBtn{border:1px solid var(--line);border-radius:4px;color:#9fe0ea}
+  #modeBtn:hover{background:var(--cyan);color:#04141a}
+  body.simple .simple-hide{display:none!important}
+  body.simple #oracle .grid2{grid-template-columns:1fr}
+  /* slightly brighter dim text in dark mode for readability */
+  :root[data-theme="dark"]{--dim:#9c947c}
+  .chk{padding:0;appearance:none;font:inherit;line-height:1}
+
+  /* ---------- LIGHT THEME · aged parchment ---------- */
+  :root[data-theme="light"]{
+    --bg:#ece0c6;--bg2:#e0d2b2;--ink:#2c2317;--dim:#6a5f45;
+    --gold:#9a6f14;--gold2:#7d5410;--red:#b32a1a;--cyan:#1d6c7d;--green:#4d7730;--violet:#69479c;
+    --line:rgba(90,60,15,.30);--panel:rgba(255,251,242,.7);--panel2:rgba(255,251,242,.92);
+  }
+  :root[data-theme="light"] body{
+    background:
+      radial-gradient(1100px 560px at 84% -8%, rgba(179,42,26,.07), transparent 60%),
+      radial-gradient(900px 480px at 6% 108%, rgba(29,108,125,.06), transparent 60%),
+      repeating-linear-gradient(0deg, rgba(90,60,15,.03) 0 1px, transparent 1px 46px),
+      repeating-linear-gradient(90deg, rgba(90,60,15,.03) 0 1px, transparent 1px 46px),
+      var(--bg);
+  }
+  :root[data-theme="light"] nav{background:rgba(236,224,198,.93)}
+  :root[data-theme="light"] h1{background:linear-gradient(180deg,#5a3d0a,#8a5a12 55%,#a8791a);
+    -webkit-background-clip:text;background-clip:text;color:transparent}
+  :root[data-theme="light"] p{color:#3a3020}
+  :root[data-theme="light"] .lead{color:var(--ink)}
+  :root[data-theme="light"] input[type=number],
+  :root[data-theme="light"] input[type=text],
+  :root[data-theme="light"] select,
+  :root[data-theme="light"] .convsel{background:#fffdf6;color:var(--ink)}
+  :root[data-theme="light"] th{background:#e3d4b2}
+  :root[data-theme="light"] .chk,
+  :root[data-theme="light"] .era-toggle button,
+  :root[data-theme="light"] .systog button{background:#fffdf6}
+  :root[data-theme="light"] .scorebar,
+  :root[data-theme="light"] .cbar,
+  :root[data-theme="light"] .bar{background:#e3d4b2}
+  :root[data-theme="light"] tr.zr:hover{background:rgba(154,111,20,.12)}
+  :root[data-theme="light"] tr.zr.sel{background:rgba(179,42,26,.12)}
+  :root[data-theme="light"] .moment{background:linear-gradient(90deg,rgba(179,42,26,.10),transparent)}
+  :root[data-theme="light"] .navbtn:hover{background:rgba(154,111,20,.14)}
+  :root[data-theme="light"] .btn.cast{background:linear-gradient(180deg,rgba(179,42,26,.14),rgba(255,251,242,.5))}
+  :root[data-theme="light"] .clock::after,
+  :root[data-theme="light"] .moment .y{filter:saturate(1.05)}
+
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="brand">NATORI-ON-PSYFR <span>· Ophis × Chronicon</span></div>
+  <div class="links">
+    <a href="#oracle" data-go="oracle">The Oracle</a><a href="#convergence" data-go="convergence">Convergence</a><a href="#wheels" data-go="wheels">The Wheels</a><a href="#ledger" data-go="ledger" class="simple-hide">The Ledger</a><a href="#about" data-go="about" class="simple-hide">Method</a><a href="PSYFR2.html" target="_blank" rel="noopener" style="color:var(--gold2)">📖 Field Guide</a>
+  </div>
+  <div class="navctl">
+    <div class="tsize" role="group" aria-label="Text size">
+      <button id="tsDown" class="navbtn" type="button" aria-label="Decrease text size" title="Smaller text">A−</button>
+      <button id="tsReset" class="navbtn" type="button" aria-label="Reset text size" title="Default text size">A</button>
+      <button id="tsUp" class="navbtn" type="button" aria-label="Increase text size" title="Larger text">A+</button>
+    </div>
+    <button id="modeBtn" class="navbtn" type="button" aria-pressed="false" title="Hide the deep panels — just seed, cast, and read">✦ Simple</button>
+    <button id="themeBtn" class="navbtn" type="button" aria-label="Toggle light or dark theme" aria-pressed="false">☾ Dark</button>
+  </div>
+</nav>
+
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">Predictive Chronology Engine · 19-Operation Palindromic Cast</div>
+  <h1>NATORI-ON-PSYFR</h1>
+  <div class="tagline">The serpent that rings the egg of time · <em>138</em> lattice · <b>19</b> metonic · ⮌ mirror</div>
+  <p class="sub">Seed anchor dates, cast them through the operation pack, and read which projections resonate with the chronology. First time here? The <a href="PSYFR2.html" target="_blank" rel="noopener" style="color:var(--gold2)">📖 Field Guide</a> is a five-minute tour.</p>
+</header>
+
+<div class="moment simple-hide">
+  <span class="y" id="mY">2026 CE</span>
+  <span class="tag">Annus Mundi <b id="mAM">5920</b></span>
+  <span class="tag">Long-Count yr <b id="mLC">5138</b></span>
+  <span class="tag">since Cataclysm <b id="mCat">7264 yr</b></span>
+  <span class="tag" id="mEv"></span>
+  <div class="flags">
+    <span class="flag f138" id="flag138">138 NODE</span>
+    <span class="flag f19" id="flag19">19 · METONIC</span>
+    <span class="flag fpal" id="flagPal">PALINDROME</span>
+    <span class="flag fev" id="flagEv">DOCUMENTED</span>
+  </div>
+</div>
+
+<!-- ============ I · THE ORACLE ============ -->
+<section id="oracle">
+  <div class="sec-no">I · The Oracle — the predictive cast</div>
+  <h2>Seed it. Cast it. Read the resonance.</h2>
+  <div class="castflow">
+    <div class="cstep"><b class="n">1</b><span><b>Seed</b> two or more anchor dates — type one in, or pick a documented event from the ledger menu.</span></div>
+    <div class="cstep"><b class="n">2</b><span><b>Cast</b> the oracle — every anchor pair runs through every operation.</span></div>
+    <div class="cstep"><b class="n">3</b><span><b>Read</b> the results — high scores and convergent dates are the signal.</span></div>
+  </div>
+
+  <div class="grid2" style="margin-top:16px">
+    <div class="panel">
+      <h3>⚓ Anchor Dates <span style="margin-left:auto;font-weight:400;color:var(--dim);font-size:10px" id="anchorCount"></span></h3>
+      <div class="ph-sub">Add manually, or seed straight from the documented ledger (now with Breshears' dates) →</div>
+      <div class="rowlist" id="anchorList"></div>
+      <div class="addbar">
+        <div class="ctl" style="flex:0 0 86px"><label class="fld">Year</label><input type="number" id="aYear" value="2026" min="1" max="9999"></div>
+        <div class="ctl" style="flex:0 0 84px"><label class="fld">Era</label>
+          <div class="era-toggle" id="aEra"><button data-era="bc">BC</button><button data-era="ad" class="on">CE</button></div>
+        </div>
+        <div class="ctl" style="flex:0 0 64px"><label class="fld">Mon</label><input type="number" id="aMon" value="5" min="1" max="12"></div>
+        <div class="ctl" style="flex:0 0 64px"><label class="fld">Day</label><input type="number" id="aDay" value="15" min="1" max="31"></div>
+        <div class="ctl" style="flex:1 1 130px"><label class="fld">Label (optional)</label><input type="text" id="aLabel" placeholder="my anchor"></div>
+        <button class="btn" id="addAnchor">+ Add</button>
+      </div>
+      <div class="addbar" style="border:0;padding-top:6px">
+        <div class="ctl" style="flex:1 1 100%"><label class="fld">Seed from Chronicon ledger</label>
+          <select id="seedSel"><option value="">— pick a documented event —</option></select>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel simple-hide">
+      <h3>⚙ Operations <span style="margin-left:auto"><button class="btn sm" id="resetOps">reset 19</button></span></h3>
+      <div class="ph-sub">The 19-operation pack is loaded and ready — you can cast without touching anything here.</div>
+      <details class="fold bare">
+        <summary>View / edit the pack <span class="hint">19 equations · add your own</span></summary>
+        <div class="foldbody">
+          <div class="ph-sub">Each starts <span class="mono" style="color:var(--cyan)">X1+</span> or <span class="mono" style="color:var(--cyan)">X2+</span>, then arithmetic on <b>Y</b>. Constants: OPH_PHI · OPH_PI · OPH_CRV. Functions: oph_flip (mirror) · oph_round.</div>
+          <div class="rowlist" id="opList" style="max-height:300px;overflow:auto"></div>
+          <div class="addbar">
+            <div class="ctl" style="flex:1 1 100%"><label class="fld">Custom operation</label>
+              <input type="text" id="opInput" placeholder="X1+oph_flip(oph_round(Y/OPH_PHI))" spellcheck="false"></div>
+            <button class="btn cyan" id="addOp">+ Operation</button>
+          </div>
+          <div id="opErr" style="color:var(--red);font-family:'IBM Plex Mono',monospace;font-size:11px;margin-top:6px;min-height:14px"></div>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <div class="sysrow simple-hide">
+    <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.18em;color:var(--gold);text-transform:uppercase">Scoring lens</span>
+    <div class="systog" id="sysTog">
+      <button data-sys="V8" class="on">V8 · Chronology-first</button>
+      <button data-sys="V7">V7 · Numbers-first</button>
+    </div>
+    <span class="sysnote" id="sysNote">V8 weights Phoenix nodes & documented events highest.</span>
+  </div>
+
+  <details class="fold simple-hide">
+    <summary>Advanced · themed op packs &amp; save / load <span class="hint">swap the 19 for a 138, Metonic, Phoenix or Golden pack · keep setups as .json</span></summary>
+    <div class="foldbody">
+      <div class="toolbar" style="border:0;background:transparent;padding:6px 0 0;margin:0">
+        <div class="grp"><span class="glabel">Op packs</span><div id="packBar" style="display:flex;gap:6px;flex-wrap:wrap"></div></div>
+        <div class="sep"></div>
+        <div class="grp"><span class="glabel">Config</span>
+          <button class="btn sm" id="saveCfg">⤓ Save .json</button>
+          <button class="btn sm" id="loadCfg">⤒ Load</button>
+          <input type="file" id="loadFile" accept="application/json,.json" style="display:none">
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <div style="text-align:center;margin:8px 0">
+    <button class="btn cast" id="castBtn">⟳ Cast the Oracle</button>
+  </div>
+
+  <div class="resbar">
+    <div class="filt" id="resFilt">
+      <button data-k="all" class="on">ALL</button>
+      <button data-k="novel">✦ NOVEL ONLY</button>
+      <button data-k="phx">PHOENIX</button>
+      <button data-k="ev">DOCUMENTED</button>
+      <button data-k="pal">PALINDROME</button>
+      <button data-k="met">19·METONIC</button>
+      <button data-k="ecl">ECLIPSE</button>
+      <button data-k="future">FUTURE</button>
+    </div>
+    <div style="display:flex;gap:7px">
+      <span id="resCount" style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--dim);align-self:center"></span>
+      <button class="btn sm" id="exportCsv">⤓ CSV</button>
+    </div>
+  </div>
+  <div class="tbl-wrap"><div class="scroll">
+    <table id="resTable">
+      <thead><tr>
+        <th data-sort="score">Score</th><th data-sort="date">Projected Date</th><th data-sort="am">AM</th>
+        <th data-sort="lc">LC</th><th data-sort="op">Operation</th><th data-sort="y">Y (rot.)</th><th>Resonance</th>
+      </tr></thead>
+      <tbody id="resBody"><tr><td colspan="7" class="empty">Seed at least two anchors and cast the oracle.</td></tr></tbody>
+    </table>
+  </div></div>
+  <p class="simple-hide" style="font-size:13px;color:var(--dim);font-style:italic;margin-top:10px">Rows marked <span class="rt echo" style="font-size:8.5px">ECHO</span> land back on an input anchor — confirmations of the cast, not novel projections. Use <b style="color:var(--violet)">✦ NOVEL ONLY</b> to hide them and surface dates the chronology doesn't already name.</p>
+</section>
+
+
+<!-- ============ I·b · THE CONVERGENCE ============ -->
+<section id="convergence">
+  <div class="sec-no">I·b · The Convergence — where the operations agree</div>
+  <h2>The strongest signal: independent agreement</h2>
+  <p class="lead">A single projection is a guess. But when <b>several different operations</b> — often from <b>different anchor pairs</b> — independently land on the same date, that agreement is the heart of the ARCHAIX method. These are ranked by <b>strength</b> (how many distinct operations concur), echoes excluded.</p>
+  <div class="resbar" style="margin-top:14px">
+    <div class="grp" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <span class="glabel" style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.16em;color:var(--gold);text-transform:uppercase">Agreement window</span>
+      <select class="convsel" id="convTolSel">
+        <option value="0">Exact day</option>
+        <option value="1">± 1 day</option>
+        <option value="7">± 1 week</option>
+        <option value="30" selected>± 30 days</option>
+        <option value="90">± 90 days</option>
+        <option value="year">Same year</option>
+      </select>
+    </div>
+    <span id="convCount" style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--dim);align-self:center"></span>
+  </div>
+  <div class="tbl-wrap"><div class="scroll" style="max-height:480px">
+    <table>
+      <thead><tr><th>Strength</th><th>Converged Date</th><th>AM</th><th>LC</th><th>Resonance</th><th>Operations that agree</th></tr></thead>
+      <tbody id="convBody"><tr><td colspan="6" class="empty">Cast the oracle to reveal where operations agree.</td></tr></tbody>
+    </table>
+  </div></div>
+</section>
+
+<!-- ============ II · THE WHEELS ============ -->
+<section id="wheels">
+  <div class="sec-no">II · The Wheels — one moment, every reckoning</div>
+  <h2>The Chronicon, read at any instant</h2>
+  <p class="lead">Click any projected Z-Date above to send it here — or move the dial. Every wheel re-reads the same moment in the Breshears chronology, with the <b>Shar reckoned as a turning of the stars</b> (a day), per Archaix.</p>
+
+  <div class="dialbar">
+    <div class="ctl" style="flex:0 0 96px"><label class="fld">Year</label><input type="number" id="dYear" value="2026" min="1" max="9999"></div>
+    <div class="ctl" style="flex:0 0 88px"><label class="fld">Era</label>
+      <div class="era-toggle" id="dEra"><button data-era="bc">BC</button><button data-era="ad" class="on">CE</button></div></div>
+    <div class="ctl" style="flex:0 0 64px"><label class="fld">Mon</label><input type="number" id="dMon" value="5" min="1" max="12"></div>
+    <div class="ctl" style="flex:0 0 64px"><label class="fld">Day</label><input type="number" id="dDay" value="30" min="1" max="31"></div>
+    <div class="ctl" style="flex:1 1 100%;margin-top:4px">
+      <input type="range" id="dSlider" min="-2842" max="2178" value="2026" step="1">
+      <div style="display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--dim);letter-spacing:.08em">
+        <span>2843 BC</span><span>Flood 2239 BC</span><span>1 CE</span><span>2040 Phoenix</span><span>2178</span></div>
+    </div>
+    <div style="display:flex;gap:7px;flex-wrap:wrap">
+      <button class="btn red sm" id="dToday">◉ TODAY</button>
+      <button class="btn sm" data-jy="2040" data-je="ad">→ 2040</button>
+      <button class="btn sm" data-jy="2046" data-je="ad">→ 2046</button>
+      <button class="btn sm" data-jy="2178" data-je="ad">→ 2178</button>
+    </div>
+  </div>
+
+  <div class="wheelgrid">
+    <div class="clock c-phx"><div class="name">Phoenix · Sky Dragon · 138 yr</div><div class="big" id="wPhx">—</div><div class="meta" id="wPhxM">—</div><div class="bar"><i id="wPhxB"></i></div></div>
+    <div class="clock c-nem"><div class="name">Nemesis X · 792 yr</div><div class="big" id="wNem">—</div><div class="meta" id="wNemM">—</div><div class="bar"><i id="wNemB"></i></div></div>
+    <div class="clock c-ner"><div class="name">Anunnaki NER · 600 yr</div><div class="big" id="wNer">—</div><div class="meta" id="wNerM">—</div><div class="bar"><i id="wNerB"></i></div></div>
+    <div class="clock c-am"><div class="name">Annus Mundi · from 3895 BC</div><div class="big" id="wAm">—</div><div class="meta" id="wAmM">—</div></div>
+    <div class="clock c-may"><div class="name">Mayan Long-Count</div><div class="big" id="wMay">—</div><div class="meta" id="wMayM">—</div><div class="bar"><i id="wMayB"></i></div></div>
+    <div class="clock c-anu"><div class="name">Anunna Turnings · šar = a day</div><div class="big" id="wAnu">—</div><div class="meta" id="wAnuM">—</div></div>
+    <div class="clock c-moon"><div class="name">Metonic Moon · 19 yr = 235 moons</div><div class="big" id="wMoon">—</div><div class="meta" id="wMoonM">—</div></div>
+  </div>
+</section>
+
+<!-- ============ III · THE LEDGER ============ -->
+<section id="ledger" class="simple-hide">
+  <div class="sec-no">III · The Ledger — the documented chronology</div>
+  <h2>The Chronicon event record</h2>
+  <p class="lead">The full dated spine of the Archaix thesis — <b id="ledgerCount">69</b> events. Click <b>seed</b> on any row to load it as an anchor with its date; click the row to read it on the wheels.</p>
+  <details class="fold">
+    <summary>Browse the event record <span class="hint">filter by Phoenix · Nemesis · NER · baktun · seed any row as an anchor</span></summary>
+    <div class="foldbody">
+      <div class="resbar" style="margin-top:10px">
+        <div class="filt" id="ledFilt">
+          <button data-k="all" class="on">ALL</button><button data-k="key">KEY</button>
+          <button data-k="phx">PHOENIX</button><button data-k="nem">NEMESIS</button>
+          <button data-k="ner">NER</button><button data-k="may">BAKTUN</button><button data-k="note">NOTES</button>
+        </div>
+      </div>
+      <div class="tbl-wrap"><div class="scroll" style="max-height:520px">
+        <table><thead><tr><th>Year</th><th>AM</th><th>Phx</th><th>Event</th><th></th></tr></thead>
+        <tbody id="ledBody"></tbody></table>
+      </div></div>
+    </div>
+  </details>
+</section>
+
+<!-- ============ IV · METHOD ============ -->
+<section id="about" class="simple-hide">
+  <div class="sec-no">IV · Method &amp; lineage</div>
+  <h2>How the cast is weighed</h2>
+  <p class="lead">NATORI-ON-PSYFR fuses two instruments: the <b>Ophis</b> predictive grammar (X-Dates → Y interval → operations → Z-Dates) and the <b>Chronicon</b> calendrics (the Breshears cycle lattice). The fusion is the scoring — and you can switch the lens.</p>
+  <details class="fold">
+  <summary>The scoring rules, constants &amp; the echo filter <span class="hint">what V8 / V7 reward, point by point</span></summary>
+  <div class="foldbody">
+  <div class="grid2" style="margin-top:8px">
+    <div class="panel"><h3>V8 · Chronology-first (default)</h3>
+      <p style="font-size:14px">Rewards projections that land on the real timeline:</p>
+      <ul style="margin:6px 0 0 1.1em;color:#ddd6c4;font-size:13.5px;line-height:1.7">
+        <li><b style="color:var(--red)">Phoenix node</b> (mod 138 = 108) <b>+5</b> · ±2 yr <b>+2</b></li>
+        <li><b style="color:var(--green)">Documented event</b> exact year <b>+5</b></li>
+        <li><b style="color:var(--gold2)">Palindrome</b> (year / AM / Julian-day) <b>+3</b></li>
+        <li><b style="color:var(--cyan)">Metonic-19</b> to today <b>+2</b> · <b style="color:#ff9d8f">138</b> in digits <b>+2</b></li>
+        <li><b style="color:var(--violet)">MSRF</b> on interval/offset <b>+2</b> · 19 in digits <b>+1</b></li>
+        <li>Nemesis · NER · baktun edge <b>+1</b> each</li>
+      </ul>
+    </div>
+    <div class="panel"><h3>V7 · Numbers-first (legacy lens)</h3>
+      <p style="font-size:14px">The Ophis-flavoured lens — the sacred numbers dominate, chronology is secondary:</p>
+      <ul style="margin:6px 0 0 1.1em;color:#ddd6c4;font-size:13.5px;line-height:1.7">
+        <li><b style="color:#ff9d8f">138</b> in digits <b>+4</b> · <b style="color:var(--gold2)">Palindrome</b> <b>+4</b></li>
+        <li><b style="color:var(--violet)">MSRF</b> on interval/offset <b>+3</b></li>
+        <li><b style="color:#9fe0ea">19</b> in digits <b>+2</b> · <b style="color:var(--cyan)">Metonic-19</b> <b>+2</b></li>
+        <li><b style="color:var(--red)">Phoenix node</b> <b>+2</b> · documented <b>+1</b></li>
+        <li>Nemesis · NER · baktun <b>+1</b> each</li>
+      </ul>
+      <p style="font-size:12.5px;color:var(--dim);font-style:italic;margin-top:8px">Toggle the lens above the results — the table re-scores and re-sorts live.</p>
+    </div>
+  </div>
+  <div class="grid2" style="margin-top:6px">
+    <div class="panel"><h3>The constants &amp; functions</h3>
+      <p style="font-size:14px;line-height:1.8">
+        <span class="mono" style="color:var(--cyan)">OPH_PHI</span> = 1.61803398875 · golden ratio<br>
+        <span class="mono" style="color:var(--cyan)">OPH_PI</span> = 3.14 · Archaix π · <span class="mono" style="color:var(--cyan)">OPH_CRV</span> = 5.08 · curvature<br>
+        <span class="mono" style="color:var(--cyan)">oph_flip(n)</span> reverses digits — 138 ⮌ 831, 19 ⮌ 91<br>
+        <span class="mono" style="color:var(--cyan)">oph_round/floor/ceil/abs/sqrt(n)</span> · Y is always axial rotations (days).</p>
+    </div>
+    <div class="panel"><h3>ECHO &amp; the novel filter</h3>
+      <p style="font-size:14px;line-height:1.7">A projection that lands back on one of your input anchors (±1 day) is an <b style="color:var(--dim)">ECHO</b> — a confirmation, not a discovery. It still scores, but it's dimmed and tagged. The <b style="color:var(--violet)">✦ NOVEL ONLY</b> filter hides echoes so you see only the dates the chronology doesn't already name.</p>
+      <p style="font-size:12.5px;color:var(--dim);font-style:italic;margin-top:6px">19 is in the resonance set at your request — it is not in the stock Ophis MSRF table.</p>
+    </div>
+  </div>
+  </div>
+  </details>
+  <div class="note-card">
+    <h4>The recursion, noted not asserted</h4>
+    <p>NATORI-ON-PSYFR is a worldbuilding &amp; study instrument rendering the Archaix thesis of Jason Breshears (Archaix.com) as living predictive calendrics — the Chronicon, Doomsday Chronology, the 337 charts, the ANUNNA Files. The Shar-as-turning reckoning, Annus Mundi dating, and cycle lattice are presented as that thesis, not as established science. Deep-past conversions are cycle-true rather than historically observed. The 138-faced year LC 5138 wears the sigil through 2026 and never again before the count closes in 2046.</p>
+  </div>
+</section>
+
+<footer>
+  <b>NATORI-ON-PSYFR · The Predictive Chronology Engine.</b> Ophis predictive grammar × Chronicon calendrics, fused over the Breshears lattice (Phoenix 138 · Nemesis 792 · NER 600 · Metonic 19). Self-contained &amp; air-gap friendly — no data leaves this page. Annus Mundi = 3895 − BC year; Long-Count year = astro + 3112; šar = a turning of the stars (a day) per Archaix. <b>You Are Here:</b> <span id="youAreHere">—</span>
+</footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   OPHION CORE  — verified date + prediction math (16/16 + 812/812)
+   ============================================================ */
+const SYN=29.530588853, NEWMOON_J2000=2451550.1;
+const OPH_PHI=1.61803398875, OPH_PI=3.14, OPH_CRV=5.08;
+const _NOW=new Date(), TODAY={y:_NOW.getFullYear(),m:_NOW.getMonth()+1,d:_NOW.getDate()};
+function mod(n,m){return((n%m)+m)%m;}
+function jdn(ay,m,d){const a=Math.floor((14-m)/12),y=ay+4800-a,mm=m+12*a-3;
+  return d+Math.floor((153*mm+2)/5)+365*y+Math.floor(y/4)-Math.floor(y/100)+Math.floor(y/400)-32045;}
+function jdToDate(J){J=Math.round(J);let a=J+32044,b=Math.floor((4*a+3)/146097),c=a-Math.floor(146097*b/4);
+  let d=Math.floor((4*c+3)/1461),e=c-Math.floor(1461*d/4),m=Math.floor((5*e+2)/153);
+  let day=e-Math.floor((153*m+2)/5)+1,month=m+3-12*Math.floor(m/10),year=100*b+d-4800+Math.floor(m/10);
+  return{year,month,day};}
+function fmtYear(a){return a<=0?(1-a)+" BC":a+" CE";}
+function isPalindrome(n){const s=String(Math.abs(Math.round(n)));return s.length>1&&s===s.split("").reverse().join("");}
+function oph_flip(v){let s=v+"";let dot=s.indexOf(".");s=s.replace(".","");let r=s.split("").reverse();if(dot>0)r.splice(dot,0,".");return Number(r.join(""))||0;}
+function oph_round(v){return Math.round(v);}function oph_floor(v){return Math.floor(v);}function oph_ceil(v){return Math.ceil(v);}
+function oph_abs(v){return Math.abs(v);}function oph_sqrt(v){return Math.sqrt(Math.abs(v));}
+const TODAY_JD=jdn(TODAY.y,TODAY.m,TODAY.d);
+const AM_OFFSET=3894, LC_OFFSET=3112, CAT_OFFSET=5238;
+const am=a=>a+AM_OFFSET, lcYear=a=>a+LC_OFFSET;
+const AM_EPOCH=jdn(-3894,1,1);
+const MAY_NODES=[-3112,-2712,-2312,-1912,-1512,-1112,-712,-318,76,470,864,1258,1652,2046];
+
+/* MSRF resonance set (Ophis NORMAL+IMPORTANT key members) + 19 added per request */
+const MSRF=new Set([19,12,21,24,36,40,42,48,49,54,56,60,63,66,72,76,84,90,96,108,114,119,120,126,132,
+ 133,135,138,140,144,147,153,162,168,180,189,207,216,222,234,252,270,276,288,297,306,315,324,330,360,
+ 378,414,432,441,459,468,504,540,552,567,576,594,600,612,648,666,693,720,756,792,810,828,831,864,882,
+ 918,936,954,972,990,1080,1134,1138,1260,1296,1380,1656]);
+
+/* ===== ECLIPSE TABLES (Ophis precomputed, ~1–3000 CE) ===== */
+const ECL_S_BASE=1721231;
+const ECL_S_D="29,148,178,176,178,177,177,148,29,148,177,177,178,177,177,148,29,147,30,148,177,178,176,33104,176,148,29,148,30,147,178,177,177,178,176,178,147,177,178,176,178,177,148,30,147,29,148,177,177,178,177,177,148,29,147,30,148,177,178,176,178,177,177,148,176,179,176,178,177,147,30,148,29,148,177,177,177,178,176,178,147,30,147,178,176,179,176,178,147,30,147,178,177,177,177,177,148,30,147,29,149,176,178,177,177,177,177,149,176,178,176,178,177,147,30,148,30,147,177,178,176,178,176,179,147,29,148,177,177,178,176,178,147,30,148,177,177,177,177,178,148,29,147,30,148,176,178,177,177,178,176,149,176,178,177,177,177,148,29,178,147,177,178,176,179,176,178,147,29,148,178,176,178,177,178,176,148,177,177,178,177,177,148,29,147,30,148,177,178,176,178,177,177,148,177,177,177,177,178,177,177,148,177,177,177,178,176,178,147,30,147,178,177,178,176,178,177,147,178,176,178,177,177,148,30,176,149,176,178,177,177,177,177,148,30,147,178,177,177,177,177,178,147,177,178,176,178,176,179,147,29,148,177,177,178,176,178,177,147,178,176,177,177,177,149,29,176,149,176,178,177,177,178,176,149,29,147,178,177,177,178,176,178,147,177,178,176,179,176,178,147,29,148,178,176,178,177,177,177,148,177,177,178,177,177,148,29,177,149,176,178,176,178,177,177,148,30,147,177,177,177,178,176,178,148,177,177,177,178,176,178,147,30,147,178,177,177,177,178,177,147,30,148,176,178,177,177,178,176,149,176,178,177,177,177,177,148,30,147,177,178,176,178,177,178,147,177,178,176,178,176,178,148,29,148,177,177,178,176,178,177,147,30,148,177,177,177,177,178,176,149,176,178,177,177,178,176,149,29,147,178,177,177,178,176,178,147,30,147,178,176,179,176,178,176,148,178,176,178,177,177,177,148,29,148,177,178,177,177,177,177,148,177,178,176,178,177,177,177,148,177,177,177,178,176,178,148,29,147,178,177,178,176,178,177,147,178,177,177,177,177,178,147,29,149,176,178,177,177,178,176,149,176,178,177,177,177,177,178,147,177,178,176,178,177,178,146,29,148,178,176,178,176,178,177,148,177,177,178,176,178,177,177,148,177,177,177,177,178,176,149,176,178,177,177,178,176,178,147,177,178,177,178,176,178,147,30,147,178,176,178,177,178,176,148,178,176,178,177,177,178,176,149,176,178,177,177,177,177,148,30,147,177,177,177,178,177,177,148,177,177,177,178,176,178,148,29,147,178,177,178,176,178,177,147,178,177,177,177,177,178,176,149,176,178,177,177,178,176,149,29,147,178,177,177,177,177,178,147,177,178,176,178,177,178,147,29,148,178,176,178,176,178,177,148,177,177,177,178,177,177,177,148,177,177,177,177,178,176,149,29,147,178,177,177,178,176,178,148,176,178,176,179,176,178,147,30,147,178,176,178,177,177,177,148,30,148,176,178,177,177,178,176,149,176,178,177,177,177,177,148,30,147,177,177,177,178,177,177,148,29,148,178,176,178,176,178,177,147,178,177,178,176,178,177,147,30,148,177,177,177,177,178,176,149,176,178,177,177,178,176,149,29,147,178,177,177,177,177,178,147,30,147,178,176,178,176,179,176,148,177,177,178,177,177,177,148,29,148,177,177,178,176,178,176,149,176,30,148,177,177,178,176,178,147,178,177,177,178,176,178,148,29,147,178,176,179,176,178,176,148,178,176,178,177,177,178,147,29,149,176,178,177,177,178,176,149,176,29,149,176,178,177,177,178,147,177,177,177,178,177,177,148,29,148,178,176,178,176,178,177,147,178,177,177,177,178,177,177,148,177,177,177,177,178,176,149,176,30,148,177,177,177,177,178,147,30,147,178,176,178,177,178,147,29,148,178,176,178,176,179,176,148,177,30,147,178,177,177,177,177,148,177,177,177,177,178,176,149,30,146,30,148,177,177,178,177,177,148,29,148,177,177,178,176,178,147,30,147,178,176,179,176,178,176,148,178,29,147,178,177,177,178,176,149,176,178,177,177,177,177,149,29,147,29,149,176,178,177,177,177,148,29,148,178,176,178,176,178,148,29,148,177,177,178,176,178,177,147,30,148,29,148,176,177,177,178,176,149,176,178,177,177,178,176,149,29,147,30,148,177,177,177,177,178,147,30,147,178,176,178,177,178,147,29,148,178,176,178,177,177,177,148,29,148,30,147,178,177,177,177,177,148,177,177,177,177,178,177,148,30,146,30,148,177,177,178,176,178,148,29,147,30,148,177,178,176,178,177,147,178,176,179,176,178,177,147,30,148,29,147,178,177,177,178,176,149,176,29,149,177,177,177,177,148,30,147,29,148,178,177,177,177,177,148,29,148,29,149,176,178,176,178,177,148,29,148,177,178,176,178,177,147,30,148,30,147,177,177,177,178,176,149,30,146,30,148,177,177,178,176,178,147,30,148,177,177,177,177,178,147,30,147,30,148,176,178,177,178,176,148,30,148,176,178,177,177,177,148,29,148,30,147,178,177,177,177,177,148,30,147,29,148,177,177,178,177,177,148,29,148,177,177,178,176,178,148,29,147,30,148,176,179,176,178,177,147,30,148,29,147,178,177,177,178,176,149,29,147,178,177,177,178,176,149,29,147,29,149,177,177,177,177,178,147,29,148,178,176,178,177,177,147,29,177,149,176,178,176,178,177,148,29,148,30,147,178,176,178,177,177,148,30,147,177,177,177,178,176,149,30,146,30,148,177,177,178,176,178,147,30,148,177,177,177,177,178,147,30,177,148,176,178,177,178,176,148,30,148,29,147,178,177,177,177,177,148,30,147,177,178,176,178,177,148,30,147,29,148,177,177,178,177,177,148,29,148,177,177,178,176,178,148,29,177,148,176,179,176,178,177,147,30,148,29,148,177,177,177,178,176,149,29,147,178,177,177,178,176,149,29,147,29,149,177,177,177,177,178,147,29,148,30,148,176,178,177,177,148,29,177,149,176,178,176,178,177,148,29,148,30,147,177,177,178,177,177,148,30,147,29,148,177,177,178,176,149,29,147,30,148,177,177,178,176,178,147,30,147,30,148,176,179,176,178,177,177,148,176,178,177,177,177,148,30,147,30,147,178,177,177,177,177,148,30,147,29,148,178,176,178,177,178,147,29,148,177,177,178,177,177,148,29,148,29,148,177,178,176,178,177,177,148,176,179,176,178,177,177,148,29,148,177,177,177,178,176,149,29,147,30,148,177,177,177,176,178,147,29,149,177,177,177,177,177,148,30,147,30,148,176,178,177,177,177,177,149,176,178,176,178,177,177,178,147,177,178,176,178,176,149,30,147,29,148,177,177,178,176,178,147,30,148,177,177,178,176,178,148,29,177,148,176,179,176,178,177,177,148,29,147,178,177,177,177,177,178,147,178,177,177,178,176,148,30,147,29,148,178,176,178,177,178,176,148,177,177,178,177,177,148,29,177,148,177,178,176,178,177,177,148,30,147,178,176,178,177,177,177,148,177,177,177,178,176,149,29,147,29,149,177,177,178,176,178,177,147,178,177,177,177,177,148,30,176,149,176,178,176,178,177,177,148,30,147,178,176,178,177,177,178,147,177,178,176,178,176,179,146,30,148,177,177,178,176,178,177,148,177,177,178,176,178,148,29,177,148,176,179,176,178,176,178,148,29,147,178,177,177,177,177,178,147,178,177,177,178,176,178,147,29,148,177,177,178,177,177,177,148,30,147,177,178,177,177,177,177,149,176,178,176,178,177,177,148,29,148,177,177,177,178,176,178,148,29,148,177,177,178,176,178,176,149,177,177,177,177,178,177,147,30,148,176,178,177,177,178,176,149,176,178,176,178,177,177,148,30,147,178,177,177,177,177,178,147,29,148,178,176,178,176,179,176,148,177,177,178,176,178,177,147,30,148,177,178,176,178,177,177,148,176,179,176,178,176,178,177,147,178,177,177,178,176,178,147,29,149,177,176,179,176,178,176,148,177,177,178,177,177,177,177,149,176,178,176,178,177,177,148,30,147,178,176,178,177,177,177,148,177,177,177,178,176,178,147,30,148,177,177,178,176,178,177,148,177,177,177,177,178,177,177,148,176,178,177,177,177,177,149,29,147,178,176,178,177,177,178,147,177,178,176,178,177,178,147,29,148,177,177,178,176,179,176,148,177,177,178,176,178,177,177,148,177,178,176,178,177,177,148,29,147,178,177,177,178,177,177,147,178,177,177,178,176,178,147,29,149,177,176,178,177,178,176,148,177,177,178,177,177,176,177,149,176,178,176,178,177,177,148,30,147,178,176,178,177,177,177,148,177,177,177,178,176,178,147,30,148,177,177,178,176,178,177,148,177,177,177,177,178,177,177,148,176,178,177,177,177,177,149,29,147,178,177,177,177,177,178,147,177,178,176,178,177,178,147,29,148,177,177,178,176,178,177,148,29,148,177,178,176,178,177,177,148,176,179,176,178,177,177,148,29,147,178,177,177,178,176,178,147,30,148,177,177,178,176,178,176,149,177,177,177,177,178,176,148,30,148,176,178,177,177,177,177,149,176,178,176,178,177,177,148,30,147,178,176,178,177,177,177,148,29,148,177,177,178,176,178,177,148,177,177,178,176,178,177,147,30,148,177,177,177,177,178,176,149,176,178,177,177,177,177,178,147,178,177,177,177,177,178,147,29,148,178,176,178,176,179,176,148,177,30,147,178,177,177,177,177,148,177,178,176,178,177,177,148,30,146,30,149,176,178,177,177,177,147,178,177,177,178,176,178,147,30,148,177,177,177,176,178,176,148,178,29,148,177,177,177,177,178,148,176,178,177,177,177,177,149,29,147,29,149,176,178,177,177,178,147,177,177,177,178,177,178,147,29,148,177,177,178,176,178,177,148,177,29,148,178,176,178,177,177,148,176,178,177,177,178,176,149,29,147,30,148,177,177,177,177,178,147,178,177,177,177,177,178,147,29,148,178,176,178,176,179,176,148,177,30,147,178,177,177,177,177,148,177,178,176,178,177,177,148,30,146,30,149,176,178,177,177,177,147,30,148,177,177,178,176,178,147,30,148,177,177,178,176,178,176,148,178,29,148,177,177,177,178,176,149,29,147,178,177,177,177,177,149,29,147,29,149,176,178,177,177,178,147,29,148,177,177,178,176,179,176,148,177,177,178,176,178,177,148,29,148,29,148,177,177,178,177,177,148,30,146,178,177,177,178,176,149,29,147,30,148,177,177,177,177,178,147,30,147,178,176,178,177,178,176,148,178,176,178,177,178,176,148,30,147,30,147,178,177,177,177,177,148,30,147,29,149,176,178,177,177,148,30,146,30,147,177,177,178,177,177,148,29,148,29,148,177,178,176,178,176,149,177,177,178,176,178,176,148,30,148,29,147,178,177,177,178,176,149,29,147,29,149,176,178,177,177,178,147,29,149,176,178,177,177,178,147,29,148,30,148,176,178,176,179,176,148,177,30,147,178,176,178,177,177,148,29,148,177,177,178,177,177,148,30,146,30,148,177,177,178,176,178,147,30,148,177,177,177,177,178,147,30,147,30,148,176,179,176,178,176,148,178,29,147,178,177,177,177,177,148,30,147,178,177,177,177,177,148,30,147,29,149,176,178,177,177,177,148,29,148,177,177,178,176,178,148,29,148,29,148,177,178,176,178,176,149,177,29,148,177,177,178,177,177,148,29,147,178,177,177,178,176,149,29,147,29,149,176,178,177,177,178,147,29,148,178,177,177,177,178,147,29,148,30,148,176,178,176,179,176,148,30,147,29,148,178,176,178,177,177,148,30,147,177,177,178,177,176,149,30,146,30,148,177,177,177,177,178,147,30,148,177,177,178,176,178,147,29,178,148,176,178,177,178,176,148,30,147,30,147,178,177,177,177,177,148,30,147,178,176,178,177,177,148,30,147,29,149,176,178,177,177,177,148,29,148,30,147,177,178,176,178,177,177,148,177,178,176,178,176,148,30,148,29,148,177,177,177,178,176,149,29,147,30,148,177,177,177,177,149,29,147,29,149,176,178,177,177,178,147,29,148,30,148,176,178,177,178,176,178,148,176,178,176,178,177,148,29,148,30,147,178,176,178,177,177,148,30,146,30,148,177,178,177,176,178,147,30,148,177,177,177,177,178,147,30,148,29,148,177,178,176,178,176,178,148,29,147,178,177,178,176,178,147,30,147,178,177,177,177,177,149,29,147,29,149,176,178,177,177,178,176,149,176,178,177,177,177,148,29,148,30,147,177,178,176,178,177,177,148,29,148,178,176,178,177,177,148,29,148,177,177,177,178,176,149,29,147,30,148,177,177,177,177,178,176,149,177,177,177,177,178,147,29,178,148,176,178,176,179,176,178,147,30,147,178,176,178,177,177,148,30,147,178,176,178,177,177,148,30,146,30,149,176,178,177,177,177,177,148,177,177,178,176,178,147,30,177,148,176,179,175,178,176,178,148,29,147,178,177,178,176,178,177,147,178,177,177,177,177,149,29,147,29,149,176,178,177,177,178,176,148,177,177,178,177,177,148,29,177,148,177,178,176,178,177,177,148,29,148,178,176,178,177,177,177,147,178,177,177,178,176,149,29,176,149,177,177,177,177,178,176,149,29,148,177,177,177,178,176,178,148,176,178,176,179,176,178,147,30,147,178,176,178,177,177,178,147,178,176,178,177,177,148,30,176,148,177,177,178,177,177,177,148,30,147,177,178,176,178,177,177,148,176,179,176,178,176,178,148,29,147,178,177,177,177,177,178,147,30,148,177,177,177,177,178,176,149,176,178,177,177,178,176,148,30,147,177,178,176,178,177,177,148,177,178,176,178,177,177,148,29,148,177,177,178,177,177,177,147,30,148,177,177,178,176,178,176,149,177,177,177,177,178,177,147,30,148,176,178,177,178,176,178,148,29,147,178,176,179,176,178,177,147,178,176,178,177,177,178,147,29,149,176,178,177,177,178,176,147,177,177,178,177,177,177,177,148,177,178,176,178,177,177,148,29,147,179,176,178,176,178,177,147,178,177,177,177,177,178,147,29,149,177,177,177,177,178,176,149,176,178,177,177,177,177,178,147,177,178,176,178,177,177,148,30,147,178,176,178,177,177,177,148,177,177,177,178,176,178,147,30,148,177,177,178,176,178,177,148,177,177,177,177,178,177,177,148,176,178,177,178,176,178,148,29,147,178,176,178,177,177,178,147,178,177,177,177,177,178,147,29,149,176,178,177,177,178,176,148,177,177,178,176,178,177,177,148,177,178,176,178,177,177,148,29,147,178,177,178,176,178,177,147,178,177,177,178,176,178,176,149,177,177,177,177,178,176,149,29,147,178,177,177,177,177,178,148,176,178,176,178,177,177,148,30,147,178,176,178,177,177,177,148,177,177,177,178,176,179,176,148,177,177,178,176,178,177,148,29,148,177,177,177,178,177,177,148,176,178,177,178,176,178,148,29,147,178,177,177,177,176,178,147,29,149,177,177,177,177,178,176,149,176,178,177,177,177,177,148,30,147,177,178,176,178,177,177,148,30,147,178,176,178,176,178,148,29,147,178,177,178,177,177,177,147,30,148,177,177,178,176,178,176,149,176,178,177,177,178,176,148,30,147,177,178,177,177,177,178,148,29,147,178,176,178,177,177,178,147,178,176,178,177,177,178,147,29,148,177,177,178,176,179,176,148,177,29,148,177,177,178,177,177,148,177,177,177,178,176,178,148,29,147,178,177,178,176,178,177,147,178,177,177,177,177,178,147,29,149,176,178,177,177,178,176,149,176,29,149,177,177,177,177,178,147,177,178,176,178,177,177,148,30,146,179,176,178,176,178,177,147,178,177,177,178,176,178,147,30,148,177,177,178,176,178,176,149,176,30,148,177,177,178,176,178,148,176,178,177,187,177,177,149,29,147,178,176,178,177,177,177,148,178,176,178,177,177,178,146,30,148,177,177,178,176,178,177,148,177,29,148,177,177,178,177,177,148,176,179,176,178,176,178,148,29,147,178,177,178,176,178,177,147,178,177,177,177,177,178,176,149,176,178,177,177,178,176,148,30,147,30,147,178,177,177,177,177,148,30,147,178,176,178,177,177,148,29,147,179,176,178,177,177,177,147,30,148,30,147,177,178,176,178,176,149,177,177,177,177,178,176,149,29,148,29,148,177,177,178,176,178,148,29,147,178,176,178,177,177,148,30,147,30,148,176,178,177,177,178,147,29,148,30,147,177,178,176,179,176,148,177,177,178,176,178,177,148,30,147,29,148,177,177,178,177,177,148,29,147,30,149,176,178,176,178,177,147,30,148,177,177,177,177,178,147,30,148,29,148,177,177,177,178,176,149,176,30,148,177,177,178,176,148,30,147,30,147,178,177,177,177,177,148,30,147,29,149,176,178,177,177,177,148,29,149,176,178,177,177,177,147,30,148,30,147,177,178,176,178,176,149,177,29,148,177,177,178,176,178,148,29,148,177,177,178,176,178,148,29,147,30,148,176,178,177,177,178,147,30,148,176,178,177,177,178,147,29,148,30,147,177,178,176,179,176,148,177,29,148,178,176,178,177,177,148,29,148,178,176,178,177,177,148,29,147,30,149,176,178,176,178,177,147,30,148,177,177,177,177,178,147,29,149,29,148,177,177,177,178,176,149,176,30,148,177,177,177,177,178,147,30,147,178,176,178,177,177,148,30,147,29,149,176,178,177,177,177,148,29,148,30,147,178,177,177,177,177,148,30,147,177,178,176,178,176,149,30,147,29,148,177,177,178,176,178,148,29,147,178,177,178,176,178,148,29,147,30,148,176,178,177,177,178,147,30,148,29,147,178,177,177,178,176,148,30,147,177,178,176,179,176,148,30,147,29,148,178,176,178,177,177,148,29,148,178,176,178,177,177,148,29,177,149,176,178,176,178,177,147,30,148,29,148,177,177,177,178,176,149,29,148,177,177,177,178,176,149,29,147,30,148,177,177,177,177,178,147,30,147,30,148,176,178,177,177,148,30,176,149,176,178,177,177,177,148,29,148,30,147,177,178,176,178,177,148,30,147,177,178,176,178,176,149,29,148,29,148,177,177,178,177,177,148,29,147,30,148,177,178,176,178,177,177,148,176,178,177,177,178,147,29,149,29,148,177,177,177,178,176,148,30,147,30,147,178,176,179,176,178,147,29,148,178,176,178,177,177,148,30,147,29,149,176,178,177,177,177,177,148,177,178,176,178,177,147,30,148,29,148,177,178,176,178,176,149,29,148,29,148,177,177,178,176,178,147,30,147,178,177,177,177,177,149,29,147,29,149,176,178,177,177,178,176,149,176,178,177,177,177,148,29,178,147,177,178,176,178,177,148,30,147,29,148,178,176,178,177,177,148,29,148,177,177,178,177,177,148,29,147,30,148,177,178,176,178,177,177,148,176,178,177,177,178,176,178,148,176,178,177,178,176,148,30,147,30,147,178,176,178,177,178,147,29,148,178,176,178,177,177,148,30,176,149,176,178,177,177,177,177,148,30,147,177,177,177,178,177,177,148,177,178,176,178,176,178,148,29,148,177,177,178,176,178,147,30,147,178,177,177,177,177,149,29,176,149,176,178,177,177,178,176,149,29,147,178,177,177,177,177,178,147,177,178,176,178,177,178,147,29,148,178,176,178,177,177,148,29,148,177,177,178,177,177,148,29,177,148,176,179,176,178,177,177,148,29,148,177,177,177,178,176,178,148,176,178,176,179,176,178,147,29,148,178,176,178,177,177,148,30,147,29,149,176,178,177,177,178,176,149,176,178,177,177,177,177,148,30,147,177,178,176,178,177,177,148,29,148,178,176,178,176,178,148,29,148,177,177,178,176,178,148,29,147,30,148,177,177,177,177,178,176,149,176,178,177,177,178,176,148,30,147,178,177,177,178,176,178,147,29,148,178,176,178,177,178,176,148,177,177,178,177,177,177,147,30,148,177,178,177,177,177,177,148,177,177,177,177,178,177,177,148,177,177,177,178,176,178,148,29,147,178,176,179,176,178,177,147,178,176,24,154,22,155,23,154,23,155,23,124,29,23,126,22,30,124,23,30,125,22,155,23,154,23,155,22,154,23,126,51,125,23,30,125,22,155,23,154,22,155,23,154,23,155,22,125,23,30,124,52,126,23,153,23,155,23,153,23,155,23,125,29,23,125,22,30,126,22,30,124,23,155,22,154,24,154,22,155,23,125,52,125,53,124,23,154,23,154,24,154,22,155,23,154,22,126,23,29,124,23,30,125,23,154,23,154,23,155,23,153,23,126,52,124,24,29,125,22,30,125,23,154,23,155,22,154,23,155,22,125,24,29,124,52,126,23,153,23,156,22,154,23,155,147,29,148,178,176,178,177,178,176,148,177,177,178,177,177,177,177,148,177,178,176,167,11,166,11,136,30,11,137,11,30,135,12,166,11,166,11,166,11,167,11,136,29,12,137,29,11,137,11,166,11,166,11,166,11,167,11,165,11,137,30,11,136,11,19,11,136,11,167,11,165,12,166,12,165,11,167,11,136,29,12,136,11,167,11,165,12,166,11,166,11,166,11,137,30,11,135,30,11,138,11,165,11,167,11,166,11,166,11,166,11,136,30,11,137,12,29,136,11,167,11,165,12,166,11,166,11,136,30,11,137,30,11,136,11,166,11,167,11,165,11,167,11,165,11,138,29,11,137,11,18,11,137,11,166,11,166,11,167,11,165,11,167,11,136,30,11,136,11,167,11,166,11,166,11,166,11,166,11,138,29,11,136,29,11,138,11,165,11,167,11,166,11,166,11,167,11,136,29,11,138,11,18,11,136,11,167,11,166,11,166,11,166,12,165,11,167,11,136,11,166,11,167,11,165,11,167,12,165,11,137,30,11,136,11,18,11,137,11,167,11,165,11,167,11,166,11,166,11,137,29,11,137,11,29,137,11,166,11,167,11,166,11,166,11,137,29,11,166,11,137,11,166,11,167,11,165,11,167,11,166,11,136,30,11,137,11,18,12,136,11,166,11,166,11,166,11,167,11,165,11,167,11,148,29,148,177,177,178,176,178,177,147,178,177,177,177,178,177,147,30,148,176,178,177,177,178,176,149,176,178,177,177,177,177,148,30,147,177,178,176,178,177,178,147,29,148,178,176,178,176,178,177,148,177,177,178,176,178,177,147,30,148,177,177,177,177,178,176,149,176,30,148,177,177,178,176,178,147,178,177,177,178,176,178,147,30,147,178,176,179,176,178,176,148,178,176,178,177,177,177,148,29,148,177,178,177,177,177,177,148,177,29,149,176,178,177,177,177,148,177,177,177,178,176,178,148,29,147,178,177,178,176,178,177,147,178,177,177,177,177,178,176,149,176,178,177,177,178,176,149,29,147,29,149,177,177,177,177,178,147,177,178,176,178,177,178,147,29,148,178,176,178,176,178,177,148,177,30,147,178,177,177,177,177,148,177,177,177,177,178,176,149,30,146,30,148,177,177,178,176,178,147,177,178,177,178,176,178,147,30,147,178,176,179,176,178,176,148,178,29,147,178,177,177,178,176,149,176,178,177,177,177,177,148,30,147,29,148,177,177,178,177,177,148,29,148,178,176,178,176,178,148,29,147,178,177,178,176,178,177,147,30,148,29,148,177,177,177,178,176,149,176,178,177,177,178,176,149,29,147,29,149,177,177,177,177,178,147,30,147,178,176,178,177,178,147,29,148,178,176,178,176,178,177,148,29,148,30,147,178,177,177,177,177,148,177,29,148,177,177,178,176,149,29,147,30,148,177,177,178,176,178,148,29,147,178,176,179,176,178,177,147,178,176,178,177,177,177,148,30,148,29,147,178,177,177,178,176,149,176,29,149,177,177,177,177,178,147,29,148,177,177,178,177,177,148,29,148,29,149,176,178,176,178,177,147,178,177,178,176,178,177,147,30,148,29,148,177,177,177,178,176,149,176,30,148,177,177,178,176,178,147,30,148,177,177,177,177,178,147,30,147,30,148,176,178,177,178,176,148,178,29,147,178,177,177,177,177,148,30,147,177,178,176,178,177,148,30,147,29,148,177,177,178,176,178,147,30,148,177,177,178,176,178,148,29,147,30,148,176,179,176,178,177,147,178,29,147,178,177,177,178,176,149,29,147,178,177,177,178,176,149,29,147,29,149,177,177,177,177,178,147,29,148,178,176,178,177,177,148,29,148,29,149,176,178,176,178,177,147,30,148,30,147,177,177,178,177,177,148,29,148,177,177,177,178,176,149,29,147,30,148,177,177,178,176,178,147,30,147,178,176,178,177,178,147,30,177,148,176,178,177,178,176,148,30,147,30,147,178,177,177,177,177,148,30,147,177,178,176,178,176,149,30,147,29,148,177,177,178,177,177,148,29,148,177,177,178,176,178,148,29,177,148,176,179,176,178,177,147,30,148,29,147,178,177,177,178,176,149,29,147,178,177,177,178,176,149,29,147,29,149,177,177,177,177,177,148,29,148,30,148,176,178,176,178,177,177,149,176,178,176,178,177,147,30,148,30,147,177,177,177,178,176,149,30,146,30,148,177,177,178,176,149,29,147,30,148,177,177,177,177,178,147,30,147,30,148,176,178,177,178,176,178,148,176,178,177,177,177,148,29,148,30,147,178,177,177,177,177,148,30,147,29,148,177,177,178,177,178,147,29,148,177,177,178,177,177,148,29,147,30,148,177,178,176,178,177,177,148,176,179,176,178,177,177,148,29,147,178,177,177,178,176,149,29,147,29,149,177,177,177,177,178,147,29,148,178,177,177,177,177,148,29,177,149,176,178,176,178,177,177,148,30,147,178,176,178,177,177,148,30,147,177,177,177,178,176,149,30,146,30,148,177,177,178,176,178,147,30,148,177,177,177,177,178,147,30,177,148,176,178,177,178,176,178,148,29,147,178,177,177,177,177,178,147,178,177,177,177,177,148,30,147,29,148,177,177,178,177,178,147,29,148,177,177,178,176,178,148,29,177,148,177,178,176,178,177,177,148,29,147,178,177,177,178,177,177,147,178,177,177,178,176,149,29,147,29,149,177,177,177,177,178,147,29,148,178,176,178,177,177,148,29,177,149,176,178,176,178,177,177,148,30,147,178,176,178,177,177,178,147,177,177,177,178,176,149,30,146,30,148,177,177,178,176,178,147,30,148,177,177,177,177,178,147,30,177,148,176,179,176,178,176,178,148,29,147,178,177,177,177,177,178,147,177,178,176,178,177,178,147,29,148,177,177,178,177,177,148,29,148,29,148,177,178,176,178,177,177,148,177,178,176,178,177,177,148,29,148,177,177,177,178,176,178,147,30,148,177,177,178,176,178,176,149,177,177,177,177,178,147,30,147,30,148,176,178,177,177,177,177,149,176,178,176,178,177,177,148,30,147,178,176,178,177,177,178,147,29,148,177,177,178,176,179,176,148,177,177,178,176,178,147,30,147,30,148,177,178,176,178,177,177,148,176,178,177,178,176,178,177,147,178,177,177,178,176,178,147,29,148,178,176,178,177,178,176,148,177,177,178,177,177,148,29,177,148,177,178,176,178,177,177,148,30,146,179,176,178,177,177,177,148,177,177,177,178,176,178,147,30,148,177,177,178,176,178,176,149,177,177,177,177,178,177,177,148,176,178,177,177,177,177,149,29,147,178,176,178,177,177,178,147,177,178,176,178,177,178,147,29,148,177,177,178,176,178,177,148,177,177,178,176,178,177,177,148,176,179,176,178,177,177,148,29,147,178,177,177,177,177,178,147,178,177,177,178,176,178,147,29,148,178,176,178,177,178,176,148,177,177,178,177,177,177,177,149,176,178,176,178,177,177,148,30,147,178,176,178,177,177,177,148,177,177,177,178,176,178,147,30,148,177,177,178,176,178,177,147,30,148,177,177,177,177,178,176,149,176,178,177,177,177,177,149,29,147,178,176,178,177,177,178,147,29,148,178,176,178,176,179,176,148,177,177,178,176,178,177,148,29,148,177,178,176,178,177,177,148,176,179,176,178,177,177,148,29,147,178,177,177,178,176,178,147,30,148,177,177,178,176,178,176,148,178,176,178,177,178,176,148,30,147,177,178,177,177,177,177,149,176,178,176,178,177,177,178,147,177,177,177,178,177,177,148,29,148,177,177,178,176,178,177,148,177,177,178,176,178,177,177,148,176,178,177,177,178,176,149,29,147,178,177,177,177,177,178,147,178,177,177,177,177,178,147,29,148,178,176,178,176,179,176,148,177,30,147,178,176,178,177,177,148,177,178,176,178,177,177,148,30,146,179,176,178,177,177,177,147,178,177,177,178,176,178,147,30,148,177,176,179,176,178,176,148,178,29,147,178,177,177,177,177,149,176,178,177,177,177,177,149,29,147,29,149,176,178,177,177,178,147,177,177,177,178,176,178,148,29,148,177,177,178,176,178,177,148,177,29,148,177,177,178,177,177,148,176,178,177,177,178,176,149,29,147,30,148,177,177,177,177,178,147,178,177,177,177,177,178,147,29,148,178,176,178,176,179,176,148,177,30,147,178,176,178,177,177,148,177,178,176,178,177,177,148,30,146,30,148,177,178,177,177,177,147,30,148,177,177,178,176,178,176,149,177,177,177,177,178,176,148,30,148,29,147,178,177,177,177,177,149,176,178,176,178,177,177,148,30,147,29,149,176,178,177,177,177,148,29,148,177,177,178,176,178,177,148,177,177,178,176,178,177,148,29,148,29,148,177,177,178,177,177,148,29,147,30,148,177,177,177,177,149,29,147,30,148,177,177,177,177,178,147,30,147,178,176,178,177,178,176,148,177,177,178,176,178,177,148,30,147,30,147,178,176,178,177,177,148,30,147,29,149,176,178,177,177,177,147,30,148,177,177,178,176,178,147,30,148,29,148,177,178,176,178,176,149,177,29,148,177,177,178,176,178,148,29,147,178,177,177,177,177,149,29,147,29,149,176,178,177,177,178,147,29,149,176,178,177,177,177,148,29,148,30,147,177,178,176,179,176,148,177,29,148,178,176,178,177,177,148,29,148,177,177,177,178,176,149,29,147,30,148,177,177,177,177,178,147,30,148,177,177,177,177,178,147,29,148,30,148,176,178,177,178,176,148,177,30,147,178,177,177,177,177,148,30,147,178,176,178,177,177,148,30,146,30,149,176,178,177,177,177,147,30,148,177,177,178,176,178,147,30,148,29,148,177,178,176,178,176,149,29,148,29,148,177,177,178,176,178,148,29,147,178,177,177,177,177,149,29,147,29,149,176,178,177,177,178,147,29,148,177,177,178,177,178,147,29,148,30,147,177,178,176,178,177,148,30,147,29,148,178,176,178,177,177,148,30,147,177,177,177,178,176,149,29,147,30,148,177,177,177,177,178,147,30,148,29,148,177,177,177,178,176,148,30,148,176,178,177,178,176,148,30,147,30,147,178,177,177,177,177,148,30,147,29,149,176,178,177,177,148,30,146,30,149,176,178,177,177,177,148,29,148,30,147,177,178,176,178,177,148,29,148,177,178,176,178,176,148,30,148,29,148,177,177,177,178,176,149,29,147,30,148,177,177,177,177,149,29,147,29,149,176,178,177,177,178,147,29,148,30,148,176,178,176,179,176,178,147,30,147,178,176,178,177,177,148,29,148,178,176,178,177,177,148,30,146,30,148,177,177,178,176,178,147,30,148,177,177,177,177,178,147,30,148,29,148,177,178,176,178,176,178,148,29,147,178,177,178,176,178,147,30,147,178,177,177,177,177,148,30,147,29,149,176,178,177,177,178,146,30,148,177,178,177,177,177,148,29,177,148,177,178,176,178,177,177,148,29,148,178,176,178,176,178,148,29,147,178,177,177,178,176,149,29,147,29,149,177,177,177,177,178,147,29,149,176,178,177,177,178,147,29,178,148,176,178,176,179,176,178,147,30,147,178,176,178,177,177,148,30,147,177,177,178,177,177,148,30,146,30,148,177,177,178,176,178,147,30,148,177,177,177,177,178,147,30,177,148,176,179,176,178,176,178,148,29,147,178,177,177,177,177,148,30,147,178,177,177,177,177,149,29,147,29,149,176,178,177,177,178,147,29,148,30,147,177,178,176,178,177,177,148,177,178,176";
+const ECL_S_T="PPATAHHPPPAHHATAPPPPATATATPPPPTATAHHPTATAHHPPPPATAATAPPPPATATATPATATATPPPPTATAHTPPPATAHHPPPATAATAPPPPATATATPATATATPPPPTATAATPPPATAHHPPPATAATAPPPPATATATPATATATPPPTATAATPPPATAHTPPAHHATAPPPPATATATPPTATATPPTATAATPPPATAHTPPPAHATAPPPATATATPPPTATAHPPTPTAATPPPATAATAPPAHATAPPPATATATPPPTATAHPPTPTAATPPPATAATAPPATATAPPPATATATPPPTATAHHPTPTAATPPPATAATAPPPATATAPPATATATPPPTATAHHPTPTAATPPPPTAATAPPPPTATATPAPATATPPPTATAATPPPPTAATPTPTAATAPPPPTATATAAPATATPPTATAATPPPPTAATPTPTAATAPPPPTATATAPPATATPPTATAATPPPPTAATPTPPAATAPPPTATATAPPATATPPTPTAATPPPPTAATPTPPHATAPPPTATATAPPPATATAPTPTAATPPPPTAATATPPHATAPPPTATATAPPPATAHAATPTAATPPPPTAATATPPHATATAPTATATAPPPATAHAAPPTAATPPPPTAATATPPPTATATAPPATATAPPPATAHHAPPPTAATPTPTAATATPPPTATATAPPATATAPPPATAHTAPPPTAATPTPTAATATPPPTATATAPPPATATAPPATAATAPPPTAATPTPTAATATPPPTATATAPPPATATAPPATAATAPPPTAATATPPAATATPPTATATAPPPATATAPPPPTAATAPPPTAATATPPPAATATPPTATATAPPPPATATAAPPPTAATAPPPTAATATPPPAATATPPTATATAPPPPATATAAPPPTAATAPPPTAATATPPPPHATATAPTATATAPPPPATAHAAPPPTAATAPPPTAATATPPPPHATATAPPATATAPPPPATAHHAPPPPTAATATPTAATATPPPPTATATAPPPATATAPPPPATAHHAPPPPTAATATPPTAATATPPPPTATATAPPPPATATAPPPATAATAPPPPTAATATPPPAATATPPPPTATATAPPPPATATAPPPATAATAPPPPTAATATPPPPAATATPPPTATATAPPPPATATAAPPPTAATAPPPTAATATPPPPAATATPPPTATATAPPPPATATAAPPPTAATAPPPTAATATPPPPAATATAPPTATATAPPPPATATAAPPPTAATAPPPTAATATPPPPAATATAPPTATATAPPPPATATAAPPPPTAATAPPPTAATATPPPPHATATAPPPPATATAPPPPATATAAPPPPTAATATPTAATATPPPPHATATAPPPPATATAPPPATAHHAPPPPTAATATPTAATATPPPTATATAPPPPATATAPPPATAHHAPPPPTAATATPPAATATPPTATATAPPPPATATAPPPATAATAPPPTAATATPPPAATATPPTATATAPPPPATATAAPPTAATAPPPTAATATPPPAATATPPTATATAPPPPATATAAPPTAATAPPPTAATATPPPAATATAPTATATAPPPATATAAPPTAATAPPPTAATATPPPAATATAPTPTATAPPPATATAAPPPTAATATPTPATATPPPAATATAPPPPTATAPPATATAAPPPTAATATPTPATATPPPAATATAPPPPTATAPPATATAAPPPTAATATPTPATATPPHATATAPPPPTATAPTPTAHHAPPTAATATPPPPATATPPTATATAPPPPTATAPTPTAHHAPPTAATATPPPPATATPPTATATAPPPPTATAATPPAAHAPPTAATATPPPPATATPPTPTATAPPPPTATAATPPAATAPPTAATATPPPPATATAAPPTATAPPPPTATAATPPAATATPTPATATPPPPATATAAPPTATAPPPPTATAATPPPAATATAPPATATPPPPATATAAPPPTATAPTPTATAATPPPAATATAPPATATPPPPATATAAPPPTATAPTPTATAATPPPAATATAPPATATAPPATATAAPPPTATAPTPPPATHATPPAATATAPPPPATATATPATATAAPPPTATAATPPPAHHATPPAATATAPPPPATATATPPTATAAPPPTATAATPPPAHHATPPAATATAPPPPATATAHPPTATAAPPPTATAATPPPAAHATPPAATATAPPPPATATAAPPPTATAAPPPTATAATPPPAATATAPPPATATAPPPPATATAAPPPTATAATPTATAATPPPPAATATAPPPATATAPPPPATATAAPPPTATAATPTATAATPPPPAATATAPPPPATATAPPPPATATAAPPPPTATHATPTATAATPPPPAATATAPPPPATATAPPPATATAAPPPPTATHATPPPATHATPPPAATATAPPPPATATATPPATATAAPPPPTATHATPPPAHHATPPPAATATAPPPPATATATPPPTATAAPPPPTATHATPPPAHHATPPPAATATAPPPPATATATPPPTATAAPPPPTATHATPPPPAHHATAPPPATATAPPPPATATAHPPPTATAAPPPTATHATPPPPAAHATAPPPATATAPPPPATATAHPPPPTATHATPTATHATPPPPAATATAPPPPATATAPPPPATATAAPPPPTAHHATPTATHATPPPPAATATAPPPPATATAPPPATATAAPPPPTAHHATPTPATHATPPPAATATAPPPPATATAPPATATAAPPPPTAHHATPPPATHATPPPAATATAPPPPATATATPATATAAPPPTAHHATPPPAHHATPPPAATATAPPPPATATATPPTATAAPPPTAHHATPPPAHHATPPAATATAPPPPATATATPPTATAAPPPTAHHATPPPAHHATAPPATATAPPPATATATPPPTATAAPPTPHHATPPPAHHATAPPATATAPPPATATAHPPPTAHHATPTPHHATPPPAATATAPPPATATAPPATATAHPPPTAHHATPTPHHATPPPAATATAPPPATATAPPATATAAPPPTAHHATPPPPHHATPPAATATAPPPATATAPPATATAAPPTAHHATPPPPHHATPPAATATAPPPATATATPPTATAAPPTAHHATPPPPHHATPTPATATAPPPPTATATAPPATAAPPTAHTATPPPPHHATPTPPTATAPPPPTATATAPPATAAPPTPHTATPPPPHHATATPPTATAPPPTATATAPPPATAATPTPHTATPPPPHHATATPPTATAPPPTATAHAPPPATAATPTPHTATPPPPATATATPPPTATAPAPTATAHAPPPAHHATAPPPHTATPPPPATATATPPPTATATAPTATAHAPPPAHHATAPPPHTATPTPATATATPPPTATATAPPPATAHHPPAHHATAPPPHTATPTPATATATPPPTATATAPPPATAATPPAHHATAPPPHTATATPPTATAHPPPTATATAPPPATAATPPPATATAPPPHTATATPPTATAHPPPTATATAPPPATAATAPPATATAPPPATATATPPTATAHPPTATATHPPPPATAATAPPPATATAPPPATATATPPPPTATAHHPTATAHHPPPPATAATAPPPATATAPPPPATATATPPPPTATAHHPTATAHHPPPPATAATAPPPPATATATPPATATATPPPPTATAHHPPPATAHHPPPPAHHATAPPPPATATATPPATATATPPPPTATAHHPPPATAHHPPPAHHATAPPPPATATATPPPTATATPPPPTATAHHPPPATAHHPPPAAHATAPPPPATATATPPPTATAHPPPPTATAHHPPPATAATPPPPATATAPPPPATATATPPPPTATAHPPPTATAHHPPPPATAATAPPPATATAPPPPATATATPPPPTATAHPPPTATAHHPPPPATAATAPPPATATAPPPATATATPPPPTATAHHPPTATAHHPPPPATAATAPPPPATATAPPPATATATPPPPTATAHTPPTATAHHPPPPATAATAPPPPATATATPATATATPPPPTATAHTPPPPATAHHPPPATAATAPPPPATATATPATATATPPPPTATAATPPPPATAHHPPPAHHATAPPPPATATATPPTATATPPPTATAATPPPPATAHTPPPAHHATAPPPPATATATPPTATAHPPTATAATPPPPATAATPPPPAHATAPPPATATATPPPTATAHPPTATAATPPPATAATAPPPATATAPPPATATATPPPTATAHAPTPTAHTPPPATAATAPPPATATAPPPATATATPPPTATAHHPTPTAHTPPPATAATAPPPPATATAPPATATATPPPTATAATPTPPTAHTPPPATAATAPPPPATATATPATATATPPPTATAATPPPPTAATPPATAATAPPPATATATPATATATPPTATAATPPPPTAATPTPTATAATTAAPHPPHAPPTPPAATTAATAPTPAPPPAPTAATTAPTPATPPAPTAATAATTPAPPTPPPTPPATAATTPATHPHHPHTAATTAAPHPHAPPTPPAATTAATAPTPAPPPAPPTAATTAPTPATPPPPTAATAATTPPPPTAATATPPHATAPPATATAATTPPPAPPTPAATTAATHPPAPPPTTAPTTAAHAHTPPPPPPPAPTTAAHAHTPAPPTAPHPHHAATTAAPPPPPPAATTAATTAATTPPPPPPTPAATTAATHPPAPPPTTAPTTAAHAHTPPPPPPPAPTTAAHAHTPAPPTAPAPHTAATTAAPPTPPAAATTAATTAATTPPPPPPPTPAATTAAHHPHPPTPAPTTAAHAHTPPPPPPPAPTTAAAATTAAPPTPPPAPTTAATTAAPPTPAAPTPAATTAATTPPPPPPPTPAATTAAHHPTPPPPPTAATPTPTAATATPPPTATATAPPATATPPPPATAATPPPPTAATPTPTAATATPPPTATATAPPPATATAPPATAATAPPPTAATPTPPAATATPPPTATATAPPPATATAPPATAATAPPPTAATATPPAATATPPTATATAPPPPATATAPPPTAATAPPPTAATATPPPAATATPPTATATAPPPPATATAAPPTAATAPPPTAATATPPPHATATAPTATATAPPPPATAHAAPPPTAATAPPPTAATATPPPPHATATAPTATATAPPPPATAHAAPPPTAATAPTPTAATATPPPPTATATAPPPATATAPPPPATAHHAPPPTAATATPTAATATPPPPTATATAPPPATATAPPPATAHTAPPPPTAATATPTAATATPPPPTATATAPPPATATAPPPATAATAPPPPTAATATPPPAATATPPPTATATAPPPPATATAPPPPTAATAPPPPTAATATPPPAATATPPPTATATAPPPPATATAAPPPTAATAPPPPTAATATPPPPAATATPPPTATATAPPPPATATAAPPPTAATAPPPTAATATPPPPAATATAPPTATATAPPPPATATAAPPPTAATAPPPTAATATPPPPHATATAPPPATATAPPPPATATAAPPPPTAATATPTAATATPPPPHATATAPPPPATATAPPPPATAHHAPPPPTAATATPTAATATPPPPTATATAPPPPATATAPPPATAHHAPPPPTAATATPTAATATPPPTATATAPPPPATATAPPPATAHHAPPPTAATATPPPAATATPPPTATATAPPPPATATAPPPPTAATAPPPTAATATPPPAATATPPTATATAPPPPATATAAPPPTAATAPPPTAATATPPPAATATPPTATATAPPPPATATAAPPPTAATAPPPTAATATPPPAATATAPTATATAPPPPATATAAPPPTAATAPTPTAATATPPPAATATAPPATATAPPPATATAAPPPPTAATATPTPATATPPPAATATAPPPATATAPPATATAAPPPPTAATATPTPATATPPPHATATAPPPPTATAPPATAHHAPPPPTAATATPPPATATPPTATATAPPPPTATAPPPTAHHAPPPTAATATPPPPATATPPTATATAPPPPTATAATPTAHHAPPTAATATPPPPATATPPTPTATAPPPPTATAATPPAATAPPTAATATPPPPATATAPPPTATAPPPPTATAATPPAATATPTPATATPPPPATATAPPPTATAPPPPTATAATPPPAATATPTPATATPPPPATATAPPPPTATAPTPTATAATPPPAATATAPPATATPPPPATATAPPPPTATAPTPTATAATPPPAATATAPPATATPPPATATAAPPPTATAPTPTATAATPPAATATAPPPATATPPPATATAAPPPTATAATPPPAHHATPPAATATAPPPATATATPPTATAAPPPTATAATPPPAHHATPPAATATAPPPPATATAHPPTATAAPPPTATAATPPPAHHATPPAATATAPPPPATATAHPPTATAAPPPTATAATPPPAATATAPPATATAPPPPATATAAPPPTATAATPTATAATPPPPAATATAPPATATAPPPPATATAAPPPTATAATPTATAATPPPPAATATAPPPPATATAPPPPATATAAPPPTATAATPTATAATPPPPAATATAPPPPATATAPPPATATAAPPPPTATAATPPPATAATPPPAATATAPPPPATATATPPATATAAPPPPTATAATPPPATHATPPPAATATAPPPPATATATPPPTATAAPPPPTATAATPPPAHHATPPPAATATAPPPPATATATPPPTATAAPPPPTATAATPPPPAHHATAPPPATATAPPPPATATAHPPPTATAAPPPPTATAATPPPPAAHATAPPPATATAPPPPATATAHPPPPTATAATPPTATAATPPPPAATATAPPPPATATAPPPPATATAHPPPPTATAATPPTATAATPPPPAATATAPPPPATATAPPPPATATAAPPPPTATHATPTPATAATPPPAATATAPPPPATATAPPPATATAAPPPPTATHATPPPATAATPPPAATATAPPPPATATATPPATATAAPPPTATHATPPPATHATPPPAATATAPPPPATATATPPPTATAAPPPTATHATPPPAHHATPPPAATATAPPPPATATATPPPTATAAPPPTATHATPPPAHHATAPPPATATAPPPPATATATPPPPTATAAPPTATH";
+const ECL_L_BASE=1721068;
+const ECL_L_D="178,177,177,325,177,177,177,178,176,503,177,177,178,176,178,502,32927,175,178,176,179,176,502,178,176,178,177,502,177,177,177,178,177,502,177,177,178,176,178,502,177,178,176,178,502,176,179,176,178,176,502,178,177,177,177,502,178,177,177,177,177,503,176,178,177,177,178,501,177,178,177,177,502,177,178,176,178,177,502,178,176,178,177,177,324,178,177,177,178,176,503,177,177,177,177,178,502,177,177,177,178,176,326,354,176,179,176,502,178,176,178,177,177,502,177,177,178,176,503,177,177,178,176,178,502,177,178,176,178,177,325,355,176,178,176,502,178,177,177,177,177,503,177,177,177,177,503,176,178,177,177,177,502,177,178,176,178,177,325,355,176,178,177,502,177,177,177,178,177,679,177,178,176,502,177,177,177,177,178,502,176,178,177,178,176,326,354,176,178,177,502,178,177,177,177,177,679,177,178,176,680,177,178,176,178,502,177,178,176,178,177,680,176,178,176,502,178,177,177,178,176,680,177,177,177,178,501,178,177,177,177,503,176,178,176,178,177,680,176,178,177,502,354,177,178,176,680,177,178,176,178,177,325,177,177,177,178,502,176,178,177,178,176,680,176,178,177,355,147,355,177,177,177,679,177,178,176,179,176,502,178,176,178,502,355,176,178,177,679,177,178,176,178,177,502,177,178,176,680,177,177,177,178,176,502,178,177,177,177,326,354,176,178,177,680,176,177,177,177,177,502,177,178,176,355,325,177,178,176,178,177,502,177,177,178,177,325,354,177,178,176,680,177,177,177,177,178,502,176,178,177,354,325,177,178,177,177,177,502,178,176,178,177,325,355,176,178,177,679,177,177,178,176,178,502,177,178,176,354,326,177,177,177,178,176,502,178,177,177,177,680,176,178,177,355,325,176,178,177,177,178,501,177,178,176,178,177,502,178,176,178,177,502,177,177,178,177,177,502,177,178,176,355,325,177,177,177,177,178,502,176,178,177,178,176,502,178,177,177,177,502,178,176,178,177,177,503,176,178,177,354,502,177,178,176,178,502,177,178,176,178,176,503,177,177,178,176,502,178,177,177,177,177,503,176,178,177,177,178,501,177,178,176,179,501,177,178,176,178,177,502,177,177,178,177,680,176,178,176,178,502,177,177,177,177,178,502,177,177,177,178,176,326,176,178,177,178,176,502,178,177,177,177,177,503,176,178,177,177,503,176,178,177,177,177,502,177,178,176,178,176,326,177,178,176,178,176,503,177,177,177,177,177,503,176,178,177,177,503,176,178,177,177,178,501,177,178,176,179,176,325,177,178,176,178,177,502,177,177,178,177,177,503,176,178,176,178,177,325,177,177,177,177,178,502,177,177,177,178,176,325,177,178,177,178,176,502,178,177,177,177,177,503,176,178,177,177,177,325,177,178,177,177,177,502,177,178,176,177,176,503,177,177,178,176,502,178,177,177,177,177,503,176,178,177,177,178,501,178,177,177,178,501,177,178,176,179,176,502,178,176,178,177,502,178,176,178,177,177,503,176,178,176,178,177,502,177,177,177,178,502,176,178,177,178,176,502,178,177,177,177,502,178,176,178,177,177,503,176,178,177,177,177,502,177,178,176,178,502,177,178,176,178,176,503,177,177,178,177,177,502,177,177,177,177,503,176,178,177,177,178,502,177,177,177,178,176,325,177,178,176,179,176,502,178,176,178,177,177,503,176,178,177,177,502,177,178,176,178,177,502,177,178,176,178,176,326,176,178,177,178,176,502,178,177,177,177,177,503,176,178,177,177,503,176,177,177,177,177,502,177,178,176,178,177,325,177,178,176,178,176,503,177,177,178,177,177,502,177,177,177,177,178,325,176,178,177,177,178,502,176,178,177,178,176,325,177,178,176,178,177,502,178,176,178,177,177,503,176,178,177,177,177,325,177,177,177,177,178,502,177,178,176,178,176,502,178,177,178,176,502,178,177,177,177,177,503,176,178,177,177,178,501,178,177,177,177,502,177,178,176,178,177,502,178,176,178,177,502,177,177,177,178,176,503,177,177,177,177,178,502,177,177,177,178,502,176,178,176,179,176,502,178,176,178,177,680,176,178,177,177,503,176,178,177,177,177,502,177,178,176,178,502,177,178,176,178,176,503,177,177,178,176,178,501,177,177,177,177,503,176,178,177,177,178,501,177,178,177,177,177,325,355,176,178,177,502,178,176,178,177,177,502,177,177,178,176,503,177,177,177,177,178,502,177,177,177,178,176,326,354,176,179,176,502,178,176,178,177,177,503,176,178,177,177,503,176,178,177,177,177,502,177,178,176,178,177,325,355,176,178,176,502,178,177,177,177,177,503,177,177,177,177,178,325,176,178,177,177,177,502,177,178,176,178,177,680,176,178,177,502,177,177,178,177,177,502,177,177,178,176,178,325,177,177,177,177,178,502,177,177,177,178,176,680,176,179,176,502,178,176,178,177,177,503,176,178,177,177,178,501,178,177,177,177,502,177,178,176,178,176,681,176,178,176,680,177,177,177,177,503,176,178,177,177,178,501,178,177,177,177,502,355,176,179,176,680,176,178,177,354,502,178,177,177,502,177,177,177,177,178,502,177,177,177,178,502,354,177,178,176,680,176,178,177,178,177,501,178,177,177,503,176,178,177,177,177,502,177,178,176,178,177,325,355,176,178,176,680,177,178,176,178,177,502,177,177,177,503,176,178,177,177,178,501,178,177,177,178,176,325,355,176,179,176,680,176,178,177,177,177,502,178,177,176,178,177,148,177,177,177,177,178,502,177,177,177,178,176,326,354,177,178,176,355,325,177,177,177,177,178,501,178,177,177,178,176,325,178,176,177,177,502,177,178,176,178,177,680,176,178,176,355,325,177,178,177,177,177,502,177,177,177,178,176,503,177,177,178,501,177,178,177,178,176,680,176,178,177,354,326,176,178,177,177,178,501,177,178,176,178,177,502,177,177,178,177,325,177,177,177,178,176,680,177,178,176,355,502,177,177,177,178,501,178,177,177,178,176,503,177,177,177,177,680,176,178,177,680,176,178,176,178,177,502,177,178,176,178,502,177,177,177,178,176,503,177,177,178,176,680,176,179,176,680,176,178,177,177,177,502,178,177,177,178,176,325,177,178,176,178,177,502,177,177,178,177,177,503,176,178,176,680,177,178,176,178,177,501,177,177,177,178,176,325,178,177,177,178,176,503,177,177,177,177,177,503,176,178,177,354,326,176,178,177,177,177,502,177,178,176,178,176,326,177,177,177,178,176,503,177,177,178,176,178,502,176,179,176,355,325,176,178,177,177,178,501,178,177,177,178,176,502,178,176,178,177,502,177,177,178,177,177,503,176,178,176,178,177,325,177,177,177,177,178,502,177,177,177,178,176,503,177,177,178,176,502,178,176,178,177,177,503,176,178,177,177,177,502,178,177,177,177,502,177,178,176,178,176,503,177,177,178,176,503,177,177,178,176,178,502,176,179,176,178,177,501,178,177,177,178,501,178,177,177,178,176,502,178,176,178,177,680,176,178,176,177,503,176,178,176,178,177,502,177,177,177,178,502,177,177,177,178,176,503,177,177,177,177,178,502,176,178,177,177,503,176,178,177,177,177,502,178,177,177,177,177,325,177,178,176,178,176,503,177,177,178,176,178,502,177,178,176,178,502,176,178,177,178,177,501,178,177,177,178,176,325,178,177,177,178,176,502,178,176,178,177,177,503,176,178,176,178,177,325,177,178,176,178,177,502,177,177,177,178,176,325,178,177,177,178,176,503,177,177,177,177,178,502,176,178,177,177,177,326,176,178,177,177,177,502,177,178,176,178,177,502,178,176,178,176,503,177,177,178,176,178,502,177,178,176,178,177,325,176,178,177,177,178,501,178,177,177,178,176,503,177,177,177,177,502,178,176,178,177,177,503,176,178,176,178,177,502,178,176,178,177,502,177,177,177,178,176,503,177,177,178,176,680,177,177,177,178,502,176,178,177,177,177,502,178,177,177,177,502,177,178,176,178,177,502,177,177,178,177,177,502,177,178,176,178,502,176,179,176,178,177,501,178,177,177,178,501,178,177,177,178,176,503,177,177,177,177,178,502,176,178,177,177,503,176,178,176,178,177,502,177,177,177,178,177,325,177,177,177,178,176,503,177,177,178,176,178,502,177,177,177,177,503,176,178,177,177,177,502,178,177,177,177,177,325,177,178,176,178,177,502,177,177,178,177,177,502,177,178,176,178,177,325,176,179,176,178,177,501,177,177,177,178,176,503,177,177,178,176,502,178,177,177,177,177,503,176,178,177,177,177,326,176,178,176,178,177,502,177,178,176,178,176,680,177,178,176,503,177,177,178,176,178,502,176,178,177,177,178,325,176,178,177,177,177,502,178,177,177,178,176,680,176,178,177,679,177,178,177,177,502,177,178,176,178,177,501,179,176,178,177,502,177,177,177,178,176,680,177,178,176,680,177,177,177,177,503,176,178,177,177,177,502,178,176,178,177,502,355,176,178,176,680,177,178,176,178,502,177,177,177,178,502,176,178,177,177,178,501,178,177,177,177,502,355,176,179,176,680,176,178,177,177,502,177,178,176,177,503,176,178,176,178,177,502,177,177,177,178,177,325,354,177,178,176,680,177,178,176,178,502,176,178,177,177,178,325,176,178,177,177,177,502,178,177,177,177,177,325,355,176,178,176,355,325,177,178,176,178,679,177,177,178,177,325,354,177,177,178,501,178,177,177,178,176,680,176,179,176,354,326,176,178,177,177,679,178,177,177,177,326,354,176,178,177,502,177,177,177,178,176,680,177,178,176,355,325,177,177,177,178,177,501,178,177,177,178,176,503,177,177,177,502,177,178,176,178,177,680,176,178,176,355,325,177,178,176,178,177,502,178,176,178,177,177,502,177,177,178,501,355,177,178,176,679,176,179,176,354,502,178,177,177,177,502,178,177,177,177,177,503,176,178,177,177,679,177,178,176,680,177,178,176,178,177,502,177,177,177,178,501,178,177,177,178,176,503,177,177,177,177,178,502,176,178,177,680,176,178,176,178,177,502,178,176,178,177,501,179,176,178,177,177,502,177,177,178,176,178,502,177,178,176,354,326,176,178,177,178,176,502,178,177,177,177,177,503,176,178,177,177,502,177,178,177,177,177,502,177,178,176,355,325,177,178,176,178,177,502,177,177,177,178,176,503,177,177,177,177,513,177,177,177,177,178,502,176,178,176,355,325,177,178,176,178,177,502,178,176,178,177,177,503,176,178,177,177,502,177,177,178,176,178,502,176,179,176,354,326,176,178,177,177,177,502,178,177,177,177,177,503,176,178,177,177,502,177,177,178,177,177,502,177,178,176,178,177,502,178,176,178,177,502,177,177,177,178,176,503,177,177,177,177,178,502,177,177,177,178,502,176,178,176,179,176,502,178,177,177,177,502,178,176,178,177,177,502,177,177,178,177,177,502,177,178,176,178,502,176,179,176,178,176,502,178,177,177,178,501,178,177,177,177,177,503,176,178,177,177,178,502,176,178,176,178,502,177,178,176,178,177,502,177,177,178,177,177,324,178,177,177,178,176,503,177,177,177,177,178,502,176,178,177,178,176,326,176,178,176,179,176,502,178,177,177,177,177,503,176,178,177,177,502,177,177,178,177,177,502,177,178,176,178,177,325,176,179,176,178,176,502,178,177,177,178,176,503,177,177,177,177,503,176,178,177,177,177,503,176,178,176,178,177,325,177,178,176,178,177,502,177,177,177,178,176,503,177,177,178,176,503,177,177,177,177,178,502,176,179,176,178,176,326,176,178,177,177,177,502,178,177,177,177,177,503,176,178,177,177,502,177,177,178,176,178,502,177,178,176,178,177,501,178,177,178,177,501,178,177,177,178,176,503,177,177,177,177,178,502,176,178,177,177,503,176,178,176,178,177,502,178,176,178,177,502,177,177,177,178,176,503,177,177,178,176,178,502,177,177,177,178,502,176,179,176,178,176,502,178,177,177,177,502,178,177,177,177,177,503,176,178,177,177,177,502,177,178,176,178,502,177,178,176,178,177,502,177,177,177,178,176,325,178,177,177,178,176,503,177,177,177,177,178,502,176,178,177,177,177,326,176,178,176,178,177,502,178,176,178,177,177,502,177,177,178,176,503,177,177,178,176,178,502,177,178,176,178,177,325,176,178,177,178,176,502,178,177,177,177,177,503,177,177,177,177,502,177,177,178,177,177,502,177,178,176,178,177,325,177,178,176,178,177,502,177,177,177,178,176,503,177,177,178,176,503,177,177,177,177,178,502,176,178,177,178,176,502,178,176,178,177,502,177,177,178,177,177,502,177,177,178,176,680,177,178,176,178,502,176,179,176,178,176,680,177,178,176,502,178,177,177,177,177,503,176,178,177,177,178,501,177,178,177,177,502,177,178,176,178,177,680,176,178,177,502,177,177,177,178,176,503,177,177,178,176,178,502,177,177,177,178,502,176,178,176,179,176,680,176,178,177,177,325,354,177,178,176,503,177,177,178,176,178,502,177,178,176,178,177,325,355,176,178,176,680,177,177,177,177,680,177,177,177,201,176,126,176,178,22,155,23,154,23,155,22,177,177,125,177,178,23,154,23,154,23,154,23,177,125,355,22,154,23,155,22,155,23,177,177,303,176,23,155,22,155,23,154,22,178,177,302,177,23,155,23,153,23,178,177,302,177,23,154,23,154,23,155,22,178,176,126,177,177,23,154,23,155,22,154,24,176,126,52,302,176,24,154,23,154,23,177,178,302,176,178,177,177,679,177,178,176,355,325,177,178,176,178,502,166,11,167,11,165,11,167,11,177,314,11,165,179,11,165,11,167,11,165,11,491,178,11,166,11,166,11,166,12,165,11,492,177,11,166,11,166,12,165,11,354,138,176,11,167,11,166,11,166,11,166,12,490,11,166,11,167,11,165,11,167,11,166,11,314,177,178,11,165,11,167,11,166,11,354,137,177,11,166,11,166,11,167,11,165,12,491,177,11,166,11,167,11,165,11,178,176,138,177,177,11,166,11,166,11,167,11,491,11,165,11,167,11,166,11,167,11,165,11,315,176,178,11,165,11,167,11,166,11,355,136,178,176,12,166,11,166,11,166,11,491,177,11,166,11,167,11,165,11,179,176,137,177,177,11,167,11,165,11,167,11,177,314,11,166,11,167,11,165,11,167,11,165,12,314,176,178,12,165,11,178,176,355,502,177,178,176,680,177,177,177,178,176,503,177,177,177,177,326,354,176,178,177,680,176,178,177,177,177,502,177,178,176,680,177,178,176,178,177,502,177,177,178,177,679,177,178,176,680,176,178,177,177,178,502,177,177,177,354,325,177,178,176,179,176,502,178,176,178,177,177,503,176,178,177,679,177,178,177,177,177,502,177,178,176,354,326,177,177,177,178,176,502,178,177,177,177,177,503,176,178,177,680,176,178,177,177,177,502,177,178,176,179,176,325,177,178,176,178,177,502,177,177,178,177,177,502,177,178,176,178,177,325,177,177,177,177,178,502,176,178,177,178,176,502,178,177,177,177,502,178,176,178,177,177,503,176,178,177,177,177,325,177,177,178,176,178,502,177,178,176,178,176,503,177,177,178,176,502,178,177,177,177,177,503,176,178,177,177,178,501,178,177,177,178,501,177,178,176,179,176,502,178,176,178,177,502,177,177,178,177,177,502,177,178,176,178,177,502,177,177,177,178,502,176,178,177,178,176,502,178,177,177,177,680,176,178,177,177,503,176,178,177,177,177,502,177,178,176,178,502,177,178,176,178,176,503,177,177,178,176,178,502,177,177,177,177,503,176,178,177,177,178,501,177,178,177,178,176,325,177,178,176,178,177,502,178,176,178,177,177,502,177,178,177,177,502,177,177,177,177,178,502,177,177,177,178,176,326,176,178,177,178,176,502,178,177,177,177,177,503,176,178,177,177,503,176,178,177,177,177,502,177,178,176,178,177,325,177,178,176,178,176,503,177,177,177,178,176,503,177,177,177,177,178,325,176,178,177,177,178,502,176,178,176,179,176,502,178,176,178,177,502,177,177,178,177,177,503,176,178,177,177,177,325,177,177,177,177,178,502,177,178,176,178,176,502,178,177,178,176,502,178,177,177,177,177,503,176,178,177,177,177,502,178,177,177,177,502,177,178,176,178,176,503,177,177,178,176,502,178,177,177,178,176,503,176,178,177,177,178,501,178,177,177,178,502,176,178,176,179,176,502,178,176,178,177,177,503,176,178,177,177,503,176,178,176,178,177,502,177,177,177,178,177,325,176,179,176,178,176,502,178,177,177,177,178,502,176,178,177,177,503,176,178,177,177,177,502,177,178,176,178,177,325,177,178,176,178,176,503,177,177,178,177,177,502,177,177,177,177,503,176,178,177,177,178,502,177,177,177,178,176,325,177,178,176,179,176,502,178,176,178,177,177,503,176,178,177,177,177,325,177,178,176,178,177,502,177,178,176,178,176,326,354,177,178,176,502,178,177,177,177,177,503,176,178,177,177,178,325,176,178,177,177,177,502,177,178,176,178,177,680,176,178,176,503,177,177,178,177,177,502,177,177,177,177,178,501,178,177,177,178,502,176,178,177,178,176,680,176,178,177,502,178,176,178,177,177,503,176,178,177,177,177,502,177,177,177,178,502,177,178,176,178,176,680,177,178,176,680,177,177,177,177,503,176,178,177,177,178,501,178,177,177,177,502,355,176,178,177,680,176,178,177,177,502,177,178,177,177,502,177,177,177,177,178,502,177,177,177,178,176,326,354,176,179,176,680,176,178,177,177,679,178,177,177,503,176,178,177,177,177,502,177,178,176,178,177,325,355,176,178,176,680,177,178,176,178,679,177,177,177,503,176,178,177,177,178,501,177,178,177,177,177,325,355,176,178,177,680,176,178,177,177,679,177,178,176,178,325,177,177,177,177,178,502,177,177,177,178,176,680,176,179,176,355,325,176,178,177,177,679,178,177,177,178,176,503,177,177,177,502,177,178,176,178,177,680,176,178,176,355,325,177,177,177,177,680,177,177,177,178,176,503,177,177,178,501,177,178,176,178,177,680,176,178,177,354,502,178,177,177,679,177,178,176,178,177,502,177,177,178,177,325,354,177,178,176,680,176,179,176,178,177,502,177,177,177,178,501,178,177,177,178,176,503,177,177,177,177,325,355,176,178,177,680,176,178,176,178,177,502,177,178,176,178,502,177,177,177,178,176,503,177,177,178,176,680,176,179,176,680,176,178,177,177,177,502,178,177,177,178,176,325,177,178,176,178,177,502,177,177,178,177,177,502,177,178,176,680,177,178,176,178,177,502,177,177,177,178,176,325,178,177,177,178,176,502,178,177,177,177,177,503,176,178,176,355,325,177,178,176,178,177,502,177,178,176,178,176,503,177,177,178,176,503,177,177,178,176,178,502,176,179,176,355,325,176,178,177,177,177,502,178,177,177,178,176,502,178,176,178,177,502,177,177,178,177,177,503,176,178,176,355,502,177,177,177,178,502,177,177,177,178,176,503,177,177,177,177,502,178,176,178,177,177,503,176,178,176,178,177,502,178,177,177,177,502,177,178,176,178,176,503,177,177,178,176,680,177,178,176,178,502,176,179,176,178,176,502,178,177,177,178,501,177,178,176,179,176,502,177,177,178,177,177,503,176,178,176,178,502,177,178,176,178,177,502,177,177,177,178,176,325,178,177,177,178,176,503,177,177,177,177,178,502,176,178,177,177,503,176,178,176,178,177,502,177,178,176,178,177,325,177,177,177,178,176,503,177,177,178,176,178,502,177,178,176,178,177,325,176,178,177,177,177,502,178,177,177,178,176,325,177,178,176,178,177,502,177,177,178,177,177,503,176,178,176,178,177,325,177,178,176,178,177,502,177,177,177,178,176,503,177,177,178,176,503,177,177,177,177,178,502,176,178,177,177,177,326,176,178,177,177,177,502,177,178,176,178,177,502,177,177,178,176,503,177,177,178,176,178,502,176,179,176,178,177,501,178,177,177,178,501,178,177,177,178,176,502,178,177,177,177,680,176,178,177,177,503,176,178,176,178,177,502,178,176,178,177,502,177,177,177,178,176,503,177,177,178,176,178,502,177,177,177,177,503,176,178,177,177,177,502,178,177,177,177,502,177,178,176,178,176,503,177,177,178,176,178,502,177,178,176,178,502,176,179,176,178,177,501,178,177,177,178,176,325,178,177,177,178,176,502,178,177,177,177,178,502,176,178,177,177,503,176,178,176,178,177,502,177,177,177,178,177,325,177,177,177,178,176,503,177,177,178,176,178,502,176,178,177,177,178,325,176,178,177,177,177,502,178,177,177,177,177,502,178,176,178,176,503,177,177,178,177,177,502,177,178,176,178,177,325,176,179,176,178,177,502,177,177,177,178,176,503,177,177,178,176,502,178,177,177,177,177,503,176,178,177,177,177,326,176,178,176,178,177";
+const ECL_L_T="TTPPPPTTPPPPTTPPPPPTTPPPTTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPTTPPPPTTPPPTTTTPPTTPPPPTTPPPTTPTPPTTPPPTTTTPPTTPPPPTTPPPTTPTPPTTPPTTTTPPTTPPPPTTPPPTTPTPPTTPPPTTTPTTPPPPTTPPTTTTPPTTTPPTTTPPTTTTPPTTPPTTTTPTTTPPTTTPPPTTTTPPTTPPPTTTPPTTTTPTTTPPPTTTPTTPPPTTTPPTTTTPTTTPPPTTTPPTTPTPTTTPPTPTTPPTTTPPPTTTPPTTPTPTTTPPTPTTPPTTTPPPTTTPPTTTTPTTTPPTPTTPPTTTPPPTTTPTTTTPPTTTPPPPTTPPTTTTPPTTTPPTPTTPPTTTPPPPTTPPPTTTPPTTTPPPPTTPTTTTPPPTTPPPTTTPPTTTPPPPTTPPTTTTPPPTTPPPPTTPTTTPPPPTTPPTPTTPPPPTTPPPPTTPPTTTTPPPTTPPTPTTPPPPTTPPPPTTPPTTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPTPPTTPPPTTTPPPTTPPPPTTPPPTTPTPPTTPPPPTTPPPPTTPPPPTTPPTTTTPPTTPPPPTTPPPPTTPPPPTTPPTTTTPPTTPPPPTTTPPTTTTPPTTPPTTTTPTTTPPPTTTPPTTTTPTTPPPTTTPTTTTPPTTTPPPTTTPTTPTPTTTPPTTTTPPTTTPPPTTTPPTTPTPTTTPPTTTTPPTTTPPPTTTPPTTPTPTTTPPTTTTPPPPTTTPPPTTTPPTTTTPPTTTPPPTTTPPPTTTTPPTTTPTPTTPPTTTPPPPTTPPTTTTPPTTTPTPTTPPTTTPPPPTTPPTTTTPPPTTTPPPTTPTTTTPPPTTPPPTTTPTTTPPPTTPPTTTTPPPTTPPPPTTPTTTTPPTTPPTPTTPPPPTTPPPPTTPPTTTTPPTTPPPPTTPPPPTTPPPPTTPPTPTTPPPTTPPPPTTPPPPTTPPPPTTPPTPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPTTPPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPPTTPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPTPPTTPPPPTTPPPPTTPPPPTTPPPTTTTPPTTPPPPTTPPPPTTPTPPTTPPTTTTPPTTPPPPTTPPPPTTPTPPTTPPTTTTPTTPPPPTTPPPTTTTPPTTPPPTTTPTTTPPPTTPPPTTTTPTTPPPTTTPPTTTPPPTTPPPPTTTPTTPTPTTTPPTTTTPPTTPPPPTTTPPTTPTPTTTPPPTTTPPPTTPPPPTTTPPTTTTPPTTTPPTTTPPTTPTPPTTTPTPTTPPTTTPPTTTPPTTTTPPTTTPTPTTPPTTTPPPTTTPPTTTTPPTTTPTPTTPPTTTPPPTTTPPTTTTPTTTPPPTTPTTTTPPTTTPPPTTTPTTTTPPTTPPTTTTPPTTTPPPTTTPPTTTTPPTTPPPPTTPPTTTPPPPTTPPTPTTPPPTTPPPPTTPPTTTTPPPTTPPTPTTPPPTTPPPPTTPPTTTTPPPTTPPTPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPTPPTTPPPTTTPPPTTPPPPTTPPPTTPTPPTTPPPPTTPPTTPPPPTTPPTTTTPPTTPPPPTTTPPTTTPPPTTPPTTTTPPTTPPPPTTTPPTTTPPPTTPPPTTTPPTTTTPPTTTPPPTTTPPTTPPPTTTPTTTTPPPPTPTPTTPTPPPPTPTPTTPTPPTPTPPTTTPPPTPTPTTPTPPTTPTTTTPPPTPTPTTPTPPPPTPTPTTPTPPPTTPPTTTPPPTTTPTTTTPPTTTPPPPTTTTPTPPPPTTTTPTPTPPPTTTTPTPPPTTTPTTPTPPPPTTTTPTPPPPPPTTTTPTPPPPTTTTPTPTPPPPTTTTPTPPPTPTPTTPTPPPPTTTTPTPTPPPPTTTTPTPPPPTTTTPTPTPPPTTTTPTPPPTPTPTTPTPPPPTTTTPTPTPPPPPTTTTPTPPPPTPTTTTPTTTTPPTTPPPTTTPPTTTPPPTTPPTTTTPPTTPPPTTTPTTTTPPTTPPTPTTPPPTTPPPPTTPPTTTTPPTTPPTPTTPPPTTPPPPTTPPTTTTPPTTPPTPTTPPPPTTPPPPTTPPTTTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPTTPPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPPTTPPPPTTPPPTTPTPPTTPPPPTTPPPPTTPPPPTTPPTTTTPPTTPPPPTTPPPTTPPPPTTPPTTTTPPTTPPPPTTPPPTTTTPPTTPPPTTTPTTTPPPTTPPPTTTTPTTPPPTTTPPTTTTPPTTPPPPTTTPPTTPTPTTTPTTTTPPTTPPPPTTTPPTTPTPTTTPTTTTPPTTPPPPTTTPPTTPTPTTTPPTTTPPPTTTTPPTTTPTTTTPPTTTPPTTTPPTTTTPPTTTPTTTTPPTTTPPTTTPPTTTTPPTTTPPPTTPTTTTPTTTPPTTTTPPTTTPPPTTPPTTTTPPTTTPPPTTTPPTTTTPPTTPPTTTTPPTTTPPPTTTPTTTTPPTTPPTPTTPPPPTTPPPPTTPPTTTTPPTTPPPPTTPPPPTTPPPPTTPPTPTTPPPTTPPPPTTPPPTTTPPPTTPPTPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPPTTPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTTPPTTPPPPTTPPPPTTPT";
+/* decode delta-encoded eclipse tables into sorted JD arrays (coverage ~1–3000 CE) */
+function _decodeEcl(base,dstr,tstr){const ds=dstr.split(",");let jd=base,J=[jd],T=[tstr[0]];for(let i=0;i<ds.length;i++){jd+=+ds[i];J.push(jd);T.push(tstr[i+1]);}return{J,T};}
+const ECL_S=_decodeEcl(ECL_S_BASE,ECL_S_D,ECL_S_T);
+const ECL_L=_decodeEcl(ECL_L_BASE,ECL_L_D,ECL_L_T);
+const ECL_MIN_JD=ECL_S.J[0], ECL_MAX_JD=ECL_S.J[ECL_S.J.length-1];
+const ECL_TYPE_NAME={T:'total',A:'annular',P:'partial',H:'hybrid'};
+function _eclHit(tbl,jd,tol){ // binary search sorted tbl.J for any within tol days
+  let lo=0,hi=tbl.J.length-1,best=null;
+  while(lo<=hi){const mid=(lo+hi)>>1;const v=tbl.J[mid];
+    if(Math.abs(v-jd)<=tol){best=tbl.T[mid];break;}
+    if(v<jd)lo=mid+1;else hi=mid-1;}
+  return best;
+}
+function eclipseNear(jd,tol){
+  return {solar:_eclHit(ECL_S,jd,tol), lunar:_eclHit(ECL_L,jd,tol)};
+}
+
+
+/* ===== FULL CHRONICON EVENT LEDGER (69 events; all phx verified mod138=108) =====
+   tuple = [astroYear, kind, text, [month,day]] */
+const E=[
+ [-5238,"key","Nemesis Cataclysm — Nemesis implodes; Earth, Luna, Phoenix, Nemesis X & Electra hurled toward Sol",[5,15]],
+ [-4638,"ner","Earth captured in orbit around Sol — exactly 600 yr after the Cataclysm",[5,15]],
+ [-4308,"phx","Phoenix named (Trimorphic Protennoia); 930-yr Adamu civilization destroyed, dust hides the sun",[5,15]],
+ [-4038,"key","Capture of Luna — the Capture Flood; Moon arrives from the dead Nemesis system",[5,15]],
+ [-3894,"phx","Lithospheric displacement, 30° poleshift — New Heavens & New Earth; YEAR ONE of the Ancient calendar",[5,15]],
+ [-3438,"nem","Gihon Flood — a third of mankind dies; ENKI arrives with the Anunna; Nemesis X Passover",[5,15]],
+ [-3372,"note","Olmec calendar begins",[1,1]],
+ [-3112,"may","Impact in North America — Maya Long-Count 0.0.0.0.0 begins the countdown",[8,11]],
+ [-3102,"note","Vedic Kali Yuga calendar begun",[1,1]],
+ [-2908,"note","Enoch vanishes into the sky",[1,1]],
+ [-2838,"key","Noah born — AM 1056, exactly 600 yr before the Flood",[1,1]],
+ [-2814,"note","Great Pyramid of Giza built at Achuzan, where Enoch vanished",[1,1]],
+ [-2712,"may","Mayan baktun (144,000 days) ends & begins",[1,1]],
+ [-2652,"phx","Sitchin's major disaster recorded in Near East texts",[5,15]],
+ [-2646,"nem","Nemesis X Object departs Sol — begins 732 yr away; Anunna Exodus / 408-yr Shock Period",[5,15]],
+ [-2312,"may","Mayan baktun ends & begins",[1,1]],
+ [-2238,"key","THE GREAT FLOOD — May, Annus Mundi 1656; Vapor Canopy collapse, Birth of the Sun",[5,15]],
+ [-1962,"phx","Temporary poleshift, quakes, bodies of water moved",[5,15]],
+ [-1914,"nem","Nemesis X returns — Tiamat passes, blackness swallows the stars (32nd yr of Nimrod)",[5,15]],
+ [-1912,"may","Mayan baktun ends & begins",[1,1]],
+ [-1854,"nem","60th year of Nemesis inner transit — Sumer vanishes, Akkad rises",[5,15]],
+ [-1848,"note","Sodom & Gomorrah, Mohenjo-daro destroyed in fallout",[5,15]],
+ [-1686,"phx","The Ogygian Flood — 25-yr darkness & famine, Heliolithic empire collapses",[5,15]],
+ [-1638,"note","Jacob (Israel) dies in Egypt",[1,1]],
+ [-1548,"phx","Three suns shone, sun dimmed, red sky, tsunamis",[5,15]],
+ [-1512,"may","Mayan baktun ends & begins",[1,1]],
+ [-1410,"phx","Temporary poleshift; new star; sky bloody red; Israel born / Conquest of Canaan",[5,15]],
+ [-1272,"phx","Atreus predicts sun-darkening; sky bloody red (Seneca, Euripides, Mursilis II)",[5,15]],
+ [-1134,"phx","Cataclysm — Mediterranean Dark Age begins, Linear B collapses; Atlantis sinks",[5,15]],
+ [-1122,"nem","Nemesis X returned — China records an attack on the sun, Shang collapse",[5,15]],
+ [-1112,"may","Mayan baktun ends & begins",[1,1]],
+ [-1038,"note","David, giant-slayer & future King of Israel, born",[1,1]],
+ [-996,"phx","Large meteorite impact, North America (Badlands)",[5,15]],
+ [-858,"phx","Phoenix symbol on Assyrian relief of King Jehu",[5,15]],
+ [-720,"phx","Kingdom of Israel falls to Assyria; sun & moon darkened, flames in sky",[5,15]],
+ [-712,"may","713 BC — flux-tube blast vaporizes 185,000 Assyrians; orbit 360→365.25 d; baktun reset",[3,5]],
+ [-582,"phx","Thales predicts the darkening of the sun, in May",[5,15]],
+ [-444,"phx","deJonge's comet disaster, widespread fires",[5,15]],
+ [-438,"ner","Parthenon / Titanomachy commemorated — the War of the Giants, the gods",[1,1]],
+ [-330,"nem","Nemesis X returns — Moon dims, sky blood-red; Alexander takes Babylon",[5,15]],
+ [-318,"may","Mayan baktun ends & begins",[1,1]],
+ [-306,"phx","Oera Lindh text records disasters across Europe",[5,15]],
+ [-270,"nem","Nemesis X totally eclipses Venus on its way out (recorded by the Ptolemies)",[5,15]],
+ [-30,"phx","31 BC — continental quake Aegean→Judea during Battle of Actium; sky dragon over Egypt",[9,2]],
+ [76,"may","Mayan baktun ends & begins",[1,1]],
+ [162,"ner","Pandemic afflicts China 11 yr, spreads to Rome 16 yr; Han Dynasty falls",[1,1]],
+ [246,"phx","Bloody sword in the sky, rain of blood (old Briton annal)",[5,15]],
+ [384,"phx","Bloody pillar in the sky (Lycosthenes, Chronicon)",[5,15]],
+ [462,"nem","Nemesis X enters inner system; Statue of Zeus destroyed",[5,15]],
+ [470,"may","Mayan baktun ends & begins",[1,1]],
+ [522,"phx","ONLY year Phoenix & Nemesis X are inner together — celestial war of monsters; Dark Ages begin",[5,15]],
+ [762,"ner","6000th year of the NER chronology; Kairite rift, 1st Abbasid year, Maya conclave at Copan",[1,1]],
+ [798,"phx","Quakes, dark sun, flooding in Mayan cities",[5,15]],
+ [864,"may","Foundation-of-Time reset — 144,000-day baktun completes; the Maya disappear",[1,1]],
+ [1212,"phx","Mass human vanishings; quakes in the Middle East",[5,15]],
+ [1254,"nem","Nemesis X returns — 7th Crusade fails; England–Scotland war lasts the exact 60-yr transit",[5,15]],
+ [1258,"may","Mayan baktun ends & begins",[1,1]],
+ [1314,"nem","60th yr of transit — plague fogs, black darkness over Europe; Black Death follows",[5,15]],
+ [1362,"ner","Norse-Goth expedition of King Magnus surveys North America (Kensington Stone)",[1,1]],
+ [1488,"note","Mother Shipton born — prophesies the 2040 return of the Sky Dragon",[1,1]],
+ [1626,"phx","Chinese record sun-darkening, meteoritic rain",[5,15]],
+ [1652,"may","Mayan baktun ends & begins",[1,1]],
+ [1764,"phx","Astronomer Hoffman watches a dark object cross 1/5 of the sun, seen by millions",[5,15]],
+ [1902,"phx","Unknown star, quakes, red rains — Charles Fort's other Dark Age; Tuxtla Statuette found",[5,15]],
+ [1962,"ner","Close Encounters of the 4th Kind begin; Mars/Moon bases claimed; NER node",[1,1]],
+ [2040,"key","15/16 MAY — Phoenix darkens the sun; lithospheric displacement; 6th Seal, Black Sun, Fenris",[5,15]],
+ [2046,"key","Nemesis X returns — Time collapses, 16-hr days; Mayan 13.0.0.0.0",[5,15]],
+ [2106,"nem","Nemesis X exits the system — Annus Mundi 6000",[5,15]],
+ [2178,"key","Simulation Collapse — 138 yr after the 2040 reset; exodus into the Real universe",[5,15]]
+];
+const EVENT_YEARS=new Map(E.map(e=>[e[0],e]));
+function eventSeedDate(e){return (e[3]&&e[3].length===2)?{m:e[3][0],d:e[3][1]}:{m:5,d:15};}
+
+/* ===== chronology readouts ===== */
+function phxInfo(a){const last=a-mod(a-108,138),next=last+138;return{node:mod(a,138)===108,last,next,into:a-last,to:next-a};}
+function nemInfo(a){const off=mod(a-462,792),inner=off<60,ep=a-off;return{inner,off,enter:ep,exit:ep+60,next:ep+792};}
+function nerInfo(a){const off=mod(a-162,600),start=a-off;return{num:Math.floor((a+5238)/600)+1,start,off,next:start+600};}
+function mayInfo(a){let bi=-1;for(let k=0;k<MAY_NODES.length-1;k++){if(a>=MAY_NODES[k]&&a<MAY_NODES[k+1]){bi=k;break;}}if(a>=MAY_NODES[MAY_NODES.length-1])bi=MAY_NODES.length-1;return bi;}
+function moonInfo(ay,m,d){const J=jdn(ay,m,d);let age=mod(J-NEWMOON_J2000,SYN);const frac=age/SYN;
+  const names=['New Moon','Waxing Crescent','First Quarter','Waxing Gibbous','Full Moon','Waning Gibbous','Last Quarter','Waning Crescent'];
+  return{age,frac,illum:(1-Math.cos(2*Math.PI*frac))/2,name:names[Math.floor(mod(frac+1/16,1)*8)%8],lun:Math.round((J-2423436.40347)/SYN)};}
+
+/* ============================================================
+   PREDICTION ENGINE
+   ============================================================ */
+const SCORING={V8:'V8',V7:'V7'};
+function compileOp(eqRaw){
+  let eq=eqRaw.replace(/\s+/g,'').replace(/×/g,'x');
+  let start;
+  if(eq.startsWith('X1+'))start='X1';
+  else if(eq.startsWith('X2+'))start='X2';
+  else throw new Error("must start with X1+ or X2+");
+  let body=eq.slice(3).replace(/x/g,'*');
+  let test=body.replace(/OPH_PHI|OPH_PI|OPH_CRV/g,'1').replace(/oph_(flip|round|floor|ceil|abs|sqrt)/g,'f').replace(/Y/g,'1');
+  if(/[^0-9+\-*/().f]/.test(test))throw new Error("illegal token in equation");
+  let fn;
+  try{fn=new Function('Y','OPH_PHI','OPH_PI','OPH_CRV','oph_flip','oph_round','oph_floor','oph_ceil','oph_abs','oph_sqrt','return '+body+';');}
+  catch(e){throw new Error("syntax error");}
+  let t=fn(1000,OPH_PHI,OPH_PI,OPH_CRV,oph_flip,oph_round,oph_floor,oph_ceil,oph_abs,oph_sqrt);
+  if(typeof t!=='number'||!isFinite(t))throw new Error("does not evaluate to a number");
+  return {start, fn:(Y)=>fn(Y,OPH_PHI,OPH_PI,OPH_CRV,oph_flip,oph_round,oph_floor,oph_ceil,oph_abs,oph_sqrt)};
+}
+
+function scoreZDate(ZA, J, system){
+  let pts=0, tags=[];
+  const A=am(ZA), L=lcYear(ZA), absY=ZA<=0?(1-ZA):ZA;
+  const ph=phxInfo(ZA);
+  const isNode=ph.node, near=Math.min(ph.into,ph.to)<=2;
+  const isDoc=EVENT_YEARS.has(ZA);
+  const isPal=isPalindrome(absY)||isPalindrome(A)||isPalindrome(J);
+  const has138=String(L).includes('138')||String(A).includes('138')||String(absY).includes('138');
+  const has19=String(absY).includes('19')||String(A).includes('19');
+  const metonic=mod(TODAY.y-ZA,19)===0;
+  const nem=nemInfo(ZA).inner, ner=nerInfo(ZA).off===0, bak=MAY_NODES.includes(ZA);
+  const PHX=['PHOENIX NODE','phx'],NEAR=['≈PHOENIX','phx'],DOC=['DOCUMENTED','ev'],PAL=['PALINDROME ⮌','pal'],
+        T138=['138','s138'],T19=['19','s19'],MET=['METONIC·19','met'],NEM=['NEMESIS','nem'],NER=['NER NODE','ner'],BAK=['BAKTUN','bak'];
+  if(system===SCORING.V7){
+    if(has138){pts+=4;tags.push(T138);}
+    if(isPal){pts+=4;tags.push(PAL);}
+    if(has19){pts+=2;tags.push(T19);}
+    if(metonic){pts+=2;tags.push(MET);}
+    if(isNode){pts+=2;tags.push(PHX);}else if(near){pts+=1;tags.push(NEAR);}
+    if(isDoc){pts+=1;tags.push(DOC);}
+    if(nem){pts+=1;tags.push(NEM);}if(ner){pts+=1;tags.push(NER);}if(bak){pts+=1;tags.push(BAK);}
+  }else{
+    if(isNode){pts+=5;tags.push(PHX);}else if(near){pts+=2;tags.push(NEAR);}
+    if(isDoc){pts+=5;tags.push(DOC);}
+    if(isPal){pts+=3;tags.push(PAL);}
+    if(metonic){pts+=2;tags.push(MET);}
+    if(has138){pts+=2;tags.push(T138);}
+    if(has19){pts+=1;tags.push(T19);}
+    if(nem){pts+=1;tags.push(NEM);}if(ner){pts+=1;tags.push(NER);}if(bak){pts+=1;tags.push(BAK);}
+  }
+  return {pts,tags,met:metonic||has19};
+}
+
+function cast(anchors, ops, system){
+  const A=anchors.filter(a=>a.enabled);
+  const O=ops.filter(o=>o.enabled);
+  const anchorJDs=A.map(a=>a.jd);
+  const results=[]; const seen=new Map();
+  for(let i=0;i<A.length;i++)for(let k=0;k<i;k++){
+    const x1=A[k], x2=A[i];
+    const Y=Math.abs(x2.jd-x1.jd);
+    if(Y<1||Y>3000000)continue;
+    for(const op of O){
+      let off; try{off=op.fn(Y);}catch(e){continue;}
+      if(!isFinite(off))continue;
+      const baseJD=(op.start==='X1'?x1.jd:x2.jd);
+      const ZJD=Math.round(baseJD+off);
+      const zd=jdToDate(ZJD);
+      if(zd.year<-5400||zd.year>4000)continue;
+      const key=ZJD+'|'+op.eq+'|'+x1.jd+'|'+x2.jd;
+      if(seen.has(key))continue; seen.set(key,1);
+      const sc=scoreZDate(zd.year, ZJD, system);
+      // MSRF resonance on interval Y and on the offset (classic Ophis core)
+      const offAbs=Math.abs(Math.round(off));
+      if(MSRF.has(Y)||MSRF.has(offAbs)){sc.pts+=(system===SCORING.V7?3:2);sc.tags.push(['MSRF','msrf']);}
+      // ECHO: lands back on an input anchor (±1 day)
+      const echo=anchorJDs.some(jd=>Math.abs(jd-ZJD)<=1);
+      if(echo)sc.tags.push(['ECHO','echo']);
+      let solar=null,lunar=null;
+      if(ZJD>=ECL_MIN_JD&&ZJD<=ECL_MAX_JD){const ecl=eclipseNear(ZJD,1);
+        if(ecl.solar){solar=ECL_TYPE_NAME[ecl.solar];sc.pts+=2;sc.tags.push(['\u2609 SOLAR '+solar,'sol']);}
+        if(ecl.lunar){lunar=ECL_TYPE_NAME[ecl.lunar];sc.pts+=1;sc.tags.push(['\u263e LUNAR '+lunar,'lun']);}}
+      results.push({zjd:ZJD,ay:zd.year,m:zd.month,d:zd.day,am:am(zd.year),lc:lcYear(zd.year),
+        op:op.eq,Y,x1:x1.label,x2:x2.label,score:sc.pts,tags:sc.tags,met:sc.met,echo,solar,lunar});
+    }
+  }
+  results.sort((a,b)=>b.score-a.score || a.zjd-b.zjd);
+  return results;
+}
+
+/* ============================================================
+   CONVERGENCE — where independent operations agree (the ARCHAIX signal)
+   ============================================================ */
+function findConvergences(results, tol){
+  // tol: integer day-window, or the string 'year'
+  let clusters=[];
+  if(tol==='year'){
+    const byYear=new Map();
+    results.forEach(r=>{const k=r.ay;if(!byYear.has(k))byYear.set(k,[]);byYear.get(k).push(r);});
+    clusters=[...byYear.values()];
+  }else{
+    const sorted=[...results].sort((a,b)=>a.zjd-b.zjd);
+    let cur=null;
+    for(const r of sorted){
+      if(cur&&r.zjd-cur[cur.length-1].zjd<=tol){cur.push(r);}
+      else{cur=[r];clusters.push(cur);}
+    }
+  }
+  return clusters.map(items=>{
+    const opsSet=new Set(items.map(i=>i.op));
+    const pairsSet=new Set(items.map(i=>i.x1+' → '+i.x2));
+    const jds=items.map(i=>i.zjd);
+    const centerJD=Math.round(jds.reduce((a,b)=>a+b,0)/jds.length);
+    const cd=jdToDate(centerJD);
+    const best=items.reduce((a,b)=>b.score>a.score?b:a);
+    const tagMap=new Map();
+    items.forEach(i=>i.tags.forEach(t=>{if(t[1]!=='echo')tagMap.set(t[0],t[1]);}));
+    return {centerJD,ay:cd.year,m:cd.month,d:cd.day,am:am(cd.year),lc:lcYear(cd.year),
+      nOps:opsSet.size,nPairs:pairsSet.size,count:items.length,
+      minJD:Math.min(...jds),maxJD:Math.max(...jds),spanDays:Math.max(...jds)-Math.min(...jds),
+      bestScore:best.score,tags:[...tagMap.entries()],ops:[...opsSet],pairs:[...pairsSet],
+      items,allEcho:items.every(i=>i.echo)};
+  }).filter(c=>c.nOps>=2)
+    .sort((a,b)=>b.nOps-a.nOps || b.bestScore-a.bestScore || a.spanDays-b.spanDays || a.centerJD-b.centerJD);
+}
+
+
+/* ============================================================
+   STATE + UI
+   ============================================================ */
+const DEFAULT_OPS=[
+ "X2+oph_round(Y)","X2+oph_flip(oph_round(Y))","X1+oph_flip(oph_round(Y))",
+ "X2+Y/OPH_PHI","X1+Y*OPH_PHI","X1+(Y/2)*OPH_PI","X2+Y/OPH_CRV",
+ "X2+Y*138/100","X1+Y*19/10","X2+oph_round(Y/138)*138","X1+oph_round(Y/19)*19",
+ "X2+Y+138","X1+Y+19","X2+oph_flip(Y)+19","X1+Y*360/365.2422",
+ "X2+Y*792/600","X1+oph_round(Y*OPH_PHI/OPH_PI)","X2+oph_round(Y/OPH_PHI/OPH_PHI)",
+ "X1+oph_flip(oph_round(Y/OPH_PHI))"
+];
+
+/* ============================================================
+   PRESET PACKS + SAVE / LOAD
+   ============================================================ */
+const PACKS={
+  "Default 19":DEFAULT_OPS,
+  "138 Pack":[
+    "X2+oph_round(Y/138)*138","X1+oph_round(Y/138)*138","X2+Y+138","X1+Y-138",
+    "X2+Y*138/100","X1+Y*100/138","X2+oph_flip(oph_round(Y))","X1+138*oph_round(Y/138)",
+    "X2+Y+138*2","X1+Y+138*3","X2+oph_round(Y/414)*414","X1+oph_round(Y/552)*552"],
+  "19 Metonic Pack":[
+    "X1+oph_round(Y/19)*19","X2+oph_round(Y/19)*19","X2+Y+19","X1+Y-19",
+    "X2+Y*19/10","X1+Y*235/19","X2+oph_flip(Y)+19","X1+19*oph_round(Y/19)",
+    "X2+Y+19*19","X1+oph_round(Y/235)*235","X2+oph_flip(oph_round(Y/19))"],
+  "Phoenix Lattice Pack":[
+    "X1+oph_round(Y/138)*138","X2+oph_round(Y/792)*792","X1+oph_round(Y/600)*600",
+    "X2+oph_round(Y/360)*360","X1+Y*360/365.2422","X2+Y+138","X1+Y+792","X2+Y+600",
+    "X1+oph_round(Y/216)*216","X2+oph_round(Y/144)*144"],
+  "Golden Pack":[
+    "X2+Y/OPH_PHI","X1+Y*OPH_PHI","X1+(Y/2)*OPH_PI","X2+Y/OPH_CRV","X1+(Y/2)*OPH_CRV",
+    "X2+oph_round(Y*OPH_PHI/OPH_PI)","X1+oph_round(Y/OPH_PHI/OPH_PHI)",
+    "X2+oph_flip(oph_round(Y/OPH_PHI))","X1+Y*OPH_PI/OPH_PHI","X2+oph_round(Y*OPH_PHI)"]
+};
+function loadPack(name){
+  const arr=PACKS[name]; if(!arr)return;
+  ops=arr.map(eq=>{try{const c=compileOp(eq);return{eq,start:c.start,fn:c.fn,enabled:true};}catch(e){return null;}}).filter(Boolean);
+  renderOps(); toast('Loaded "'+name+'" ('+ops.length+' ops)');
+  if(lastResults.length)recast();
+}
+function saveConfig(){
+  const cfg={app:'OPHION',v:3,saved:new Date().toISOString(),system:curSystem,convTol:String(convTol),
+    anchors:anchors.map(a=>({ay:a.ay,m:a.m,d:a.d,label:a.label,enabled:a.enabled})),
+    ops:ops.map(o=>({eq:o.eq,enabled:o.enabled}))};
+  const blob=new Blob([JSON.stringify(cfg,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);const a=document.createElement('a');
+  a.href=url;a.download='Natori-On-PSYFR-config-'+Date.now()+'.json';a.click();URL.revokeObjectURL(url);
+  toast('Configuration saved');
+}
+function applyConfig(obj){
+  try{
+    if(obj.anchors){anchors=obj.anchors.map(a=>({ay:+a.ay,m:+a.m,d:+a.d,label:a.label||fmtYear(+a.ay),enabled:a.enabled!==false,jd:jdn(+a.ay,+a.m,+a.d)}));anchors.sort((a,b)=>a.jd-b.jd);}
+    if(obj.ops){ops=obj.ops.map(o=>{try{const c=compileOp(o.eq);return{eq:o.eq,start:c.start,fn:c.fn,enabled:o.enabled!==false};}catch(e){return null;}}).filter(Boolean);}
+    if(obj.system){curSystem=obj.system===SCORING.V7?SCORING.V7:SCORING.V8;
+      [...$('sysTog').children].forEach(b=>b.classList.toggle('on',SCORING[b.dataset.sys]===curSystem));}
+    if(obj.convTol!==undefined){convTol=(obj.convTol==='year')?'year':(isNaN(+obj.convTol)?30:+obj.convTol);
+      const cs=$('convTolSel');if(cs)cs.value=String(convTol);}
+    renderAnchors();renderOps();
+    toast('Configuration loaded');
+  }catch(e){toast('Load failed: bad file');}
+}
+
+/* ============================================================
+   CONVERGENCE RENDER
+   ============================================================ */
+let convTol=30, lastConv=[];
+function renderConvergence(){
+  lastConv=findConvergences(lastResults.filter(r=>!r.echo), convTol);
+  const body=$('convBody');
+  $('convCount').textContent=lastConv.length+' convergence'+(lastConv.length===1?'':'s');
+  if(!lastResults.length){body.innerHTML='<tr><td colspan="6" class="empty">Cast the oracle to reveal where operations agree.</td></tr>';return;}
+  if(!lastConv.length){body.innerHTML='<tr><td colspan="6" class="empty">No convergences at this window — widen the tolerance, or add more operations / anchors.</td></tr>';return;}
+  const maxOps=Math.max(...lastConv.map(c=>c.nOps));
+  body.innerHTML='';
+  lastConv.slice(0,200).forEach(c=>{
+    const tr=document.createElement('tr');tr.className='zr'+(selZ===c.centerJD?' sel':'');
+    const tagHtml=c.tags.map(t=>`<span class="rt ${t[1]}">${t[0]}</span>`).join('');
+    const opsHtml=c.ops.map(o=>`<span class="opchip">${o}</span>`).join('');
+    const spanTxt=c.spanDays===0?'exact day':('±'+Math.ceil(c.spanDays/2)+'d span');
+    tr.innerHTML=`<td><span class="convstrength"><b>${c.nOps}</b><span class="cbar"><i style="width:${c.nOps/maxOps*100}%"></i></span></span><div class="cpairs">${c.nPairs} pair${c.nPairs>1?'s':''}</div></td>
+      <td class="dt">${fmtYear(c.ay)} <span style="color:var(--dim)">${String(c.m).padStart(2,'0')}/${String(c.d).padStart(2,'0')}</span><div class="cspan">${spanTxt}</div></td>
+      <td>${c.am}${isPalindrome(c.am)?' <span class="pal">⮌</span>':''}</td>
+      <td>${c.lc>0?(String(c.lc).includes('138')?String(c.lc).replace('138','<span style="color:var(--red)">138</span>'):c.lc):'—'}</td>
+      <td><div class="restags">${tagHtml||'<span style="color:var(--dim)">—</span>'}</div></td>
+      <td><div class="opchips">${opsHtml}</div></td>`;
+    tr.onclick=()=>{selZ=c.centerJD;setDialFromAstro(c.ay,c.m,c.d);renderConvergence();renderResults();$('wheels').scrollIntoView({behavior:'smooth',block:'start'});};
+    body.appendChild(tr);
+  });
+}
+
+let anchors=[], ops=[], lastResults=[], resFilter='all', sortKey='score', sortDir=-1, selZ=null;
+let curSystem=SCORING.V8, aEra='ad', dEra='ad';
+const $=id=>document.getElementById(id);
+function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),1900);}
+
+/* ---- anchors ---- */
+function addAnchorObj(ay,m,d,label){
+  const jd=jdn(ay,m,d);
+  anchors.push({ay,m,d,jd,label:label||fmtYear(ay),enabled:true});
+  anchors.sort((a,b)=>a.jd-b.jd);
+  renderAnchors();
+}
+function renderAnchors(){
+  const host=$('anchorList');host.innerHTML='';
+  anchors.forEach((a,i)=>{
+    const row=document.createElement('div');row.className='arow'+(a.enabled?'':' off');
+    row.innerHTML=`<div class="ord">${i+1}</div>
+      <div class="lbl">${a.label} <small>${fmtYear(a.ay)} · ${String(a.m).padStart(2,'0')}/${String(a.d).padStart(2,'0')} · <span class="mono">JD ${a.jd.toLocaleString()}</span> · AM ${am(a.ay)}</small></div>
+      <div class="ctrls"><button type="button" class="chk ${a.enabled?'on':''}" aria-pressed="${a.enabled}" aria-label="Enable or disable this anchor">${a.enabled?'✓':''}</button><button class="xbtn" type="button" aria-label="Remove this anchor" title="remove">✕</button></div>`;
+    row.querySelector('.chk').onclick=()=>{a.enabled=!a.enabled;renderAnchors();};
+    row.querySelector('.xbtn').onclick=()=>{anchors.splice(i,1);renderAnchors();};
+    host.appendChild(row);
+  });
+  $('anchorCount').textContent=anchors.filter(a=>a.enabled).length+' active';
+}
+$('addAnchor').onclick=()=>{
+  const yv=Math.abs(+$('aYear').value||1), ay=aEra==='bc'?(1-yv):yv;
+  addAnchorObj(ay, Math.min(12,Math.max(1,+$('aMon').value||1)), Math.min(31,Math.max(1,+$('aDay').value||1)), $('aLabel').value.trim());
+  $('aLabel').value='';
+};
+$('aEra').onclick=e=>{if(e.target.tagName!=='BUTTON')return;aEra=e.target.dataset.era;
+  [...$('aEra').children].forEach(b=>b.classList.toggle('on',b.dataset.era===aEra));};
+
+/* ---- operations ---- */
+function renderOps(){
+  const host=$('opList');host.innerHTML='';
+  ops.forEach((o,i)=>{
+    const row=document.createElement('div');row.className='arow'+(o.enabled?'':' off');
+    row.innerHTML=`<div class="ord">${i+1}</div><div class="lbl"><span class="mono">${o.eq}</span></div>
+      <div class="ctrls"><button type="button" class="chk ${o.enabled?'on':''}" aria-pressed="${o.enabled}" aria-label="Enable or disable this operation">${o.enabled?'✓':''}</button><button class="xbtn" type="button" aria-label="Remove this operation">✕</button></div>`;
+    row.querySelector('.chk').onclick=()=>{o.enabled=!o.enabled;renderOps();};
+    row.querySelector('.xbtn').onclick=()=>{ops.splice(i,1);renderOps();};
+    host.appendChild(row);
+  });
+}
+function loadDefaultOps(){
+  ops=DEFAULT_OPS.map(eq=>{try{const c=compileOp(eq);return{eq,start:c.start,fn:c.fn,enabled:true};}catch(e){return null;}}).filter(Boolean);
+  renderOps();
+}
+$('resetOps').onclick=()=>{loadDefaultOps();toast('19-operation pack restored');};
+$('addOp').onclick=()=>{
+  const eq=$('opInput').value.trim();if(!eq)return;
+  try{const c=compileOp(eq);ops.push({eq,start:c.start,fn:c.fn,enabled:true});renderOps();$('opInput').value='';$('opErr').textContent='';}
+  catch(err){$('opErr').textContent='✕ '+err.message;}
+};
+$('opInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('addOp').click();});
+
+/* ---- seed dropdown ---- */
+(function(){const sel=$('seedSel');
+  E.forEach((e,i)=>{if(e[1]==='note')return;const o=document.createElement('option');o.value=i;
+    const sd=eventSeedDate(e);o.textContent=fmtYear(e[0])+' '+String(sd.m).padStart(2,'0')+'/'+String(sd.d).padStart(2,'0')+' · '+e[2].slice(0,42);sel.appendChild(o);});
+  sel.onchange=()=>{if(sel.value==='')return;const e=E[+sel.value];const sd=eventSeedDate(e);
+    addAnchorObj(e[0],sd.m,sd.d,fmtYear(e[0])+' '+e[2].split('—')[0].split(';')[0].slice(0,22).trim());
+    toast('Seeded: '+fmtYear(e[0]));sel.value='';};
+})();
+
+/* ---- scoring lens ---- */
+$('sysTog').onclick=e=>{if(e.target.tagName!=='BUTTON')return;curSystem=SCORING[e.target.dataset.sys];
+  [...$('sysTog').children].forEach(b=>b.classList.toggle('on',SCORING[b.dataset.sys]===curSystem));
+  $('sysNote').textContent=curSystem===SCORING.V8?'V8 weights Phoenix nodes & documented events highest.':'V7 weights 138, palindromes & MSRF highest — the numbers lead.';
+  if(lastResults.length){recast();toast('Re-scored · '+curSystem);}
+};
+
+/* ---- cast + results ---- */
+function recast(){lastResults=cast(anchors,ops,curSystem);renderResults();renderConvergence();}
+$('castBtn').onclick=()=>{
+  if(anchors.filter(a=>a.enabled).length<2){toast('Need at least 2 active anchors');return;}
+  if(ops.filter(o=>o.enabled).length<1){toast('Need at least 1 operation');return;}
+  recast();
+  toast(lastResults.length+' projections cast ('+curSystem+')');
+  $('wheels').scrollIntoView({behavior:'smooth',block:'start'});
+};
+function filterRes(r){
+  if(resFilter==='all')return true;
+  if(resFilter==='novel')return !r.echo;
+  if(resFilter==='future')return r.ay>TODAY.y;
+  if(resFilter==='phx')return r.tags.some(t=>t[1]==='phx');
+  if(resFilter==='ev')return r.tags.some(t=>t[1]==='ev');
+  if(resFilter==='pal')return r.tags.some(t=>t[1]==='pal');
+  if(resFilter==='met')return r.met;
+  if(resFilter==='ecl')return r.solar||r.lunar;
+  return true;
+}
+function renderResults(){
+  const body=$('resBody');
+  let rows=lastResults.filter(filterRes);
+  const maxScore=Math.max(5,...lastResults.map(r=>r.score));
+  rows.sort((a,b)=>{let v;switch(sortKey){
+    case'date':v=a.zjd-b.zjd;break;case'am':v=a.am-b.am;break;case'lc':v=a.lc-b.lc;break;
+    case'y':v=a.Y-b.Y;break;case'op':v=a.op<b.op?-1:1;break;default:v=a.score-b.score;}
+    return sortDir*v || (a.zjd-b.zjd);});
+  $('resCount').textContent=rows.length+' / '+lastResults.length+' shown';
+  if(!rows.length){body.innerHTML='<tr><td colspan="7" class="empty">No projections match this filter.</td></tr>';return;}
+  body.innerHTML='';
+  rows.slice(0,500).forEach(r=>{
+    const tr=document.createElement('tr');tr.className='zr'+(selZ===r.zjd?' sel':'')+(r.echo?' echo':'');
+    const tagHtml=r.tags.map(t=>`<span class="rt ${t[1]}">${t[0]}</span>`).join('');
+    tr.innerHTML=`<td class="sc" style="color:${r.score>=7?'var(--red)':r.score>=4?'var(--gold2)':'var(--dim)'}">${r.score}<span class="scorebar"><i style="width:${r.score/maxScore*100}%"></i></span></td>
+      <td class="dt">${fmtYear(r.ay)} <span style="color:var(--dim)">${String(r.m).padStart(2,'0')}/${String(r.d).padStart(2,'0')}</span></td>
+      <td>${r.am}${isPalindrome(r.am)?' <span class="pal">⮌</span>':''}</td>
+      <td>${r.lc>0?(String(r.lc).includes('138')?String(r.lc).replace('138','<span style="color:var(--red)">138</span>'):r.lc):'—'}</td>
+      <td style="color:var(--cyan)">${r.op}</td>
+      <td>${r.Y.toLocaleString()}</td>
+      <td><div class="restags">${tagHtml||'<span style="color:var(--dim)">—</span>'}</div></td>`;
+    tr.onclick=()=>{selZ=r.zjd;setDialFromAstro(r.ay,r.m,r.d);renderResults();$('wheels').scrollIntoView({behavior:'smooth',block:'start'});};
+    body.appendChild(tr);
+  });
+}
+$('resFilt').onclick=e=>{if(e.target.tagName!=='BUTTON')return;resFilter=e.target.dataset.k;
+  [...$('resFilt').children].forEach(b=>b.classList.toggle('on',b.dataset.k===resFilter));renderResults();};
+document.querySelectorAll('#resTable th[data-sort]').forEach(th=>th.onclick=()=>{
+  const k=th.dataset.sort;if(sortKey===k)sortDir*=-1;else{sortKey=k;sortDir=(k==='score')?-1:1;}renderResults();});
+$('exportCsv').onclick=()=>{
+  if(!lastResults.length){toast('Nothing to export — cast first');return;}
+  let csv='score,system,echo,solar_eclipse,lunar_eclipse,projected_date,era_year,month,day,annus_mundi,long_count,julian_day,operation,Y_rotations,x1,x2,resonance\n';
+  const q=s=>'"'+String(s).replace(/"/g,'""')+'"';
+  lastResults.forEach(r=>{csv+=[r.score,curSystem,r.echo?'echo':'novel',r.solar||'',r.lunar||'',fmtYear(r.ay),r.ay,r.m,r.d,r.am,r.lc,r.zjd,q(r.op),r.Y,q(r.x1),q(r.x2),q(r.tags.map(t=>t[0]).join(' | '))].join(',')+'\n';});
+  const blob=new Blob([csv],{type:'text/csv'});const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='Natori-On-PSYFR-cast-'+curSystem+'-'+Date.now()+'.csv';a.click();URL.revokeObjectURL(url);
+  toast('Exported '+lastResults.length+' projections');
+};
+
+/* ============================================================
+   WHEELS / DIAL
+   ============================================================ */
+function setDialFromAstro(ay,m,d){
+  dEra=ay<=0?'bc':'ad';[...$('dEra').children].forEach(b=>b.classList.toggle('on',b.dataset.era===dEra));
+  $('dYear').value=ay<=0?(1-ay):ay;$('dMon').value=m||5;$('dDay').value=d||30;
+  $('dSlider').value=Math.min(2178,Math.max(-2842,ay));renderWheels();
+}
+function curDialAstro(){const yv=Math.abs(+$('dYear').value||1);return dEra==='bc'?(1-yv):yv;}
+function renderWheels(){
+  const astro=curDialAstro(), m=Math.min(12,Math.max(1,+$('dMon').value||1)), d=Math.min(31,Math.max(1,+$('dDay').value||1));
+  const J=jdn(astro,m,d), A=am(astro), L=lcYear(astro), absY=astro<=0?(1-astro):astro;
+  $('dSlider').value=Math.min(2178,Math.max(-2842,astro));
+  $('mY').textContent=fmtYear(astro);$('mAM').textContent=A;
+  $('mLC').innerHTML=L>0?(String(L).includes('138')?String(L).replace('138','<span style="color:var(--red)">138</span>'):L):'pre-count';
+  $('mCat').textContent=(astro+CAT_OFFSET)+' yr';
+  const ev=EVENT_YEARS.get(astro);
+  $('mEv').innerHTML=ev?'⟶ <b style="color:var(--gold2)">'+ev[2].slice(0,60)+'…</b>':'';
+  const ph=phxInfo(astro);
+  $('flag138').classList.toggle('on',ph.node);
+  $('flag19').classList.toggle('on',mod(TODAY.y-astro,19)===0);
+  $('flagPal').classList.toggle('on',isPalindrome(absY)||isPalindrome(A));
+  $('flagEv').classList.toggle('on',EVENT_YEARS.has(astro));
+  const pIdx=Math.round((ph.last-(-4308))/138)+1;
+  $('wPhx').innerHTML=(ph.node||ph.to===0)?'NODE<small> · visitation</small>':ph.to+'<small> yr to node</small>';
+  $('wPhxM').innerHTML=`last <b>${fmtYear(ph.last)}</b> · next <b>${fmtYear(ph.next)}</b><br>node #${pIdx} · ${ph.into} yr in`;
+  $('wPhxB').style.width=(ph.into/138*100)+'%';
+  const nm=nemInfo(astro);
+  if(nm.inner){$('wNem').innerHTML=(60-nm.off)+'<small> yr · INSIDE</small>';
+    $('wNemM').innerHTML=`entered <b>${fmtYear(nm.enter)}</b> · exits <b>${fmtYear(nm.exit)}</b><br>60-yr transit, ${nm.off} yr in`;
+    $('wNemB').style.width=(nm.off/60*100)+'%';}
+  else{const to=nm.next-astro;$('wNem').innerHTML=to+'<small> yr to return</small>';
+    $('wNemM').innerHTML=`outside Sol (732-yr arc)<br>returns <b>${fmtYear(nm.next)}</b>`;
+    $('wNemB').style.width=((astro-nm.exit)/732*100)+'%';}
+  const nr=nerInfo(astro);
+  $('wNer').innerHTML='PERIOD '+nr.num;
+  $('wNerM').innerHTML=`began <b>${fmtYear(nr.start)}</b> · ${600-nr.off} yr to next<br>ten 60-yr decans apiece`;
+  $('wNerB').style.width=(nr.off/600*100)+'%';
+  $('wAm').innerHTML=A+'<small> AM</small>';
+  $('wAmM').innerHTML=`Flood node AM 1656 · ${A>=6000?'past':(6000-A)+' to'} AM 6000<br>${isPalindrome(A)?'⮌ palindromic AM year':'next mirror AM '+nextPal(A)}`;
+  const bi=mayInfo(astro);
+  if(bi<0){$('wMay').innerHTML='PRE-COUNT';$('wMayM').innerHTML='before 0.0.0.0.0 (3113 BC)';$('wMayB').style.width='0%';}
+  else if(bi===MAY_NODES.length-1){$('wMay').innerHTML='COUNT CLOSED';
+    $('wMayM').innerHTML=`13.0.0.0.0 sealed <b>2046 CE</b><br><b>${astro-2046}</b> yr since the count closed`;
+    $('wMayB').style.width='100%';}
+  else{const bStart=MAY_NODES[bi],bEnd=MAY_NODES[bi+1],span=bEnd-bStart;
+    $('wMay').innerHTML='BAKTUN '+(bi+1)+'<small>/13</small>';
+    $('wMayM').innerHTML=`${fmtYear(bStart)} → ${fmtYear(bEnd)}<br><b>${bEnd-astro}</b> yr to ${bi+1===13?'13.0.0.0.0':'next baktun'}`;
+    $('wMayB').style.width=((astro-bStart)/span*100)+'%';}
+  const turns=J-AM_EPOCH,T=Math.abs(turns),sign=turns<0?'−':'';
+  let node='';if(T===432000)node=' ✦ antediluvian total';else if(T===864000)node=' ✦ Foundation of Time';else if(T>0&&T%144000===0)node=' ✦ '+(T/144000)+'× baktun';
+  $('wAnu').innerHTML=sign+T.toLocaleString()+'<small> turnings</small>';
+  $('wAnuM').innerHTML=`${sign}${(T/360).toFixed(1)} Draconian yr · ${(T/216000).toFixed(2)} NER · ${(T/144000).toFixed(2)} baktun${node}`;
+  const mo=moonInfo(astro,m,d), yd=TODAY.y-astro;
+  $('wMoon').innerHTML=mo.name;
+  $('wMoonM').innerHTML=`age <b>${mo.age.toFixed(1)}d</b> · illum <b>${Math.round(mo.illum*100)}%</b><br>Metonic ${yd>=0?Math.floor(yd/19)+' back':Math.abs(Math.floor(yd/19))+' ahead'} · ${mod(yd,19)===0?'<span style="color:var(--cyan)">★ same phase as today</span>':'lunation '+mo.lun}`;
+}
+function nextPal(n){let x=n;for(let i=0;i<5000;i++){if(isPalindrome(x))return x;x++;}return '—';}
+$('dEra').onclick=e=>{if(e.target.tagName!=='BUTTON')return;dEra=e.target.dataset.era;
+  [...$('dEra').children].forEach(b=>b.classList.toggle('on',b.dataset.era===dEra));renderWheels();};
+['dYear','dMon','dDay'].forEach(id=>$(id).addEventListener('input',renderWheels));
+$('dSlider').addEventListener('input',()=>{const a=+$('dSlider').value;setDialFromAstro(a,+$('dMon').value||5,+$('dDay').value||30);});
+$('dToday').onclick=()=>setDialFromAstro(TODAY.y,TODAY.m,TODAY.d);
+document.querySelectorAll('[data-jy]').forEach(b=>b.onclick=()=>setDialFromAstro(b.dataset.je==='bc'?(1-(+b.dataset.jy)):(+b.dataset.jy),5,15));
+
+/* ============================================================
+   LEDGER
+   ============================================================ */
+function buildLedger(filter){
+  const body=$('ledBody');body.innerHTML='';
+  E.forEach((e,i)=>{
+    const[a,kind,txt]=e;if(filter&&filter!=='all'&&kind!==filter)return;
+    const sd=eventSeedDate(e);
+    const dotc={key:'d-key',phx:'d-phx',nem:'d-nem',ner:'d-ner',may:'d-may',note:'d-note'}[kind];
+    const A=am(a),palY=isPalindrome(a<=0?(1-a):a),phxOn=mod(a,138)===108?'●':'·';
+    const tr=document.createElement('tr');tr.className='zr';
+    tr.innerHTML=`<td class="dt"><span class="dot ${dotc}"></span>${fmtYear(a)}${palY?' <span class="pal">⮌</span>':''}</td>
+      <td>${A}${isPalindrome(A)?' <span class="pal">⮌</span>':''}</td>
+      <td style="color:var(--red);text-align:center">${phxOn}</td>
+      <td class="ev">${txt}</td>
+      <td><button class="seedbtn">seed ⚓</button></td>`;
+    tr.querySelector('.seedbtn').onclick=ev=>{ev.stopPropagation();addAnchorObj(a,sd.m,sd.d,fmtYear(a)+' '+txt.split('—')[0].split(';')[0].slice(0,20).trim());toast('Seeded '+fmtYear(a));};
+    tr.onclick=()=>{setDialFromAstro(a,sd.m,sd.d);$('wheels').scrollIntoView({behavior:'smooth',block:'start'});};
+    body.appendChild(tr);
+  });
+}
+$('ledFilt').onclick=e=>{if(e.target.tagName!=='BUTTON')return;
+  [...$('ledFilt').children].forEach(b=>b.classList.remove('on'));e.target.classList.add('on');buildLedger(e.target.dataset.k);};
+
+/* nav */
+document.querySelectorAll('nav a[data-go]').forEach(a=>a.onclick=()=>$(a.dataset.go).scrollIntoView({behavior:'smooth'}));
+
+/* ============================================================
+   INIT
+   ============================================================ */
+(function init(){
+  /* theme + text-size (accessibility) */
+  const _root=document.documentElement;
+  function applyTheme(t){_root.setAttribute('data-theme',t);const b=$('themeBtn');
+    b.textContent=t==='light'?'☀ Light':'☾ Dark';b.setAttribute('aria-pressed',t==='light'?'true':'false');
+    try{localStorage.setItem('ophion-theme',t);}catch(e){}}
+  function applyZoom(z){_root.style.setProperty('--zoom',z);try{localStorage.setItem('ophion-zoom',String(z));}catch(e){}}
+  let _zoom=1;try{const z=parseFloat(localStorage.getItem('ophion-zoom'));if(z>=0.8&&z<=1.5)_zoom=z;}catch(e){}
+  let _theme=null;try{_theme=localStorage.getItem('ophion-theme');}catch(e){}
+  if(_theme!=='light'&&_theme!=='dark')_theme=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';
+  applyTheme(_theme);applyZoom(_zoom);
+  $('themeBtn').onclick=()=>applyTheme(_root.getAttribute('data-theme')==='light'?'dark':'light');
+  $('tsUp').onclick=()=>{_zoom=Math.min(1.5,Math.round((_zoom+0.1)*10)/10);applyZoom(_zoom);};
+  $('tsDown').onclick=()=>{_zoom=Math.max(0.8,Math.round((_zoom-0.1)*10)/10);applyZoom(_zoom);};
+  $('tsReset').onclick=()=>{_zoom=1;applyZoom(_zoom);};
+
+  /* simple / full view (stored alongside the theme keys; the field guide ignores it) */
+  function applyMode(m){document.body.classList.toggle('simple',m==='simple');const b=$('modeBtn');
+    b.textContent=m==='simple'?'⛭ Full view':'✦ Simple';b.setAttribute('aria-pressed',m==='simple'?'true':'false');
+    try{localStorage.setItem('ophion-mode',m);}catch(e){}}
+  let _mode='full';try{if(localStorage.getItem('ophion-mode')==='simple')_mode='simple';}catch(e){}
+  applyMode(_mode);
+  $('modeBtn').onclick=()=>{_mode=(_mode==='simple')?'full':'simple';applyMode(_mode);
+    toast(_mode==='simple'?'Simple view — seed, cast, read. ⛭ restores everything.':'Full view restored');};
+
+  /* preset / convergence wiring (runs here so $ and all handlers exist) */
+  const pbar=$('packBar');
+  Object.keys(PACKS).forEach(name=>{
+    const b=document.createElement('button');b.className='btn sm';b.textContent=name;
+    b.onclick=()=>loadPack(name);pbar.appendChild(b);
+  });
+  $('saveCfg').onclick=saveConfig;
+  $('loadCfg').onclick=()=>$('loadFile').click();
+  $('loadFile').onchange=e=>{const f=e.target.files[0];if(!f)return;const rd=new FileReader();
+    rd.onload=()=>{try{applyConfig(JSON.parse(rd.result));if(lastResults.length)recast();}catch(err){toast('Invalid JSON');}};rd.readAsText(f);e.target.value='';};
+  $('convTolSel').onchange=e=>{const v=e.target.value;convTol=(v==='year')?'year':+v;if(lastResults.length)renderConvergence();};
+
+  loadDefaultOps();
+  addAnchorObj(-2238,5,15,'Great Flood');
+  addAnchorObj(2040,5,15,'Phoenix 2040');
+  addAnchorObj(TODAY.y,TODAY.m,TODAY.d,'Today');
+  $('ledgerCount').textContent=E.length;
+  buildLedger('all');
+  setDialFromAstro(TODAY.y,TODAY.m,TODAY.d);
+  const MM=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  $('youAreHere').textContent=`${TODAY.d} ${MM[TODAY.m-1]} ${TODAY.y} CE = AM ${am(TODAY.y)} = LC ${lcYear(TODAY.y)} = ${TODAY.y+CAT_OFFSET} yr after the Nemesis Cataclysm.`;
+})();
+</script>
+</body>
+</html>
