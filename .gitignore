@@ -15,3 +15,7 @@ npm-debug.log*
 
 # Local tooling
 .claude/launch.json
+
+# Scratch fixtures written while testing
+__tmp-*
+*.tmp
