@@ -119,6 +119,17 @@ What is deliberately *different* — no `eval`, no arbitrary-path writes, no sig
 
 ---
 
+## Handing this on
+
+**[docs/HANDOFF.md](docs/HANDOFF.md)** is the fifteen-minute brief for whoever picks this up next:
+current state, the one rule, where everything lives, the traps that look like bugs and are not, and
+what is still open.
+
+Every backbone document also renders as a browsable page — `docs/html/index.html` is the way in,
+and `npm run docs` rebuilds them all from the Markdown, which stays the source of truth.
+
+---
+
 ## The study
 
 [`docs/reverse/`](docs/reverse/) is the full teardown, subsystem by subsystem.

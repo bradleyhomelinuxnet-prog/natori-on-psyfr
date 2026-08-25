@@ -732,6 +732,20 @@ export function renderAbout(host) {
           'verified against the original: the operation outputs, the resonance classification, the ' +
           'scoring arithmetic and a complete end-to-end cast are pinned by the test suite.',
       }),
+
+      el('h2', { text: 'Further reading' }),
+      el('div.btnrow', {}, [
+        el('a.btn', { href: 'field-guide.html', text: 'Field Guide' }),
+        el('a.btn', { href: 'whitepaper.html', text: 'White Paper' }),
+        el('a.btn', { href: 'docs/html/index.html', text: 'All documentation' }),
+      ]),
+      el('p', {
+        style: 'margin-top:12px',
+        text:
+          'The Field Guide is a ten-minute tour and the fastest way to learn what the numbers mean. ' +
+          'It also covers Protocol Prime, which is the single most useful thing to know and which ' +
+          'nothing else in this application mentions.',
+      }),
     ]),
   ]);
 }

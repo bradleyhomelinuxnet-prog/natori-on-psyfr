@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>22 · The author's own source documents</title>
+<meta http-equiv="Content-Security-Policy"
+      content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'none'; img-src 'self' data:; connect-src 'none'">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../src/styles/ophis-tokens.css">
+<link rel="stylesheet" href="../../src/styles/ophis-app.css">
+<style>
+  body { padding-bottom: 96px; }
+  .doc-top {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding: 20px var(--gutter); max-width: 1180px; margin: 0 auto;
+  }
+  .paper {
+    display: grid; grid-template-columns: 232px minmax(0, 1fr); gap: 48px;
+    max-width: 1180px; margin: 0 auto; padding: 0 var(--gutter);
+  }
+  .paper > nav {
+    position: sticky; top: 24px; align-self: start;
+    max-height: calc(100vh - 48px); overflow-y: auto;
+    padding: 24px 0; font-size: 12.5px;
+  }
+  .paper > nav a { display: block; color: var(--dim); text-decoration: none; padding: 3px 0; line-height: 1.4; }
+  .paper > nav a:hover { color: var(--gold-2); }
+  .paper > nav a.l3 { padding-left: 14px; font-size: 11.5px; color: var(--faint); }
+
+  article { padding: 24px 0; max-width: 76ch; }
+  article h1 { font-family: var(--font-display); font-size: clamp(28px, 4vw, 40px); color: var(--ink); margin: 0 0 20px; letter-spacing: .01em; }
+  article h2 { font-family: var(--font-display); font-size: 24px; color: var(--gold-2); margin: 52px 0 16px; }
+  article h3 { font-size: 17px; color: var(--ink); margin: 34px 0 12px; font-weight: 600; }
+  article h4 { font-size: 14px; color: var(--gold); margin: 26px 0 10px; font-weight: 600; letter-spacing: .04em; }
+  article p { font-size: 15.5px; line-height: 1.68; color: var(--prose); margin: 0 0 15px; max-width: none; }
+  article strong { color: var(--ink); }
+  article ul, article ol { color: var(--prose); font-size: 15.5px; line-height: 1.68; padding-left: 22px; margin: 0 0 16px; }
+  article li { margin-bottom: 6px; }
+  article hr { border: 0; border-top: 1px solid var(--line); margin: 40px 0; }
+  article blockquote {
+    border-left: 3px solid var(--gold); background: var(--panel);
+    margin: 20px 0; padding: 12px 20px; border-radius: 0 var(--r-2) var(--r-2) 0;
+  }
+  article blockquote p:last-child { margin-bottom: 0; }
+  article pre {
+    background: var(--well); border: 1px solid var(--line); border-radius: var(--r-2);
+    padding: 14px 16px; overflow-x: auto; font-family: var(--font-mono);
+    font-size: 12px; line-height: 1.55; color: var(--prose); margin: 0 0 18px;
+  }
+  article pre code { background: none; border: 0; padding: 0; font-size: inherit; }
+  article .tablewrap { margin: 0 0 20px; }
+  article td, article th { font-size: 12.5px; }
+  article td:first-child { color: var(--ink); }
+
+  @media (max-width: 900px) {
+    .paper { grid-template-columns: 1fr; gap: 0; }
+    .paper > nav { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="doc-top">
+  <div class="brand">OPHIS <small>22 · The author's own source documents</small></div>
+  <a class="btn" href="../../index.html">Open the instrument &rarr;</a>
+</div>
+
+<div class="paper">
+  <nav aria-label="Contents">
+    <a class="l2" href="#1-the-flow-chart-and-what-protocol-prime-is">1 · The flow chart, and what "Protocol Prime" is</a>
+    <a class="l3" href="#1-1-the-reconciliation">1.1 The reconciliation</a>
+    <a class="l3" href="#1-2-where-the-implementation-is-narrower-than-the-design">1.2 Where the implementation is narrower than the design</a>
+    <a class="l2" href="#2-the-fourteen-operations-and-their-classes">2 · The fourteen operations and their classes</a>
+    <a class="l3" href="#2-1-the-likely-mechanism">2.1 The likely mechanism</a>
+    <a class="l2" href="#3-the-msrf-workbook-an-independent-check-on-the-extracted-arrays">3 · The MSRF workbook — an independent check on the extracted arrays</a>
+    <a class="l3" href="#3-1-the-four-normal-disagreements-and-the-ruling">3.1 The four Normal disagreements, and the ruling</a>
+    <a class="l3" href="#3-2-new-data-the-magnitude-master">3.2 New data: the magnitude master</a>
+    <a class="l2" href="#4-the-projection-window-2556-vs-2559">4 · The projection window: 2556 vs 2559</a>
+    <a class="l2" href="#5-the-six-msrf-filters-in-the-author-s-words">5 · The six MSRF filters, in the author's words</a>
+    <a class="l2" href="#6-what-the-author-withheld">6 · What the author withheld</a>
+    <a class="l2" href="#7-consequences-for-this-rebuild">7 · Consequences for this rebuild</a>
+  </nav>
+  <article>
+<h1 id="22-the-author-s-own-source-documents">22 · The author's own source documents</h1>
+<p><strong>Assignment:</strong> the design documents Jason M. Breshears wrote <em>before</em> the software existed — read against the shipped <code>Ophis_v12_Windows.exe</code> behaviour to find where the implementation followed the design and where it drifted.</p>
+<p><strong>Primary sources, read in full:</strong></p>
+<div class="tablewrap"><table><thead><tr><th style="text-align:left">File</th><th style="text-align:left">Pages</th><th style="text-align:left">What it is</th></tr></thead><tbody><tr><td style="text-align:left"><code>a. Ophis Operations Flow Chart.pdf</code></td><td style="text-align:left">4</td><td style="text-align:left">The system flow chart, <code>[A]</code>–<code>[I]</code>, dated May 2019</td></tr><tr><td style="text-align:left"><code>d. PREPS.pdf</code></td><td style="text-align:left">9</td><td style="text-align:left"><em>Pattern-Recognition Event Prediction System</em> — the six MSRF filters, in prose</td></tr><tr><td style="text-align:left"><code>f. Ophis Items Not Disclosed (Copy).pdf</code></td><td style="text-align:left">2</td><td style="text-align:left">What the author deliberately withheld</td></tr><tr><td style="text-align:left"><code>g. Ophis Procedural Notes.pdf</code></td><td style="text-align:left">4</td><td style="text-align:left">The 14 operations, start to finish, with their ALPHA/beta classes</td></tr><tr><td style="text-align:left"><code>MSRF Magnitude Calc-v2.xlsx</code></td><td style="text-align:left">1 sheet</td><td style="text-align:left">The author's own MSRF lookup workbook — 565-number master list plus the 390 that reached the app</td></tr></tbody></table></div>
+<p><strong>Headline result:</strong> the shipped engine implements the flow chart faithfully, but through a <em>generalisation</em> the author never described — and two of the fourteen operations carry a class the author's own notes contradict.</p>
+<hr>
+<h2 id="1-the-flow-chart-and-what-protocol-prime-is">1 · The flow chart, and what "Protocol Prime" is</h2>
+<p>The chart labels its stages <code>[A]</code> through <code>[I]</code>:</p>
+<div class="tablewrap"><table><thead><tr><th style="text-align:left">Label</th><th style="text-align:left">Meaning</th></tr></thead><tbody><tr><td style="text-align:left"><code>A</code></td><td style="text-align:left">the first date entered</td></tr><tr><td style="text-align:left"><code>B</code></td><td style="text-align:left">the second and all subsequent relevant dates</td></tr><tr><td style="text-align:left"><code>C</code></td><td style="text-align:left"><strong>the date the projection is being conducted</strong> — annotated <em>[Protocol Prime]</em></td></tr><tr><td style="text-align:left"><code>D</code></td><td style="text-align:left">the date-calendar that measures the distances</td></tr><tr><td style="text-align:left"><code>E</code></td><td style="text-align:left">axial rotations between <code>A</code> and <code>B</code></td></tr><tr><td style="text-align:left"><code>F</code></td><td style="text-align:left">axial rotations between <code>A</code> and <code>C</code></td></tr><tr><td style="text-align:left"><code>G</code></td><td style="text-align:left">axial rotations between <code>B</code> and <code>C</code></td></tr><tr><td style="text-align:left"><code>H</code></td><td style="text-align:left">Isometric Projection → <code>I</code>, <code>J</code>, <code>K</code> (one future date from each of E, F, G)</td></tr><tr><td style="text-align:left"><code>L</code></td><td style="text-align:left">Holofractal Recognition → <code>M</code>, <code>N</code>, <code>O</code></td></tr><tr><td style="text-align:left"><code>P</code></td><td style="text-align:left">Core Algorithm, <code>P-1</code> … <code>P-12</code></td></tr><tr><td style="text-align:left"><code>CC</code></td><td style="text-align:left">the MSRF, measuring every projection back to <code>A</code>, <code>B</code> <strong>and</strong> <code>C</code></td></tr><tr><td style="text-align:left"><code>DD</code>/<code>EE</code>/<code>FF</code></td><td style="text-align:left">the top three surviving dates, in descending magnitude</td></tr></tbody></table></div>
+<p>So the design has <strong>three spans, not one</strong>: 14 operations × 3 spans = <strong>42 future dates</strong>, which the chart says collapse to "most often only 38 to 39 actual dates … because different Ophis operations have targeted the same date."</p>
+<h3 id="1-1-the-reconciliation">1.1 The reconciliation</h3>
+<p>The shipped engine has no <code>A</code>/<code>B</code>/<code>C</code> at all. It takes N X-Dates and enumerates <strong>all unordered pairs</strong>. Those two descriptions are the same system:</p>
+<pre><code>3 X-Dates  -&gt;  C(3,2) = 3 pairs  =  E, F, G
+3 pairs x 14 operations          =  42 projections
+z-struct bucketing on the day    =  "38 to 39 actual dates"</code></pre>
+<p>Every number in the author's conclusion falls out of the shipped code exactly, provided the operator enters <code>C</code> as a third X-Date. The engine generalised <code>A</code>/<code>B</code>/<code>C</code> to N anchors and lost the vocabulary in the process.</p>
+<p><strong>Therefore: Protocol Prime is a procedure, not a code path.</strong> It is the instruction to always enter the date the projection is being conducted on as a control alongside the two historical dates. The author's claim in <em>Items Not Disclosed</em> — that "unauthorized user of Ophis can not use system to predict future events (unless Protocol Prime was revealed to this person)" — describes an operator who enters only <code>A</code> and <code>B</code>, gets 14 projections instead of 42, and never sees the two thirds of the output that <code>F</code> and <code>G</code> generate.</p>
+<p>Nothing in the code enforces or hints at this. It is the single highest-value undocumented operating instruction in the whole corpus, and it costs one extra X-Date.</p>
+<h3 id="1-2-where-the-implementation-is-narrower-than-the-design">1.2 Where the implementation is narrower than the design</h3>
+<p><code>CC</code> says the MSRF "measures the distance in axial rotations between all 42 projected dates back to <strong>A, B and C</strong>". The shipped engine probes exactly one number per projection — <code>rotation_count_z</code>, the offset from the operation's own base anchor. The distances back to the <em>other</em> controls are never computed and never filtered on.</p>
+<p>That is a real reduction in the MSRF's reach, and it is invisible from the UI.</p>
+<p><strong>Measured, on the <code>test-bradley</code> fixture</strong> (114 surviving Z-Dates), probing every projection back to every enabled control instead of one:</p>
+<div class="tablewrap"><table><thead><tr><th style="text-align:left"></th><th style="text-align:right">today</th><th style="text-align:right">with three distances</th></tr></thead><tbody><tr><td style="text-align:left">rows carrying at least one resonance match</td><td style="text-align:right">39</td><td style="text-align:right"><strong>101</strong></td></tr><tr><td style="text-align:left">rows with no match at all</td><td style="text-align:right">75</td><td style="text-align:right">38</td></tr><tr><td style="text-align:left">total resonance matches</td><td style="text-align:right">40</td><td style="text-align:right">124</td></tr><tr><td style="text-align:left">maximum hit count</td><td style="text-align:right">4</td><td style="text-align:right"><strong>8</strong></td></tr></tbody></table></div>
+<p><strong>54 % of rows would gain a match, and half the currently-silent rows would light up.</strong></p>
+<p>That is not a refinement, it is a different instrument — and it argues <em>for</em> the shipped behaviour rather than against it. The MSRF exists, in the author's own words, "to aid the Core Algorithm in the elimination of potentia, or phantom dates." A filter that matches half of what it previously rejected has lost most of its discriminating power. Whoever narrowed it to one distance may well have been fixing exactly that.</p>
+<p>Recorded, not changed. Parity comes first, and here the numbers agree with parity.</p>
+<hr>
+<h2 id="2-the-fourteen-operations-and-their-classes">2 · The fourteen operations and their classes</h2>
+<p><code>g. Ophis Procedural Notes.pdf</code> numbers the operations 1–14 and states a class for each. Compared against the shipped weights (<code>&gt;= 1</code> is Alpha, <code>&lt; 1</code> is Beta):</p>
+<div class="tablewrap"><table><thead><tr><th style="text-align:left">#</th><th style="text-align:left">Author's name</th><th style="text-align:left">Shipped equation</th><th style="text-align:left">Weight</th><th style="text-align:left">Shipped</th><th style="text-align:left">Author</th><th style="text-align:left"></th></tr></thead><tbody><tr><td style="text-align:left">1</td><td style="text-align:left">Isometric Projection</td><td style="text-align:left"><code>X2+oph_round(Y)</code></td><td style="text-align:left">1</td><td style="text-align:left">Alpha</td><td style="text-align:left">ALPHA</td><td style="text-align:left">✓</td></tr><tr><td style="text-align:left">2</td><td style="text-align:left">Holofractal Recognition</td><td style="text-align:left"><code>X2+oph_flip(oph_round(Y))</code></td><td style="text-align:left">1</td><td style="text-align:left">Alpha</td><td style="text-align:left">ALPHA</td><td style="text-align:left">✓</td></tr><tr><td style="text-align:left">3</td><td style="text-align:left">Core Algo I</td><td style="text-align:left"><code>X2+Y/OPH_CRV</code></td><td style="text-align:left">0.5</td><td style="text-align:left">Beta</td><td style="text-align:left">beta</td><td style="text-align:left">✓</td></tr><tr><td style="text-align:left">4</td><td style="text-align:left">Core Algo II</td><td style="text-align:left"><code>X1+(Y/2.0)xOPH_PI</code></td><td style="text-align:left">0.5</td><td style="text-align:left">Beta</td><td style="text-align:left">beta</td><td style="text-align:left">✓</td></tr><tr><td style="text-align:left">5</td><td style="text-align:left">Core Algo III</td><td style="text-align:left"><code>X2+Y/OPH_PHI</code></td><td style="text-align:left">1</td><td style="text-align:left">Alpha</td><td style="text-align:left">ALPHA</td><td style="text-align:left">✓</td></tr><tr><td style="text-align:left">6</td><td style="text-align:left"><strong>Core Algo IV</strong></td><td style="text-align:left"><code>X2+(Y/2.0)xOPH_PHI</code></td><td style="text-align:left"><strong>1</strong></td><td style="text-align:left"><strong>Alpha</strong></td><td style="text-align:left"><strong>beta</strong></td><td style="text-align:left">✗</td></tr><tr><td style="text-align:left">7</td><td style="text-align:left">Core Algo V</td><td style="text-align:left"><code>X1+(Y/2.0)xOPH_CRV</code></td><td style="text-align:left">0.5</td><td style="text-align:left">Beta</td><td style="text-align:left">beta</td><td style="text-align:left">✓</td></tr><tr><td style="text-align:left">8</td><td style="text-align:left">Core Algo VI</td><td style="text-align:left"><code>X2+(Y/2.0)xOPH_PI</code></td><td style="text-align:left">0.5</td><td style="text-align:left">Beta</td><td style="text-align:left">beta</td><td style="text-align:left">✓</td></tr><tr><td style="text-align:left">9</td><td style="text-align:left">Core Algo VII</td><td style="text-align:left"><code>X2+YxOPH_PHI</code></td><td style="text-align:left">1</td><td style="text-align:left">Alpha</td><td style="text-align:left">ALPHA</td><td style="text-align:left">✓</td></tr><tr><td style="text-align:left">10</td><td style="text-align:left">Core Algo VIII</td><td style="text-align:left"><code>X1+YxOPH_PI</code></td><td style="text-align:left">1</td><td style="text-align:left">Alpha</td><td style="text-align:left">ALPHA</td><td style="text-align:left">✓</td></tr><tr><td style="text-align:left">11</td><td style="text-align:left">Core Algo IX</td><td style="text-align:left"><code>X2+(Y/2.0)xOPH_CRV</code></td><td style="text-align:left">0.5</td><td style="text-align:left">Beta</td><td style="text-align:left">beta</td><td style="text-align:left">✓</td></tr><tr><td style="text-align:left">12</td><td style="text-align:left"><strong>Core Algo X</strong></td><td style="text-align:left"><code>X2+YxOPH_PI</code></td><td style="text-align:left"><strong>0.5</strong></td><td style="text-align:left"><strong>Beta</strong></td><td style="text-align:left"><strong>ALPHA</strong></td><td style="text-align:left">✗</td></tr><tr><td style="text-align:left">13</td><td style="text-align:left">Core Algo XI</td><td style="text-align:left"><code>X1+YxOPH_CRV</code></td><td style="text-align:left">0.5</td><td style="text-align:left">Beta</td><td style="text-align:left">beta</td><td style="text-align:left">✓</td></tr><tr><td style="text-align:left">14</td><td style="text-align:left">Core Algo XII</td><td style="text-align:left"><code>X2+YxOPH_CRV</code></td><td style="text-align:left">0.5</td><td style="text-align:left">Beta</td><td style="text-align:left">beta</td><td style="text-align:left">✓</td></tr></tbody></table></div>
+<p>Twelve agree. The two that do not are a <strong>transposition</strong>, and the totals still balance: the author specifies "4 ALPHA and 8 beta" among the twelve Core operations, and the shipped table has exactly four Alphas there too — just not the same four.</p>
+<h3 id="2-1-the-likely-mechanism">2.1 The likely mechanism</h3>
+<p>Ordinals 9 and 11 are the <code>YxOPH_PI</code> pair — the <code>X1</code> and <code>X2</code> variants of one formula. The author marks <em>both</em> Core VIII and Core X as ALPHA, i.e. both members of that pair.</p>
+<p>The v12 source annotates two rows as promotions made at v8:</p>
+<ul><li>ordinal 9, <code>X1+YxOPH_PI</code>, <em>"radius projection, promoted at v8"</em> — <strong>restores</strong> the author's class</li><li>ordinal 5, <code>X2+(Y/2.0)xOPH_PHI</code>, <em>"original beta phi 6, promoted at v8"</em> — <strong>contradicts</strong> it</li></ul>
+<p>So v8 promoted two operations, got one right, and promoted <code>X2+(Y/2.0)xOPH_PHI</code> where the author's numbered list points at <code>X2+YxOPH_PI</code>. An off-by-one while reading a hand-numbered list is the simplest explanation that fits every fact.</p>
+<p><strong>Not changed.</strong> The weights feed <code>operation_score</code> directly, so moving either one shifts every score in every projection. The shipped table is what the owner's results have always been computed from, and parity is the contract. The finding is recorded so the choice can be made deliberately.</p>
+<p>Operations 15 and 16 (<code>X1+YxOPH_HEP</code>, <code>X2+YxOPH_HEP</code>) postdate these documents entirely — added Aug and Dec 2025, both Alpha, and unmentioned in any author source.</p>
+<hr>
+<h2 id="3-the-msrf-workbook-an-independent-check-on-the-extracted-arrays">3 · The MSRF workbook — an independent check on the extracted arrays</h2>
+<p><code>MSRF Magnitude Calc-v2.xlsx</code> holds two tables on one sheet:</p>
+<div class="tablewrap"><table><thead><tr><th style="text-align:left">Range</th><th style="text-align:left">Defined name</th><th style="text-align:left">Contents</th></tr></thead><tbody><tr><td style="text-align:left"><code>E9:G573</code></td><td style="text-align:left"><code>MSRF_NUMBERS</code></td><td style="text-align:left"><strong>565</strong> numbers, each with a Fibonacci flag and a "Magnitude" 0–14</td></tr><tr><td style="text-align:left"><code>I9:K398</code></td><td style="text-align:left">—</td><td style="text-align:left"><strong>390</strong> numbers, each with a Category (Normal / Important / Vortex) and Score (1 / 2)</td></tr></tbody></table></div>
+<p>The 390-row table is the app's own filter set, and checking it against the arrays lifted out of <code>ophis_model__params.js</code> is the first fully independent verification of that extraction:</p>
+<div class="tablewrap"><table><thead><tr><th style="text-align:left">Tier</th><th style="text-align:left">From the binary</th><th style="text-align:left">From the workbook</th><th style="text-align:left">Agreement</th></tr></thead><tbody><tr><td style="text-align:left">Normal</td><td style="text-align:left">325</td><td style="text-align:left">325</td><td style="text-align:left">321 of 325</td></tr><tr><td style="text-align:left">Important</td><td style="text-align:left">53</td><td style="text-align:left">53</td><td style="text-align:left"><strong>53 of 53</strong></td></tr><tr><td style="text-align:left">Vortex</td><td style="text-align:left">12</td><td style="text-align:left">12</td><td style="text-align:left"><strong>12 of 12</strong></td></tr></tbody></table></div>
+<p>The counts confirm the disputed figure: <strong>325 Normal, not the 276</strong> that <code>Ophis_v9_DeepDive_Addendum.md</code> and <code>Ophis_v12_ReverseEngineering_Report.md</code> both claimed. Important and Vortex match perfectly, member for member.</p>
+<h3 id="3-1-the-four-normal-disagreements-and-the-ruling">3.1 The four Normal disagreements, and the ruling</h3>
+<div class="tablewrap"><table><thead><tr><th style="text-align:left">Binary</th><th style="text-align:left">Workbook</th><th style="text-align:left">In the 565-number master?</th><th style="text-align:left">Ruling</th></tr></thead><tbody><tr><td style="text-align:left"><code>238</code></td><td style="text-align:left"><code>236</code></td><td style="text-align:left"><strong>238 yes</strong> (magnitude 1) · 236 no</td><td style="text-align:left">binary</td></tr><tr><td style="text-align:left"><code>476</code></td><td style="text-align:left"><code>478</code></td><td style="text-align:left"><strong>476 yes</strong> (magnitude 2) · 478 no</td><td style="text-align:left">binary</td></tr><tr><td style="text-align:left"><code>493</code></td><td style="text-align:left"><code>496</code></td><td style="text-align:left">neither</td><td style="text-align:left">unresolved</td></tr><tr><td style="text-align:left"><code>582</code></td><td style="text-align:left"><code>562</code></td><td style="text-align:left">neither</td><td style="text-align:left">unresolved</td></tr></tbody></table></div>
+<p>All four are single-digit differences and three of them are a <code>6</code>/<code>8</code> confusion — the signature of a list transcribed by hand. Where the master list can arbitrate it backs the binary twice and the workbook never, so <strong>the shipped values stand</strong>. <code>493</code> and <code>582</code> are unresolved: neither they nor their counterparts appear in the master at all, which is an inconsistency inside the author's own material rather than an implementation defect.</p>
+<h3 id="3-2-new-data-the-magnitude-master">3.2 New data: the magnitude master</h3>
+<p>The 565-number table is a source the study did not previously have. It supplies, per number:</p>
+<ul><li>a <strong>Fibonacci flag</strong> — set for 8, 13, 21, 34, 55, 89 … confirming the Fibonacci Sequence Filter operates on the true series;</li><li>a <strong>Magnitude</strong> on a 0–10 scale (plus one 14), which spec 19 §3.2 derived independently as <code>dimensions − 1</code>. The workbook is consistent with that derivation.</li></ul>
+<p>Only 390 of the 565 reached the app, so the master is roughly 1.45× the shipped filter.</p>
+<hr>
+<h2 id="4-the-projection-window-2556-vs-2559">4 · The projection window: 2556 vs 2559</h2>
+<p><em>Items Not Disclosed</em> is explicit:</p>
+<blockquote><p>Ophis window of projections is within a 2556 day period [7 years].</p></blockquote>
+<p>The shipped default for <code>iso_event_filter_beyond_max_days_value</code> is <strong>2559</strong>, because the code reuses <code>HIGHEST_MSRF_NUMBER</code> — the largest member of the Normal filter — for the filter's default. The two constants have no relationship; they collided because one happened to be near the other.</p>
+<p>The author also notes the window "can be expanded to at least 20 years", but that "this expansion can not be added to this 2556-day Ophis version" — a 20-year build would have to start from scratch. That is the authoritative answer to any request to widen the horizon: it is not a configuration change.</p>
+<p>Left at 2559 for parity. It is a user-editable field, so anyone wanting the author's stated window types <code>2556</code>.</p>
+<hr>
+<h2 id="5-the-six-msrf-filters-in-the-author-s-words">5 · The six MSRF filters, in the author's words</h2>
+<p><code>PREPS.pdf</code> gives each filter a rationale. Summarised, because the names alone have been carried in the code with no explanation of what they mean:</p>
+<div class="tablewrap"><table><thead><tr><th style="text-align:left">Filter</th><th style="text-align:left">What it is built from</th></tr></thead><tbody><tr><td style="text-align:left">Annular Chronometric <em>(Diurnal Projections)</em></td><td style="text-align:left">360 and 365.25 reduced to "proportionate mathematical fractals of varying dimensions"</td></tr><tr><td style="text-align:left">Geodetic Chronometry <em>(formerly Phoenix Sequence)</em></td><td style="text-align:left">a number series the author traces to the Great Pyramid, Thales, Aristarchus and Nostradamus</td></tr><tr><td style="text-align:left">Hydrogen Spacing Angle</td><td style="text-align:left">the 105° H–O–H bond angle of water, applied to "space in motion"</td></tr><tr><td style="text-align:left">Fibonacci Sequence <em>(formerly Golden Sexagesimal)</em></td><td style="text-align:left">phi and the base-60 system "unified into a third kind of coding"</td></tr><tr><td style="text-align:left">IntraDecimal Matrix</td><td style="text-align:left">"about 50 numbers … when multiplied into fractals of their whole number equivalents transform into other numbers equally"</td></tr><tr><td style="text-align:left">Vortex Holography</td><td style="text-align:left">the reverse-and-subtract orbit over 1–15 000; ~95 % of numbers collapse to zero, the surviving ~5 % loop forever</td></tr></tbody></table></div>
+<p>The Vortex description matches <code>docs/VORTEX.md</code> exactly — that decode was reached independently from the twelve shipped literals, and the author's account of how he found them (running 1–15 000 through a program that "subtracted every number from a holographic reflection of itself") confirms the reverse-and-subtract mechanism.</p>
+<hr>
+<h2 id="6-what-the-author-withheld">6 · What the author withheld</h2>
+<p>Recorded so that no future reader mistakes absence for oversight. Per <em>Items Not Disclosed</em>, these were never shipped and are not recoverable from the binary:</p>
+<ul><li>the 12-formula Core Algorithm <strong>as the author conceives it</strong> (the shipped equations are the implementation, not the derivation);</li><li><strong>Protocol Prime</strong> as a formal key — though §1.1 above reconstructs its operational meaning;</li><li>the MSRF tier hierarchy specifics, and the Tier VII alpha/beta/ceta split;</li><li>the internals of the Geodetic Chronometry, Hydrogen Spacing Angle and IntraDecimal Matrix filters, of Diurnal and Fibonacci Projections, and of Holoflective Numbers;</li><li>19 pages of VBA templates and the working Excel Core Algorithm sheet with MSRF disabled;</li><li>the Holofractal Recognition Projection specifics;</li><li>the Vortex Holography research and charts.</li></ul>
+<p>The shipped app therefore contains the <em>outputs</em> of six filters compressed into three flat number arrays. The filters themselves have never existed in code — a point worth holding onto, because "implement the Geodetic Chronometry Filter" is not a task the binary can be mined for.</p>
+<hr>
+<h2 id="7-consequences-for-this-rebuild">7 · Consequences for this rebuild</h2>
+<div class="tablewrap"><table><thead><tr><th style="text-align:left">Finding</th><th style="text-align:left">Action taken</th></tr></thead><tbody><tr><td style="text-align:left">Protocol Prime = enter the projection date as a third control</td><td style="text-align:left">Documented; engine already supports it via all-pairs</td></tr><tr><td style="text-align:left">MSRF should probe distances back to every control</td><td style="text-align:left">Measured (§1.2): it would add matches to 54 % of rows and double the peak hit count. <strong>Not</strong> implemented — parity, and the numbers agree</td></tr><tr><td style="text-align:left">Core IV / Core X class transposition</td><td style="text-align:left">Recorded; shipped weights <strong>kept</strong></td></tr><tr><td style="text-align:left">4 Normal numbers disputed</td><td style="text-align:left">Ruled for the binary on evidence; shipped values <strong>kept</strong></td></tr><tr><td style="text-align:left">2556 vs 2559 day window</td><td style="text-align:left">Recorded; default <strong>kept</strong> at 2559, field is editable</td></tr><tr><td style="text-align:left">Magnitude / Fibonacci master (565 numbers)</td><td style="text-align:left">New data source, available for a future filter rebuild</td></tr></tbody></table></div>
+  </article>
+</div>
+
+</body>
+</html>

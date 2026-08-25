@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deliberate deviations from the original</title>
+<meta http-equiv="Content-Security-Policy"
+      content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'none'; img-src 'self' data:; connect-src 'none'">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../src/styles/ophis-tokens.css">
+<link rel="stylesheet" href="../../src/styles/ophis-app.css">
+<style>
+  body { padding-bottom: 96px; }
+  .doc-top {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding: 20px var(--gutter); max-width: 1180px; margin: 0 auto;
+  }
+  .paper {
+    display: grid; grid-template-columns: 232px minmax(0, 1fr); gap: 48px;
+    max-width: 1180px; margin: 0 auto; padding: 0 var(--gutter);
+  }
+  .paper > nav {
+    position: sticky; top: 24px; align-self: start;
+    max-height: calc(100vh - 48px); overflow-y: auto;
+    padding: 24px 0; font-size: 12.5px;
+  }
+  .paper > nav a { display: block; color: var(--dim); text-decoration: none; padding: 3px 0; line-height: 1.4; }
+  .paper > nav a:hover { color: var(--gold-2); }
+  .paper > nav a.l3 { padding-left: 14px; font-size: 11.5px; color: var(--faint); }
+
+  article { padding: 24px 0; max-width: 76ch; }
+  article h1 { font-family: var(--font-display); font-size: clamp(28px, 4vw, 40px); color: var(--ink); margin: 0 0 20px; letter-spacing: .01em; }
+  article h2 { font-family: var(--font-display); font-size: 24px; color: var(--gold-2); margin: 52px 0 16px; }
+  article h3 { font-size: 17px; color: var(--ink); margin: 34px 0 12px; font-weight: 600; }
+  article h4 { font-size: 14px; color: var(--gold); margin: 26px 0 10px; font-weight: 600; letter-spacing: .04em; }
+  article p { font-size: 15.5px; line-height: 1.68; color: var(--prose); margin: 0 0 15px; max-width: none; }
+  article strong { color: var(--ink); }
+  article ul, article ol { color: var(--prose); font-size: 15.5px; line-height: 1.68; padding-left: 22px; margin: 0 0 16px; }
+  article li { margin-bottom: 6px; }
+  article hr { border: 0; border-top: 1px solid var(--line); margin: 40px 0; }
+  article blockquote {
+    border-left: 3px solid var(--gold); background: var(--panel);
+    margin: 20px 0; padding: 12px 20px; border-radius: 0 var(--r-2) var(--r-2) 0;
+  }
+  article blockquote p:last-child { margin-bottom: 0; }
+  article pre {
+    background: var(--well); border: 1px solid var(--line); border-radius: var(--r-2);
+    padding: 14px 16px; overflow-x: auto; font-family: var(--font-mono);
+    font-size: 12px; line-height: 1.55; color: var(--prose); margin: 0 0 18px;
+  }
+  article pre code { background: none; border: 0; padding: 0; font-size: inherit; }
+  article .tablewrap { margin: 0 0 20px; }
+  article td, article th { font-size: 12.5px; }
+  article td:first-child { color: var(--ink); }
+
+  @media (max-width: 900px) {
+    .paper { grid-template-columns: 1fr; gap: 0; }
+    .paper > nav { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="doc-top">
+  <div class="brand">OPHIS <small>Deliberate deviations from the original</small></div>
+  <a class="btn" href="../../index.html">Open the instrument &rarr;</a>
+</div>
+
+<div class="paper">
+  <nav aria-label="Contents">
+    <a class="l2" href="#1-no-new-function-no-eval">1. No `new Function` / no `eval`</a>
+    <a class="l2" href="#2-no-arbitrary-path-file-writes">2. No arbitrary-path file writes</a>
+    <a class="l2" href="#3-no-sign-in">3. No sign-in</a>
+    <a class="l2" href="#4-today-comes-from-the-clock">4. "Today" comes from the clock</a>
+    <a class="l2" href="#5-user-text-is-never-markup">5. User text is never markup</a>
+    <a class="l2" href="#6-errors-are-contained-per-panel">6. Errors are contained per panel</a>
+    <a class="l2" href="#7-x-is-a-real-operator-not-a-string-replace">7. `x` is a real operator, not a string replace</a>
+    <a class="l2" href="#8-the-grammar-is-a-superset">8. The grammar is a superset</a>
+    <a class="l2" href="#9-preserved-on-purpose">9. Preserved on purpose</a>
+    <a class="l2" href="#10-not-carried-over-from-the-desktop-build">10. Not carried over from the desktop build</a>
+    <a class="l2" href="#11-introduced-by-this-rebuild">11. Introduced by this rebuild</a>
+    <a class="l2" href="#12-known-reductions">12. Known reductions</a>
+  </nav>
+  <article>
+<h1 id="deliberate-deviations-from-the-original">Deliberate deviations from the original</h1>
+<p>The rewrite is <strong>bit-exact</strong> on the mathematics — see <code>tests/parity.test.mjs</code>, which pins it against values read out of the original engine running in a browser. Everything below is a place where it deliberately behaves <em>differently</em>, and why.</p>
+<hr>
+<h2 id="1-no-new-function-no-eval">1. No <code>new Function</code> / no <code>eval</code></h2>
+<p><strong>Original.</strong> Operation equations were handed to <code>new Function(...)</code>. Both the desktop build and the browser build did this, and in both the string that was <em>validated</em> was not the string that was <em>compiled</em>: the validator inspected a copy with constants and function names substituted out, then compiled the untouched original. Equations arrive from <code>.oph</code> preset files, so that is an untrusted input reaching a code-generation sink.</p>
+<p><strong>Now.</strong> <code>src/core/equation/</code> is a real tokeniser → recursive-descent parser → AST evaluator. Same grammar, same results, no code generation. A malformed equation is a validation error with a character position, not a thrown exception from the JS engine — and not a way to run code.</p>
+<p>This also lets <code>index.html</code> ship a Content-Security-Policy without <code>'unsafe-eval'</code>.</p>
+<p><strong>Verified:</strong> all 49 shipped equations across all five packs, at six values of Y, produce byte-identical output to the original (compared by SHA-256 of the canonicalised results).</p>
+<p><strong>Prior art.</strong> This approach was not invented here. <code>Ophis_v12_Hardened_Engine_Lab.html</code> in the study folder is an earlier proof-of-fix that already replaced <code>new Function</code> with an AST walker and self-verified both parity and injection resistance in the browser. The rewrite productionises that prototype: same idea, split into a tokeniser, parser and evaluator, with arity checking, positioned error messages, and the parity check moved into a test suite that CI runs.</p>
+<hr>
+<h2 id="2-no-arbitrary-path-file-writes">2. No arbitrary-path file writes</h2>
+<p><strong>Original.</strong> The desktop build wrote files through an Electron IPC bridge that called <code>fs.writeFile</code> with no path validation, from a renderer running with <code>nodeIntegration: true</code>. That combination let a crafted preset drop a file anywhere the user could write.</p>
+<p><strong>Now.</strong> Browser-only. Exports go through <code>Blob</code> + a download link, so the user chooses the destination. <code>src/io/download.js</code> is the only place that hands out a file.</p>
+<hr>
+<h2 id="3-no-sign-in">3. No sign-in</h2>
+<p><strong>Original.</strong> A client-side sign-in gate compared against five hard-coded SHA-512 hashes. Since the check ran in the renderer, it was decoration — and in v12 re-enabling it crashed init anyway.</p>
+<p><strong>Now.</strong> Removed entirely. A local, offline study instrument has no one to authenticate to. Nothing that looks like access control should exist unless it actually controls access.</p>
+<hr>
+<h2 id="4-today-comes-from-the-clock">4. "Today" comes from the clock</h2>
+<p><strong>Original.</strong> <code>TODAY</code> was a baked-in literal (<code>{y:2026, m:8, d:25}</code>). Every Metonic test measured from that fixed date, so the app silently went stale.</p>
+<p><strong>Now.</strong> <code>today()</code> reads the system clock and <code>state.referenceYear</code> flows into the scoring. The test suite pins <code>referenceYear</code> to 2026 explicitly so the parity fixtures stay stable.</p>
+<hr>
+<h2 id="5-user-text-is-never-markup">5. User text is never markup</h2>
+<p><strong>Original.</strong> Rows were assembled with <code>innerHTML</code> and template strings, including anchor labels and event text.</p>
+<p><strong>Now.</strong> <code>el()</code> sets <code>textContent</code>. The <code>html:</code> escape hatch exists but is only ever called with string literals written into the source. Anchor labels are also prefixed when they could be read as a spreadsheet formula on CSV export.</p>
+<hr>
+<h2 id="6-errors-are-contained-per-panel">6. Errors are contained per panel</h2>
+<p><strong>Original.</strong> One flat script; a throw during render left the page half-built.</p>
+<p><strong>Now.</strong> <code>app.js</code> initialises each panel inside a <code>try</code>, logging and continuing. A broken panel costs you that panel, not the app.</p>
+<hr>
+<h2 id="7-x-is-a-real-operator-not-a-string-replace">7. <code>x</code> is a real operator, not a string replace</h2>
+<p><strong>Original.</strong> The body of an equation had <code>.replace(/x/g, '*')</code> applied to it globally, so any name containing a lowercase <code>x</code> would be silently corrupted.</p>
+<p><strong>Now.</strong> The tokeniser treats <code>x</code> and <code>×</code> as multiplication tokens and stops identifiers at them. Same behaviour for every equation that exists; no longer a landmine for a future <code>oph_max</code>. The constraint is documented in <code>docs/MODDING.md</code>: <strong>no name may contain a lowercase <code>x</code></strong>.</p>
+<hr>
+<h2 id="8-the-grammar-is-a-superset">8. The grammar is a superset</h2>
+<p>The original's parser accepted only single-argument functions and four constants. The rewrite adds <strong>multi-argument functions</strong> (<code>oph_mod(a,b)</code>, <code>oph_pow</code>, <code>oph_gcd</code>, <code>oph_lcm</code>, <code>oph_atan2</code>, <code>oph_snap</code>), trigonometry, and sixteen further constants — the Saros and Inex eclipse cycles, the Sothic cycle, precession, the planetary returns, the four year-lengths, <code>OPH_E</code> and <code>OPH_TAU</code>.</p>
+<p>This is strictly additive. Every equation the original accepted still parses and produces the identical value: the parity hash over all 49 shipped equations × 6 values of Y is unchanged (<code>1b455166…8821a</code>).</p>
+<p>Arity is read from <code>fn.length</code> and enforced at compile time, so a miscalled function is a clear message (<code>oph_mod() takes 2 arguments, got 1</code>) rather than a silent <code>NaN</code>.</p>
+<p>These were the top two items on the owner's own roadmap, and each was a single data-file edit — which is the architecture doing what it was built for.</p>
+<hr>
+<h2 id="9-preserved-on-purpose">9. Preserved on purpose</h2>
+<p>These look like bugs and are <strong>kept</strong>, because parity depends on them:</p>
+<div class="tablewrap"><table><thead><tr><th style="text-align:left">Behaviour</th><th style="text-align:left">Why it looks wrong</th><th style="text-align:left">Why it stays</th></tr></thead><tbody><tr><td style="text-align:left"><code>OPH_PI = 3.14</code></td><td style="text-align:left">Not <code>Math.PI</code></td><td style="text-align:left">It is the Archaix constant; changing it moves every projection</td></tr><tr><td style="text-align:left"><code>oph_flip(12.5) === 52.1</code></td><td style="text-align:left">The decimal point is re-inserted at its <strong>original</strong> index, not mirrored</td><td style="text-align:left">Every flip operation depends on it</td></tr><tr><td style="text-align:left"><code>oph_flip</code> returns <code>0</code> for <code>NaN</code></td><td style="text-align:left">Silently swallows a bad value</td><td style="text-align:left">Some equations rely on the fallthrough</td></tr><tr><td style="text-align:left"><code>X1</code> binds to the lower-<strong>indexed</strong> anchor, not the earlier date</td><td style="text-align:left">Surprising</td><td style="text-align:left">Reordering the anchor list is a deliberate control</td></tr><tr><td style="text-align:left">Pairing is <strong>all pairs</strong>, not adjacent</td><td style="text-align:left">Expensive at high anchor counts</td><td style="text-align:left">It is the method</td></tr><tr><td style="text-align:left">MSRF matches on the interval <strong>or</strong> the offset</td><td style="text-align:left">Easy to miss</td><td style="text-align:left">Both are scored in the original</td></tr><tr><td style="text-align:left">Eclipse lookup returns <em>a</em> hit, not the <em>nearest</em></td><td style="text-align:left">Only matters when tolerance &gt; 1</td><td style="text-align:left">Tolerance is 1 in the cast</td></tr><tr><td style="text-align:left">Convergence day-windows chain transitively</td><td style="text-align:left">A ±30 cluster can span more than 30 days</td><td style="text-align:left">Exposed via <code>spanDays</code> rather than changed</td></tr></tbody></table></div>
+<p>And in the <code>ophis</code> reckoning specifically:</p>
+<div class="tablewrap"><table><thead><tr><th style="text-align:left">Behaviour</th><th style="text-align:left">Why it looks wrong</th><th style="text-align:left">Why it stays</th></tr></thead><tbody><tr><td style="text-align:left"><code>round1(-1.25) === -1.2</code></td><td style="text-align:left">The <code>Number.EPSILON</code> nudge is wrong below zero</td><td style="text-align:left">Reachable whenever X₂ precedes X₁; the original rounds this way</td></tr><tr><td style="text-align:left">The vortex tolerance uses raw IEEE-754</td><td style="text-align:left"><code>76.1</code> misses <code>76.2</code> by <code>0.000000000000001</code></td><td style="text-align:left">Adding an epsilon flips that row and moves every projection near it</td></tr><tr><td style="text-align:left"><code>43.5</code> matches, but <code>100.5</code> does not</td><td style="text-align:left">The <code>.5</code> dead zone runs <em>after</em> the vortex pass</td><td style="text-align:left"><code>43.5</code> <strong>is</strong> a vortex number; order is the whole behaviour</td></tr><tr><td style="text-align:left"><code>rotation_count_z</code> is <code>round1</code> of the <code>round2</code> value</td><td style="text-align:left">A double rounding</td><td style="text-align:left">It is the number the filters probe; probing the raw value finds different matches</td></tr><tr><td style="text-align:left">The offset becomes milliseconds <em>before</em> it is rounded</td><td style="text-align:left">Two rounding steps in a confusing order</td><td style="text-align:left">Rounding first moves projections by up to half a day</td></tr><tr><td style="text-align:left"><code>SORT_TYPE__OPERATIONS</code> sorts by <strong>count</strong>, not score</td><td style="text-align:left">The column tooltip promised score</td><td style="text-align:left">Both arms of the original's if/else assigned the count. Tooltip corrected; <code>SORT_TYPE__OPERATION_SCORE</code> added alongside</td></tr><tr><td style="text-align:left">The 'beyond N days' filter defaults to <strong>2559</strong></td><td style="text-align:left">The author's own notes say the window is 2556 days</td><td style="text-align:left">The code reuses <code>HIGHEST_MSRF_NUMBER</code>; the two constants are unrelated and collided. The field is editable</td></tr><tr><td style="text-align:left">Two operations carry a class the author's notes contradict</td><td style="text-align:left">Core IV is Alpha here and beta there; Core X the reverse</td><td style="text-align:left">Weight feeds <code>operation_score</code> directly, so moving either shifts every score. See <code>reverse/22</code></td></tr></tbody></table></div>
+<hr>
+<h2 id="10-not-carried-over-from-the-desktop-build">10. Not carried over from the desktop build</h2>
+<p>Almost everything the Electron app did is now here. What is left:</p>
+<div class="tablewrap"><table><thead><tr><th style="text-align:left">Feature</th><th style="text-align:left">Spec</th><th style="text-align:left">Note</th></tr></thead><tbody><tr><td style="text-align:left">Offline Leaflet map for picking lat/long</td><td style="text-align:left"><code>12-astronomy-data.md</code></td><td style="text-align:left">v12 shipped a 1 365-tile pyramid — 97 % of its asset payload — purely so the picker worked air-gapped. Coordinates are typed instead</td></tr><tr><td style="text-align:left">Skins and <code>EVENT_TYPE</code>-driven window titles</td><td style="text-align:left"><code>14-domain-and-style.md</code></td><td style="text-align:left"><code>type</code> stays in the schema so a <code>.oph</code> round-trips, and is otherwise inert</td></tr><tr><td style="text-align:left">Headless mode and its query-parameter validation modes</td><td style="text-align:left"><code>16-electron-main-process.md</code></td><td style="text-align:left">The strict/loose distinction survives in <code>io/oph.js</code>; there is no CLI to select it</td></tr></tbody></table></div>
+<hr>
+<h2 id="11-introduced-by-this-rebuild">11. Introduced by this rebuild</h2>
+<p>Places where the rewrite does something the original did not do at all.</p>
+<div class="tablewrap"><table><thead><tr><th style="text-align:left">Change</th><th style="text-align:left">Why</th></tr></thead><tbody><tr><td style="text-align:left"><strong>Chart labels are chosen, not shoved.</strong> Colliding date labels are dropped by rank rather than pushed apart</td><td style="text-align:left">v12 spread them with a recursive pass, which turns an overlap into a band of text no longer above the date it names. Every surviving label sits at its true position</td></tr><tr><td style="text-align:left"><strong>Arcs are real ellipses.</strong></td><td style="text-align:left">v12 set <code>lineTension</code> using a Chart.js <strong>v2</strong> option name that v4 ignores, so every arc was silently a 13-segment polyline</td></tr><tr><td style="text-align:left"><strong>Hovering re-strokes one arc</strong> instead of rebuilding every dataset</td><td style="text-align:left">Its chart library could not reorder datasets, so a hover rebuilt all of them</td></tr><tr><td style="text-align:left"><strong>The Audit screen exists.</strong></td><td style="text-align:left">v12's <code>renderDebugOutput</code> was written, commented out of the screen list, and shipped with two bugs</td></tr><tr><td style="text-align:left"><strong>The activity log exists.</strong></td><td style="text-align:left">The author's own <code>// TODO: Try to pipe these kinds of things to an activity log, ultimately. Toasts are limited.</code> Every toast is mirrored into it</td></tr><tr><td style="text-align:left"><strong>Sunset is computed, not looked up.</strong> ~60 lines of Meeus reduction replaces three libraries totalling ~150 KB</td><td style="text-align:left">Only one of the three was ever reached, and the app consumed exactly one value from it. Agrees to about a minute</td></tr><tr><td style="text-align:left"><strong>XLSX ships the same 8 columns as the CSV</strong>, with a frozen bold header</td><td style="text-align:left">v12's was an admitted 3-column proof of concept</td></tr><tr><td style="text-align:left"><strong>The PDF is a real layout pass</strong></td><td style="text-align:left">v12's callback state machine drifted 40 pt per page and could emit <code>&lt;table width="NaN"&gt;</code></td></tr><tr><td style="text-align:left"><strong>An empty result is not an error.</strong> A dedicated panel with a <em>Loosen filters</em> shortcut</td><td style="text-align:left">v12 rendered it under a header reading <em>Errors</em> in red. An over-tight filter is not an error</td></tr><tr><td style="text-align:left"><strong>Everything is keyboard-operable</strong></td><td style="text-align:left">v12 set <code>tabIndex = -1</code> on every button and checkbox at startup</td></tr></tbody></table></div>
+<hr>
+<h2 id="12-known-reductions">12. Known reductions</h2>
+<p>One place where this rebuild is <em>narrower</em> than the design, recorded so it is not mistaken for an oversight.</p>
+<p><strong>The MSRF probes one distance per projection, not three.</strong> The author's flow chart (<code>[CC]</code>) says the filter measures "the distance in axial rotations between all 42 projected dates back to A, B <strong>and</strong> C". The shipped v12 engine probes only <code>rotation_count_z</code> — the offset from the operation's own base anchor — and this reproduces that. The distances back to the other controls are never computed and never filtered on.</p>
+<p>This is faithful to the binary and unfaithful to the design — and measurement suggests the binary is right. On the <code>test-bradley</code> fixture, probing all three distances adds a match to <strong>54 % of rows</strong>, lights up half the rows that currently match nothing, and doubles the peak hit count from 4 to 8. A filter whose stated job is "the elimination of phantom dates" does not do that job better by matching half of what it used to reject.</p>
+<p>Left as shipped. The full table is in <code>reverse/22</code> §1.2.</p>
+  </article>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OPHIS · Pattern-Recognition Event Prediction</title>
+<meta http-equiv="Content-Security-Policy"
+      content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'none'; img-src 'self' data:; connect-src 'none'">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../src/styles/ophis-tokens.css">
+<link rel="stylesheet" href="../../src/styles/ophis-app.css">
+<style>
+  body { padding-bottom: 96px; }
+  .doc-top {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding: 20px var(--gutter); max-width: 1180px; margin: 0 auto;
+  }
+  .paper {
+    display: grid; grid-template-columns: 232px minmax(0, 1fr); gap: 48px;
+    max-width: 1180px; margin: 0 auto; padding: 0 var(--gutter);
+  }
+  .paper > nav {
+    position: sticky; top: 24px; align-self: start;
+    max-height: calc(100vh - 48px); overflow-y: auto;
+    padding: 24px 0; font-size: 12.5px;
+  }
+  .paper > nav a { display: block; color: var(--dim); text-decoration: none; padding: 3px 0; line-height: 1.4; }
+  .paper > nav a:hover { color: var(--gold-2); }
+  .paper > nav a.l3 { padding-left: 14px; font-size: 11.5px; color: var(--faint); }
+
+  article { padding: 24px 0; max-width: 76ch; }
+  article h1 { font-family: var(--font-display); font-size: clamp(28px, 4vw, 40px); color: var(--ink); margin: 0 0 20px; letter-spacing: .01em; }
+  article h2 { font-family: var(--font-display); font-size: 24px; color: var(--gold-2); margin: 52px 0 16px; }
+  article h3 { font-size: 17px; color: var(--ink); margin: 34px 0 12px; font-weight: 600; }
+  article h4 { font-size: 14px; color: var(--gold); margin: 26px 0 10px; font-weight: 600; letter-spacing: .04em; }
+  article p { font-size: 15.5px; line-height: 1.68; color: var(--prose); margin: 0 0 15px; max-width: none; }
+  article strong { color: var(--ink); }
+  article ul, article ol { color: var(--prose); font-size: 15.5px; line-height: 1.68; padding-left: 22px; margin: 0 0 16px; }
+  article li { margin-bottom: 6px; }
+  article hr { border: 0; border-top: 1px solid var(--line); margin: 40px 0; }
+  article blockquote {
+    border-left: 3px solid var(--gold); background: var(--panel);
+    margin: 20px 0; padding: 12px 20px; border-radius: 0 var(--r-2) var(--r-2) 0;
+  }
+  article blockquote p:last-child { margin-bottom: 0; }
+  article pre {
+    background: var(--well); border: 1px solid var(--line); border-radius: var(--r-2);
+    padding: 14px 16px; overflow-x: auto; font-family: var(--font-mono);
+    font-size: 12px; line-height: 1.55; color: var(--prose); margin: 0 0 18px;
+  }
+  article pre code { background: none; border: 0; padding: 0; font-size: inherit; }
+  article .tablewrap { margin: 0 0 20px; }
+  article td, article th { font-size: 12.5px; }
+  article td:first-child { color: var(--ink); }
+
+  @media (max-width: 900px) {
+    .paper { grid-template-columns: 1fr; gap: 0; }
+    .paper > nav { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="doc-top">
+  <div class="brand">OPHIS <small>OPHIS · Pattern-Recognition Event Prediction</small></div>
+  <a class="btn" href="../../index.html">Open the instrument &rarr;</a>
+</div>
+
+<div class="paper">
+  <nav aria-label="Contents">
+    <a class="l2" href="#running-it">Running it</a>
+    <a class="l2" href="#what-it-does">What it does</a>
+    <a class="l3" href="#protocol-prime">Protocol Prime</a>
+    <a class="l2" href="#layout">Layout</a>
+    <a class="l2" href="#built-to-be-modified">Built to be modified</a>
+    <a class="l2" href="#verification">Verification</a>
+    <a class="l2" href="#handing-this-on">Handing this on</a>
+    <a class="l2" href="#the-study">The study</a>
+    <a class="l2" href="#also-here">Also here</a>
+  </nav>
+  <article>
+<h1 id="ophis-pattern-recognition-event-prediction">OPHIS · Pattern-Recognition Event Prediction</h1>
+<p>A ground-up rebuild of <strong>Ophis v12</strong> — Jason M. Breshears' date-projection instrument — reverse engineered from the shipped Windows application with the owner's permission, and verified bit-exact against it.</p>
+<p>Give it two or more dates on which similar events occurred. It measures the distance between every pair of them in axial rotations of the Earth, runs each distance through a table of sixteen operations, projects the results forward, and filters out the projections that bear no arithmetic relationship to the controls.</p>
+<p>Nothing leaves the page. There is no network call, no sign-in, and no dependency.</p>
+<hr>
+<h2 id="running-it">Running it</h2>
+<p>Static files — any web server will do:</p>
+<pre data-lang="bash"><code>npm run serve          # python -m http.server 8777</code></pre>
+<p>Then open &lt;http://localhost:8777/&gt;. ES modules need <code>http://</code>, not <code>file://</code>.</p>
+<pre data-lang="bash"><code>npm test               # 76 parity fixtures, no dependencies</code></pre>
+<hr>
+<h2 id="what-it-does">What it does</h2>
+<ol><li><strong>Controls.</strong> Enter the X-Dates — the past occurrences. Every unordered <em>pair</em> gives one <strong>Y</strong>, the distance between them in whole days.</li><li><strong>Cast.</strong> Each of the sixteen operations turns a Y into a day-offset and projects a <strong>Z-Date</strong> from one of the two controls in that pair. Five controls give ten pairs and 160 projections.</li><li><strong>Resonate.</strong> Every projection's distance from its anchor is probed against the <strong>MSRF</strong> — the Multidimensional Spatial Recognition Filters, 390 numbers in three tiers.</li><li><strong>Score.</strong> Each operation contributes its own weight. Each MSRF match contributes its tier's points — except the strongest, which <em>multiplies</em> the total instead.</li><li><strong>Filter and read.</strong> Eight filters cut the noise; the table and the timeline show what is left.</li></ol>
+<h3 id="protocol-prime">Protocol Prime</h3>
+<p>The author's flow chart takes <strong>three</strong> controls: the two historical dates, and <em>the date the projection is being conducted on</em>. That third control produces two further spans and triples the output — fourteen operations across three spans give the forty-two projections the chart describes, collapsing to "38 or 39 actual dates" once duplicates merge.</p>
+<p>Nothing in the software enforces this, and nothing in it hints at it. Enter today's date as a third X-Date and the engine does the rest. See <a href="docs/reverse/22-author-source-documents.md"><code>docs/reverse/22</code></a>.</p>
+<hr>
+<h2 id="layout">Layout</h2>
+<pre><code>index.html              the app shell
+src/
+  ophis-app.js          bootstrap; wires each screen to its host
+  core/
+    ophis/              THE ENGINE — pure, no DOM, no clock, runs under node
+      constants.js      every constant, per reckoning
+      numeric.js        round1 / round2, including where they are wrong for negatives
+      calendar.js       scopes, instants, Y, and the Z window
+      sun.js            sunset, for HH:MM scope
+      msrf-match.js     the three-tier filter and its precedence
+      scoring.js        GTE_V8 and LTE_V7
+      filters.js        the nine predicates
+      sort.js           the five sort types, plus the one v12 promised
+      run.js            runOphis — the pipeline
+    equation/           tokeniser -&gt; parser -&gt; AST evaluator. No eval.
+    eclipses.js         delta-decoded eclipse tables
+  data/                 THE MOD SURFACE — MSRF numbers, operation packs
+  state/                the IsoEvent model and the store
+  ui/ophis/             one file per surface; DOM only
+  io/                   .oph documents, CSV / XLSX / PDF, a tiny zip writer
+  styles/               ophis-tokens.css is the whole palette
+tests/                  parity fixtures taken from the original engine
+docs/reverse/           the full reverse-engineering study, 23 specs</code></pre>
+<hr>
+<h2 id="built-to-be-modified">Built to be modified</h2>
+<p>Each kind of change touches exactly one file:</p>
+<div class="tablewrap"><table><thead><tr><th style="text-align:left">Change</th><th style="text-align:left">File</th></tr></thead><tbody><tr><td style="text-align:left">Operation packs</td><td style="text-align:left"><code>src/data/packs-ophis.js</code></td></tr><tr><td style="text-align:left">MSRF numbers</td><td style="text-align:left"><code>src/data/msrf-ophis.js</code></td></tr><tr><td style="text-align:left">Equation constants / functions</td><td style="text-align:left"><code>src/core/equation/reckonings.js</code></td></tr><tr><td style="text-align:left">Scoring</td><td style="text-align:left"><code>src/core/ophis/scoring.js</code></td></tr><tr><td style="text-align:left">Filters</td><td style="text-align:left"><code>src/core/ophis/filters.js</code></td></tr><tr><td style="text-align:left">Colours, fonts, spacing</td><td style="text-align:left"><code>src/styles/ophis-tokens.css</code></td></tr></tbody></table></div>
+<p>Full details in <strong><a href="docs/MODDING.md">docs/MODDING.md</a></strong>.</p>
+<hr>
+<h2 id="verification">Verification</h2>
+<p><code>tests/ophis.test.mjs</code> pins the engine against values read out of the original, not out of this implementation:</p>
+<ul><li>the three MSRF arrays, at their shipped lengths, with <code>1574</code> at its out-of-order index 248;</li><li>the match precedence, including the vortex <em>steal</em> at <code>76.3</code> and the IEEE-754 near-miss at <code>76.1</code> that must <strong>not</strong> be given an epsilon;</li><li>all eight worked scoring examples;</li><li>the HH:MM <code>+1</code> / <code>−1</code> asymmetry;</li><li>and a complete end-to-end cast — 10 pairs, 160 projections, 153 distinct dates collapsing to 114 under the default filters with 39 hidden, top score 3, max hit count 4.</li></ul>
+<p>What is deliberately <em>different</em> — no <code>eval</code>, no arbitrary-path writes, no sign-in theatre, and "today" read from the clock rather than baked in — is listed in <strong><a href="docs/DEVIATIONS.md">docs/DEVIATIONS.md</a></strong>.</p>
+<hr>
+<h2 id="handing-this-on">Handing this on</h2>
+<p><strong><a href="docs/HANDOFF.md">docs/HANDOFF.md</a></strong> is the fifteen-minute brief for whoever picks this up next: current state, the one rule, where everything lives, the traps that look like bugs and are not, and what is still open.</p>
+<p>Every backbone document also renders as a browsable page — <code>docs/html/index.html</code> is the way in, and <code>npm run docs</code> rebuilds them all from the Markdown, which stays the source of truth.</p>
+<hr>
+<h2 id="the-study">The study</h2>
+<p><a href="docs/reverse/"><code>docs/reverse/</code></a> is the full teardown, subsystem by subsystem. <a href="docs/reverse/22-author-source-documents.md"><code>docs/reverse/22</code></a> reads the author's own design documents against the shipped behaviour, and is where the findings live: Protocol Prime, the two operations whose class the author's notes contradict, the four MSRF numbers where the author's workbook and the binary disagree, and the 2556-versus-2559 day window.</p>
+<p><strong><a href="docs/WHITEPAPER.md">docs/WHITEPAPER.md</a></strong> — <em>Rebuilding a Closed Prediction Engine Without Breaking It.</em></p>
+<hr>
+<h2 id="also-here">Also here</h2>
+<p><code>chronicon.html</code> is a separate instrument — the Chronicon calendrics engine, which crosses the Ophis grammar with the Breshears cycle lattice. It is the owner's own addition and is <strong>not</strong> part of Ophis; it is kept because it works and is linked from nowhere in the Ophis app. <code>PSYFR1.html</code> and <code>PSYFR2.html</code> are its preserved single-file originals.</p>
+  </article>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Handoff</title>
+<meta http-equiv="Content-Security-Policy"
+      content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'none'; img-src 'self' data:; connect-src 'none'">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../src/styles/ophis-tokens.css">
+<link rel="stylesheet" href="../../src/styles/ophis-app.css">
+<style>
+  body { padding-bottom: 96px; }
+  .doc-top {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding: 20px var(--gutter); max-width: 1180px; margin: 0 auto;
+  }
+  .paper {
+    display: grid; grid-template-columns: 232px minmax(0, 1fr); gap: 48px;
+    max-width: 1180px; margin: 0 auto; padding: 0 var(--gutter);
+  }
+  .paper > nav {
+    position: sticky; top: 24px; align-self: start;
+    max-height: calc(100vh - 48px); overflow-y: auto;
+    padding: 24px 0; font-size: 12.5px;
+  }
+  .paper > nav a { display: block; color: var(--dim); text-decoration: none; padding: 3px 0; line-height: 1.4; }
+  .paper > nav a:hover { color: var(--gold-2); }
+  .paper > nav a.l3 { padding-left: 14px; font-size: 11.5px; color: var(--faint); }
+
+  article { padding: 24px 0; max-width: 76ch; }
+  article h1 { font-family: var(--font-display); font-size: clamp(28px, 4vw, 40px); color: var(--ink); margin: 0 0 20px; letter-spacing: .01em; }
+  article h2 { font-family: var(--font-display); font-size: 24px; color: var(--gold-2); margin: 52px 0 16px; }
+  article h3 { font-size: 17px; color: var(--ink); margin: 34px 0 12px; font-weight: 600; }
+  article h4 { font-size: 14px; color: var(--gold); margin: 26px 0 10px; font-weight: 600; letter-spacing: .04em; }
+  article p { font-size: 15.5px; line-height: 1.68; color: var(--prose); margin: 0 0 15px; max-width: none; }
+  article strong { color: var(--ink); }
+  article ul, article ol { color: var(--prose); font-size: 15.5px; line-height: 1.68; padding-left: 22px; margin: 0 0 16px; }
+  article li { margin-bottom: 6px; }
+  article hr { border: 0; border-top: 1px solid var(--line); margin: 40px 0; }
+  article blockquote {
+    border-left: 3px solid var(--gold); background: var(--panel);
+    margin: 20px 0; padding: 12px 20px; border-radius: 0 var(--r-2) var(--r-2) 0;
+  }
+  article blockquote p:last-child { margin-bottom: 0; }
+  article pre {
+    background: var(--well); border: 1px solid var(--line); border-radius: var(--r-2);
+    padding: 14px 16px; overflow-x: auto; font-family: var(--font-mono);
+    font-size: 12px; line-height: 1.55; color: var(--prose); margin: 0 0 18px;
+  }
+  article pre code { background: none; border: 0; padding: 0; font-size: inherit; }
+  article .tablewrap { margin: 0 0 20px; }
+  article td, article th { font-size: 12.5px; }
+  article td:first-child { color: var(--ink); }
+
+  @media (max-width: 900px) {
+    .paper { grid-template-columns: 1fr; gap: 0; }
+    .paper > nav { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="doc-top">
+  <div class="brand">OPHIS <small>Handoff</small></div>
+  <a class="btn" href="../../index.html">Open the instrument &rarr;</a>
+</div>
+
+<div class="paper">
+  <nav aria-label="Contents">
+    <a class="l2" href="#1-what-this-is-in-two-paragraphs">1. What this is, in two paragraphs</a>
+    <a class="l2" href="#2-the-one-rule">2. The one rule</a>
+    <a class="l2" href="#3-current-state">3. Current state</a>
+    <a class="l2" href="#4-where-things-are">4. Where things are</a>
+    <a class="l2" href="#5-read-these-in-this-order">5. Read these, in this order</a>
+    <a class="l2" href="#6-traps">6. Traps</a>
+    <a class="l2" href="#7-open-work">7. Open work</a>
+    <a class="l3" href="#explicitly-decided-against">Explicitly decided against</a>
+    <a class="l2" href="#8-two-things-that-will-confuse-you">8. Two things that will confuse you</a>
+    <a class="l2" href="#9-before-you-push">9. Before you push</a>
+  </nav>
+  <article>
+<h1 id="handoff">Handoff</h1>
+<p><strong>For whoever picks this up next.</strong> Read this first; it is the shortest path to being useful, and it is written to be read once, in order, in about fifteen minutes.</p>
+<hr>
+<h2 id="1-what-this-is-in-two-paragraphs">1. What this is, in two paragraphs</h2>
+<p>Ophis is a date-projection instrument written by Jason M. Breshears. You give it dates on which similar events happened before; it measures the distance between every pair of them in whole days, runs each distance through a table of sixteen arithmetic operations, projects the results forward, and then filters out the projections that bear no arithmetic relationship to what you supplied.</p>
+<p>It shipped as <code>Ophis_v12_Windows.exe</code>, a ~100 MB Electron application. This repository is a ground-up reimplementation of it as static browser files: no dependencies, no build step, no network calls. The owner of the original commissioned the study and owns the copyright. The reimplementation is <strong>verified bit-exact against the original</strong> on every number it produces, and that property is the point of the whole project.</p>
+<hr>
+<h2 id="2-the-one-rule">2. The one rule</h2>
+<blockquote><p><strong>The maths is a contract, not an implementation detail.</strong></p></blockquote>
+<p>The test suite pins the engine against values read out of the original program, not out of this one. A failing test means the rebuild has drifted — it does <strong>not</strong> mean the fixture needs updating.</p>
+<p>If you are changing the maths deliberately, change the fixture <strong>and say so in the commit message</strong>. A silently updated parity fixture makes the entire suite worthless, because nobody can then tell which numbers were ever checked.</p>
+<pre data-lang="bash"><code>npm test        # 84 assertions, no dependencies, ~1s</code></pre>
+<hr>
+<h2 id="3-current-state">3. Current state</h2>
+<p>Everything the original did, except one thing.</p>
+<div class="tablewrap"><table><thead><tr><th style="text-align:left">Area</th><th style="text-align:left">State</th></tr></thead><tbody><tr><td style="text-align:left">Projection engine (<code>runOphis</code>)</td><td style="text-align:left">Complete, bit-exact, verified end to end</td></tr><tr><td style="text-align:left">Resonance filter (MSRF), 3 tiers</td><td style="text-align:left">Complete, precedence verified including both IEEE-754 edge cases</td></tr><tr><td style="text-align:left">Scoring (<code>GTE_V8</code>, <code>LTE_V7</code>)</td><td style="text-align:left">Complete, all 8 worked examples pinned</td></tr><tr><td style="text-align:left">Output filters (9) and sorts (5 + 1 new)</td><td style="text-align:left">Complete</td></tr><tr><td style="text-align:left">Event scopes</td><td style="text-align:left"><code>DAYS</code> and <code>HH_MM</code> complete; <code>MONTHS</code>/<code>YEARS</code> refuse to run, as the original did</td></tr><tr><td style="text-align:left"><code>.oph</code> documents</td><td style="text-align:left">Load, save, prettify, minify, multi-event</td></tr><tr><td style="text-align:left">Working surface, results table, timeline</td><td style="text-align:left">Complete</td></tr><tr><td style="text-align:left">Operations editor, settings, transfer, import/export, audit</td><td style="text-align:left">Complete</td></tr><tr><td style="text-align:left">Export: CSV, XLSX, PDF</td><td style="text-align:left">Complete, all three verified by real readers</td></tr><tr><td style="text-align:left">Offline map tile pyramid</td><td style="text-align:left"><strong>Not implemented</strong> — coordinates are typed, not clicked</td></tr></tbody></table></div>
+<p>Verification, in brief:</p>
+<ul><li>49/49 shipped equations × 6 intervals, byte-identical to the original (SHA-256).</li><li>56/56 desktop operations across four packs compile and evaluate.</li><li>End to end: 10 anchor pairs → 160 projections → 153 distinct dates → <strong>114 survivors, 39 hidden</strong>, top score 3, peak hit count 4 — every figure matching the original.</li><li>The author's own lookup workbook independently confirms the resonance table: Important 53/53 and Vortex 12/12 exact.</li></ul>
+<hr>
+<h2 id="4-where-things-are">4. Where things are</h2>
+<pre><code>index.html            the app          field-guide.html   the tour
+whitepaper.html       the study        chronicon.html     a SEPARATE instrument (see §8)
+
+src/core/ophis/       THE ENGINE — pure, no DOM, no clock, runs headless under node
+  run.js              the pipeline: guards, pairs, projection, bucketing, score, filter, sort
+  msrf-match.js       the three-tier filter; ORDER IS THE BEHAVIOUR
+  scoring.js          GTE_V8 / LTE_V7
+  calendar.js         scopes, instants, Y, the Z window
+  filters.js sort.js numeric.js moon.js sun.js constants.js
+
+src/core/equation/    tokeniser -&gt; parser -&gt; AST evaluator. NO eval, NO new Function.
+src/data/             THE MOD SURFACE — resonance numbers, operation packs
+src/state/            the IsoEvent model, the store
+src/ui/ophis/         one file per surface; DOM only
+src/io/               .oph, CSV/XLSX/PDF, a ~120-line zip + deflate writer
+src/styles/           ophis-tokens.css is the entire palette
+
+tests/                fixtures taken from the ORIGINAL, not from this code
+docs/reverse/         23 subsystem specifications — the teardown
+tools/                extraction and doc-rendering helpers</code></pre>
+<p>Dependencies point one way: <code>ui</code> may import <code>core</code>, <code>state</code>, <code>io</code>; <code>core</code> may import <code>data</code>; <strong>nothing in <code>core</code> may import from <code>ui</code>.</strong> That is not style — it is why the engine runs headless in the test suite.</p>
+<hr>
+<h2 id="5-read-these-in-this-order">5. Read these, in this order</h2>
+<div class="tablewrap"><table><thead><tr><th style="text-align:left">Document</th><th style="text-align:left">Why</th></tr></thead><tbody><tr><td style="text-align:left"><a href="../README.md"><code>README.md</code></a></td><td style="text-align:left">Orientation, and how to run it</td></tr><tr><td style="text-align:left"><a href="reverse/00-BUILD-SPEC.md"><code>docs/reverse/00-BUILD-SPEC.md</code></a></td><td style="text-align:left"><strong>Authoritative.</strong> The full specification the rebuild implements</td></tr><tr><td style="text-align:left"><a href="DEVIATIONS.md"><code>docs/DEVIATIONS.md</code></a></td><td style="text-align:left">Every deliberate difference from the original, and why</td></tr><tr><td style="text-align:left"><a href="reverse/22-author-source-documents.md"><code>docs/reverse/22-author-source-documents.md</code></a></td><td style="text-align:left">The author's own design documents read against the code — the findings live here</td></tr><tr><td style="text-align:left"><a href="MODDING.md"><code>docs/MODDING.md</code></a></td><td style="text-align:left">One file per kind of change</td></tr><tr><td style="text-align:left"><a href="WHITEPAPER.md"><code>docs/WHITEPAPER.md</code></a></td><td style="text-align:left">The study, its method, and what generalises</td></tr></tbody></table></div>
+<p>The other 22 files in <code>docs/reverse/</code> are subsystem teardowns. Read one when you need that subsystem; do not read them all.</p>
+<hr>
+<h2 id="6-traps">6. Traps</h2>
+<p>These look like bugs. <strong>They are not.</strong> Every one is pinned by a test that will fail if you "fix" it.</p>
+<div class="tablewrap"><table><thead><tr><th style="text-align:left">What you will see</th><th style="text-align:left">Why it stays</th></tr></thead><tbody><tr><td style="text-align:left"><code>OPH_PI = 3.14</code></td><td style="text-align:left">It is the author's constant, not π. Changing it moves every projection</td></tr><tr><td style="text-align:left"><code>OPH_PHI</code> is <code>1.618</code> here and <code>1.61803398875</code> in chronicon</td><td style="text-align:left">Two different programs. The tables are deliberately separate; unifying them is the one refactor guaranteed to move results</td></tr><tr><td style="text-align:left"><code>round1(-1.25) === -1.2</code></td><td style="text-align:left">The original's <code>Number.EPSILON</code> nudge is wrong below zero. Reachable whenever X₂ precedes X₁</td></tr><tr><td style="text-align:left"><code>76.1</code> does <strong>not</strong> match Vortex <code>76.2</code>, but <code>76.3</code> does</td><td style="text-align:left">Raw IEEE-754, no epsilon. <code>76.2 - 76.1</code> is <code>0.100000000000001</code> and fails <code>&lt;= 0.1</code>. Adding an epsilon flips it</td></tr><tr><td style="text-align:left"><code>43.5</code> matches, <code>100.5</code> does not</td><td style="text-align:left">Vortex is checked <em>before</em> the <code>.5</code> dead zone, and <code>43.5</code> is a vortex number</td></tr><tr><td style="text-align:left">Sorting by score shows <code>Z14</code> in the first row</td><td style="text-align:left">Labels come from the chronological pass and identify the <em>date</em>; row position reflects the sort. The chart shares the labels</td></tr><tr><td style="text-align:left"><code>X1</code> binds to the lower-<strong>indexed</strong> anchor, not the earlier date</td><td style="text-align:left">Reordering the anchor list is a deliberate control</td></tr><tr><td style="text-align:left">Pairing is <strong>all</strong> pairs, not adjacent ones</td><td style="text-align:left">It is the method. N anchors give N(N−1)/2 pairs</td></tr><tr><td style="text-align:left">The offset becomes milliseconds <em>before</em> it is rounded</td><td style="text-align:left">Rounding first moves projections by up to half a day</td></tr><tr><td style="text-align:left"><code>rotation_count_z</code> is <code>round1</code> of the <code>round2</code> value</td><td style="text-align:left">A double rounding — and it is the number the filters probe</td></tr><tr><td style="text-align:left"><code>SORT_TYPE__OPERATIONS</code> sorts by count, not score</td><td style="text-align:left">Both arms of the original's if/else assigned the count. Tooltip corrected; a separate <code>OPERATION_SCORE</code> type added</td></tr><tr><td style="text-align:left">The v7 pack ships a row enabled that the source declares disabled</td><td style="text-align:left">The original's <code>newOperation</code> ignores its own <code>enabled</code> argument and hard-codes <code>true</code></td></tr><tr><td style="text-align:left"><code>oph_exp</code> exists but can never be called</td><td style="text-align:left"><code>x</code> is the multiply operator, so the name lexes as <code>oph_e × p</code>. The original had the same hole</td></tr></tbody></table></div>
+<p>The general rule, from the white paper: <strong>write down which bugs are load-bearing.</strong> If you find another, add it to this table and to <code>DEVIATIONS.md</code>, with a fixture.</p>
+<hr>
+<h2 id="7-open-work">7. Open work</h2>
+<p>Nothing is blocking. In rough order of value:</p>
+<p><strong>1 — Surface Protocol Prime in the app.</strong> The author's flow chart takes three controls: the two historical dates <em>and the date you are projecting from</em>. That third control produces two more spans and triples the output — fourteen operations across three spans is the forty-two projections the chart describes. The engine already supports it, because it pairs all anchors; nothing in the UI tells you to do it. A one-click "add today as a control" affordance on the work surface would be the highest-value small change in the project. The field guide explains it; the instrument does not.</p>
+<p><strong>2 — The offline map.</strong> The only capability from the original that is absent. Worth it only if someone actually works in <code>HH_MM</code> scope at coordinates they cannot type.</p>
+<p><strong>3 — Property-based testing of the equation engine.</strong> The parity digest covers the shipped corpus at six intervals. Randomly generated equations compared against a reference evaluator would turn a large sample into something much closer to a proof.</p>
+<p><strong>4 — An <code>HH_MM</code> end-to-end fixture.</strong> That scope is covered by unit tests, not by an end-to-end comparison, because no reference output for it was recoverable. If the original can be run again, capture one.</p>
+<h3 id="explicitly-decided-against">Explicitly decided against</h3>
+<p><strong>Widening the MSRF to probe every control.</strong> The flow chart says the filter measures each projection back to all three controls; the shipped engine probes one distance. Measured on the end-to-end fixture, the change would add a match to 54 % of rows, light up half the rows that currently match nothing, and double the peak hit count from 4 to 8. A filter whose stated purpose is "the elimination of phantom dates" is not doing that job better by accepting half of what it rejected. See <code>reverse/22</code> §1.2 for the table. Do not implement this without a reason that addresses that measurement.</p>
+<hr>
+<h2 id="8-two-things-that-will-confuse-you">8. Two things that will confuse you</h2>
+<p><strong><code>chronicon.html</code> is not part of Ophis.</strong> It is a separate instrument the owner built, crossing the Ophis equation grammar with a cycle lattice of his own. It has its own data files (<code>src/data/packs.js</code>, <code>msrf.js</code>, <code>ledger.js</code>, <code>lattice.js</code>, <code>src/core/scoring/</code>, <code>src/styles/tokens.css</code>) and shares only the equation engine. Editing an Ophis file will not change it, and editing a chronicon file will not change Ophis. <code>PSYFR1.html</code> and <code>PSYFR2.html</code> are its preserved single-file originals. <strong>Do not merge the two.</strong></p>
+<p><strong>The reference material is not in this repository.</strong> The <code>.exe</code> files, the unpacked asar, the author's PDFs and the workbook live on the owner's machine. <code>docs/reverse/</code> is the distillation of them, and it is detailed enough to rebuild from — that is what it was written for. If you need something the specs do not carry, ask the owner rather than guessing.</p>
+<hr>
+<h2 id="9-before-you-push">9. Before you push</h2>
+<pre data-lang="bash"><code>npm test                                    # 84 assertions must pass
+node tools/md-to-html.mjs docs/*.md --out-dir docs/html   # if you touched a doc
+python -m http.server 8777                  # then drive the app at localhost:8777</code></pre>
+<p>CI additionally enforces two properties. Both are load-bearing and neither has an exception:</p>
+<ul><li><strong>No <code>eval</code>, no <code>new Function</code>.</strong> The original compiled operation strings — which arrive from files — with <code>new Function()</code>, and validated a <em>different</em> string than the one it compiled. The rewrite cannot regress into that defect because it no longer generates code.</li><li><strong>No <code>innerHTML</code> or any markup sink in <code>src/</code>.</strong> User text — an event name, a note, an equation — goes in as a text node. <code>src/ui/dom.js</code> offers no way to set markup at all.</li></ul>
+<p>And drive the actual app before pushing a UI change. Three real defects in this project were invisible in the source and obvious the moment someone moved a pointer over the chart.</p>
+<hr>
+<p><em>Ophis is a study instrument. It performs arithmetic on the dates it is given and ranks the results by how many independent operations and number patterns agree. It knows nothing about your event and has no access to anything beyond those dates. Presented as the Archaix thesis of Jason Breshears, not as established science. Not affiliated with Archaix.</em></p>
+  </article>
+</div>
+
+</body>
+</html>

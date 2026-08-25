@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ophis · Documentation</title>
+<meta name="description" content="The Ophis project backbone: the handoff, the specification, the study, the deviation register, and the modding guide.">
+<meta http-equiv="Content-Security-Policy"
+      content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'none'; img-src 'self' data:; connect-src 'none'">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../src/styles/ophis-tokens.css">
+<link rel="stylesheet" href="../../src/styles/ophis-app.css">
+<style>
+  .wrap { max-width: 900px; margin: 0 auto; padding: var(--gutter) var(--gutter) 96px; }
+  .top { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 20px 0 48px; }
+
+  .lede { padding-bottom: 40px; border-bottom: 1px solid var(--line); }
+  .lede h1 { font-family: var(--font-display); font-size: clamp(30px, 5vw, 44px); color: var(--ink); margin-bottom: 16px; }
+  .lede p { font-size: 16.5px; color: var(--prose); max-width: 68ch; }
+
+  h2 {
+    font: 700 var(--fs-h3)/1 var(--font-body); letter-spacing: var(--ls-h3);
+    text-transform: uppercase; color: var(--gold); margin: 48px 0 18px;
+  }
+
+  .cards { display: grid; gap: 12px; }
+  a.card {
+    display: grid; grid-template-columns: 1fr auto; gap: 4px 24px; align-items: baseline;
+    padding: 18px 22px; background: var(--panel); border: 1px solid var(--line);
+    border-radius: var(--r-3); text-decoration: none;
+    transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease);
+  }
+  a.card:hover { border-color: var(--gold); background: var(--panel-2); }
+  a.card .name { font-family: var(--font-display); font-size: 17px; color: var(--ink); }
+  a.card .meta { font-family: var(--font-mono); font-size: 10.5px; color: var(--faint); white-space: nowrap; }
+  a.card p { grid-column: 1 / -1; margin: 4px 0 0; font-size: 14px; color: var(--dim); max-width: 66ch; }
+  a.card.lead { border-color: var(--gold); background: color-mix(in srgb, var(--gold) 7%, var(--panel)); }
+  a.card.lead .name { color: var(--gold-2); }
+
+  .flat { display: grid; gap: 2px; margin-top: 10px; }
+  .flat a {
+    display: flex; justify-content: space-between; gap: 20px; align-items: baseline;
+    padding: 9px 12px; border-radius: var(--r-1); text-decoration: none;
+    color: var(--prose); font-size: 14px;
+    border-bottom: 1px solid var(--line-flat);
+  }
+  .flat a:hover { background: var(--panel); color: var(--gold-2); }
+  .flat a span { font-family: var(--font-mono); font-size: 10.5px; color: var(--faint); }
+
+  .note { font-size: 13.5px; color: var(--dim); margin-top: 32px; max-width: 66ch; }
+  .note code { font-family: var(--font-mono); font-size: 12px; background: var(--well); border: 1px solid var(--line); border-radius: 3px; padding: 1px 5px; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="top">
+    <div class="brand">OPHIS <small>Documentation</small></div>
+    <a class="btn" href="../../index.html">Open the instrument &rarr;</a>
+  </div>
+
+  <div class="lede">
+    <h1>The backbone</h1>
+    <p>
+      Everything needed to understand, verify, extend or hand on this project. The engine is a
+      bit-exact reimplementation of <code>Ophis_v12_Windows.exe</code>, and these documents are what
+      make that claim checkable rather than merely asserted.
+    </p>
+  </div>
+
+  <h2>Start here</h2>
+  <div class="cards">
+    <a class="card lead" href="HANDOFF.html">
+      <span class="name">Handoff</span>
+      <span class="meta">15 min</span>
+      <p>
+        The shortest path to being useful: current state, the one rule, where everything lives, the
+        traps that look like bugs and are not, and what is still open.
+      </p>
+    </a>
+    <a class="card" href="../../field-guide.html">
+      <span class="name">Field Guide</span>
+      <span class="meta">10 min</span>
+      <p>
+        What the instrument does, taught through a worked example — and Protocol Prime, the
+        operating procedure nothing in the software mentions.
+      </p>
+    </a>
+  </div>
+
+  <h2>The specification</h2>
+  <div class="cards">
+    <a class="card" href="00-BUILD-SPEC.html">
+      <span class="name">Build Spec</span>
+      <span class="meta">authoritative · 2,684 lines</span>
+      <p>
+        The complete specification the rebuild implements: constants, the algorithm, the data model,
+        the module architecture, the UI, and the parity test plan.
+      </p>
+    </a>
+    <a class="card" href="DEVIATIONS.html">
+      <span class="name">Deviations</span>
+      <span class="meta">register</span>
+      <p>
+        Every deliberate difference from the original, in three parts: what was removed as a defect,
+        what is preserved because parity depends on it, and where this rebuild is narrower.
+      </p>
+    </a>
+    <a class="card" href="MODDING.html">
+      <span class="name">Modding</span>
+      <span class="meta">one file per change</span>
+      <p>
+        Operation packs, resonance numbers, constants, functions, scoring, filters, the palette —
+        each confined to a single file, with a worked example for each.
+      </p>
+    </a>
+  </div>
+
+  <h2>The study</h2>
+  <div class="cards">
+    <a class="card" href="../../whitepaper.html">
+      <span class="name">White Paper</span>
+      <span class="meta">v2.0 · 10 sections</span>
+      <p>
+        <em>Rebuilding a Closed Prediction Engine Without Breaking It.</em> The teardown, the
+        oracle-based verification method, the security findings, and what generalises beyond this
+        program.
+      </p>
+    </a>
+    <a class="card" href="22-author-source-documents.html">
+      <span class="name">The Author's Documents</span>
+      <span class="meta">findings</span>
+      <p>
+        Five design documents written before the software existed, read against the shipped
+        behaviour. Protocol Prime, two misclassified operations, and an independent check on the
+        resonance table.
+      </p>
+    </a>
+  </div>
+
+  <h2>Domain</h2>
+  <div class="flat">
+    <a href="DOMAIN.html">Domain &mdash; the vocabulary and the lattice <span>reference</span></a>
+    <a href="VORTEX.html">The Vortex Holography Filter, decoded <span>derivation</span></a>
+    <a href="README.html">Repository README <span>orientation</span></a>
+  </div>
+
+  <p class="note">
+    These pages are generated from the Markdown sources in <code>docs/</code>. Edit the Markdown,
+    then run <code>npm run docs</code> to rebuild. The Markdown is the source of truth; nothing is
+    written here that is not written there.
+  </p>
+
+</div>
+
+</body>
+</html>

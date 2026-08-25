@@ -1,7 +1,7 @@
 {
   "name": "natori-on-psyfr",
   "version": "1.0.0",
-  "description": "The Predictive Chronology Engine — Ophis predictive grammar × Chronicon calendrics. Self-contained, air-gap friendly, built to be modified.",
+  "description": "The Predictive Chronology Engine \u2014 Ophis predictive grammar \u00d7 Chronicon calendrics. Self-contained, air-gap friendly, built to be modified.",
   "type": "module",
   "private": true,
   "license": "MIT",
@@ -13,7 +13,8 @@
   "scripts": {
     "test": "node --test tests/parity.test.mjs tests/vortex.test.mjs tests/ophis.test.mjs",
     "serve": "python -m http.server 8777",
-    "extract-data": "node tools/extract-data.mjs"
+    "extract-data": "node tools/extract-data.mjs",
+    "docs": "node tools/md-to-html.mjs docs/WHITEPAPER.md --out whitepaper.html && node tools/md-to-html.mjs docs/HANDOFF.md docs/DEVIATIONS.md docs/MODDING.md docs/DOMAIN.md docs/VORTEX.md docs/reverse/00-BUILD-SPEC.md docs/reverse/22-author-source-documents.md README.md --out-dir docs/html"
   },
   "keywords": [
     "chronology",
@@ -26,7 +27,7 @@
   "engines": {
     "node": ">=20"
   },
-  "//": "The app itself has NO dependencies — it is static ES modules. The packages below are used only by tools/ to unpack the original .exe for study, and are never loaded by the app.",
+  "//": "The app itself has NO dependencies \u2014 it is static ES modules. The packages below are used only by tools/ to unpack the original .exe for study, and are never loaded by the app.",
   "devDependencies": {
     "@electron/asar": "^4.3.0",
     "7zip-bin": "^5.2.0"

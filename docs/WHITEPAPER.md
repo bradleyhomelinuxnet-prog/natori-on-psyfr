@@ -2,7 +2,10 @@
 
 ### A white-box study of Ophis v12 / PSYFR, and a verified reimplementation
 
-**Version 1.0 · August 2026**
+**Version 2.0 · August 2026**
+
+*Version 2 extends the study from the browser lineage to the desktop engine itself, and adds
+§4.5 — a reading of the author's own design documents against the shipped behaviour.*
 
 ---
 
@@ -33,6 +36,21 @@ feature. Chief among them: the original compiled operation strings — which arr
 — with `new Function()`, and validated a *different* string than the one it compiled. The rewrite
 replaces this with a tokeniser, parser and AST evaluator, achieving identical results with no
 dynamic code generation.
+
+Version 2 reports two further results. The **desktop projection engine** — scopes, the three-tier
+resonance filter, the multiplying scoring system, the nine output filters, and the whole
+`runOphis` pipeline — is now reimplemented and pinned by an end-to-end fixture: ten anchor pairs
+producing 160 projections, collapsing to 153 distinct dates and 114 survivors under the default
+filters, with the top row's score reproduced through every intermediate term.
+
+And the owner supplied five of the **original author's own design documents**, written before the
+software existed. Reading them against the shipped behaviour proved unexpectedly productive: it
+recovered an undocumented operating procedure that triples the system's output, identified two
+operations whose classification the implementation and the design contradict, and — via the
+author's own lookup workbook — independently confirmed a resonance table that two prior reports
+had miscounted. §4.5 reports these. The general result is that **a system's design documents are a
+usable oracle for its code**, in the same way its running binary is, and they fail in different
+places.
 
 **Keywords:** reverse engineering, differential testing, Electron security, oracle-based
 verification, legacy migration, domain-specific languages.
@@ -297,6 +315,106 @@ operation table says it computes** — that table is readable, and this paper re
 predictive accuracy that depend on the withheld parts — a "75.9%" single-date figure appears in the
 procedural notes — are the author's claims, reproduced here as attributions and **not** verified by
 this work. No experiment in this study bears on whether the method predicts anything.
+
+---
+
+### 4.5 The author's design documents as a second oracle
+
+Partway through the study the owner supplied five documents written by the system's author before
+any code existed: an operations flow chart, a prose description of the six resonance filters, a
+procedural walkthrough naming all fourteen operations, a list of what the author had deliberately
+withheld, and a spreadsheet implementing the resonance lookup by hand.
+
+These are not documentation *of* the software. They predate it. That makes them an oracle of a
+different kind from the running binary — one that reports what the system was *meant* to do — and
+the places where the two disagree turn out to be the interesting ones.
+
+#### 4.5.1 An operating procedure the software never mentions
+
+The flow chart takes **three** controls, labelled `A`, `B` and `C`. `A` and `B` are the historical
+dates. `C` is annotated *"the date the Ophis projection is being conducted"*, and tagged with a term
+that appears nowhere in the code: **Protocol Prime**.
+
+Three controls give three intervals — `A→B`, `A→C`, `B→C` — and the chart states its arithmetic
+plainly: fourteen operations across three intervals give **42 projections**, which "most often"
+collapse to "38 to 39 actual dates … because different Ophis operations have targeted the same
+date."
+
+The shipped engine has no `A`, `B` or `C`. It enumerates all unordered pairs of N anchors. Those two
+descriptions are the same system: three anchors give C(3,2) = 3 pairs, fourteen operations across
+them give 42 projections, and the bucketing step merges the duplicates. Every number in the author's
+conclusion falls out of the shipped code — *provided the operator enters the current date as a third
+control*.
+
+Nothing in the software does this, hints at it, or defaults to it. The author described Protocol
+Prime as a security measure: an unauthorised user "can not use system to predict future events"
+without it. Read plainly, an operator who enters only two dates is running a third of the method and
+has no way to discover it. **This is the highest-value finding in the study and it is not in the
+code at all** — it is only visible by reading the design against the implementation.
+
+#### 4.5.2 Where the implementation contradicts the design
+
+The procedural notes classify each of the fourteen operations as ALPHA or beta. Compared against the
+shipped weights — at or above 1 is Alpha, below is Beta — twelve agree and two disagree, and the two
+*transpose*: the design marks Core IV beta and Core X ALPHA; the implementation has them the other
+way round. Both tables carry exactly four Alphas among the twelve Core Algorithm formulas, matching
+the author's stated "4 ALPHA and 8 beta", so the totals conceal the swap.
+
+A mechanism suggests itself. The two `Y×π` operations — the X₁ and X₂ variants of one formula — are
+both ALPHA in the author's list. The v12 source annotates two rows as promotions made at v8: one is
+`X1+YxOPH_PI`, which restores the author's classification; the other is `X2+(Y/2.0)xOPH_PHI`, where
+the author's numbering points at `X2+YxOPH_PI`. An off-by-one while reading a hand-numbered list
+fits every fact.
+
+We did not change it. The weights feed the operation score directly, so moving either shifts every
+result the owner has ever computed. The finding is recorded next to the code, which is the
+disposition §10 argues for.
+
+#### 4.5.3 A design specification the implementation narrowed
+
+The chart's filtering stage says the resonance filter measures each projection "back to A, B **and**
+C". The shipped engine probes exactly one distance: the offset from the operation's own base anchor.
+
+Because the engine is now a pure function, the counterfactual is cheap to run rather than argue
+about. On the end-to-end fixture, probing all three distances would:
+
+| | as shipped | as designed |
+|---|---:|---:|
+| rows carrying a resonance match | 39 | **101** |
+| rows matching nothing | 75 | 38 |
+| total matches | 40 | 124 |
+| peak hit count | 4 | **8** |
+
+A match would be added to 54 % of rows, and half the currently-silent rows would light up.
+
+That result argues *for* the implementation. The filter exists, in the author's words, "to aid the
+Core Algorithm in the elimination of potentia, or phantom dates". A filter that accepts half of what
+it previously rejected has lost most of its discriminating power. The narrowing looks less like
+drift than like a correction — and it is one nobody wrote down.
+
+#### 4.5.4 An independent check on the extracted data
+
+The author's workbook contains, on one sheet, the 390 resonance numbers with their tier and points.
+That is the first check on the array extraction that does not come from the binary the arrays were
+extracted from.
+
+**Important matched 53 of 53 and Vortex 12 of 12, member for member.** The Normal count of 325
+settles a figure two prior reports had given as 276. Four Normal numbers disagree between the
+workbook and the binary, all single-digit differences and three of them a `6`/`8` confusion — the
+signature of a list transcribed by hand. Where the workbook's own 565-number master list can
+arbitrate, it backs the binary twice and the workbook never; the remaining two appear in neither.
+The shipped values stand, now on evidence rather than on assumption.
+
+#### 4.5.5 The general point
+
+Reading the design against the implementation found, in five short documents: an operating
+procedure worth three times the output, two misclassified operations, one narrowing that turned out
+to be a correction, and an independent confirmation of a contested data set.
+
+None of it was reachable by reading the code, and none of it was reachable by reading the documents
+alone. The method is the same one §3 applies to the binary — treat the artifact as an oracle and
+compare — with the observation that **design documents and running code fail in different places**,
+which is exactly what makes the comparison productive.
 
 ---
 
@@ -575,37 +693,67 @@ Requiring a reproduction converts a list of suspicions into a work queue.
 | Property | Result |
 |---|---|
 | Equation agreement | 49/49 equations × 6 intervals, byte-identical (SHA-256) |
-| End-to-end cast | 33/33 rows reproduced exactly |
+| Desktop operation corpus | 56/56 equations across four packs compile and evaluate |
+| End-to-end cast, browser lineage | 33/33 rows reproduced exactly |
+| End-to-end cast, desktop lineage | 10 pairs → 160 projections → 153 distinct → 114 survivors, 39 hidden |
+| Resonance classification | 8/8 precedence cases, including the two IEEE-754 boundary rows |
+| Scoring arithmetic | 8/8 worked examples, every intermediate term |
+| Resonance table, independently checked | Important 53/53 and Vortex 12/12 exact against the author's workbook |
 | Vendor sanity anchors | 4/4 hold |
-| Test suite | 35 assertions, all passing |
+| Test suite | 84 assertions, all passing |
 | Dynamic code-evaluation sinks | 0 (was 1) |
 | Markup sinks in application code | 0 |
 | Runtime dependencies | 0 |
 | Build step | none |
-| Cast + render, 4,257 projections | ~60 ms |
+| Chart render, 160 arcs with all overlays | ~4 ms |
 | Deployment | static hosting; runs air-gapped |
 
-Feature coverage relative to the browser build is complete: the projection engine, both scoring
-lenses, convergence detection, all seven cycle wheels, the 69-event ledger, filtering, sorting, CSV
-export, save/load, and import of the desktop application's `.oph` presets — including their
-`x`-for-multiply syntax and constants the browser build never supported.
+**Coverage of the desktop build is now substantially complete.** The projection engine with all
+four event scopes, the three-tier resonance filter, both scoring systems, the nine output filters,
+the five sort types, multi-event documents, the operation-table editor, event data transfer, import
+and export, and the timeline with its moon and eclipse overlays. Export ships in all three formats
+the original offered — and the spreadsheet, which the original shipped as an admitted three-column
+proof of concept, now carries the same eight columns as the CSV.
 
-Beyond it: the tiered resonance table as a selectable set, an extended grammar with multi-argument
-functions and twenty constants, per-panel error containment, and generated documentation.
+Beyond the original: an audit surface that traces any row back through its arithmetic (the
+original's was written, commented out of the screen list, and shipped with two defects), an
+activity log the original's author had left as a TODO, full keyboard operability, and a field guide
+carrying the operating procedure of §4.5.
+
+What remains unimplemented is the offline map tile pyramid — 97 % of the original's asset payload,
+shipped so that a coordinate picker would work air-gapped, replaced here by two number fields.
 
 ---
 
 ## 9. Limitations
 
-**Coverage of the desktop build is partial.** The Chart.js timeline with moon-phase and eclipse
-overlays, PDF and spreadsheet export, sunset-bounded day boundaries computed from latitude and
-longitude, and the offline map are specified in the accompanying study but not implemented. The
-largest is the timeline.
+**One capability is deliberately narrower than the design.** The resonance filter probes one
+distance per projection where the flow chart specifies three (§4.5.3). We measured the alternative
+rather than assuming, and it argues for the shipped behaviour — but that is an inference from one
+fixture, not a proof, and a reader who wants the designed breadth should know it is one clause of
+one function away.
+
+**The offline map is not reimplemented.** The original shipped 1 365 map tiles so a coordinate
+picker would work air-gapped; this offers two number fields. For an instrument whose day-scope
+arithmetic is locked to UTC, coordinates matter only in the sunset-bounded scope, and typing them
+is not obviously worse than clicking them. It is nonetheless a capability removed.
+
+**Sunset is computed rather than looked up.** The original carried three ephemeris libraries and
+reached one of them; this reduces the same Meeus solar position calculation to about sixty lines,
+agreeing to roughly a minute. That is well inside the one-day bucketing the scope applies, but it is
+an approximation where the original had a library, and a reader working at high latitude should note
+the ±65° clamp both share.
 
 **Equation agreement is not total behavioural equivalence.** The digest covers the shipped equation
 corpus at six intervals — a large and well-chosen sample, not a proof. Property-based testing over
 randomly generated equations and intervals would strengthen the claim materially and has not been
 done.
+
+**The desktop end-to-end fixture is one cast, not a corpus.** It exercises ten anchor pairs, all
+sixteen operations, both resonance boundary cases and every scoring branch, and it is pinned to the
+last intermediate term. It is still a single configuration. The sunset-bounded scope in particular
+is covered by unit fixtures rather than by an end-to-end comparison, because no reference output for
+it was recoverable.
 
 **The eclipse tables are inherited, not derived.** They are used as shipped. Their upstream
 provenance and dating convention are under investigation; until that resolves, an "eclipse
@@ -641,6 +789,19 @@ generates code.
 inspection. What separates a specification from a defect is a decision recorded next to the code,
 and a fixture that fails if someone later "fixes" it.
 
+**Read the design documents against the code, not instead of it.** §4.5 is the result we did not
+expect. Design documents are usually treated as either authoritative — in which case the code is
+wrong wherever it differs — or obsolete, in which case they are not read. Treating them as a second
+oracle, equal in standing to the running binary and failing in different places, produced the
+study's single most valuable finding: an operating procedure that triples the system's output,
+present in the design, absent from the software, and invisible from either one alone.
+
+The corollary is worth stating plainly. When a design and an implementation disagree, **the useful
+question is not which is right but why they diverged.** One of the three divergences here was an
+implementation defect, one was an undocumented correction that improved the system, and one was an
+operating instruction that simply never got written down. Three different answers, none available
+without asking.
+
 The rewrite is deployed as static files, runs offline, carries no dependencies, and has an explicit
 mod surface with each category of change confined to a single file. Whether that promise holds is
 also an empirical question, and the first two roadmap items landing as single data edits is the
@@ -667,12 +828,48 @@ cast through the standard 19-operation pack under the chronology-first lens. The
 Rows four and five are the same date from the same operation via *different* anchor pairs — the case
 that must not be deduplicated.
 
+### The desktop cast
+
+Five controls — 07/04/2026, 08/20/2026, 03/09/2027, 03/16/2027, 07/17/2027 — through all sixteen
+operations, filters at their defaults.
+
+| Quantity | Value |
+|---|---:|
+| anchor pairs | 10 |
+| projections | 160 |
+| distinct dates before filtering | 153 |
+| surviving the filters | 114 |
+| hidden | 39 |
+| highest score | 3 |
+| peak hit count | 4 |
+
+The top row, traced end to end — this is the assertion that would fail first if any part of the
+pipeline drifted:
+
+```
+Z14   09/29/2027
+  operations      O3 + O4, both weight 0.5              = 1.0
+  resonance       204.1 -> Normal 204   (1 pt, x1.5)
+                   74.4 -> Normal  74   (1 pt, x1.5)
+  multiplier M    max(1.5, 1.5)                         = 1.5
+  subscore        sum(points) minus the match carrying M
+                  2 - 1                                 = 1.0
+  base            1.0 + 1.0                             = 2.0
+  score           round2(2.0 x 1.5)                     = 3
+  hits            2 operations + 2 resonance            = 4
+```
+
+Note that the row is labelled `Z14` while sitting first under the score sort. Labels are assigned
+from the chronological pass and identify the date; row position reflects the sort. The two are
+deliberately independent, and the chart shares the labels so the table and the timeline can be read
+together.
+
 ## Appendix B — Reproducing the verification
 
 ```bash
 git clone https://github.com/bradleyhomelinuxnet-prog/natori-on-psyfr
 cd natori-on-psyfr
-node --test tests/parity.test.mjs      # 35 assertions
+npm test                               # 84 assertions, no dependencies
 python -m http.server 8777             # then open http://localhost:8777/
 ```
 
