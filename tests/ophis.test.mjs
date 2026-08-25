@@ -17,7 +17,7 @@ import {
 } from '../src/data/msrf-ophis.js';
 import { getMsrfMatch } from '../src/core/ophis/msrf-match.js';
 import { round1, round2 } from '../src/core/ophis/numeric.js';
-import { span, utcMidnight, normaliseWindow, fmtDate } from '../src/core/ophis/calendar.js';
+import { span, utcMidnight, normaliseWindow, fmtDate, fmtDateTime } from '../src/core/ophis/calendar.js';
 import { scoreZStruct } from '../src/core/ophis/scoring.js';
 import { sortAndLabel, normaliseSortType } from '../src/core/ophis/sort.js';
 import { runOphis } from '../src/core/ophis/run.js';
@@ -616,5 +616,51 @@ test('an impossible calendar day is repaired with a warning, not adopted', async
     r.document.iso_events[0].x_dates.map((x) => [x.y, x.m, x.d]),
     [[2026, 3, 2], [2027, 1, 1]],
     'resolved the way Date resolves them, so display and cast agree'
+  );
+});
+
+/* ---------------------------------------------------------------- Group P --
+ * HH:MM scope, end to end.
+ *
+ * PROVENANCE — read before "fixing" a failure here. Unlike every other
+ * fixture in this suite, these values are pinned to THIS implementation, not
+ * to the original: no reference output for the sunset-bounded scope was
+ * recoverable from the v12 build. They exist to catch drift — a refactor of
+ * the sunset search, the sampling, or the window collapse that silently moves
+ * results. If a deliberate change to that code moves these values, update
+ * them AND SAY SO in the commit; if an unrelated change moves them, that is
+ * the regression this group is for.
+ */
+
+test('HH:MM regression pin: a three-control cast at Jerusalem', () => {
+  const ev = makeIsoEvent(0, {
+    scope: EVENT_SCOPE.HH_MM,
+    lat: 31.7,
+    long: 35.2,
+    x_dates: [
+      [2026, 7, 4, '06:30'], [2026, 8, 20, '19:45'], [2027, 3, 9, '12:00'],
+    ].map(([y, m, d, t]) => makeXDate(y, m, d, { time: t })),
+  });
+  const r = runOphis(ev, { now: Date.UTC(2026, 7, 25) });
+
+  // The sunset walk-back is visible in the spans themselves: the same dates
+  // give 47/248/201 in DAYS scope and 48/248/200 here.
+  assert.deepEqual(r.y_structs.map((y) => y.rotation_count_y), [48, 248, 200]);
+
+  assert.equal(Object.keys(r.z_structs).length, 48, 'distinct windows');
+  assert.equal(r.processed_z_dates.length, 35, 'surviving');
+  assert.equal(r.hidden, 13, 'hidden');
+
+  // Windows are sunset-to-sunset, so a day is ~24h and drifts with the season.
+  const first = r.processed_z_dates__sorted_by_date[0];
+  assert.equal(first.key, '1804693500000');
+  assert.equal(fmtDateTime(first.zStart), '03/10/2027 15:45');
+  assert.equal(fmtDateTime(first.zEnd), '03/11/2027 15:45');
+
+  assert.deepEqual(
+    r.processed_z_dates__sorted_by_date
+      .filter((z) => z.score >= 1.5)
+      .map((z) => [z.key, z.score, z.hit_count]),
+    [['1817829060000', 2, 2], ['1818519780000', 1.5, 2], ['1832512080000', 1.5, 2]]
   );
 });
