@@ -25,6 +25,10 @@ import { makeIsoEvent, makeXDate, parseXDate } from '../src/state/iso-event.js';
 import { packOperations, OPHIS_PACKS } from '../src/data/packs-ophis.js';
 import { compileOperation } from '../src/core/equation/index.js';
 import { SORT_TYPE, EVENT_SCOPE } from '../src/core/ophis/constants.js';
+import {
+  lunarPhase, phaseName, phaseGapDays, toJD, LUNAR_MATCH_DAYS, ECLIPSE_MATCH_DAYS,
+} from '../src/core/ophis/moon.js';
+import { eclipseNear } from '../src/core/eclipses.js';
 
 /* ---------------------------------------------------------------- Group A --
  * The filter arrays, and the three structural properties the original's own
@@ -469,4 +473,51 @@ test('parseXDate rejects what Date would silently roll over', () => {
   assert.equal(parseXDate('02/30/2026'), null, 'February has no 30th');
   assert.equal(parseXDate('13/01/2026'), null, 'no thirteenth month');
   assert.equal(parseXDate('not a date'), null);
+});
+
+/* ---------------------------------------------------------------- Group M --
+ * Lunar phase, which decides what the chart's moon row marks.
+ *
+ * The two eclipse rows are the strongest check available without an ephemeris:
+ * a solar eclipse can only happen at new moon and a lunar one only at full, so
+ * if the phase maths drifts, those two rows are the first to say so.
+ */
+
+test('the phase of five independently known lunations', () => {
+  const rows = [
+    ['2026-01-03T10:03Z', 'Full'],
+    ['2026-01-18T19:52Z', 'New'],
+    ['2026-06-29T00:00Z', 'Full'],
+    ['2027-08-02T10:07Z', 'New'],   // the total solar eclipse of 2027
+    ['2026-03-03T11:38Z', 'Full'],  // the total lunar eclipse of 2026
+  ];
+  for (const [iso, expected] of rows) {
+    assert.equal(phaseName(Date.parse(iso)), expected, iso);
+  }
+});
+
+test('a solar eclipse falls at new moon, a lunar one at full', () => {
+  const solar = Date.UTC(2027, 7, 2, 10, 7);
+  const lunar = Date.UTC(2026, 2, 3, 11, 38);
+  assert.ok(phaseGapDays(lunarPhase(solar), 0.0) < LUNAR_MATCH_DAYS, 'solar -> new');
+  assert.ok(phaseGapDays(lunarPhase(lunar), 0.5) < LUNAR_MATCH_DAYS, 'lunar -> full');
+
+  // And the eclipse tables agree that those are eclipses at all.
+  assert.equal(eclipseNear(Math.round(toJD(solar)), ECLIPSE_MATCH_DAYS).solar, 'T');
+  assert.equal(eclipseNear(Math.round(toJD(lunar)), ECLIPSE_MATCH_DAYS).lunar, 'T');
+});
+
+test('the phase fraction wraps rather than jumping at new moon', () => {
+  const justBefore = lunarPhase(Date.UTC(2026, 0, 18, 12, 0));
+  assert.ok(justBefore > 0.9, 'still late in the old lunation');
+  // A fraction of 0.99 is one third of a day from new, not 29 days from it.
+  assert.ok(phaseGapDays(justBefore, 0) < 1);
+});
+
+test('every phase point is reachable and distinct', () => {
+  const seen = new Set();
+  for (let d = 0; d < 30; d += 0.25) {
+    seen.add(phaseName(Date.UTC(2026, 0, 1) + d * 86_400_000));
+  }
+  assert.equal(seen.size, 8, 'all eight phases occur within one lunation');
 });

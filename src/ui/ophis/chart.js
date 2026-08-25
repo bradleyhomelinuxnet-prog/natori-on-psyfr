@@ -21,37 +21,18 @@
 
 import { el } from '../dom.js';
 import { state, currentEvent } from '../../state/ophis-store.js';
-import { MILLIS_PER_DAY, SYNODIC_MONTH, EVENT_SCOPE } from '../../core/ophis/constants.js';
+import { MILLIS_PER_DAY, EVENT_SCOPE } from '../../core/ophis/constants.js';
+import {
+  toJD, lunarPhase, phaseGapDays, PHASE_POINTS as PHASES,
+  LUNAR_MATCH_DAYS, ECLIPSE_MATCH_DAYS,
+} from '../../core/ophis/moon.js';
 import { fmtDate } from '../../core/ophis/calendar.js';
 import { eclipseNear, coverage } from '../../core/eclipses.js';
 import { CHART_OPTIONS } from '../../state/iso-event.js';
 
 /* --------------------------------------------------------------- astronomy -- */
 
-/** Julian Day from an epoch instant. */
-const toJD = (ms) => ms / MILLIS_PER_DAY + 2440587.5;
-
-/** A known new moon, as a Julian Day: 2000-01-06 18:14 UTC. */
-const NEW_MOON_EPOCH_JD = 2451550.26;
-
-/** Age of the moon at an instant, as a fraction of one lunation. */
-function lunarPhase(ms) {
-  const age = ((toJD(ms) - NEW_MOON_EPOCH_JD) % SYNODIC_MONTH + SYNODIC_MONTH) % SYNODIC_MONTH;
-  return age / SYNODIC_MONTH;
-}
-
-/** The eight named phases, and the ideal fraction each sits at. */
-const PHASES = [
-  { key: 'chart_option__show_new_moons', at: 0.0, name: 'New' },
-  { key: 'chart_option__show_waxing_crescent_moons', at: 0.125, name: 'Waxing Crescent' },
-  { key: 'chart_option__show_first_quarter_moons', at: 0.25, name: 'First Quarter' },
-  { key: 'chart_option__show_waxing_gibbous_moons', at: 0.375, name: 'Waxing Gibbous' },
-  { key: 'chart_option__show_full_moons', at: 0.5, name: 'Full' },
-  { key: 'chart_option__show_waning_gibbous_moons', at: 0.625, name: 'Waning Gibbous' },
-  { key: 'chart_option__show_third_quarter_moons', at: 0.75, name: 'Third Quarter' },
-  { key: 'chart_option__show_waning_crescent_moons', at: 0.875, name: 'Waning Crescent' },
-];
-
+/* The phase arithmetic lives in core/ophis/moon.js, where it is tested. */
 /* ------------------------------------------------------------------ layout -- */
 
 const PAD = { top: 18, right: 26, bottom: 16, left: 26 };
@@ -117,6 +98,8 @@ export function createChart(canvas) {
   let arcs = [];
   let scaleX = null;
   let hovered = null;
+  /** Where the axis was drawn. The hit test must measure from the same line. */
+  let axisBaseline = 0;
 
   function build() {
     const r = state.results;
@@ -173,6 +156,7 @@ export function createChart(canvas) {
     const showEclipses = CHART_OPTIONS.filter((c) => c.group === 'eclipse').some((c) => ev[c.key]);
     const band = showEclipses ? ROW.eclipse + 16 : showMoons ? ROW.moon + 16 : ROW.label + 14;
     const axisY = cssH - band;
+    axisBaseline = axisY;
     const plotH = axisY - PAD.top;
 
     scaleX = (ms) => PAD.left + ((ms - min) / (max - min)) * plotW;
@@ -296,37 +280,51 @@ export function createChart(canvas) {
       }
     }
 
-    /* ---- moon phases ---- */
+    /* ---- moon phases and eclipses, matched to the projections ----
+       These rows answer one question: did this projection land on a full moon,
+       or on an eclipse? So they mark the Z-DATES that match, not every moon in
+       the span. Drawing all of them — roughly 690 across seven years with all
+       eight phases on — merges into a solid bar that tells you nothing. */
+    const zDates = [...new Set(results.map((d) => d.op.z_start))];
+
+    // Two projections a day apart are two marks in the same place at this
+    // scale, so keep the first and let the count speak through the table.
+    const spacedOut = (drawn, x, gap) => {
+      if (drawn.some((p) => Math.abs(p - x) < gap)) return false;
+      drawn.push(x);
+      return true;
+    };
+
     if (showMoons) {
       const wanted = PHASES.filter((p) => ev[p.key]);
-      const step = MILLIS_PER_DAY;
-      const drawn = new Set();
-      for (let t = min; t <= max; t += step) {
+      const drawn = [];
+      for (const t of zDates.slice().sort((a, b) => a - b)) {
         const frac = lunarPhase(t);
-        for (const p of wanted) {
-          // Within half a day of the ideal fraction, and only once per lunation.
-          const d = Math.min(Math.abs(frac - p.at), 1 - Math.abs(frac - p.at));
-          if (d > 0.5 / SYNODIC_MONTH) continue;
-          const bucket = `${p.at}|${Math.round(t / (SYNODIC_MONTH * MILLIS_PER_DAY))}`;
-          if (drawn.has(bucket)) continue;
-          drawn.add(bucket);
-          drawMoon(ctx, scaleX(t), axisY + ROW.moon, 7, frac);
+        for (const phase of wanted) {
+          // Within a day of the ideal fraction, wrapping across new moon.
+          if (phaseGapDays(frac, phase.at) > LUNAR_MATCH_DAYS) continue;
+          if (spacedOut(drawn, scaleX(t), 15)) {
+            drawMoon(ctx, scaleX(t), axisY + ROW.moon, 7, frac);
+          }
+          break;
         }
       }
     }
 
-    /* ---- eclipses ---- */
     if (showEclipses) {
       const { min: eMin, max: eMax } = coverage();
-      for (let t = min; t <= max; t += MILLIS_PER_DAY) {
+      const drawnSolar = [];
+      const drawnLunar = [];
+      for (const t of zDates.slice().sort((a, b) => a - b)) {
         const jd = Math.round(toJD(t));
         if (jd < eMin || jd > eMax) continue;
-        const hit = eclipseNear(jd, 0);
-        if (hit.solar && wantsEclipse(ev, 'solar', hit.solar)) {
-          drawEclipse(ctx, scaleX(t), axisY + ROW.eclipse, 'solar', hit.solar);
+        const hit = eclipseNear(jd, ECLIPSE_MATCH_DAYS);
+        const x = scaleX(t);
+        if (hit.solar && wantsEclipse(ev, 'solar', hit.solar) && spacedOut(drawnSolar, x, 20)) {
+          drawEclipse(ctx, x, axisY + ROW.eclipse, 'solar', hit.solar);
         }
-        if (hit.lunar && wantsEclipse(ev, 'lunar', hit.lunar)) {
-          drawEclipse(ctx, scaleX(t), axisY + ROW.eclipse, 'lunar', hit.lunar);
+        if (hit.lunar && wantsEclipse(ev, 'lunar', hit.lunar) && spacedOut(drawnLunar, x, 20)) {
+          drawEclipse(ctx, x, axisY + ROW.eclipse, 'lunar', hit.lunar);
         }
       }
     }
@@ -423,14 +421,28 @@ export function createChart(canvas) {
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
-    // Nearest arc by distance to its ellipse, within a few pixels.
+    // Arcs are drawn on the TOP half only, so anything below the axis is a miss
+    // rather than a match on the mirror image.
+    if (y > axisBaseline + 2) {
+      if (state.highlightKey !== null) {
+        state.highlightKey = null;
+        hovered = null;
+        document.dispatchEvent(new CustomEvent('ophis:highlight', { detail: null }));
+        render();
+      }
+      return;
+    }
+
+    // Nearest arc, by how far the pointer is from its ellipse. Measured from the
+    // axis the arc was actually drawn against — not the bottom of the canvas,
+    // which sits a furniture band lower.
     let best = null;
     let bestD = 9;
     for (const a of arcs) {
       if (!a.geom) continue;
       const { cx, rx, ry } = a.geom;
       const dx = (x - cx) / (rx || 1);
-      const dy = (y - (canvas.clientHeight - 0)) / (ry || 1);
+      const dy = (y - axisBaseline) / (ry || 1);
       const d = Math.abs(Math.hypot(dx, dy) - 1) * Math.min(rx, ry);
       if (d < bestD) {
         bestD = d;
