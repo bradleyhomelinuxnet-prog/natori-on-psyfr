@@ -5,7 +5,8 @@
  *
  *   equation := ("X1" | "X2") "+" body
  *   body     := term (("+" | "-" | "*" | "/") term)*
- *   term     := number | "Y" | CONSTANT | FUNCTION "(" body ")" | "(" body ")" | "-" term
+ *   term     := number | "Y" | CONSTANT | "(" body ")" | "-" term
+ *             | FUNCTION "(" body ("," body)* ")"
  *
  * `x` and `×` are accepted as multiplication, which is how the original wrote
  * its equations ("X2+YxOPH_PHI"). Whitespace is insignificant.
@@ -25,6 +26,7 @@ export const TOKEN = {
   OP: 'op',
   LPAREN: 'lparen',
   RPAREN: 'rparen',
+  COMMA: 'comma',
   END: 'end',
 };
 
@@ -70,6 +72,12 @@ export function tokenize(src) {
 
     if (c === ')') {
       tokens.push({ type: TOKEN.RPAREN, value: c, pos: i });
+      i++;
+      continue;
+    }
+
+    if (c === ',') {
+      tokens.push({ type: TOKEN.COMMA, value: c, pos: i });
       i++;
       continue;
     }

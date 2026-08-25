@@ -30,7 +30,7 @@ function evaluate(node, Y) {
     case 'neg':
       return -evaluate(node.arg, Y);
     case 'call':
-      return FUNCTIONS[node.name](evaluate(node.arg, Y));
+      return FUNCTIONS[node.name](...node.args.map((a) => evaluate(a, Y)));
     case 'bin': {
       const l = evaluate(node.l, Y);
       const r = evaluate(node.r, Y);

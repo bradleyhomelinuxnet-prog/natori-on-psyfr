@@ -15,7 +15,7 @@ import { FUNCTIONS } from './functions.js';
  *   { t: 'num',  v: number }
  *   { t: 'var',  name: 'Y' }
  *   { t: 'const', name: 'OPH_PHI' }
- *   { t: 'call', name: 'oph_round', arg: node }
+ *   { t: 'call', name: 'oph_round', args: [node, …] }
  *   { t: 'neg',  arg: node }
  *   { t: 'bin',  op: '+'|'-'|'*'|'/', l: node, r: node }
  */
@@ -89,10 +89,23 @@ export function parseBody(src) {
       if (Object.hasOwn(FUNCTIONS, name)) {
         if (!at(TOKEN.LPAREN)) throw new EquationError(`"${name}" needs an argument in parentheses`, t.pos);
         next();
-        const arg = parseExpression();
+
+        const args = [parseExpression()];
+        while (at(TOKEN.COMMA)) {
+          next();
+          args.push(parseExpression());
+        }
         if (!at(TOKEN.RPAREN)) throw new EquationError(`missing ")" after ${name}(`, peek().pos);
         next();
-        return { t: 'call', name, arg };
+
+        const arity = FUNCTIONS[name].length;
+        if (args.length !== arity) {
+          throw new EquationError(
+            `${name}() takes ${arity} argument${arity === 1 ? '' : 's'}, got ${args.length}`,
+            t.pos
+          );
+        }
+        return { t: 'call', name, args };
       }
 
       if (name === 'X1' || name === 'X2') {

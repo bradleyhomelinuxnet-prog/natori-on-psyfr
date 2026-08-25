@@ -166,13 +166,26 @@
     <h3>What you can use</h3>
     <ul>
       <li><b>Y</b> — the interval in days.</li>
-      <li><b>Constants</b> — <code>OPH_PHI</code> 1.61803398875 · <code>OPH_PI</code> <b>3.14</b>
+      <li><b>Core constants</b> — <code>OPH_PHI</code> 1.61803398875 · <code>OPH_PI</code> <b>3.14</b>
       (the Archaix π, deliberately not the true value) · <code>OPH_CRV</code> 5.08 ·
       <code>OPH_HEP</code> 7.83.</li>
+      <li><b>Cycle constants</b> — <code>OPH_SAROS</code> · <code>OPH_INEX</code> ·
+      <code>OPH_LUNATION</code> · <code>OPH_SOTHIC</code> · <code>OPH_PRECESSION</code> ·
+      <code>OPH_JUPSAT</code> · the planetary returns <code>OPH_SATURN</code> /
+      <code>OPH_JUPITER</code> / <code>OPH_URANUS</code> / <code>OPH_CHIRON</code> · the year
+      lengths <code>OPH_YEAR_TROPICAL</code> / <code>_SIDEREAL</code> / <code>_ANOMALISTIC</code> /
+      <code>_IDEAL</code> · <code>OPH_E</code> · <code>OPH_TAU</code>.</li>
       <li><b>Functions</b> — <code>oph_round</code> · <code>oph_floor</code> · <code>oph_ceil</code>
-      · <code>oph_abs</code> · <code>oph_sqrt</code> · <code>oph_flip</code>.</li>
+      · <code>oph_abs</code> · <code>oph_sqrt</code> · <code>oph_flip</code> ·
+      <code>oph_log</code> · <code>oph_sin</code> / <code>oph_cos</code> / <code>oph_tan</code>.</li>
+      <li><b>Two-argument functions</b> — <code>oph_mod(a,b)</code> · <code>oph_pow(a,b)</code> ·
+      <code>oph_gcd(a,b)</code> · <code>oph_lcm(a,b)</code> · <code>oph_atan2(y,x)</code> ·
+      <code>oph_snap(v,step)</code>, which snaps a value to the nearest whole multiple.</li>
       <li><b>Arithmetic</b> — <code>+ − * /</code> and parentheses, with normal precedence.</li>
     </ul>
+    <p><code>oph_snap</code> is the cycle-snap idiom written directly:
+    <code>X1+oph_snap(Y,138)</code> is the same projection as
+    <code>X1+oph_round(Y/138)*138</code>, and reads better.</p>
 
     <p><code>oph_flip</code> mirrors the digits: 138 ⮌ 831, 19 ⮌ 91. It is the "holo-" operation —
     the palindromic mirror the whole instrument is named for.</p>
@@ -189,6 +202,9 @@
         <tr><td>X1+oph_round(Y/19)*19</td><td>Snap to whole Metonic cycles.</td></tr>
         <tr><td>X1+Y*360/365.2422</td><td>Convert tropical days into ideal 360-day years.</td></tr>
         <tr><td>X2+Y*792/600</td><td>Re-express the interval in the Nemesis:NER ratio.</td></tr>
+        <tr><td>X1+oph_snap(Y,OPH_SAROS)</td><td>Snap to whole Saros eclipse cycles.</td></tr>
+        <tr><td>X2+oph_mod(Y,OPH_SOTHIC)</td><td>Where the interval sits within a Sothic cycle.</td></tr>
+        <tr><td>X1+oph_gcd(Y,138)*19</td><td>Common factor with the Phoenix cycle, scaled Metonic.</td></tr>
       </tbody>
     </table></div>
 

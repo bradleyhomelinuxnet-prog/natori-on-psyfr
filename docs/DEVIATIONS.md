@@ -88,7 +88,26 @@ Same behaviour for every equation that exists; no longer a landmine for a future
 
 ---
 
-## 8. Preserved on purpose
+## 8. The grammar is a superset
+
+The original's parser accepted only single-argument functions and four constants. The rewrite adds
+**multi-argument functions** (`oph_mod(a,b)`, `oph_pow`, `oph_gcd`, `oph_lcm`, `oph_atan2`,
+`oph_snap`), trigonometry, and sixteen further constants — the Saros and Inex eclipse cycles, the
+Sothic cycle, precession, the planetary returns, the four year-lengths, `OPH_E` and `OPH_TAU`.
+
+This is strictly additive. Every equation the original accepted still parses and produces the
+identical value: the parity hash over all 49 shipped equations × 6 values of Y is unchanged
+(`1b455166…8821a`).
+
+Arity is read from `fn.length` and enforced at compile time, so a miscalled function is a clear
+message (`oph_mod() takes 2 arguments, got 1`) rather than a silent `NaN`.
+
+These were the top two items on the owner's own roadmap, and each was a single data-file edit —
+which is the architecture doing what it was built for.
+
+---
+
+## 9. Preserved on purpose
 
 These look like bugs and are **kept**, because parity depends on them:
 
@@ -105,7 +124,7 @@ These look like bugs and are **kept**, because parity depends on them:
 
 ---
 
-## 9. Not carried over from the desktop build
+## 10. Not carried over from the desktop build
 
 The Electron app had features the browser rewrite does not (yet) reproduce. They are specified in
 `docs/reverse/` if you want them:

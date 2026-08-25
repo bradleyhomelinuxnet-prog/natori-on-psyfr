@@ -48,7 +48,8 @@ That is the whole change. The pack bar reads `Object.keys(PACKS)`.
 ```
 equation := ("X1" | "X2") "+" body
 body     := term (("+" | "-" | "*" | "/" | "x") term)*
-term     := number | "Y" | CONSTANT | FUNCTION "(" body ")" | "(" body ")" | "-" term
+term     := number | "Y" | CONSTANT | "(" body ")" | "-" term
+           | FUNCTION "(" body ("," body)* ")"
 ```
 
 - Every equation **must** start `X1+` or `X2+`. That prefix decides which anchor of the pair the
@@ -91,20 +92,26 @@ It is usable in equations at once, and the Method section documents it for you.
 
 ## Adding a function
 
-Keep it pure and single-argument:
+Keep it pure and total — never throw, and never return `NaN` for ordinary input.
 
 ```js
 // src/core/equation/functions.js
 export const FUNCTIONS = {
   // …
   oph_digitsum: (v) => String(Math.abs(Math.round(v))).split('').reduce((a, c) => a + +c, 0),
+  oph_between: (v, lo) => Math.max(v, lo),   // two arguments is fine
 };
 
 export const FUNCTION_NOTES = {
   // …
   oph_digitsum: 'Sum of the digits',
+  oph_between: 'The larger of the two — oph_between(Y, 138)',
 };
 ```
+
+Functions may take any number of arguments. **Arity is read from `fn.length`**, and the parser
+enforces it at compile time — so declare parameters explicitly. A rest parameter (`...args`) or a
+default value (`b = 2`) reports the wrong count and will make every call fail validation.
 
 ---
 

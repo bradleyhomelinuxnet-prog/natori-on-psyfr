@@ -142,6 +142,33 @@ test('malformed equations are rejected, not executed', () => {
   }
 });
 
+test('multi-argument functions parse and evaluate', () => {
+  assert.equal(compileOperation('X1+oph_mod(Y,138)').fn(1000), 34);
+  assert.equal(compileOperation('X1+oph_mod(-Y,138)').fn(1), 137, 'remainder stays non-negative');
+  assert.equal(compileOperation('X1+oph_pow(Y,2)').fn(12), 144);
+  assert.equal(compileOperation('X1+oph_gcd(Y,138)').fn(1656), 138);
+  assert.equal(compileOperation('X1+oph_lcm(Y,19)').fn(138), 2622);
+  assert.equal(compileOperation('X1+oph_snap(Y,138)').fn(1000), 966);
+  assert.equal(compileOperation('X1+oph_atan2(0,1)').fn(0), 0);
+});
+
+test('function arity is enforced at compile time', () => {
+  assert.throws(() => compileOperation('X1+oph_mod(Y)'), /takes 2 arguments, got 1/);
+  assert.throws(() => compileOperation('X1+oph_round(Y,2)'), /takes 1 argument, got 2/);
+});
+
+test('the roadmap constants are available and correctly valued', () => {
+  assert.equal(compileOperation('X1+OPH_SAROS').fn(0), 6585.3211);
+  assert.equal(compileOperation('X1+OPH_SOTHIC').fn(0), 1461);
+  assert.equal(compileOperation('X1+OPH_PRECESSION').fn(0), 25772);
+  assert.equal(compileOperation('X1+oph_round(OPH_E*1000)').fn(0), 2718);
+  // The snap idiom the themed packs are built from, now expressible directly.
+  assert.equal(
+    compileOperation('X1+oph_snap(Y,138)').fn(5012),
+    compileOperation('X1+oph_round(Y/138)*138').fn(5012)
+  );
+});
+
 test('operator precedence and unary minus behave normally', () => {
   assert.equal(compileOperation('X1+2+3*4').fn(0), 14);
   assert.equal(compileOperation('X1+(2+3)*4').fn(0), 20);
