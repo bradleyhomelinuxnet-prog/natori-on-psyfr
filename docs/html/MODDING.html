@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modding Ophis</title>
+<meta http-equiv="Content-Security-Policy"
+      content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'none'; img-src 'self' data:; connect-src 'none'">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../src/styles/ophis-tokens.css">
+<link rel="stylesheet" href="../../src/styles/ophis-app.css">
+<style>
+  body { padding-bottom: 96px; }
+  .doc-top {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding: 20px var(--gutter); max-width: 1180px; margin: 0 auto;
+  }
+  .paper {
+    display: grid; grid-template-columns: 232px minmax(0, 1fr); gap: 48px;
+    max-width: 1180px; margin: 0 auto; padding: 0 var(--gutter);
+  }
+  .paper > nav {
+    position: sticky; top: 24px; align-self: start;
+    max-height: calc(100vh - 48px); overflow-y: auto;
+    padding: 24px 0; font-size: 12.5px;
+  }
+  .paper > nav a { display: block; color: var(--dim); text-decoration: none; padding: 3px 0; line-height: 1.4; }
+  .paper > nav a:hover { color: var(--gold-2); }
+  .paper > nav a.l3 { padding-left: 14px; font-size: 11.5px; color: var(--faint); }
+
+  article { padding: 24px 0; max-width: 76ch; }
+  article h1 { font-family: var(--font-display); font-size: clamp(28px, 4vw, 40px); color: var(--ink); margin: 0 0 20px; letter-spacing: .01em; }
+  article h2 { font-family: var(--font-display); font-size: 24px; color: var(--gold-2); margin: 52px 0 16px; }
+  article h3 { font-size: 17px; color: var(--ink); margin: 34px 0 12px; font-weight: 600; }
+  article h4 { font-size: 14px; color: var(--gold); margin: 26px 0 10px; font-weight: 600; letter-spacing: .04em; }
+  article p { font-size: 15.5px; line-height: 1.68; color: var(--prose); margin: 0 0 15px; max-width: none; }
+  article strong { color: var(--ink); }
+  article ul, article ol { color: var(--prose); font-size: 15.5px; line-height: 1.68; padding-left: 22px; margin: 0 0 16px; }
+  article li { margin-bottom: 6px; }
+  article hr { border: 0; border-top: 1px solid var(--line); margin: 40px 0; }
+  article blockquote {
+    border-left: 3px solid var(--gold); background: var(--panel);
+    margin: 20px 0; padding: 12px 20px; border-radius: 0 var(--r-2) var(--r-2) 0;
+  }
+  article blockquote p:last-child { margin-bottom: 0; }
+  article pre {
+    background: var(--well); border: 1px solid var(--line); border-radius: var(--r-2);
+    padding: 14px 16px; overflow-x: auto; font-family: var(--font-mono);
+    font-size: 12px; line-height: 1.55; color: var(--prose); margin: 0 0 18px;
+  }
+  article pre code { background: none; border: 0; padding: 0; font-size: inherit; }
+  article .tablewrap { margin: 0 0 20px; }
+  article td, article th { font-size: 12.5px; }
+  article td:first-child { color: var(--ink); }
+
+  @media (max-width: 900px) {
+    .paper { grid-template-columns: 1fr; gap: 0; }
+    .paper > nav { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="doc-top">
+  <div class="brand">OPHIS <small>Modding Ophis</small></div>
+  <a class="btn" href="../../index.html">Open the instrument &rarr;</a>
+</div>
+
+<div class="paper">
+  <nav aria-label="Contents">
+    <a class="l2" href="#the-one-file-rules">The one-file rules</a>
+    <a class="l2" href="#adding-an-operation-pack">Adding an operation pack</a>
+    <a class="l3" href="#the-equation-grammar">The equation grammar</a>
+    <a class="l2" href="#adding-a-constant">Adding a constant</a>
+    <a class="l2" href="#adding-a-function">Adding a function</a>
+    <a class="l2" href="#changing-the-msrf-numbers">Changing the MSRF numbers</a>
+    <a class="l2" href="#adding-an-output-filter">Adding an output filter</a>
+    <a class="l2" href="#changing-how-scoring-works">Changing how scoring works</a>
+    <a class="l2" href="#re-skinning">Re-skinning</a>
+    <a class="l2" href="#architecture-in-one-picture">Architecture, in one picture</a>
+    <a class="l2" href="#testing-a-change">Testing a change</a>
+    <a class="l2" href="#a-note-on-the-other-app">A note on the other app</a>
+  </nav>
+  <article>
+<h1 id="modding-ophis">Modding Ophis</h1>
+<p>The whole point of the rebuild is that each kind of change touches <strong>one file</strong>. This is that list, with a worked example for each.</p>
+<p>Nothing here needs a build step. Edit the file, reload the page.</p>
+<hr>
+<h2 id="the-one-file-rules">The one-file rules</h2>
+<div class="tablewrap"><table><thead><tr><th style="text-align:left">I want to…</th><th style="text-align:left">Edit</th><th style="text-align:left">And</th></tr></thead><tbody><tr><td style="text-align:left">Add / change an <strong>operation pack</strong></td><td style="text-align:left"><code>src/data/packs-ophis.js</code></td><td style="text-align:left">It appears in the pack bar on the Operations screen</td></tr><tr><td style="text-align:left">Change the <strong>MSRF numbers</strong></td><td style="text-align:left"><code>src/data/msrf-ophis.js</code></td><td style="text-align:left">Scoring, the About listing and the self-check all follow</td></tr><tr><td style="text-align:left">Add a <strong>constant</strong> usable in equations (<code>OPH_*</code>)</td><td style="text-align:left"><code>src/core/equation/reckonings.js</code></td><td style="text-align:left">Usable immediately, documented on the Operations screen</td></tr><tr><td style="text-align:left">Add a <strong>function</strong> usable in equations (<code>oph_*</code>)</td><td style="text-align:left"><code>src/core/equation/reckonings.js</code></td><td style="text-align:left">Same</td></tr><tr><td style="text-align:left">Change how a <strong>score</strong> is computed</td><td style="text-align:left"><code>src/core/ophis/scoring.js</code></td><td style="text-align:left">The Audit screen's derivation follows automatically</td></tr><tr><td style="text-align:left">Add / change an <strong>output filter</strong></td><td style="text-align:left"><code>src/core/ophis/filters.js</code></td><td style="text-align:left">The Filters panel renders straight off <code>FILTER_ROWS</code></td></tr><tr><td style="text-align:left">Add a <strong>sort type</strong></td><td style="text-align:left"><code>src/core/ophis/sort.js</code></td><td style="text-align:left">Add the column to <code>COLUMNS</code> in <code>ui/ophis/results.js</code></td></tr><tr><td style="text-align:left">Add a <strong>chart overlay</strong> toggle</td><td style="text-align:left"><code>src/state/iso-event.js</code> → <code>CHART_OPTIONS</code></td><td style="text-align:left">The Chart Config panel renders off it; draw it in <code>ui/ophis/chart.js</code></td></tr><tr><td style="text-align:left">Re-skin — <strong>colours, fonts, spacing</strong></td><td style="text-align:left"><code>src/styles/ophis-tokens.css</code></td><td style="text-align:left">Every component resolves through these</td></tr><tr><td style="text-align:left">Change <strong>what a screen says</strong></td><td style="text-align:left"><code>src/ui/ophis/shell.js</code> → <code>SCREENS</code></td><td style="text-align:left">Titles, ledes and the nav all come from there</td></tr></tbody></table></div>
+<p>Anything that needs <em>two</em> files is a design smell. If you hit one, it is worth asking whether the seam is in the right place.</p>
+<hr>
+<h2 id="adding-an-operation-pack">Adding an operation pack</h2>
+<p>Packs are data. A pack is a list of <code>[equation, weight, note]</code>.</p>
+<pre data-lang="js"><code>// src/data/packs-ophis.js
+export const OPHIS_PACKS = {
+  // …existing packs…
+
+  'ophis-lunar': {
+    id: 'ophis-lunar',
+    label: 'Lunar · 4 operations',
+    note: 'Projections snapped to whole lunations.',
+    operations: [
+      ['X2+Yx29.53', 1, 'one synodic month per rotation'],
+      ['X1+Yx29.53', 1, ''],
+      ['X2+Y/29.53', 0.5, ''],
+      ['X2+oph_round(Y/29.53)x29.53', 1, 'snap to the nearest whole moon'],
+    ].map((r, i) =&gt; ({ equation: r[0], weight: r[1], enabled: true, packId: 'ophis-lunar', ordinal: i, note: r[2] })),
+  },
+};</code></pre>
+<p>Reload; it is in the pack bar. <strong>Ordinal order is load-bearing</strong> — <code>operation_ordinal</code> indexes the array everywhere, so inserting a row in the middle of an <em>existing</em> pack renumbers every result after it.</p>
+<h3 id="the-equation-grammar">The equation grammar</h3>
+<pre><code>equation := ("X1+" | "X2+") expression
+expression := term (("+" | "-") term)*
+term       := factor (("*" | "x" | "×" | "/") factor)*
+factor     := "-"? primary
+primary    := number | "Y" | CONSTANT | function "(" expression ("," expression)* ")" | "(" expression ")"</code></pre>
+<p>The prefix decides <strong>which anchor of the pair the offset is added to</strong>, not which is subtracted. <code>Y</code> is the distance between the pair, always positive when the list is in order.</p>
+<blockquote><p><strong><code>x</code> is multiplication</strong>, so no name may contain a lowercase <code>x</code>. <code>oph_exp</code> is declared because the original declared it, and can never be called: the name lexes as <code>oph_e × p</code>. The original had the same hole from the other direction — it did a global <code>.replace(/x/g, '*')</code>.</p></blockquote>
+<hr>
+<h2 id="adding-a-constant">Adding a constant</h2>
+<pre data-lang="js"><code>// src/core/equation/reckonings.js
+const OPHIS_CONSTANTS = {
+  OPH_PI: 3.14,
+  OPH_PHI: 1.618,
+  OPH_CRV: 5.08,
+  OPH_HEP: 7.01,
+  OPH_SAROS: 6585.3211,   // &lt;- new
+};</code></pre>
+<p>Give it a line in <code>constantNotes</code> in the same object and it documents itself on the Operations screen. Then <code>X2+Y/OPH_SAROS</code> parses.</p>
+<blockquote><p>The two reckonings keep <strong>separate</strong> constant tables, and they disagree: <code>OPH_PHI</code> is <code>1.618</code> here and <code>1.61803398875</code> in the chronicon app. That is a real divergence between two programs, not a transcription slip. Unifying them is the one refactor guaranteed to move results.</p></blockquote>
+<hr>
+<h2 id="adding-a-function">Adding a function</h2>
+<p>Arity is read from <code>fn.length</code>, so declare parameters explicitly — a rest parameter or a default value reports the wrong count to the parser.</p>
+<pre data-lang="js"><code>// src/core/equation/reckonings.js
+const OPHIS_FUNCTIONS = {
+  // …existing…
+  oph_snap: (v, step) =&gt; (step === 0 ? v : Math.round(v / step) * step),
+};</code></pre>
+<p>Add a <code>functionNotes</code> entry. Then <code>X1+oph_snap(Y, 138)</code> works.</p>
+<p>Keep functions <strong>pure and total</strong>. The evaluator rejects a non-finite result, but a function that throws costs you that projection.</p>
+<hr>
+<h2 id="changing-the-msrf-numbers">Changing the MSRF numbers</h2>
+<pre data-lang="js"><code>// src/data/msrf-ophis.js
+export const MSRF_FILTER__NORMAL = [ …, 1729 ];</code></pre>
+<p>Three properties are load-bearing and the test suite pins them:</p>
+<ul><li><strong>NORMAL is not sorted</strong>, and <code>1574</code> sits at index 248. The scorer scans linearly, so the order is invisible to a result — but reordering breaks a byte-comparison against the original, and any future binary search would then be wrong in a way nothing catches.</li><li><strong>IMPORTANT is disjoint from NORMAL</strong> and is checked first.</li><li><strong>VORTEX is checked before both</strong>, on the 1-dp value, using a plain IEEE-754 comparison. Do not add an epsilon: <code>76.1</code> must miss <code>76.2</code> and <code>76.3</code> must hit it.</li></ul>
+<p>If you widen a tier, update the length assertions in <code>tests/ophis.test.mjs</code> in the same commit — they exist to make a careless edit loud.</p>
+<hr>
+<h2 id="adding-an-output-filter">Adding an output filter</h2>
+<pre data-lang="js"><code>// src/core/ophis/filters.js
+export const FILTER_DEFAULTS = {
+  // …existing…
+  iso_event_filter_weekend_only: false,
+};
+
+export const FILTER_ROWS = [
+  // …existing…
+  { id: 9, flag: 'iso_event_filter_weekend_only', label: 'Show only weekends' },
+];</code></pre>
+<p>Then one clause in <code>applyFilters</code>:</p>
+<pre data-lang="js"><code>if (isoEvent.iso_event_filter_weekend_only) {
+  const day = new Date(zStart).getUTCDay();
+  if (day !== 0 &amp;&amp; day !== 6) include = false;
+}</code></pre>
+<p>The Filters panel renders off <code>FILTER_ROWS</code>, so it appears with no UI change.</p>
+<p><strong>Every predicate may only ever set <code>include = false</code>.</strong> No early exits, no mutation. That is what makes the order irrelevant and the set safe to extend.</p>
+<hr>
+<h2 id="changing-how-scoring-works">Changing how scoring works</h2>
+<p><code>src/core/ophis/scoring.js</code> is a single function. The shape to preserve:</p>
+<pre><code>operationScore   = Σ weights of the operations that reached this date
+M                = max multiplier over the resonance matches, floored at 1.0
+resonanceSubscore= Σ points, EXCLUDING the first match whose own multiplier === M
+score            = round2((operationScore + resonanceSubscore) × M)</code></pre>
+<p><code>M</code> is a <strong>max, never a product</strong>. Ten Important matches multiply once and add two points each.</p>
+<p>The Audit screen reads the stamped fields (<code>operation_score</code>, <code>resonance_subscore</code>, <code>base_score_pre_multiply</code>, <code>score_multiplier</code>), so a change here explains itself there with no further work — provided you keep stamping them.</p>
+<hr>
+<h2 id="re-skinning">Re-skinning</h2>
+<p><code>src/styles/ophis-tokens.css</code> is the entire palette. Every colour resolves through one of these, so a re-skin means editing that file and nothing else.</p>
+<pre data-lang="css"><code>:root {
+  --gold:   #d8a943;   /* structure: labels, rules, Alpha operations */
+  --cyan:   #56bcd0;   /* Beta operations, focus rings */
+  --green:  #7fbb5c;   /* Normal MSRF, saved */
+  --red:    #e0503c;   /* Important MSRF, destructive */
+  --violet: #a98ade;   /* Vortex MSRF */
+}</code></pre>
+<p>Two rules worth keeping:</p>
+<ul><li><strong>Define every token on bare <code>:root</code>.</strong> A viewer with no explicit theme and no media support must still get a full palette rather than transparent boxes.</li><li><strong>The <code>--hits-*</code> ramp is fixed across themes.</strong> Those four colours encode data, not decoration: someone comparing two screenshots must see the same colour mean the same count.</li></ul>
+<hr>
+<h2 id="architecture-in-one-picture">Architecture, in one picture</h2>
+<pre><code>  data/  ──────────────►  core/ophis/  ──────────────►  ui/ophis/
+  packs-ophis.js          run.js  scoring.js            work.js
+  msrf-ophis.js           filters.js  sort.js           results.js
+                          calendar.js  msrf-match.js    chart.js
+                                  ▲                     screens.js
+                                  │                          │
+                          core/equation/               state/ophis-store.js
+                          tokenizer → parser → eval           │
+                                                          io/  oph.js
+                                                               export-results.js</code></pre>
+<p>Dependencies point <strong>one way</strong>: <code>ui</code> may import from <code>core</code>, <code>state</code> and <code>io</code>; <code>core</code> may import from <code>data</code>; nothing in <code>core</code> may import from <code>ui</code>.</p>
+<p>That is not style. It is why <code>src/core/ophis/</code> runs headless under node with no DOM, which is what lets the whole pipeline be tested without a browser.</p>
+<hr>
+<h2 id="testing-a-change">Testing a change</h2>
+<pre data-lang="bash"><code>npm test</code></pre>
+<p>76 fixtures, no dependencies. They pin the engine against values read out of the <strong>original</strong>, not out of this implementation — so a failure means the rebuild has drifted, not that the fixture needs updating.</p>
+<p>If you are changing the maths on purpose, the honest move is to change the fixture <strong>and say so in the commit message</strong>. A silently updated parity fixture is the one thing that makes the whole suite worthless.</p>
+<p>To check the UI as well, serve it and drive it:</p>
+<pre data-lang="bash"><code>npm run serve   # then http://localhost:8777/</code></pre>
+<hr>
+<h2 id="a-note-on-the-other-app">A note on the other app</h2>
+<p><code>chronicon.html</code> is a different instrument with its own data files — <code>src/data/packs.js</code>, <code>msrf.js</code>, <code>ledger.js</code>, <code>lattice.js</code>, <code>src/core/scoring/</code>, <code>src/styles/tokens.css</code>. It shares the equation engine and nothing else. Editing an Ophis file will not change it, and editing a chronicon file will not change Ophis.</p>
+  </article>
+</div>
+
+</body>
+</html>

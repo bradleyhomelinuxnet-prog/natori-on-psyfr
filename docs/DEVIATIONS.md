@@ -128,18 +128,67 @@ These look like bugs and are **kept**, because parity depends on them:
 | Eclipse lookup returns *a* hit, not the *nearest* | Only matters when tolerance > 1 | Tolerance is 1 in the cast |
 | Convergence day-windows chain transitively | A ±30 cluster can span more than 30 days | Exposed via `spanDays` rather than changed |
 
+And in the `ophis` reckoning specifically:
+
+| Behaviour | Why it looks wrong | Why it stays |
+|---|---|---|
+| `round1(-1.25) === -1.2` | The `Number.EPSILON` nudge is wrong below zero | Reachable whenever X₂ precedes X₁; the original rounds this way |
+| The vortex tolerance uses raw IEEE-754 | `76.1` misses `76.2` by `0.000000000000001` | Adding an epsilon flips that row and moves every projection near it |
+| `43.5` matches, but `100.5` does not | The `.5` dead zone runs *after* the vortex pass | `43.5` **is** a vortex number; order is the whole behaviour |
+| `rotation_count_z` is `round1` of the `round2` value | A double rounding | It is the number the filters probe; probing the raw value finds different matches |
+| The offset becomes milliseconds *before* it is rounded | Two rounding steps in a confusing order | Rounding first moves projections by up to half a day |
+| `SORT_TYPE__OPERATIONS` sorts by **count**, not score | The column tooltip promised score | Both arms of the original's if/else assigned the count. Tooltip corrected; `SORT_TYPE__OPERATION_SCORE` added alongside |
+| The 'beyond N days' filter defaults to **2559** | The author's own notes say the window is 2556 days | The code reuses `HIGHEST_MSRF_NUMBER`; the two constants are unrelated and collided. The field is editable |
+| Two operations carry a class the author's notes contradict | Core IV is Alpha here and beta there; Core X the reverse | Weight feeds `operation_score` directly, so moving either shifts every score. See `reverse/22` |
+
 ---
 
 ## 10. Not carried over from the desktop build
 
-The Electron app had features the browser rewrite does not (yet) reproduce. They are specified in
-`docs/reverse/` if you want them:
+Almost everything the Electron app did is now here. What is left:
 
 | Feature | Spec | Note |
 |---|---|---|
-| Chart.js timeline with moon-phase & eclipse overlays | `10-view-chart.md` | The largest missing piece |
-| PDF / XLSX export | `11-export.md` | CSV is implemented |
-| Sunset-based day boundaries via lat/long | `05-config-utils.md`, `12-astronomy-data.md` | Needs a real ephemeris library |
-| Offline Leaflet map for picking lat/long | `12-astronomy-data.md` | ~1400 tiles ship in the study repo |
-| The full desktop MSRF sets and filter chain | `03-scoring-msrf.md`, `02-engine-operations.md` | The browser set is a reduced 87 numbers |
-| Multiple saved events per file | `04-persistence-format.md` | `.oph` import takes the first event only |
+| Offline Leaflet map for picking lat/long | `12-astronomy-data.md` | v12 shipped a 1 365-tile pyramid — 97 % of its asset payload — purely so the picker worked air-gapped. Coordinates are typed instead |
+| Skins and `EVENT_TYPE`-driven window titles | `14-domain-and-style.md` | `type` stays in the schema so a `.oph` round-trips, and is otherwise inert |
+| Headless mode and its query-parameter validation modes | `16-electron-main-process.md` | The strict/loose distinction survives in `io/oph.js`; there is no CLI to select it |
+
+---
+
+## 11. Introduced by this rebuild
+
+Places where the rewrite does something the original did not do at all.
+
+| Change | Why |
+|---|---|
+| **Chart labels are chosen, not shoved.** Colliding date labels are dropped by rank rather than pushed apart | v12 spread them with a recursive pass, which turns an overlap into a band of text no longer above the date it names. Every surviving label sits at its true position |
+| **Arcs are real ellipses.** | v12 set `lineTension` using a Chart.js **v2** option name that v4 ignores, so every arc was silently a 13-segment polyline |
+| **Hovering re-strokes one arc** instead of rebuilding every dataset | Its chart library could not reorder datasets, so a hover rebuilt all of them |
+| **The Audit screen exists.** | v12's `renderDebugOutput` was written, commented out of the screen list, and shipped with two bugs |
+| **The activity log exists.** | The author's own `// TODO: Try to pipe these kinds of things to an activity log, ultimately. Toasts are limited.` Every toast is mirrored into it |
+| **Sunset is computed, not looked up.** ~60 lines of Meeus reduction replaces three libraries totalling ~150 KB | Only one of the three was ever reached, and the app consumed exactly one value from it. Agrees to about a minute |
+| **XLSX ships the same 8 columns as the CSV**, with a frozen bold header | v12's was an admitted 3-column proof of concept |
+| **The PDF is a real layout pass** | v12's callback state machine drifted 40 pt per page and could emit `<table width="NaN">` |
+| **An empty result is not an error.** A dedicated panel with a *Loosen filters* shortcut | v12 rendered it under a header reading *Errors* in red. An over-tight filter is not an error |
+| **Everything is keyboard-operable** | v12 set `tabIndex = -1` on every button and checkbox at startup |
+
+---
+
+## 12. Known reductions
+
+One place where this rebuild is *narrower* than the design, recorded so it is not mistaken for
+an oversight.
+
+**The MSRF probes one distance per projection, not three.** The author's flow chart (`[CC]`) says
+the filter measures "the distance in axial rotations between all 42 projected dates back to A, B
+**and** C". The shipped v12 engine probes only `rotation_count_z` — the offset from the operation's
+own base anchor — and this reproduces that. The distances back to the other controls are never
+computed and never filtered on.
+
+This is faithful to the binary and unfaithful to the design — and measurement suggests the binary
+is right. On the `test-bradley` fixture, probing all three distances adds a match to **54 % of
+rows**, lights up half the rows that currently match nothing, and doubles the peak hit count from
+4 to 8. A filter whose stated job is "the elimination of phantom dates" does not do that job better
+by matching half of what it used to reject.
+
+Left as shipped. The full table is in `reverse/22` §1.2.
