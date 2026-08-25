@@ -1,0 +1,41 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  parity:
+    name: Parity against the original engine
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # No dependencies to install — the engine is plain ES modules and the
+      # suite runs on node's built-in test runner.
+      - name: Run the parity suite
+        run: node --test tests/parity.test.mjs
+
+      - name: Check nothing reaches for eval
+        run: |
+          if grep -rnE '\bnew Function\b|\beval\(' src/ --include='*.js' \
+             | grep -vE '^\s*src/core/equation/(parser|index)\.js:[0-9]+:\s*\*'; then
+            echo "::error::found a dynamic code-evaluation sink in src/ — see docs/DEVIATIONS.md"
+            exit 1
+          fi
+          echo "no eval / new Function in src/"
+
+      - name: Check nothing sets innerHTML
+        run: |
+          if grep -rnE 'innerHTML|outerHTML|insertAdjacentHTML|document\.write' src/ --include='*.js' \
+             | grep -vE ':\s*(\*|//)'; then
+            echo "::error::found a markup sink in src/ — user text must go in as a text node"
+            exit 1
+          fi
+          echo "no markup sinks in src/"
