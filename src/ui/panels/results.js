@@ -152,8 +152,13 @@ function renderCount(shownCount, total) {
     node.textContent = '';
     return;
   }
-  const capped = shownCount > RENDER_CAP ? ` · drawing the first ${RENDER_CAP}` : '';
-  node.textContent = `${shownCount} of ${total} shown${capped}`;
+  const n = (v) => v.toLocaleString();
+  // Say "shown" only when it is true — past the cap the table is a window onto
+  // the matches, and CSV export still takes every one of them.
+  node.textContent =
+    shownCount > RENDER_CAP
+      ? `${n(shownCount)} of ${n(total)} match · drawing the first ${n(RENDER_CAP)}`
+      : `${n(shownCount)} of ${n(total)} shown`;
 }
 
 function syncHeaders() {

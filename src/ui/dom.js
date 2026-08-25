@@ -1,9 +1,10 @@
 /**
  * Minimal DOM helpers.
  *
- * Everything user-supplied goes in as a text node, never as markup — `el()`
- * only ever sets `textContent`. That keeps a label typed into the anchor form
- * (or loaded from a saved config) from becoming markup.
+ * There is deliberately no way to set markup here: `el()` only ever sets
+ * `textContent`, and nothing in the app touches `innerHTML`. A label typed into
+ * the anchor form, or loaded from a saved config, therefore cannot become
+ * markup no matter what it contains.
  */
 
 export const $ = (id) => document.getElementById(id);
@@ -13,8 +14,8 @@ export const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
  * Create an element.
  *
  * @param {string} tag e.g. 'div', 'button.btn.sm', 'span#count'
- * @param {object} [attrs] attributes; `class`, `text`, `html`, `data`, and
- *   `on*` handlers are special-cased
+ * @param {object} [attrs] attributes; `class`, `text`, `data`, and `on*`
+ *   handlers are special-cased
  * @param {Array<Node|string>} [children]
  */
 export function el(tag, attrs = {}, children = []) {
@@ -30,7 +31,6 @@ export function el(tag, attrs = {}, children = []) {
     if (v === null || v === undefined || v === false) continue;
     if (k === 'class') node.className = [node.className, v].filter(Boolean).join(' ');
     else if (k === 'text') node.textContent = v;
-    else if (k === 'html') node.innerHTML = v; // only ever called with our own literals
     else if (k === 'data') for (const [dk, dv] of Object.entries(v)) node.dataset[dk] = dv;
     else if (k.startsWith('on') && typeof v === 'function') node.addEventListener(k.slice(2), v);
     else if (v === true) node.setAttribute(k, '');
