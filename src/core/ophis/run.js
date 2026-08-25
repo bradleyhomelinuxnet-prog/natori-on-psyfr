@@ -122,13 +122,22 @@ export function validateXDateSpread(isoEvent) {
   return errors;
 }
 
-const emptyResults = (errors) => ({
+/**
+ * A run that stopped at a guard.
+ *
+ * Diagnostics are carried through rather than dropped. Without that, an event
+ * whose every operation failed to compile reports only "At least 1 Operation is
+ * required" — which is true, and says nothing about the six parse errors that
+ * caused it. The Audit screen would then read "Clean".
+ */
+const emptyResults = (errors, diagnostics = []) => ({
   errors,
   y_structs: [],
   z_structs: {},
+  effective_operations: [],
   processed_z_dates: [],
   processed_z_dates__sorted_by_date: [],
-  diagnostics: [],
+  diagnostics,
   hidden: 0,
 });
 
@@ -149,13 +158,13 @@ export function runOphis(isoEvent, ctx) {
 
   // STEP 2 — guards. Mutually exclusive: the first that fires ends the run.
   const enabledAnchors = (isoEvent.x_dates ?? []).filter((x) => x.enabled === true);
-  if (enabledAnchors.length < MINIMUM_NUMBER_OF_X_DATES) return emptyResults([ERRORS.MIN_X_DATES]);
-  if (scope === EVENT_SCOPE.MONTHS) return emptyResults([ERRORS.SCOPE_MONTHS]);
-  if (scope === EVENT_SCOPE.YEARS) return emptyResults([ERRORS.SCOPE_YEARS]);
-  if (runnable.length < 1) return emptyResults([ERRORS.MIN_OPERATIONS]);
+  if (enabledAnchors.length < MINIMUM_NUMBER_OF_X_DATES) return emptyResults([ERRORS.MIN_X_DATES], diagnostics.list());
+  if (scope === EVENT_SCOPE.MONTHS) return emptyResults([ERRORS.SCOPE_MONTHS], diagnostics.list());
+  if (scope === EVENT_SCOPE.YEARS) return emptyResults([ERRORS.SCOPE_YEARS], diagnostics.list());
+  if (runnable.length < 1) return emptyResults([ERRORS.MIN_OPERATIONS], diagnostics.list());
 
   const spreadErrors = validateXDateSpread(isoEvent);
-  if (spreadErrors.length) return emptyResults(spreadErrors);
+  if (spreadErrors.length) return emptyResults(spreadErrors, diagnostics.list());
 
   // STEP 3 — pair enumeration. The OUTER loop is the later date, so the emission
   // order is (0,1),(0,2),(1,2),(0,3)… and the ordinals index the UNFILTERED

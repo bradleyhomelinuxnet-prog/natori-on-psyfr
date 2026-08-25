@@ -65,13 +65,30 @@ export const OPHIS_PACKS = {
     operations: GTE_V10.map(row('ophis-gte-v10')),
   },
 
+  /**
+   * This IS the v9 default, exactly: fifteen operations, seven of them Alpha
+   * (#1, #2, #5, #6, #9, #10 and the X1 hepta-cycle). v12 adds one row — the X2
+   * hepta-cycle — and changes nothing else. That single row is the entire
+   * operation-table difference between the two versions.
+   */
   'ophis-gte-v8': {
     id: 'ophis-gte-v8',
     label: 'Ophis v8-v9 · 15 operations',
-    note: 'The v8 table: the first fifteen, with #5 and #9 already promoted to Alpha.',
+    note: 'The v9 default. The v12 table is this plus the X2 hepta-cycle, and nothing else.',
     operations: GTE_V10.slice(0, 15).map(row('ophis-gte-v8')),
   },
 
+  /**
+   * Never reachable in v9 or v12 — its factory is declared in both and every
+   * call site is commented out.
+   *
+   * Every row ships ENABLED, including the X1 hepta-cycle that the source
+   * declares with `OPERATION_ENABLED_FALSE`. That is not a transcription slip:
+   * the original's `newOperation` ignores its own `enabled` argument and
+   * hard-codes `true`, so the one call site that asks for a disabled operation
+   * silently gets an enabled one. Reproduced, because it is what the program
+   * did rather than what it meant.
+   */
   'ophis-lte-v7': {
     id: 'ophis-lte-v7',
     label: 'Ophis v7 and earlier · 15 operations',

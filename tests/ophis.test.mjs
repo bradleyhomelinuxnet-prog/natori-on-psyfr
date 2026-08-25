@@ -521,3 +521,66 @@ test('every phase point is reachable and distinct', () => {
   }
   assert.equal(seen.size, 8, 'all eight phases occur within one lunation');
 });
+
+/* ---------------------------------------------------------------- Group N --
+ * v9 against v12 — the whole operation-table difference between the two
+ * versions, pinned so a later edit cannot quietly widen it.
+ */
+
+test('the v9 default is the v12 table minus one row', () => {
+  const v9 = packOperations('ophis-gte-v8');
+  const v12 = packOperations('ophis-gte-v10');
+
+  assert.equal(v9.length, 15);
+  assert.equal(v12.length, 16);
+  assert.deepEqual(
+    v12.slice(0, 15).map((o) => [o.equation, o.weight]),
+    v9.map((o) => [o.equation, o.weight]),
+    'the first fifteen rows are identical in both versions'
+  );
+  assert.equal(v12[15].equation, 'X2+YxOPH_HEP', 'v12 adds the X2 hepta-cycle');
+  assert.equal(v12[15].weight, 1);
+});
+
+test('the Alpha/beta split matches the author across every version', () => {
+  const alphas = (id) => packOperations(id).filter((o) => o.weight >= 1).length;
+  assert.equal(alphas('ophis-lte-v7'), 5, 'v7: five Alpha');
+  assert.equal(alphas('ophis-gte-v8'), 7, 'v9: #6 and #10 promoted');
+  assert.equal(alphas('ophis-gte-v10'), 8, 'v12: plus the X2 hepta-cycle');
+
+  // Restricted to the twelve Core Algorithm formulas — excluding the Isometric,
+  // the Holofractal and both hepta-cycles — the split is 4/8 under both the v9
+  // and v12 defaults, which is what the author's Procedural Notes state.
+  for (const id of ['ophis-gte-v8', 'ophis-gte-v10']) {
+    const core = packOperations(id).slice(2, 14);
+    assert.equal(core.filter((o) => o.weight >= 1).length, 4, `${id}: 4 Core Alpha`);
+    assert.equal(core.filter((o) => o.weight < 1).length, 8, `${id}: 8 Core beta`);
+  }
+});
+
+test('every operation in every version ships enabled', () => {
+  // The original's newOperation ignores its `enabled` argument and hard-codes
+  // true, so the one row declared disabled is not. Reproduced deliberately.
+  for (const id of ['ophis-lte-v7', 'ophis-gte-v8', 'ophis-gte-v10']) {
+    assert.ok(packOperations(id).every((o) => o.enabled === true), id);
+  }
+  // The extras are the exception: they never shipped on.
+  assert.ok(packOperations('ophis-xtras').every((o) => o.enabled === false));
+});
+
+test('a guard does not swallow the reason the operations failed', () => {
+  const ev = makeIsoEvent(0, {
+    x_dates: [makeXDate(2026, 1, 1), makeXDate(2026, 6, 1)],
+    operations: [
+      { equation: 'X1+nonsense(Y)', weight: 1, enabled: true },
+      { equation: 'X1+Y/0', weight: 1, enabled: true },
+    ],
+  });
+  const r = runOphis(ev, { now: NOW });
+
+  assert.deepEqual(r.errors, ['At least 1 Operation is required.']);
+  assert.equal(r.diagnostics.length, 2, 'both parse failures are reported');
+  assert.ok(r.diagnostics.every((d) => d.kind === 'OPERATION_INVALID'));
+  assert.match(r.diagnostics[0].detail, /unknown name/);
+  assert.match(r.diagnostics[1].detail, /finite/);
+});
