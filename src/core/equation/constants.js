@@ -10,11 +10,19 @@
  * precise values silently changes every projection, so they stay as-is.
  */
 export const CONSTANTS = {
-  /* --- the original four --- */
+  /* --- the original four ---
+   * Values match the BROWSER build, which is what the parity fixtures pin.
+   * The desktop engine derives its own from ophis_config.js:374-413:
+   *   PI_RAW = Math.PI, PHI_RAW = 1.61803398875, CURVATURE_RAW = PI_RAW * PHI_RAW,
+   * then rounds them to "as expected" lore values behind a feature flag —
+   * arriving at pi 3.14, phi 1.618 and curvature 5.08. Note the desktop uses phi
+   * to three places where the browser keeps full precision; that is a real
+   * divergence between the two programs, not a transcription slip.
+   */
   OPH_PHI: 1.61803398875, // golden ratio
-  OPH_PI: 3.14, // NOT Math.PI — truncated, as the original
-  OPH_CRV: 5.08, // Ophis "curve" constant
-  OPH_HEP: 7.83, // hepta-cycle (from the v12 desktop engine)
+  OPH_PI: 3.14, // NOT Math.PI — the Archaix value, rounded to two places
+  OPH_CRV: 5.08, // "curvature" — pi x phi, rounded to two places
+  OPH_HEP: 7.01, // hepta-cycle, a flat literal in ophis_config.js:413
 
   /* --- eclipse cycles, in days --- */
   OPH_SAROS: 6585.3211, // 18.03 yr — eclipses repeat in near-identical geometry
@@ -47,8 +55,8 @@ export const CONSTANTS = {
 export const CONSTANT_NOTES = {
   OPH_PHI: 'Golden ratio φ',
   OPH_PI: 'π truncated to 3.14 (as the original — not Math.PI)',
-  OPH_CRV: 'Ophis curve constant',
-  OPH_HEP: 'Hepta-cycle constant',
+  OPH_CRV: 'Curvature · π × φ rounded to 5.08',
+  OPH_HEP: 'Hepta-cycle · 7.01',
   OPH_SAROS: 'Saros eclipse cycle · 6585.32 days (18.03 yr)',
   OPH_INEX: 'Inex eclipse cycle · 10571.95 days (28.94 yr)',
   OPH_LUNATION: 'Mean synodic month · 29.5306 days',

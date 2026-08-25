@@ -334,7 +334,7 @@ any late Espenak corrections are present. Nothing in the shipped bytes carries a
 | Eclipse | CSV `Eclipse Time` | CSV ΔT | NASA published |
 |---|---|---:|---|
 | 2017 Aug 21 solar (`solar.csv:9547`) | `18:26:40` | 70 s | 18:26:40 TD / 18:25:30 UT1 |
-| 2024 Apr 8 solar (`solar.csv:9563`) | `18:18:29` | 74 s | 18:18:29 TD / 18:17:15 UT1 |
+| 2024 Apr 8 solar (`solar.csv:9562`) | `18:18:29` | 74 s | 18:18:29 TD / 18:17:15 UT1 |
 | 1999 Aug 11 solar (`solar.csv:9507`) | `11:04:09` | 64 s | 11:04:09 TD / 11:03:05 UT1 |
 
 The `Delta T (s)` column exists precisely so a consumer can compute `UT = TD − ΔT`. **Ophis never
@@ -687,7 +687,7 @@ Listed in `correctionsToOurBuild` of the structured return; repeated here for th
 4. `guide.html:335` — *"The eclipse tables are real astronomy"*. As shipped they are not; see §5.
 5. `guide.html:275` — *"tables covering roughly 1–3000 CE"*. Coverage starts at year 0, and the
    lunar table ends at 2999-11-14, not 3000.
-6. `src/core/eclipses.js:76-77` — the doc-comment lists lunar types as *"T · P"* and solar as
+6. `src/core/eclipses.js:74-77` — the doc-comment lists lunar types as *"T · P"* and solar as
    *"T total · A annular · P partial · H hybrid"*. Accurate for the collapsed letters, but it should
    say that lunar `T` silently merges NASA's `T`, `T+` and `T-`, that solar `A`/`T`/`H` merge nine
    further sub-types, and that **penumbral lunar eclipses are absent entirely** (4 378 CSV rows

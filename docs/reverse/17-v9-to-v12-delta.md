@@ -115,7 +115,7 @@ returned the first argument ending in `.oph`. v12 factors that into
 | `--multiple-files` | `headlessMultipleFiles` | `false` | `main.js:494` |
 | `--inspect…` | debug | off | `main.js:88` |
 
-`--output-type` is parsed but **only `csv` is implemented** (`ophis_view__export.js:174-182`);
+`--output-type` is parsed but **only `csv` is implemented** (`ophis_view__export.js:174-183`);
 anything else warns and falls back to CSV.
 
 **Exit codes (v12 `main.js:13-14`, `142-155`).** New:
@@ -423,7 +423,7 @@ Two further live changes:
 
 ### 2.6 Persistence & file format
 
-**Prettify/Minify replace a hard-coded flag.** v9 `ophis_config.js:284` had
+**Prettify/Minify replace a hard-coded flag.** v9 `ophis_config.js:260` had
 `var FEATURE_FLAG__PRETTY_PRINT_OPH_FILES = true;`, read at two sites in
 `ophis_model__persistence.js`. v12 **deletes the flag** and replaces it with four global options
 (`ophis_config.js:42-45`):
@@ -526,7 +526,7 @@ var FILE_INPUT_VALIDATION_MODE__LOOSE    = "FILE_INPUT_VALIDATION_MODE__LOOSE";
 
 `ORIGINAL` is explicitly described as "the strictness that was the non-configurable default in
 versions <= v10" — i.e. **v9's behaviour**. Selection
-(`ophis_view__export.js:159-186`): `--input-validation-mode` maps `loose`/`original`/`strict`
+(`ophis_view__export.js:146-172`): `--input-validation-mode` maps `loose`/`original`/`strict`
 case-insensitively; an unrecognised value warns and uses `STRICT`; an absent value uses `STRICT`
 when headless and **`LOOSE` when interactive**.
 
@@ -567,7 +567,7 @@ and the chart to `OPACITY__DISABLED`, sets `#z-dates-up-to-date` to red "Stale",
 disabled. `REFRESH_TYPE__SCREEN_CHANGE` was renamed to `REFRESH_TYPE__RIGHT_PANEL_ONLY`
 (`ophis_config.js:433`).
 
-`validateOutputBeforeExport` (`ophis_view__export.js:251-256`) forces a recalculation first if
+`validateOutputBeforeExport` (`ophis_view__export.js:251-257`) forces a recalculation first if
 `appState.latestResults.stale === true`, so exports never emit stale numbers.
 
 **This is a pure performance/UX change — it does not alter any computed value.** The engine, when it
@@ -750,7 +750,7 @@ function cloneDefaultOperationsForAppVersionGte10() {
 | Factory function | `cloneDefaultOperationsForAppVersionGte8()` | `cloneDefaultOperationsForAppVersionGte10()` |
 | Total operations | **15** | **16** |
 | All enabled? | yes | yes |
-| ALPHA (weight 1) | 6 — #1, #2, #5, #6↑, #9, #10↑, #15 … *see below* | 7 |
+| ALPHA (weight 1) | **7** — #1, #2, #5, #6↑, #9, #10↑, #15 | **8** — those seven + #16 |
 | beta (weight .5) | 8 | 8 |
 | Called from | `ophis_controller.js:128`, `ophis_model__validation.js:499`, `ophis_view__settings.js:95` | `ophis_controller.js:128`, `ophis_model__validation.js:465, 638, 642`, `ophis_view__settings.js:660` |
 
@@ -1119,11 +1119,11 @@ Covered in §2.1 for the main process. Renderer side:
   output reproducible. Note the headless path **skips** `roundDateToNearestMinute`, which the normal
   path applies.
 
-- **CSV output** (`ophis_view__export.js:8-158`). Single-file
-  (`exportHeadlessSingleCsv`, `:37-108`) writes `<input>.csv` beside the input, or into
-  `--output-path`; `--multiple-files` (`exportHeadlessMultipleCsvs`, `:110-157`) writes one CSV per
+- **CSV output** (`ophis_view__export.js:2-144`). Single-file
+  (`exportHeadlessSingleCsv`, `:40-101`) writes `<input>.csv` beside the input, or into
+  `--output-path`; `--multiple-files` (`exportHeadlessMultipleCsvs`, `:103-144`) writes one CSV per
   Iso-Event into a directory named after the input file. Row shape
-  (`newCsvRowForZDate`, `:293-337`):
+  (`newCsvRowForZDate`, `:293-338`):
 
   | Column | Source |
   |---|---|
@@ -1136,8 +1136,8 @@ Covered in §2.1 for the main process. Renderer side:
   | `ErrorStatus` | `"None"` \| `"NO_RESULTS"` \| `"GENERAL_FAILURE"` |
   | `ErrorMessage` | plain-text error, else `"None"` |
 
-  Errors become rows rather than being dropped (`newCsvRowForError`, `:20-36`).
-  **Minor bug** at `:314-317`: `if ( opNum < 10 ) { opNum = "0" + opNum; }` runs before the null
+  Errors become rows rather than being dropped (`newCsvRowForError`, `:21-38`).
+  **Minor bug** at `:313-317`: `if ( opNum < 10 ) { opNum = "0" + opNum; }` runs before the null
   check, so a missing `operation_ordinal` yields the literal string `"OP0null"` instead of being
   filtered out (`null < 10` is `true`).
 
@@ -1218,7 +1218,7 @@ Still backslash and double-quote only — no `\n`, no `\r`, no U+2028/U+2029. Ev
 | # | Change | Direction | Detail |
 |---|---|---|---|
 | 1 | **CSP meta tag added** | hardening, partial | `ophis.html:72`: `default-src 'self' 'unsafe-inline' data: gap: blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval';`. It closes remote fetch/XHR/WebSocket and remote script/image loads — meaningful for an app whose own README asks users to run it air-gapped. It does **not** constrain script execution: `'unsafe-eval'` is mandatory here because `validateOperationString` compiles user equations with `new Function` (`ophis_model__validation.js:158`), and `'unsafe-inline'` is required by the several hundred inline `onmouseover=` / `onclick=` attributes the view code generates. It is also placed **after** every `<script src="./lib/…">` tag in `<head>`, so those loads are not covered; only the `src/*.js` files appended to `<body>` afterwards are. Net: a real but narrow win. |
-| 2 | **Renderer can now create directories** | **weakening** | `main.js:267-273`. The `autoSaveToFile` IPC has always given the renderer arbitrary-path file write; v12 adds `fs.mkdirSync(dirName, { recursive: true })` so a write to a non-existent path now succeeds instead of failing. Combined with `exportHeadlessMultipleCsvs`, which constructs paths by string concatenation from `--output-path` and the **event name** (`ophis_view__export.js:120-131`), a crafted event name in an `.oph` file can create directories and files outside the intended tree. `sanitizeFileName` (`ophis_utils.js:819-830`) exists and does strip `..` and slashes — but it is applied only to `getCsvFileNameForExport`'s leaf name, not to `appState.headless_output_path` or the base directory. |
+| 2 | **Renderer can now create directories** | **weakening** | `main.js:267-273`. The `autoSaveToFile` IPC has always given the renderer arbitrary-path file *write*; v12 adds `fs.mkdirSync(dirName, { recursive: true })` so a write to a **non-existent** path now succeeds instead of failing. That is a real capability increase for whatever runs in the renderer. It is *not*, however, reachable as path traversal from a malicious `.oph`: the only file-name component derived from file content is the Iso-Event name, and `getFileNameForExport` (`ophis_view__export.js:450-463`) passes it through `sanitizeFileName` (`ophis_utils.js:819-830`), which replaces everything outside `[a-zA-Z0-9_.-]` with `_` and trims leading/trailing dots and spaces. The remaining path components (`--output-path`, the input `.oph` path) come from the command line, not from the file. |
 | 3 | **`logToCli` channel added** | weakening, low | `preload.js:22-24` / `main.js:201-203`: the renderer can write arbitrary text to the parent process's stdout. That stdout is now the machine-readable CLI transcript, so a hostile `.oph` (via an event name or an operation-error message echoed by `console.error`) can inject fabricated `OPH_ERROR:` lines into whatever parses the output. |
 | 4 | **`resetProgram` channel added** | neutral | `main.js:171-199` — `win.reload()`. No parameters, no path handling. |
 | 5 | **`refreshMenuOptions` channel added** | neutral | Three booleans, used only to set `checked` on menu items. |
@@ -1321,7 +1321,7 @@ to press the Operations screen's reset control (`ophis_view__settings.js:660`, w
    behaviour); headless v12 is STRICT (less forgiving). `--input-validation-mode original` reproduces
    v9 (§2.7).
 7. **`scope` absent** (hand-written files only) resolves to `EVENT_SCOPE__DAYS` in v12
-   (`ophis_config.js:350`) versus `EVENT_SCOPE__HH_MM` in v9 (`ophis_config.js:325`, via
+   (`ophis_config.js:350`) versus `EVENT_SCOPE__HH_MM` in v9 (`ophis_config.js:307`, via
    `FEATURE_FLAG__SHOW_LOCATION == true`). The v12 comment records why: "Based on user feedback, the
    default scope, if it's missing from an `.oph` file, should be Days."
 8. **`operations` absent** (hand-written files only) is backfilled with sixteen in v12, fifteen in
@@ -1355,7 +1355,7 @@ Ordered by consequence.
 | 3 | `ophis_dependencies.js:50-56` (v12) | `SUNSET_LIBRARIES` is documented as an ordered fallback chain for `getSunsetOnNativeUtcDate`, but that function hard-codes CosineKitty. The chain is only honoured for *sampling*. The per-library `enabled` field is never read. |
 | 4 | `ophis_view__config.js:54` (v12) | `noCalender` — misspelt flatpickr option (`noCalendar`), which is why the calendar has to be hidden by hand at `ophis_view__settings.js:130-141`. The source blames flatpickr for it. |
 | 5 | `ophis.html:72` (v12) | CSP meta tag placed after every `<script src>` in `<head>`; those loads are not covered by it. |
-| 6 | `ophis_view__export.js:314-317` (v12) | `if ( opNum < 10 ) opNum = "0" + opNum;` runs before the null check, producing `"OP0null"` for a missing `operation_ordinal`. |
+| 6 | `ophis_view__export.js:313-317` (v12) | `if ( opNum < 10 ) opNum = "0" + opNum;` runs before the null check, producing `"OP0null"` for a missing `operation_ordinal`. |
 | 7 | `ophis_model__sorting.js:44` (v12) | T-Dates are converted with `xDateToNativeDate(scope, ithTDate)` — no lat/long — while X-Dates in the same function pass `isoEvent.lat, isoEvent.long`. Wrong for HH:MM-scope events. |
 | 8 | `ophis_utils.js:459-464`, `ophis_dependencies.js:99-108` (v12) | The sunset cache stores `Date` objects in a parameter named `sunsetInMillis` and reads them back through `utcMillisToNativeDate`. Works only because `new Date(aDate)` clones. |
 | 9 | `ophis_model__validation.js:182` (v12) | Shipped typo in a user-visible string: **"Indentical** to Operation N and each Operation must be unique." |

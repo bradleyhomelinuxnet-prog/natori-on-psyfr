@@ -158,6 +158,15 @@ test('function arity is enforced at compile time', () => {
   assert.throws(() => compileOperation('X1+oph_round(Y,2)'), /takes 1 argument, got 2/);
 });
 
+test('the four original constants match the shipped source', () => {
+  // Read out of the unpacked v12 desktop build, src/ophis_config.js:374-413,
+  // and cross-checked against the browser build's own literals.
+  assert.equal(compileOperation('X1+OPH_PHI').fn(0), 1.61803398875);
+  assert.equal(compileOperation('X1+OPH_PI').fn(0), 3.14, 'the Archaix pi, not Math.PI');
+  assert.equal(compileOperation('X1+OPH_CRV').fn(0), 5.08, 'curvature = pi x phi, to 2dp');
+  assert.equal(compileOperation('X1+OPH_HEP').fn(0), 7.01, 'hepta-cycle — a flat literal');
+});
+
 test('the roadmap constants are available and correctly valued', () => {
   assert.equal(compileOperation('X1+OPH_SAROS').fn(0), 6585.3211);
   assert.equal(compileOperation('X1+OPH_SOTHIC').fn(0), 1461);
