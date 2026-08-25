@@ -119,7 +119,7 @@ export function renderOperations(host) {
           'arithmetic on Y. Weight feeds the score verbatim: at or above 1 the operation is Alpha, ' +
           'below it Beta. Ordinal order is load-bearing; inserting a row renumbers everything after it.',
       }),
-      el('div.rowlist.tall', {}, rows),
+      el('div.rowlist.full', {}, rows),
       el('div.btnrow', {}, [
         el('button.btn.primary', {
           type: 'button', text: '+ Operation',

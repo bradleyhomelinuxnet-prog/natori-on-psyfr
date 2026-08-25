@@ -256,6 +256,8 @@ a { color: var(--cyan); text-underline-offset: 2px; }
   margin-bottom: var(--sp-3);
 }
 .rowlist.tall { max-height: 320px; }
+/* On a screen of its own a list has the page to scroll in and needs no cap. */
+.rowlist.full { max-height: none; overflow: visible; }
 
 .row {
   display: flex;
