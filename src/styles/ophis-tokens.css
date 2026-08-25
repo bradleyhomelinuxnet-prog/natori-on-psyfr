@@ -1,0 +1,180 @@
+/* ============================================================================
+   OPHIS · design tokens
+   ----------------------------------------------------------------------------
+   MOD POINT — this file is the whole palette and the whole type scale. Every
+   colour, size and duration in the app resolves through a variable here, so a
+   re-skin is one file.
+
+   Dark is the base because the instrument is read in long sittings and the
+   chart is mostly ink. Light is a full override, not a filter. Every token has
+   a value on bare :root, so a viewer with no explicit theme and no media
+   support still gets a complete palette rather than transparent boxes.
+   ========================================================================== */
+
+:root {
+  color-scheme: dark;
+
+  /* ---------- ground & surface ---------- */
+  --bg:        #08080d;
+  --bg-2:      #0c0c14;
+  --bg-3:      #10101a;
+  --panel:     #101018;
+  --panel-2:   #15151f;
+  --raised:    #1a1a26;
+  --well:      #06060b;
+  --line:      rgba(216, 169, 67, 0.14);
+  --line-2:    rgba(216, 169, 67, 0.26);
+  --line-flat: rgba(255, 255, 255, 0.07);
+  --scrim:     rgba(2, 2, 6, 0.78);
+
+  /* ---------- ink ---------- */
+  --ink:       #ece5d2;
+  --prose:     #c8c1b0;
+  --dim:       #8d866f;
+  --faint:     #5f5a4c;
+  --on-accent: #0a0803;
+
+  /* ---------- semantic accents ---------- */
+  --gold:      #d8a943;
+  --gold-2:    #f3d27a;
+  --red:       #e0503c;
+  --cyan:      #56bcd0;
+  --green:     #7fbb5c;
+  --violet:    #a98ade;
+  --moon:      #8fb0c9;
+  --warn:      #dfa049;
+
+  /* ---------- role aliases — what components actually reference ---------- */
+  --op-alpha:       var(--gold);
+  --op-beta:        var(--cyan);
+  --msrf-normal:    var(--green);
+  --msrf-important: var(--red);
+  --msrf-vortex:    var(--violet);
+  --ok:             var(--green);
+  --danger:         var(--red);
+
+  /* ---------- chart hit-count ramp ----------
+     Fixed across themes: these encode data, not decoration, and a reader
+     comparing two screenshots must see the same colour mean the same thing. */
+  --hits-low:   #6c6659;
+  --hits-3:     #fdda0d;
+  --hits-4:     #0096ff;
+  --hits-5plus: #d22b2b;
+  --chart-ground: transparent;
+  --chart-axis:   rgba(236, 229, 210, 0.55);
+  --chart-grid:   rgba(236, 229, 210, 0.07);
+
+  /* ---------- typography ---------- */
+  --font-display: 'Cinzel', 'Iowan Old Style', Georgia, serif;
+  --font-body:    'EB Garamond', Georgia, 'Times New Roman', serif;
+  --font-mono:    'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  --fs-h1:      clamp(30px, 4vw, 46px);
+  --fs-h2:      clamp(19px, 2.2vw, 25px);
+  --fs-h3:      11px;
+  --fs-body:    15px;
+  --fs-ui:      13px;
+  --fs-table:   12.5px;
+  --fs-btn:     11px;
+  --fs-label:   9.5px;
+  --fs-th:      9.5px;
+  --fs-pill:    10px;
+  --fs-eyebrow: 10px;
+
+  --ls-eyebrow: 0.4em;
+  --ls-h3:      0.18em;
+  --ls-label:   0.16em;
+  --ls-th:      0.14em;
+  --ls-btn:     0.07em;
+
+  --lh-body:  1.6;
+  --lh-tight: 1.15;
+  --measure:  74ch;
+
+  /* ---------- spacing, on a 4px base ---------- */
+  --sp-1: 4px;  --sp-2: 8px;  --sp-3: 12px; --sp-4: 16px;
+  --sp-5: 20px; --sp-6: 24px; --sp-7: 32px; --sp-8: 48px;
+  --gutter: clamp(12px, 2vw, 24px);
+  --rail-w: 372px;
+
+  /* ---------- radii ---------- */
+  --r-1: 4px;
+  --r-2: 6px;
+  --r-3: 10px;
+  --r-pill: 999px;
+
+  /* ---------- elevation — glow, not drop shadow ---------- */
+  --glow:       0 0 0 1px var(--line), 0 12px 32px -20px rgba(0, 0, 0, 0.9);
+  --glow-focus: 0 0 0 2px var(--bg), 0 0 0 4px var(--cyan);
+  --shadow-pop: 0 18px 48px -18px rgba(0, 0, 0, 0.85);
+
+  /* ---------- state ---------- */
+  --opacity-disabled: 0.42;
+  --dur-fast: 0.11s;
+  --dur:      0.16s;
+  --ease:     cubic-bezier(0.2, 0.6, 0.3, 1);
+
+  /* ---------- layers ---------- */
+  --z-nav: 60;
+  --z-pop: 90;
+  --z-dialog: 100;
+  --z-toast: 10000;
+
+  /* Driven by the A- / A / A+ control. */
+  --zoom: 1;
+}
+
+/* ---------- LIGHT ---------- */
+:root[data-theme='light'] {
+  color-scheme: light;
+
+  --bg:        #ece0c6;
+  --bg-2:      #e4d7ba;
+  --bg-3:      #dccdaa;
+  --panel:     #fffdf6;
+  --panel-2:   #fbf6e9;
+  --raised:    #f5eeda;
+  --well:      #fffefa;
+  --line:      rgba(90, 60, 15, 0.24);
+  --line-2:    rgba(90, 60, 15, 0.42);
+  --line-flat: rgba(44, 35, 23, 0.12);
+  --scrim:     rgba(40, 30, 12, 0.55);
+
+  --ink:       #2c2317;
+  --prose:     #3a3020;
+  --dim:       #6a5f45;
+  --faint:     #8c8168;
+  --on-accent: #fffdf6;
+
+  --gold:      #8a6210;
+  --gold-2:    #6d4a0d;
+  --red:       #b32a1a;
+  --cyan:      #17606f;
+  --green:     #416a27;
+  --violet:    #5c3d8e;
+  --moon:      #3f5f77;
+  --warn:      #96550b;
+
+  --hits-low:   #4a463d;
+  --chart-axis: rgba(44, 35, 23, 0.7);
+  --chart-grid: rgba(44, 35, 23, 0.09);
+
+  --glow: 0 0 0 1px var(--line), 0 10px 26px -20px rgba(60, 40, 10, 0.5);
+}
+
+/* Honour a system preference when the user has expressed no explicit choice. */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']):not([data-theme='light']) {
+    color-scheme: light;
+    --bg: #ece0c6; --bg-2: #e4d7ba; --bg-3: #dccdaa;
+    --panel: #fffdf6; --panel-2: #fbf6e9; --raised: #f5eeda; --well: #fffefa;
+    --line: rgba(90, 60, 15, 0.24); --line-2: rgba(90, 60, 15, 0.42);
+    --line-flat: rgba(44, 35, 23, 0.12); --scrim: rgba(40, 30, 12, 0.55);
+    --ink: #2c2317; --prose: #3a3020; --dim: #6a5f45; --faint: #8c8168;
+    --on-accent: #fffdf6;
+    --gold: #8a6210; --gold-2: #6d4a0d; --red: #b32a1a; --cyan: #17606f;
+    --green: #416a27; --violet: #5c3d8e; --moon: #3f5f77; --warn: #96550b;
+    --hits-low: #4a463d;
+    --chart-axis: rgba(44, 35, 23, 0.7); --chart-grid: rgba(44, 35, 23, 0.09);
+  }
+}
