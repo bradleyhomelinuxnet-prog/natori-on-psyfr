@@ -113,6 +113,12 @@ disclosed — are in **[docs/DOMAIN.md](docs/DOMAIN.md)**.
 
 The full study, subsystem by subsystem, is in [`docs/reverse/`](docs/reverse/).
 
+### The originals
+
+`PSYFR1.html` and `PSYFR2.html` are the **previous single-file build**, kept at their original paths
+so existing links still resolve. They are the reference the parity tests were taken from. For
+anything new, use `index.html` — the originals are frozen and will not be updated.
+
 ---
 
 ## Note
