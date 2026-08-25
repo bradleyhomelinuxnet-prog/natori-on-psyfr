@@ -96,6 +96,14 @@ Full details, with worked examples: **[docs/MODDING.md](docs/MODDING.md)**.
 
 ---
 
+## The vortex decode
+
+**[docs/VORTEX.md](docs/VORTEX.md)** — the MSRF "vortex numbers" (`21.7, 32.6, 43.5 …`) are six
+four-digit multiples of 99 in the `2178 → 6534` reverse-and-subtract orbit, written at a decimal
+scaling. Reproduce it with `node tools/vortex-analysis.mjs`.
+
+---
+
 ## The paper
 
 **[docs/WHITEPAPER.md](docs/WHITEPAPER.md)** — *Rebuilding a Closed Prediction Engine Without

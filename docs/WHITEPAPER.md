@@ -240,7 +240,54 @@ Three of four agree. Since the twelve formulas were themselves never disclosed, 
 lets us confirm that the documentation's ordinal numbering matches the code's list order. It is a
 match in count, not a proof of identity, and it is reported as such.
 
-### 4.3 What was deliberately withheld
+### 4.3 The vortex numbers decoded
+
+The sixth MSRF filter, **Vortex Holography**, contributes the only non-integers in the entire
+resonance table — `21.7, 32.6, 43.5, 65.3, 76.2, 87.1` and the same values ten times larger. An
+interval is a whole number of days, so an exact match against `21.7` is impossible, and nobody had
+explained what the numbers were.
+
+The documentation describes their origin as running `1..15000` through "a program that subtracted
+every number from a holographic reflection of itself", after which ~95% "collapse to zero" and the
+remainder "loop upon themselves … patterned in 9 and 11-dimensional distributions."
+
+That is **reverse-and-subtract** — `n → |n − reverse(n)|`, iterated; the same digit reversal the
+engine exposes as `oph_flip`. Running it settles the question. Over the four-digit numbers there is
+exactly one attractor, a two-step cycle `2178 → 6534 → 2178`, whose family is:
+
+| n | | reverse | ǀn − revǀ | digital root |
+|---|---|---|---|---|
+| 2178 | 99 × 22 | 8712 | 6534 | 9 |
+| 4356 | 99 × 44 | 6534 | 2178 | 9 |
+| 6534 | 99 × 66 | 4356 | 2178 | 9 |
+| 8712 | 99 × 88 | 2178 | 6534 | 9 |
+
+`2178 = 2 × 3² × 11²`. The "9 and 11-dimensional distributions" are **99 = 9 × 11**: every member is
+`99 × 22k`, and nine governs the family through the digital root while never appearing as a digit.
+
+Every table entry then resolves to a four-digit multiple of 99, scaled by a power of ten and
+*truncated* to one decimal place — which is why `32.67` is written `32.6`. Twelve entries, six
+distinct numbers: `99 × {22, 33, 44, 66, 77, 88}`. Four are the loop; `3267` and `7623` are a mirror
+pair entering it in one step.
+
+The detail that confirms the reconstruction is an **absence**. `99 × 55 = 5445` is a palindrome, so
+it collapses to zero on the first step and is not immortal — and it is the one multiple in that
+range missing from the table. Whoever built it was running the process, not choosing pretty numbers.
+
+Community claims about this family circulated in the user group without a stated domain. Tested,
+they are wrong over `1..15000` and almost exactly right over the four-digit numbers: 92.9% collapse
+to zero; the basin holds 637 numbers, of which 636 arrive from elsewhere — the published figure,
+exactly; all 637 divide by 11; and the gaps between them are precisely `{11, 22, 33}`. One claim,
+that each member reaches the loop in one to four steps, does not reproduce — measured lengths run
+two to six — and is recorded as unreproduced rather than dropped.
+
+The practical consequence for the software is blunt: **as shipped, the vortex filter cannot fire.**
+Integers never equal fractions. The desktop engine acknowledged this with a tolerance match; the
+browser build dropped the path entirely. The reconstruction gives a principled alternative — match
+against `99 × {22, 33, 44, 66, 77, 88}` directly, since that is what the numbers are — but which
+reading is correct is the owner's call, not ours. Full working: `docs/VORTEX.md`.
+
+### 4.4 What was deliberately withheld
 
 The documentation states explicitly that several components remain undisclosed: the twelve Core
 Algorithm formulas as such, Protocol Prime, the tier internals, and the original VBA implementation.

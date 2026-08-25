@@ -11,7 +11,7 @@
     "url": "https://github.com/bradleyhomelinuxnet-prog/natori-on-psyfr.git"
   },
   "scripts": {
-    "test": "node --test tests/parity.test.mjs",
+    "test": "node --test tests/parity.test.mjs tests/vortex.test.mjs",
     "serve": "python -m http.server 8777",
     "extract-data": "node tools/extract-data.mjs"
   },

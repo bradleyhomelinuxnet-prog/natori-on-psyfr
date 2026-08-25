@@ -20,7 +20,7 @@ jobs:
       # No dependencies to install — the engine is plain ES modules and the
       # suite runs on node's built-in test runner.
       - name: Run the parity suite
-        run: node --test tests/parity.test.mjs
+        run: node --test tests/parity.test.mjs tests/vortex.test.mjs
 
       - name: Check nothing reaches for eval
         run: |
