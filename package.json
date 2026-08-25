@@ -15,8 +15,20 @@
     "serve": "python -m http.server 8777",
     "extract-data": "node tools/extract-data.mjs"
   },
-  "keywords": ["chronology", "archaix", "ophis", "psyfr", "calendrics", "offline"],
+  "keywords": [
+    "chronology",
+    "archaix",
+    "ophis",
+    "psyfr",
+    "calendrics",
+    "offline"
+  ],
   "engines": {
     "node": ">=20"
+  },
+  "//": "The app itself has NO dependencies — it is static ES modules. The packages below are used only by tools/ to unpack the original .exe for study, and are never loaded by the app.",
+  "devDependencies": {
+    "@electron/asar": "^4.3.0",
+    "7zip-bin": "^5.2.0"
   }
 }

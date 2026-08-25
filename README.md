@@ -96,6 +96,14 @@ Full details, with worked examples: **[docs/MODDING.md](docs/MODDING.md)**.
 
 ---
 
+## The paper
+
+**[docs/WHITEPAPER.md](docs/WHITEPAPER.md)** — *Rebuilding a Closed Prediction Engine Without
+Breaking It.* The full study: how the application came apart, what the teardown found, how the
+rewrite was verified against the original, and what generalises to other migrations.
+
+---
+
 ## Provenance
 
 This is a ground-up rewrite of **Ophis v12** (branded PSYFR), the owner's own Electron application,

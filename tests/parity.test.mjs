@@ -189,6 +189,21 @@ test('Phoenix nodes land on mod(year,138) === 108', () => {
   assert.equal(phoenixInfo(2026).to, 14, '14 years to the 2040 node');
 });
 
+test('the official Technical Reference sanity anchors hold', () => {
+  // §3.1 of NATORI-ON-PSYFR Technical Reference v1.0 — the four fixed points its
+  // own harness asserted before any UI work began.
+  assert.equal(am(2026), 5920, 'today: Annus Mundi');
+  assert.equal(lcYear(2026), 5138, 'today: Long-Count year');
+  assert.equal(am(-2238), 1656, 'the Great Flood, 2239 BC');
+  assert.equal(am(1882), 5776, "Petrie's survey year");
+
+  const phoenix = LEDGER.filter((e) => e[1] === 'phx');
+  assert.equal(phoenix.length, 24, '24 Phoenix events');
+  for (const e of phoenix) {
+    assert.equal(mod(e[0], 138), 108, `${fmtYear(e[0])} sits on the 138-lattice`);
+  }
+});
+
 test('Nemesis inner arc and NER nodes', () => {
   assert.equal(nemesisInfo(2046).inner, true);
   assert.equal(nerInfo(1962).off, 0, '1962 opens an NER period');
