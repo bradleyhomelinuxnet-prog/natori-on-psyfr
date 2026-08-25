@@ -78,8 +78,11 @@ function renderSummary() {
   if (ui.summary) {
     // Several packs are already named "… Pack", so don't append the word again.
     const packLabel = /pack$/i.test(state.packName) ? state.packName : `${state.packName} pack`;
+    // "edited" only makes sense against a pack we can size. An imported set has
+    // no entry in PACKS, so there is nothing to have diverged from.
+    const known = Object.hasOwn(PACKS, state.packName);
     const head =
-      ops.length === packSize ? `The ${packLabel} is loaded` : `The ${packLabel}, edited`;
+      !known || ops.length === packSize ? `The ${packLabel} is loaded` : `The ${packLabel}, edited`;
     const tail = enabled ? `${enabled} enabled.` : 'none enabled — the cast needs at least one.';
     ui.summary.textContent = `${head} — ${plural(ops.length, 'equation')}, ${tail}`;
   }

@@ -1,0 +1,156 @@
+{
+  "app_version": "12", 
+  "iso_events": [
+    {
+      "name": "Event 1", 
+      "notes": "", 
+      "x_dates": [
+        {
+          "date": "07/04/2026", 
+          "time": "00:00", 
+          "enabled": true
+        }, 
+        {
+          "date": "08/20/2026", 
+          "time": "00:00", 
+          "enabled": true
+        }, 
+        {
+          "date": "03/09/2027", 
+          "time": "00:00", 
+          "enabled": true
+        }, 
+        {
+          "date": "03/16/2027", 
+          "time": "00:00", 
+          "enabled": true
+        }, 
+        {
+          "date": "07/17/2027", 
+          "time": "00:00", 
+          "enabled": true
+        }
+      ], 
+      "t_dates": [], 
+      "lat": 0, 
+      "long": 0, 
+      "location_enabled": false, 
+      "scope": "EVENT_SCOPE__DAYS", 
+      "type": "EVENT_TYPE__PERSONAL", 
+      "operations": [
+        {
+          "equation": "X2+oph_round(Y)", 
+          "weight": 1, 
+          "enabled": true
+        }, 
+        {
+          "equation": "X2+oph_flip(oph_round(Y))", 
+          "weight": 1, 
+          "enabled": true
+        }, 
+        {
+          "equation": "X2+Y/OPH_CRV", 
+          "weight": 0.5, 
+          "enabled": true
+        }, 
+        {
+          "equation": "X1+(Y/2.0)xOPH_PI", 
+          "weight": 0.5, 
+          "enabled": true
+        }, 
+        {
+          "equation": "X2+Y/OPH_PHI", 
+          "weight": 1, 
+          "enabled": true
+        }, 
+        {
+          "equation": "X2+(Y/2.0)xOPH_PHI", 
+          "weight": 1, 
+          "enabled": true
+        }, 
+        {
+          "equation": "X1+(Y/2.0)xOPH_CRV", 
+          "weight": 0.5, 
+          "enabled": true
+        }, 
+        {
+          "equation": "X2+(Y/2.0)xOPH_PI", 
+          "weight": 0.5, 
+          "enabled": true
+        }, 
+        {
+          "equation": "X2+YxOPH_PHI", 
+          "weight": 1, 
+          "enabled": true
+        }, 
+        {
+          "equation": "X1+YxOPH_PI", 
+          "weight": 1, 
+          "enabled": true
+        }, 
+        {
+          "equation": "X2+(Y/2.0)xOPH_CRV", 
+          "weight": 0.5, 
+          "enabled": true
+        }, 
+        {
+          "equation": "X2+YxOPH_PI", 
+          "weight": 0.5, 
+          "enabled": true
+        }, 
+        {
+          "equation": "X1+YxOPH_CRV", 
+          "weight": 0.5, 
+          "enabled": true
+        }, 
+        {
+          "equation": "X2+YxOPH_CRV", 
+          "weight": 0.5, 
+          "enabled": true
+        }, 
+        {
+          "equation": "X1+YxOPH_HEP", 
+          "weight": 1, 
+          "enabled": true
+        }, 
+        {
+          "equation": "X2+YxOPH_HEP", 
+          "weight": 1, 
+          "enabled": true
+        }
+      ], 
+      "scoring_system": "SCORING_SYSTEM__GTE_V8", 
+      "iso_event_filter_before_last_x_date": true, 
+      "iso_event_filter_on_last_x_date": true, 
+      "iso_event_filter_before_current_date": true, 
+      "iso_event_filter_on_current_date": false, 
+      "iso_event_filter_beyond_max_days": true, 
+      "iso_event_filter_beyond_max_days_value": 2559, 
+      "iso_event_filter_min_hit_count": false, 
+      "iso_event_filter_min_hit_count_value": 2, 
+      "iso_event_filter_min_score": false, 
+      "iso_event_filter_min_score_value": 1, 
+      "iso_event_filter_msrf_match": false, 
+      "chart_option__show_chart": true, 
+      "chart_option__show_dates": true, 
+      "chart_option__show_new_moons": false, 
+      "chart_option__show_first_quarter_moons": false, 
+      "chart_option__show_full_moons": false, 
+      "chart_option__show_third_quarter_moons": false, 
+      "chart_option__show_waxing_crescent_moons": false, 
+      "chart_option__show_waning_crescent_moons": false, 
+      "chart_option__show_waxing_gibbous_moons": false, 
+      "chart_option__show_waning_gibbous_moons": false, 
+      "chart_option__full_solar_eclipses": false, 
+      "chart_option__partial_solar_eclipses": false, 
+      "chart_option__full_lunar_eclipses": false, 
+      "chart_option__partial_lunar_eclipses": false, 
+      "chart_x_min": 0, 
+      "chart_x_max": 0, 
+      "chart_y_min": 0, 
+      "chart_y_max": 0, 
+      "z_date_sort_type": "SORT_TYPE__MSRF", 
+      "day_scope_start_time_in_millis": 0
+    }
+  ]
+}
