@@ -35,6 +35,25 @@ export const VALIDATION = { STRICT: 'strict', LOOSE: 'loose' };
 
 const isObj = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
 
+/**
+ * Resolve an impossible calendar day the way Date would, and say so.
+ *
+ * A file carrying 02/30 would otherwise enter the model verbatim and roll over
+ * silently inside the calendar at cast time — the projection would be computed
+ * from March 1st while every surface still displayed February 30th. Loose-mode
+ * philosophy: repair, and put the repair in the warnings.
+ */
+function normalisedDay(y, m, d, out) {
+  const probe = new Date(Date.UTC(y, m - 1, d));
+  const ny = probe.getUTCFullYear();
+  const nm = probe.getUTCMonth() + 1;
+  const nd = probe.getUTCDate();
+  if (ny !== y || nm !== m || nd !== d) {
+    out.warnings.push(`${m}/${d}/${y} is not a real calendar day; reading it as ${nm}/${nd}/${ny}`);
+  }
+  return { y: ny, m: nm, d: nd };
+}
+
 /** Read one X-Date, accepting both the `MM/DD/YYYY` string form and the object form. */
 function readXDate(raw, out) {
   if (typeof raw === 'string') {
@@ -43,7 +62,8 @@ function readXDate(raw, out) {
       out.errors.push(`"${raw}" is not a date in MM/DD/YYYY form`);
       return null;
     }
-    return makeXDate(Number(m[3]), Number(m[1]), Number(m[2]));
+    const n = normalisedDay(Number(m[3]), Number(m[1]), Number(m[2]), out);
+    return makeXDate(n.y, n.m, n.d);
   }
   if (!isObj(raw)) {
     out.errors.push('an X-Date was neither a string nor an object');
@@ -57,7 +77,8 @@ function readXDate(raw, out) {
       out.errors.push(`"${raw.date}" is not a date in MM/DD/YYYY form`);
       return null;
     }
-    return makeXDate(Number(m[3]), Number(m[1]), Number(m[2]), {
+    const n = normalisedDay(Number(m[3]), Number(m[1]), Number(m[2]), out);
+    return makeXDate(n.y, n.m, n.d, {
       enabled: raw.enabled !== false,
       time: typeof raw.time === 'string' ? raw.time : '00:00',
     });
@@ -70,7 +91,8 @@ function readXDate(raw, out) {
     out.errors.push('an X-Date was missing its year, month or day');
     return null;
   }
-  return makeXDate(y, mo, d, {
+  const n = normalisedDay(y, mo, d, out);
+  return makeXDate(n.y, n.m, n.d, {
     enabled: raw.enabled !== false,
     time: typeof raw.time === 'string' ? raw.time : '00:00',
   });
@@ -271,10 +293,11 @@ function minifyEvent(ev, index) {
     });
   }
 
-  // Notes are user text. v12 dropped them here by accident; they stay.
-  if (ev.notes) out.notes = ev.notes;
-  if (ev.name) out.name = ev.name;
-
+  // Notes and names are user text and are kept by the loop above whenever
+  // they differ from the defaults — which is the only case that needs a byte.
+  // A default "Event N" name regenerates by position on load. (v12's minifier
+  // deleted notes by accident; the loop's default-comparison cannot, because
+  // the default is the empty string.)
   return out;
 }
 

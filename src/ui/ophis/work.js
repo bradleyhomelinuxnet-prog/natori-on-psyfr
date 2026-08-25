@@ -13,7 +13,7 @@
 
 import { el, replace } from '../dom.js';
 import {
-  state, currentEvent, touch, recalculate, selectEvent,
+  state, currentEvent, touch, markDirty, notify, recalculate, selectEvent,
   addEvent, removeEvent, cloneEvent, now,
 } from '../../state/ophis-store.js';
 import { makeXDate, parseXDate, CHART_OPTIONS, clampDayStart } from '../../state/iso-event.js';
@@ -89,7 +89,7 @@ function isoEventsPanel() {
           'aria-label': `Name of event ${i + 1}`,
           oninput: (e) => {
             ev.name = e.target.value;
-            state.saved = false;
+            markDirty();
           },
         }),
         el('div.sub', {
@@ -331,7 +331,10 @@ function chartPanel() {
       type: 'checkbox',
       onchange: (e) => {
         ev[opt.key] = e.target.checked;
-        touch({ recalc: false });
+        // Overlays are render-only: the results on screen are still exactly
+        // right, so this must not dim them as stale. Re-render for the chart.
+        markDirty();
+        notify();
       },
     });
     box.checked = ev[opt.key] === true;

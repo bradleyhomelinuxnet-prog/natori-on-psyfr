@@ -7,7 +7,7 @@
 
 import { el, replace } from '../dom.js';
 import {
-  state, currentEvent, touch, recalculate, adoptDocument, log,
+  state, currentEvent, touch, markDirty, recalculate, adoptDocument, log,
 } from '../../state/ophis-store.js';
 import { compileOperation, validateOperation, getReckoning } from '../../core/equation/index.js';
 import { OPHIS_PACKS, packOperations, newOperation } from '../../data/packs-ophis.js';
@@ -71,7 +71,7 @@ export function renderOperations(host) {
         spellcheck: 'false',
         'aria-label': `Operation ${i + 1} equation`,
         style: 'flex:1 1 220px',
-        oninput: (e) => { op.equation = e.target.value; paint(); state.saved = false; },
+        oninput: (e) => { op.equation = e.target.value; paint(); markDirty(); },
         onchange: () => touch(),
       }),
       el('input', {
@@ -202,7 +202,7 @@ export function renderSettings(host) {
       el('textarea', {
         value: ev.notes,
         'aria-label': 'Notes',
-        oninput: (e) => { ev.notes = e.target.value; state.saved = false; },
+        oninput: (e) => { ev.notes = e.target.value; markDirty(); },
       }),
     ]),
 

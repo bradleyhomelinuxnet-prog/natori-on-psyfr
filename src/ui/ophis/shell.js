@@ -8,7 +8,7 @@
  */
 
 import { $, el } from '../dom.js';
-import { state, set, log, saveOptions, notify } from '../../state/ophis-store.js';
+import { state, set, log, saveOptions, notify, setDirtyHook } from '../../state/ophis-store.js';
 
 export const SCREENS = [
   { id: 'work', label: 'Work', title: 'The working surface',
@@ -234,6 +234,11 @@ export function initShell() {
 
   // Paint the screen switch and the saved badge on every state change.
   const badge = $('savedBadge');
+  // Keystroke-level edits flip only the badge — never a full re-render.
+  setDirtyHook(() => {
+    badge.textContent = 'Not saved';
+    badge.dataset.dirty = 'true';
+  });
   const render = () => {
     for (const s of SCREENS) {
       const panel = document.querySelector(`.screen[data-screen="${s.id}"]`);

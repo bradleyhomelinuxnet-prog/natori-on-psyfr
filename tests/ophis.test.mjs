@@ -584,3 +584,37 @@ test('a guard does not swallow the reason the operations failed', () => {
   assert.match(r.diagnostics[0].detail, /unknown name/);
   assert.match(r.diagnostics[1].detail, /finite/);
 });
+
+/* ---------------------------------------------------------------- Group O --
+ * Persistence details that guard against quiet regressions.
+ */
+
+test('minify strips a default name and load regenerates it by position', async () => {
+  const { serialiseDocument, parseDocument } = await import('../src/io/oph.js');
+  const doc = { iso_events: [makeIsoEvent(0, { x_dates: [makeXDate(2026, 1, 1)] })] };
+
+  const min = serialiseDocument(doc, { minify: true, prettify: false });
+  assert.ok(!min.includes('"Event 1"'), 'the default name costs no bytes');
+
+  const back = parseDocument(min);
+  assert.equal(back.errors.length, 0);
+  assert.equal(back.document.iso_events[0].name, 'Event 1', 'regenerated on load');
+
+  // A name the user typed always travels.
+  doc.iso_events[0].name = 'Giza';
+  assert.ok(serialiseDocument(doc, { minify: true, prettify: false }).includes('"Giza"'));
+});
+
+test('an impossible calendar day is repaired with a warning, not adopted', async () => {
+  const { parseDocument } = await import('../src/io/oph.js');
+  const r = parseDocument(JSON.stringify({
+    iso_events: [{ x_dates: ['02/30/2026', { y: 2026, m: 13, d: 1 }] }],
+  }));
+  assert.equal(r.errors.length, 0, 'loose mode repairs rather than rejects');
+  assert.equal(r.warnings.length, 2, 'and says so, once per repair');
+  assert.deepEqual(
+    r.document.iso_events[0].x_dates.map((x) => [x.y, x.m, x.d]),
+    [[2026, 3, 2], [2027, 1, 1]],
+    'resolved the way Date resolves them, so display and cast agree'
+  );
+});

@@ -118,6 +118,25 @@ export function set(patch) {
   notify();
 }
 
+let dirtyHook = null;
+
+/** The shell registers a lightweight badge update here; see markDirty. */
+export function setDirtyHook(fn) {
+  dirtyHook = fn;
+}
+
+/**
+ * The document changed in a way the ENGINE does not care about — a note, a
+ * name, a chart overlay. The results on screen are still exactly right, so
+ * this must not mark them stale; and it is called on every keystroke, so it
+ * must not trigger a full re-render, which would destroy the field being
+ * typed in. It flips the saved flag and lets the shell patch the badge.
+ */
+export function markDirty() {
+  state.saved = false;
+  dirtyHook?.();
+}
+
 /** Record something worth keeping. Toasts call through here too. */
 export function log(kind, message) {
   state.activity.unshift({ kind, message, at: new Date().toISOString() });
