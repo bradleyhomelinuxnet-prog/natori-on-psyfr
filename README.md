@@ -24,7 +24,7 @@ npm run serve          # python -m http.server 8777
 Then open <http://localhost:8777/>. ES modules need `http://`, not `file://`.
 
 ```bash
-npm test               # 76 parity fixtures, no dependencies
+npm test               # 94 fixtures, no dependencies
 ```
 
 ---
@@ -110,8 +110,12 @@ implementation:
   that must **not** be given an epsilon;
 - all eight worked scoring examples;
 - the HH:MM `+1` / `−1` asymmetry;
-- and a complete end-to-end cast — 10 pairs, 160 projections, 153 distinct dates collapsing to 114
-  under the default filters with 39 hidden, top score 3, max hit count 4.
+- a complete end-to-end cast — 10 pairs, 160 projections, 153 distinct dates collapsing to 114
+  under the default filters — with **all 114 surviving rows asserted field for field** against an
+  independent from-spec reference implementation;
+- and a seeded property suite: 800 random equations round-tripping the printer → parser →
+  evaluator chain bit-identically, 400 garbage strings that may only compile or raise, and the
+  scoring identities held over 300 random match sets.
 
 What is deliberately *different* — no `eval`, no arbitrary-path writes, no sign-in theatre, and
 "today" read from the clock rather than baked in — is listed in

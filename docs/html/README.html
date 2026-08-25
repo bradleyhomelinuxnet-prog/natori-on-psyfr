@@ -91,7 +91,7 @@
 <p>Static files — any web server will do:</p>
 <pre data-lang="bash"><code>npm run serve          # python -m http.server 8777</code></pre>
 <p>Then open &lt;http://localhost:8777/&gt;. ES modules need <code>http://</code>, not <code>file://</code>.</p>
-<pre data-lang="bash"><code>npm test               # 76 parity fixtures, no dependencies</code></pre>
+<pre data-lang="bash"><code>npm test               # 94 fixtures, no dependencies</code></pre>
 <hr>
 <h2 id="what-it-does">What it does</h2>
 <ol><li><strong>Controls.</strong> Enter the X-Dates — the past occurrences. Every unordered <em>pair</em> gives one <strong>Y</strong>, the distance between them in whole days.</li><li><strong>Cast.</strong> Each of the sixteen operations turns a Y into a day-offset and projects a <strong>Z-Date</strong> from one of the two controls in that pair. Five controls give ten pairs and 160 projections.</li><li><strong>Resonate.</strong> Every projection's distance from its anchor is probed against the <strong>MSRF</strong> — the Multidimensional Spatial Recognition Filters, 390 numbers in three tiers.</li><li><strong>Score.</strong> Each operation contributes its own weight. Each MSRF match contributes its tier's points — except the strongest, which <em>multiplies</em> the total instead.</li><li><strong>Filter and read.</strong> Eight filters cut the noise; the table and the timeline show what is left.</li></ol>
@@ -131,7 +131,7 @@ docs/reverse/           the full reverse-engineering study, 23 specs</code></pre
 <hr>
 <h2 id="verification">Verification</h2>
 <p><code>tests/ophis.test.mjs</code> pins the engine against values read out of the original, not out of this implementation:</p>
-<ul><li>the three MSRF arrays, at their shipped lengths, with <code>1574</code> at its out-of-order index 248;</li><li>the match precedence, including the vortex <em>steal</em> at <code>76.3</code> and the IEEE-754 near-miss at <code>76.1</code> that must <strong>not</strong> be given an epsilon;</li><li>all eight worked scoring examples;</li><li>the HH:MM <code>+1</code> / <code>−1</code> asymmetry;</li><li>and a complete end-to-end cast — 10 pairs, 160 projections, 153 distinct dates collapsing to 114 under the default filters with 39 hidden, top score 3, max hit count 4.</li></ul>
+<ul><li>the three MSRF arrays, at their shipped lengths, with <code>1574</code> at its out-of-order index 248;</li><li>the match precedence, including the vortex <em>steal</em> at <code>76.3</code> and the IEEE-754 near-miss at <code>76.1</code> that must <strong>not</strong> be given an epsilon;</li><li>all eight worked scoring examples;</li><li>the HH:MM <code>+1</code> / <code>−1</code> asymmetry;</li><li>a complete end-to-end cast — 10 pairs, 160 projections, 153 distinct dates collapsing to 114 under the default filters — with <strong>all 114 surviving rows asserted field for field</strong> against an independent from-spec reference implementation;</li><li>and a seeded property suite: 800 random equations round-tripping the printer → parser → evaluator chain bit-identically, 400 garbage strings that may only compile or raise, and the scoring identities held over 300 random match sets.</li></ul>
 <p>What is deliberately <em>different</em> — no <code>eval</code>, no arbitrary-path writes, no sign-in theatre, and "today" read from the clock rather than baked in — is listed in <strong><a href="DEVIATIONS.html">docs/DEVIATIONS.md</a></strong>.</p>
 <hr>
 <h2 id="handing-this-on">Handing this on</h2>
