@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ophis · Field Guide</title>
+<meta name="description" content="A ten-minute tour of the Ophis projection engine: what X, Y and Z mean, how a score is built, and the one operating instruction nothing in the software tells you.">
+<meta http-equiv="Content-Security-Policy"
+      content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'none'; img-src 'self' data:; connect-src 'none'">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="src/styles/ophis-tokens.css">
+<link rel="stylesheet" href="src/styles/ophis-app.css">
+<style>
+  .guide { max-width: 780px; margin: 0 auto; padding: var(--gutter) var(--gutter) 96px; }
+
+  .guide header.top {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: var(--sp-4); padding: var(--sp-4) 0 var(--sp-7);
+  }
+
+  .hero { padding: var(--sp-6) 0 var(--sp-8); border-bottom: 1px solid var(--line); }
+  .hero h1 {
+    font-family: var(--font-display); font-size: clamp(34px, 6vw, 54px);
+    color: var(--ink); letter-spacing: 0.02em; margin-bottom: var(--sp-4);
+  }
+  .hero p { font-size: 17px; color: var(--prose); }
+
+  .step { padding: var(--sp-7) 0; border-bottom: 1px solid var(--line); }
+  .step > .n {
+    font: 700 var(--fs-eyebrow)/1 var(--font-body);
+    letter-spacing: var(--ls-eyebrow); text-transform: uppercase;
+    color: var(--gold); margin-bottom: var(--sp-3);
+  }
+  .step h2 { font-family: var(--font-display); font-size: 25px; color: var(--ink); margin-bottom: var(--sp-4); }
+  .step h3 {
+    font: 700 var(--fs-h3)/1 var(--font-body); letter-spacing: var(--ls-h3);
+    text-transform: uppercase; color: var(--gold); margin: var(--sp-6) 0 var(--sp-3);
+  }
+  .step p { font-size: 16px; }
+
+  .lead { font-size: 18px; color: var(--ink); }
+
+  .callout {
+    border-left: 3px solid var(--gold); background: var(--panel);
+    padding: var(--sp-4) var(--sp-5); border-radius: 0 var(--r-2) var(--r-2) 0;
+    margin: var(--sp-5) 0;
+  }
+  .callout.warn { border-left-color: var(--warn); }
+  .callout p:last-child { margin-bottom: 0; }
+  .callout b { color: var(--gold-2); }
+
+  figure { margin: var(--sp-6) 0; }
+  figure svg { width: 100%; height: auto; display: block; }
+  figcaption { font-size: 13px; color: var(--dim); margin-top: var(--sp-3); text-align: center; }
+
+  .worked {
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: var(--r-3); overflow: hidden; margin: var(--sp-5) 0;
+  }
+  .worked table { font-size: 12.5px; }
+  .worked caption {
+    text-align: left; padding: var(--sp-3) var(--sp-4);
+    border-bottom: 1px solid var(--line); color: var(--gold);
+    font: 700 var(--fs-h3)/1 var(--font-body);
+    letter-spacing: var(--ls-h3); text-transform: uppercase;
+  }
+  .worked td { font-family: var(--font-mono); }
+  .worked td:first-child { color: var(--faint); }
+
+  .sum { display: grid; grid-template-columns: auto 1fr; gap: 6px var(--sp-4); margin: var(--sp-4) 0; }
+  .sum dt { font-family: var(--font-mono); font-size: 11px; color: var(--dim); white-space: nowrap; }
+  .sum dd { margin: 0; font-family: var(--font-mono); font-size: 13px; color: var(--ink); }
+  .sum dd b { color: var(--gold-2); }
+
+  .tiers { display: grid; gap: var(--sp-3); margin: var(--sp-5) 0; }
+  .tier {
+    display: grid; grid-template-columns: 92px 1fr; gap: var(--sp-4);
+    align-items: start; padding: var(--sp-3) var(--sp-4);
+    background: var(--panel); border: 1px solid var(--line); border-radius: var(--r-2);
+  }
+  .tier .name {
+    font: 700 11px/1.4 var(--font-mono); text-transform: uppercase; letter-spacing: 0.08em;
+  }
+  .tier.normal .name { color: var(--msrf-normal); }
+  .tier.important .name { color: var(--msrf-important); }
+  .tier.vortex .name { color: var(--msrf-vortex); }
+  .tier p { font-size: 14px; margin: 0; }
+  .tier .meta { font-family: var(--font-mono); font-size: 10.5px; color: var(--faint); margin-top: 4px; }
+
+  .glossary { display: grid; grid-template-columns: minmax(88px, auto) 1fr; gap: var(--sp-3) var(--sp-5); }
+  .glossary dt { font-family: var(--font-mono); font-size: 13px; color: var(--gold); }
+  .glossary dd { margin: 0; font-size: 15px; color: var(--prose); }
+
+  code {
+    font-family: var(--font-mono); font-size: 0.88em;
+    background: var(--well); border: 1px solid var(--line);
+    border-radius: 3px; padding: 1px 5px; color: var(--ink);
+  }
+  .guide a.cta {
+    display: inline-block; margin-top: var(--sp-5);
+    padding: 11px 22px; border-radius: var(--r-1);
+    background: var(--gold); color: var(--on-accent);
+    font: 600 var(--fs-btn)/1 var(--font-body);
+    letter-spacing: var(--ls-btn); text-transform: uppercase; text-decoration: none;
+  }
+  .guide a.cta:hover { background: var(--gold-2); }
+</style>
+</head>
+<body>
+
+<div class="guide">
+
+  <header class="top">
+    <div class="brand">OPHIS <small>Field Guide</small></div>
+    <a class="btn" href="index.html">Open the instrument →</a>
+  </header>
+
+  <div class="hero">
+    <h1>Two dates in, a shortlist out.</h1>
+    <p class="lead">
+      Ophis takes dates on which similar events happened before, measures the distances between
+      them, and projects those distances forward. Everything else it does is throwing away the
+      results that bear no arithmetic relationship to what you gave it.
+    </p>
+    <p>Ten minutes end to end. You need no maths beyond arithmetic.</p>
+  </div>
+
+  <!-- ─────────────────────────────────────────────── 1 -->
+  <section class="step">
+    <div class="n">One</div>
+    <h2>Three letters do all the work</h2>
+
+    <dl class="glossary">
+      <dt>X-Date</dt>
+      <dd>A <b>control</b>. A date in the past when the event you care about actually happened.
+          You supply these; the instrument supplies nothing.</dd>
+      <dt>Y</dt>
+      <dd>The <b>distance</b> between two controls, counted in whole days — in the author's phrase,
+          in axial rotations of the Earth.</dd>
+      <dt>Z-Date</dt>
+      <dd>A <b>projection</b>. One operation applied to one Y, added to one of the two controls
+          that produced it.</dd>
+    </dl>
+
+    <figure>
+      <svg viewBox="0 0 700 190" role="img" aria-label="X1 and X2 are 47 days apart; that distance Y is transformed by an operation into an offset which is added to X2 to give a Z-Date.">
+        <line x1="30" y1="130" x2="670" y2="130" stroke="var(--chart-axis)" stroke-width="1.5"/>
+
+        <!-- controls -->
+        <circle cx="90" cy="130" r="5" fill="var(--gold)"/>
+        <circle cx="250" cy="130" r="5" fill="var(--gold)"/>
+        <text x="90" y="152" text-anchor="middle" fill="var(--gold)" font-family="var(--font-mono)" font-size="12">X₁</text>
+        <text x="250" y="152" text-anchor="middle" fill="var(--gold)" font-family="var(--font-mono)" font-size="12">X₂</text>
+        <text x="90" y="169" text-anchor="middle" fill="var(--faint)" font-family="var(--font-mono)" font-size="10">07/04/2026</text>
+        <text x="250" y="169" text-anchor="middle" fill="var(--faint)" font-family="var(--font-mono)" font-size="10">08/20/2026</text>
+
+        <!-- Y -->
+        <line x1="90" y1="108" x2="250" y2="108" stroke="var(--cyan)" stroke-width="1" stroke-dasharray="4 3"/>
+        <text x="170" y="99" text-anchor="middle" fill="var(--cyan)" font-family="var(--font-mono)" font-size="12">Y = 47 days</text>
+
+        <!-- the arc -->
+        <path d="M 250 130 A 130 78 0 0 1 510 130" fill="none" stroke="var(--gold-2)" stroke-width="2"/>
+        <text x="380" y="26" text-anchor="middle" fill="var(--gold-2)" font-family="var(--font-mono)" font-size="12">X₂ + oph_round(Y)</text>
+        <text x="380" y="43" text-anchor="middle" fill="var(--dim)" font-family="var(--font-mono)" font-size="11">= X₂ + 47 days</text>
+
+        <!-- projection -->
+        <circle cx="510" cy="130" r="5" fill="var(--gold-2)"/>
+        <text x="510" y="152" text-anchor="middle" fill="var(--gold-2)" font-family="var(--font-mono)" font-size="12">Z</text>
+        <text x="510" y="169" text-anchor="middle" fill="var(--faint)" font-family="var(--font-mono)" font-size="10">10/06/2026</text>
+
+        <text x="660" y="118" text-anchor="end" fill="var(--faint)" font-family="var(--font-mono)" font-size="10">time →</text>
+      </svg>
+      <figcaption>
+        One operation, one pair. The simplest of the sixteen: measure the gap, then step it forward again.
+      </figcaption>
+    </figure>
+
+    <p>
+      Sixteen operations run against every pair of controls. Five controls make ten pairs, so five
+      dates in gives 160 projections out — which collapse to fewer distinct days, because different
+      operations often land on the same one. <b>That collapsing is the first signal.</b>
+    </p>
+  </section>
+
+  <!-- ─────────────────────────────────────────────── 2 -->
+  <section class="step">
+    <div class="n">Two</div>
+    <h2>What the operations actually do</h2>
+
+    <p>
+      Every operation is an ordinary arithmetic expression starting <code>X1+</code> or
+      <code>X2+</code>, which decides which of the two controls the result is added to. The rest is
+      a function of Y.
+    </p>
+
+    <div class="worked">
+      <table>
+        <caption>The first three operations, on Y = 47</caption>
+        <tbody>
+          <tr><td>O1</td><td>X2+oph_round(Y)</td><td>47</td><td>→ 10/06/2026</td></tr>
+          <tr><td>O2</td><td>X2+oph_flip(oph_round(Y))</td><td>74</td><td>→ 11/02/2026</td></tr>
+          <tr><td>O3</td><td>X2+Y/OPH_CRV</td><td>9.25</td><td>→ 08/29/2026</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>
+      <code>oph_flip</code> reverses the digits: 47 becomes 74. <code>OPH_CRV</code> is 5.08, one of
+      four constants the engine ships. Both are the author's, and neither is negotiable if you want
+      the numbers the original produced.
+    </p>
+
+    <div class="callout">
+      <p>
+        <b>Alpha and Beta.</b> Each operation carries a weight. At or above 1 it is an
+        <b>Alpha</b> projection, below it a <b>Beta</b>. The author's own note: the Alpha
+        projections are "future dates that are most likely to produce events that mirror the events
+        of X-1 and X-2." The weight is not a label — it is added to the score directly.
+      </p>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────────────────────────── 3 -->
+  <section class="step">
+    <div class="n">Three</div>
+    <h2>The MSRF — which projections to believe</h2>
+
+    <p>
+      Sixteen operations across ten pairs produce a lot of dates, and most of them mean nothing.
+      The <b>Multidimensional Spatial Recognition Filter</b> is how the instrument decides which to
+      keep: it takes the distance from each projection back to its control and looks that number up
+      in three lists.
+    </p>
+
+    <p>
+      Those 390 numbers are the compressed output of six separate filters the author built —
+      Annular Chronometric, Geodetic Chronometry, Hydrogen Spacing Angle, Fibonacci Sequence,
+      IntraDecimal Matrix and Vortex Holography. Only the resulting numbers ever reached the
+      software.
+    </p>
+
+    <div class="tiers">
+      <div class="tier normal">
+        <div class="name">Normal</div>
+        <div>
+          <p>The broad set. A match is worth one point.</p>
+          <div class="meta">325 numbers · ×1.5</div>
+        </div>
+      </div>
+      <div class="tier important">
+        <div class="name">Important</div>
+        <div>
+          <p>A smaller, stronger set — highly composite numbers, mostly. Worth two points.</p>
+          <div class="meta">53 numbers · ×2.0</div>
+        </div>
+      </div>
+      <div class="tier vortex">
+        <div class="name">Vortex</div>
+        <div>
+          <p>Twelve numbers, and the only ones with a decimal. The author found them by
+             subtracting every number from 1 to 15 000 from its own digit-reversal and keeping
+             the ~5 % that never collapse to zero.</p>
+          <div class="meta">12 numbers · ×2.0 · checked first</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout warn">
+      <p>
+        <b>Order matters more than you would expect.</b> Vortex is checked before anything else, so
+        <code>43.5</code> matches even though half-day values are otherwise ignored — because 43.5
+        <em>is</em> a vortex number. And <code>76.3</code> matches Vortex 76.2, stealing what would
+        have been a plain Normal 76 and doubling its weight.
+      </p>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────────────────────────── 4 -->
+  <section class="step">
+    <div class="n">Four</div>
+    <h2>Reading one row</h2>
+
+    <p>
+      Here is the strongest row from the worked example the instrument opens with — five controls
+      spanning a year, cast forward.
+    </p>
+
+    <dl class="sum">
+      <dt>date</dt><dd><b>09/29/2027</b></dd>
+      <dt>operations</dt><dd>O3 and O4 reached it, both weight 0.5 &nbsp;→&nbsp; 1.0</dd>
+      <dt>resonance</dt><dd>204.1 → Normal 204 &nbsp;·&nbsp; 74.4 → Normal 74</dd>
+      <dt>multiplier</dt><dd>max(1.5, 1.5) = <b>1.5</b></dd>
+      <dt>subscore</dt><dd>2 points, minus the one carrying the multiplier &nbsp;→&nbsp; 1.0</dd>
+      <dt>base</dt><dd>1.0 + 1.0 = 2.0</dd>
+      <dt>score</dt><dd>2.0 × 1.5 = <b>3</b></dd>
+      <dt>hits</dt><dd>2 operations + 2 resonance = <b>4</b></dd>
+    </dl>
+
+    <p>
+      The rule worth internalising: <b>the strongest resonance match multiplies rather than
+      adds</b>, and is withheld from the points sum so it is not paid for twice. The multiplier is a
+      maximum, never a product — ten Important matches still multiply once.
+    </p>
+
+    <div class="callout">
+      <p>
+        <b>Two operations agreeing matters more than one scoring well.</b> A date several different
+        operations independently land on is the thing the whole instrument exists to surface. Sort
+        by Hits, not only by Score.
+      </p>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────────────────────────── 5 -->
+  <section class="step">
+    <div class="n">Five</div>
+    <h2>Protocol Prime</h2>
+
+    <p class="lead">
+      This is the part nothing in the software tells you, and it triples what you get out.
+    </p>
+
+    <p>
+      The author's flow chart takes <b>three</b> controls, not two: the two historical dates, and
+      <em>the date on which you are running the projection</em>. That third date produces two more
+      distances — one to each of the others — and every operation runs against all three.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 700 150" role="img" aria-label="Three controls A, B and C produce three spans E, F and G rather than one.">
+        <line x1="30" y1="110" x2="670" y2="110" stroke="var(--chart-axis)" stroke-width="1.5"/>
+        <circle cx="110" cy="110" r="5" fill="var(--gold)"/>
+        <circle cx="300" cy="110" r="5" fill="var(--gold)"/>
+        <circle cx="560" cy="110" r="5" fill="var(--red)"/>
+        <text x="110" y="132" text-anchor="middle" fill="var(--gold)" font-family="var(--font-mono)" font-size="12">A</text>
+        <text x="300" y="132" text-anchor="middle" fill="var(--gold)" font-family="var(--font-mono)" font-size="12">B</text>
+        <text x="560" y="132" text-anchor="middle" fill="var(--red)" font-family="var(--font-mono)" font-size="12">C</text>
+        <text x="560" y="147" text-anchor="middle" fill="var(--faint)" font-family="var(--font-mono)" font-size="9.5">today</text>
+
+        <line x1="110" y1="88" x2="300" y2="88" stroke="var(--cyan)" stroke-width="1" stroke-dasharray="4 3"/>
+        <text x="205" y="80" text-anchor="middle" fill="var(--cyan)" font-family="var(--font-mono)" font-size="11">E</text>
+        <line x1="110" y1="60" x2="560" y2="60" stroke="var(--cyan)" stroke-width="1" stroke-dasharray="4 3"/>
+        <text x="335" y="52" text-anchor="middle" fill="var(--cyan)" font-family="var(--font-mono)" font-size="11">F</text>
+        <line x1="300" y1="32" x2="560" y2="32" stroke="var(--cyan)" stroke-width="1" stroke-dasharray="4 3"/>
+        <text x="430" y="24" text-anchor="middle" fill="var(--cyan)" font-family="var(--font-mono)" font-size="11">G</text>
+      </svg>
+      <figcaption>Three controls give three distances, not one — and so three times the projections.</figcaption>
+    </figure>
+
+    <p>
+      Fourteen operations across three spans is the forty-two future dates the author's chart
+      describes, collapsing to "38 or 39 actual dates" once duplicates merge. Enter only two
+      controls and you see a third of the picture.
+    </p>
+
+    <div class="callout">
+      <p>
+        <b>Add today's date as a third X-Date.</b> That is the whole of it. The engine forms every
+        pair automatically, so the two extra spans appear on their own.
+      </p>
+    </div>
+
+    <p>
+      The author described Protocol Prime as a security measure — that an unauthorised user "can not
+      use system to predict future events" without it. Read plainly, an operator who enters only two
+      dates is simply not running the method.
+    </p>
+  </section>
+
+  <!-- ─────────────────────────────────────────────── 6 -->
+  <section class="step">
+    <div class="n">Six</div>
+    <h2>Cutting the noise</h2>
+
+    <p>
+      Eight filters trim the output, and each can only ever <em>remove</em> rows. Three are on by
+      default and do most of the work: hide anything before your last control, hide anything before
+      today, and hide anything more than 2 559 days out.
+    </p>
+
+    <p>
+      Two more are worth reaching for once you have a feel for a data set. <b>Minimum hits</b> at 3
+      keeps only dates that several operations agreed on. <b>Requires an MSRF match</b> keeps only
+      dates that resonate at all.
+    </p>
+
+    <div class="callout">
+      <p>
+        <b>T-Dates</b> work the other way round. Add the dates you already care about — when a team
+        actually plays, when a market is actually open — and everything else disappears. It is the
+        fastest way to ask "does anything land <em>here</em>?"
+      </p>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────────────────────────── 7 -->
+  <section class="step">
+    <div class="n">Seven</div>
+    <h2>What this is not</h2>
+
+    <p>
+      Ophis is arithmetic on the dates you supply. It projects intervals forward and ranks the
+      results by how many independent operations and number-patterns agree. It does not know what
+      your event was, and it has no access to anything beyond the dates in front of it.
+    </p>
+
+    <p>
+      The author was candid that the method eliminates rather than predicts: it "has ELIMINATED all
+      future dates that bear no relativity to X-1 and X-2", leaving a shortlist on which "one, two
+      or three of the projections will mark a future date when a similar event will occur again."
+      A shortlist is what you get.
+    </p>
+
+    <p>
+      Treat it as a study instrument and a way of interrogating a calendar — which is what makes
+      the <b>Audit</b> screen the most useful one in the application. Every number on every row can
+      be traced back to the arithmetic that produced it. Click any result to see it.
+    </p>
+
+    <a class="cta" href="index.html">Open the instrument</a>
+  </section>
+
+</div>
+
+</body>
+</html>

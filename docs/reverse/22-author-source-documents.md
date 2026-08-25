@@ -75,8 +75,27 @@ operating instruction in the whole corpus, and it costs one extra X-Date.
 `rotation_count_z`, the offset from the operation's own base anchor. The distances back to the
 *other* controls are never computed and never filtered on.
 
-That is a real reduction in the MSRF's reach, and it is invisible from the UI. Recorded here, not
-changed: parity comes first.
+That is a real reduction in the MSRF's reach, and it is invisible from the UI.
+
+**Measured, on the `test-bradley` fixture** (114 surviving Z-Dates), probing every projection back
+to every enabled control instead of one:
+
+| | today | with three distances |
+|---|---:|---:|
+| rows carrying at least one resonance match | 39 | **101** |
+| rows with no match at all | 75 | 38 |
+| total resonance matches | 40 | 124 |
+| maximum hit count | 4 | **8** |
+
+**54 % of rows would gain a match, and half the currently-silent rows would light up.**
+
+That is not a refinement, it is a different instrument — and it argues *for* the shipped
+behaviour rather than against it. The MSRF exists, in the author's own words, "to aid the Core
+Algorithm in the elimination of potentia, or phantom dates." A filter that matches half of what it
+previously rejected has lost most of its discriminating power. Whoever narrowed it to one distance
+may well have been fixing exactly that.
+
+Recorded, not changed. Parity comes first, and here the numbers agree with parity.
 
 ---
 
@@ -246,7 +265,7 @@ arrays. The filters themselves have never existed in code — a point worth hold
 | Finding | Action taken |
 |---|---|
 | Protocol Prime = enter the projection date as a third control | Documented; engine already supports it via all-pairs |
-| MSRF should probe distances back to every control | Recorded as a divergence; **not** implemented — parity |
+| MSRF should probe distances back to every control | Measured (§1.2): it would add matches to 54 % of rows and double the peak hit count. **Not** implemented — parity, and the numbers agree |
 | Core IV / Core X class transposition | Recorded; shipped weights **kept** |
 | 4 Normal numbers disputed | Ruled for the binary on evidence; shipped values **kept** |
 | 2556 vs 2559 day window | Recorded; default **kept** at 2559, field is editable |

@@ -185,6 +185,10 @@ the filter measures "the distance in axial rotations between all 42 projected da
 own base anchor — and this reproduces that. The distances back to the other controls are never
 computed and never filtered on.
 
-This is faithful to the binary and unfaithful to the design. Widening it would find more resonance
-matches on every row and therefore change every score, so it is a decision for the owner rather
-than a bug to fix. See `reverse/22` §1.2.
+This is faithful to the binary and unfaithful to the design — and measurement suggests the binary
+is right. On the `test-bradley` fixture, probing all three distances adds a match to **54 % of
+rows**, lights up half the rows that currently match nothing, and doubles the peak hit count from
+4 to 8. A filter whose stated job is "the elimination of phantom dates" does not do that job better
+by matching half of what it used to reject.
+
+Left as shipped. The full table is in `reverse/22` §1.2.
