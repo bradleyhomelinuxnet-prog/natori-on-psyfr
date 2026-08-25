@@ -14,6 +14,9 @@ followed the design and where it drifted.
 | `g. Ophis Procedural Notes.pdf` | 4 | The 14 operations, start to finish, with their ALPHA/beta classes |
 | `MSRF Magnitude Calc-v2.xlsx` | 1 sheet | The author's own MSRF lookup workbook — 565-number master list plus the 390 that reached the app |
 
+**Second pass:** the first reading took only the PDFs' text layers. The flow chart's page 1 and a
+sketch repeated on every page of the Procedural Notes are *images*, extracted and read in §8.
+
 **Headline result:** the shipped engine implements the flow chart faithfully, but through a
 *generalisation* the author never described — and two of the fourteen operations carry a class the
 author's own notes contradict.
@@ -270,3 +273,49 @@ arrays. The filters themselves have never existed in code — a point worth hold
 | 4 Normal numbers disputed | Ruled for the binary on evidence; shipped values **kept** |
 | 2556 vs 2559 day window | Recorded; default **kept** at 2559, field is editable |
 | Magnitude / Fibonacci master (565 numbers) | New data source, available for a future filter rebuild |
+
+---
+
+## 8 · The diagrams themselves
+
+The first pass read the PDFs' text layers. Two of the documents carry their substance as embedded
+images, extracted and read here.
+
+### 8.1 The polished flow chart (`a.`, page 1)
+
+A typeset diagram: yellow input boxes, green operation boxes, blue output boxes, and the MSRF drawn
+as a funnel. It confirms the §1.1 reconstruction and adds structure the prose never stated:
+
+- **The Core Algorithm's outputs are drawn as an explicit 12 × 3 grid.** Each formula `P-1` … `P-12`
+  has three output boxes — `Q-1/Q-2/Q-3` for `P-1`, `R-1/R-2/R-3` for `P-2`, through `BB-1/BB-2/BB-3`
+  for `P-12`. The prose's ambiguous "produce Q through BB-1" resolves: 36 Core outputs, one column
+  per span. With `I,J,K` (Isometric × 3) and `M,N,O` (Holofractal × 3) that is the 42, drawn.
+- **The design tracks which span produced each projection all the way into the filter** — the
+  `-1/-2/-3` suffix survives to the funnel's mouth. The shipped engine does the same thing through
+  `x_1_ordinal`/`x_2_ordinal` on every result; the concept is the author's, not an implementation
+  convenience.
+- `DD`, `EE`, `FF` are drawn as **successively smaller boxes** — the magnitude hierarchy stated
+  graphically.
+- One layout note, recorded rather than over-read: the spans are drawn flowing *through* the
+  operation groups in series (`E,F,G → H → L → P`), with each group's outputs dropping downward.
+  The descriptions say each group independently "measures the distance between E, F and G", so the
+  serial arrows are the three span-lines passing through, not a data dependency of `L` on `H`.
+
+### 8.2 The hand sketch (`g.`, every page)
+
+A photographed pen sketch, repeated as the page image on all four pages of the Procedural Notes.
+Its lettering is **not** the flow chart's: `A,B → C → D–E–F → G` above a rule marked *PART TWO*,
+then `G → H → I`. That is the Procedural Notes' own `[A]`–`[I]` walkthrough — the **two-date**
+procedure (client supplies A and B only; 14 operations; "6 to 14 future dates").
+
+So the corpus contains both modes, in the author's own hand:
+
+| Document | Controls | Spans | Projections |
+|---|---|---|---|
+| Procedural Notes + sketch | 2 (`A`, `B`) | 1 | 14 |
+| Operations Flow Chart | 3 (`A`, `B`, `C` = Protocol Prime) | 3 | 42 |
+
+The two-control walkthrough is the client-facing procedure; the three-control chart is the full
+instrument. This settles any residual doubt about §1.1's reading: Protocol Prime is not an
+interpretation layered onto one diagram — the author drew the system twice, once with it and once
+without, and the difference between the drawings is exactly the third control.

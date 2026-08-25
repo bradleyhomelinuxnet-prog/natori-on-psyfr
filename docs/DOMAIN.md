@@ -1,7 +1,7 @@
 # DOMAIN.md — the vocabulary and system model
 
 The authoritative glossary for NATORI-ON-PSYFR, drawn from Jason Breshears' own Ophis
-documents (transcribed in [`reference/docs/`](../reference/docs/)) and reconciled against the
+documents (transcribed in `reference/docs/`, kept on the owner's machine only) and reconciled against the
 code that actually ships.
 
 Sources used, all by Breshears unless noted:
@@ -574,7 +574,7 @@ its own caveat attached, because the count matches and the positions only mostly
 This document quotes the source sparingly and by design. The Breshears PDFs are the author's
 copyrighted work; the material here is summarised in this project's own words, with short attributed
 phrases only where the exact wording carries the meaning. The transcriptions in
-[`reference/docs/`](../reference/docs/) are for local study, not redistribution.
+`reference/docs/` are for local study, not redistribution.
 
 Not affiliated with Archaix.
 
@@ -585,4 +585,4 @@ Not affiliated with Archaix.
 - [MODDING.md](MODDING.md) — how to change the packs, constants, lenses, MSRF set and lattice.
 - [DEVIATIONS.md](DEVIATIONS.md) — where this rewrite deliberately differs from the original engine.
 - [`reverse/`](reverse/) — the full fifteen-part reverse-engineering study of Ophis v12.
-- [`reference/docs/`](../reference/docs/) — the author's documents, transcribed.
+- `reference/docs/` — the author's documents, transcribed; on the owner's machine only.

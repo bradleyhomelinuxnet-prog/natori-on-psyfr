@@ -55,6 +55,45 @@ function inline(text) {
 
 const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
+/**
+ * Where each converted document is published, repo-relative.
+ *
+ * A page's links were written relative to its SOURCE — `docs/HANDOFF.md` says
+ * `../README.md` — but the page itself is served from somewhere else, so every
+ * relative href must be re-based from the source directory to the page
+ * directory. And a link to a document that is itself published should land on
+ * the published page, not on raw Markdown. This map is the second half of that;
+ * `rebaseLinks` below is the first.
+ */
+const PUBLISHED = new Map([
+  ['WHITEPAPER.md', 'whitepaper.html'],
+  ['HANDOFF.md', 'docs/html/HANDOFF.html'],
+  ['DEVIATIONS.md', 'docs/html/DEVIATIONS.html'],
+  ['MODDING.md', 'docs/html/MODDING.html'],
+  ['DOMAIN.md', 'docs/html/DOMAIN.html'],
+  ['VORTEX.md', 'docs/html/VORTEX.html'],
+  ['00-BUILD-SPEC.md', 'docs/html/00-BUILD-SPEC.html'],
+  ['22-author-source-documents.md', 'docs/html/22-author-source-documents.html'],
+  ['README.md', 'docs/html/README.html'],
+]);
+
+/**
+ * Re-base every relative href from the source's directory to the page's.
+ *
+ * Published Markdown targets go to their published page; everything else —
+ * unconverted specs, directories, images — keeps pointing at the real file,
+ * now via a path that resolves from where the page actually is.
+ */
+function rebaseLinks(body, sourceDir, pageDir) {
+  return body.replace(/href="([^"]+)"/g, (whole, href) => {
+    if (/^(?:[a-z][a-z0-9+.-]*:|#|\/)/i.test(href)) return whole;
+    const [path, fragment = ''] = href.split(/(?=#)/);
+    const repoPath = join(sourceDir, path);
+    const target = PUBLISHED.get(basename(repoPath)) ?? repoPath;
+    return `href="${relative(pageDir, target) || '.'}${fragment}"`;
+  });
+}
+
 /** Split a table row into its cells. */
 const cells = (row) => row.replace(/^\||\|$/g, '').split('|').map((c) => c.trim());
 
@@ -300,6 +339,7 @@ for (const input of inputs) {
   const depth = relative(dirname(target), '.').split(/[\\/]/).filter((p) => p === '..').length;
   const prefix = depth ? '../'.repeat(depth) : '';
 
-  writeFileSync(target, page({ title, body, toc, prefix }));
+  const rebased = rebaseLinks(body, dirname(input), dirname(target));
+  writeFileSync(target, page({ title, body: rebased, toc, prefix }));
   console.log(`${String(md.split('\n').length).padStart(5)} lines  ->  ${target}`);
 }
