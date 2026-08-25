@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NATORI-ON-PSYFR · The Predictive Chronology Engine</title>
+<meta name="description" content="Ophis predictive grammar × Chronicon calendrics — a self-contained, air-gap-friendly predictive chronology engine.">
+<!--
+  No 'unsafe-eval': the equation engine is a real parser, not new Function().
+  See docs/DEVIATIONS.md.
+-->
+<meta http-equiv="Content-Security-Policy"
+      content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self'; img-src 'self' data:; connect-src 'self'">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="src/styles/tokens.css">
+<link rel="stylesheet" href="src/styles/base.css">
+<link rel="stylesheet" href="src/styles/components.css">
+</head>
+<body>
+
+<nav>
+  <div class="brand">NATORI-ON-PSYFR <span>· Ophis × Chronicon</span></div>
+  <div class="links">
+    <a href="#oracle">The Oracle</a>
+    <a href="#convergence">Convergence</a>
+    <a href="#wheels">The Wheels</a>
+    <a href="#ledger" class="simple-hide">The Ledger</a>
+    <a href="#about" class="simple-hide">Method</a>
+    <a href="guide.html" class="guide">📖 Field Guide</a>
+  </div>
+  <div class="navctl">
+    <div class="tsize" role="group" aria-label="Text size">
+      <button id="tsDown" class="navbtn" type="button" aria-label="Decrease text size" title="Smaller text">A−</button>
+      <button id="tsReset" class="navbtn" type="button" aria-label="Reset text size" title="Default text size">A</button>
+      <button id="tsUp" class="navbtn" type="button" aria-label="Increase text size" title="Larger text">A+</button>
+    </div>
+    <button id="modeBtn" class="navbtn" type="button" aria-pressed="false">◈ Full</button>
+    <button id="themeBtn" class="navbtn" type="button" aria-label="Toggle light or dark theme" aria-pressed="false">☾ Dark</button>
+  </div>
+</nav>
+
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">Predictive Chronology Engine · Palindromic Cast</div>
+  <h1>NATORI-ON-PSYFR</h1>
+  <div class="tagline">The serpent that rings the egg of time · <em>138</em> lattice · <b>19</b> metonic · ⮌ mirror</div>
+  <p class="sub">Seed anchor dates, cast them through the operation pack, and read which projections resonate with the chronology. First time here? The <a href="guide.html">📖 Field Guide</a> is a five-minute tour.</p>
+</header>
+
+<div class="moment simple-hide">
+  <span class="y" id="mY">—</span>
+  <span class="tag">Annus Mundi <b id="mAM">—</b></span>
+  <span class="tag">Long-Count yr <b id="mLC">—</b></span>
+  <span class="tag">since Cataclysm <b id="mCat">—</b></span>
+  <span class="tag" id="mEv"></span>
+  <div class="flags">
+    <span class="flag f138" id="flag138">138 NODE</span>
+    <span class="flag f19" id="flag19">19 · METONIC</span>
+    <span class="flag fpal" id="flagPal">PALINDROME</span>
+    <span class="flag fev" id="flagEv">DOCUMENTED</span>
+  </div>
+</div>
+
+<!-- ============ I · THE ORACLE ============ -->
+<section id="oracle">
+  <div class="sec-no">I · The Oracle — the predictive cast</div>
+  <h2>Seed it. Cast it. Read the resonance.</h2>
+  <div class="castflow">
+    <div class="cstep"><b class="n">1</b><span><b>Seed</b> two or more anchor dates — type one in, or pick a documented event from the ledger menu.</span></div>
+    <div class="cstep"><b class="n">2</b><span><b>Cast</b> the oracle — every anchor pair runs through every operation.</span></div>
+    <div class="cstep"><b class="n">3</b><span><b>Read</b> the results — high scores and convergent dates are the signal.</span></div>
+  </div>
+
+  <div class="grid2" style="margin-top:16px">
+    <div class="panel">
+      <h3>⚓ Anchor Dates <span class="spacer countnote" id="anchorCount"></span></h3>
+      <div class="ph-sub">Add manually, or seed straight from the documented ledger →</div>
+      <div class="rowlist" id="anchorList"></div>
+      <div class="addbar">
+        <div class="ctl" style="flex:0 0 86px"><label class="fld" for="aYear">Year</label><input type="number" id="aYear" value="2026" min="1" max="9999"></div>
+        <div class="ctl" style="flex:0 0 84px"><label class="fld">Era</label>
+          <div class="era-toggle" id="aEra"><button type="button" data-era="bc">BC</button><button type="button" data-era="ad" class="on">CE</button></div>
+        </div>
+        <div class="ctl" style="flex:0 0 64px"><label class="fld" for="aMon">Mon</label><input type="number" id="aMon" value="5" min="1" max="12"></div>
+        <div class="ctl" style="flex:0 0 64px"><label class="fld" for="aDay">Day</label><input type="number" id="aDay" value="15" min="1" max="31"></div>
+        <div class="ctl" style="flex:1 1 130px"><label class="fld" for="aLabel">Label (optional)</label><input type="text" id="aLabel" placeholder="my anchor"></div>
+        <button class="btn" id="addAnchor" type="button">+ Add</button>
+      </div>
+      <div class="addbar bare">
+        <div class="ctl" style="flex:1 1 100%"><label class="fld" for="seedSel">Seed from Chronicon ledger</label>
+          <select id="seedSel"><option value="">— pick a documented event —</option></select>
+        </div>
+      </div>
+      <div class="errline" id="anchorErr"></div>
+    </div>
+
+    <div class="panel simple-hide">
+      <h3>⚙ Operations <span class="spacer"><button class="btn sm" id="resetOps" type="button">reset pack</button></span></h3>
+      <div class="ph-sub" id="opSummary">The operation pack is loaded and ready — you can cast without touching anything here.</div>
+      <details class="fold bare">
+        <summary>View / edit the pack <span class="hint" id="opHint">add your own</span></summary>
+        <div class="foldbody">
+          <div class="ph-sub">Each starts <span class="mono" style="color:var(--cyan)">X1+</span> or <span class="mono" style="color:var(--cyan)">X2+</span>, then arithmetic on <b>Y</b>. Constants and functions are listed under Method.</div>
+          <div class="rowlist" id="opList" style="max-height:300px;overflow:auto"></div>
+          <div class="addbar">
+            <div class="ctl" style="flex:1 1 100%"><label class="fld" for="opInput">Custom operation</label>
+              <input type="text" id="opInput" placeholder="X1+oph_flip(oph_round(Y/OPH_PHI))" spellcheck="false"></div>
+            <button class="btn cyan" id="addOp" type="button">+ Operation</button>
+          </div>
+          <div class="errline" id="opErr"></div>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <div class="sysrow simple-hide">
+    <span class="glabel">Scoring lens</span>
+    <div class="systog" id="sysTog"></div>
+    <span class="sysnote" id="sysNote"></span>
+  </div>
+
+  <details class="fold simple-hide">
+    <summary>Advanced · themed op packs &amp; save / load <span class="hint">swap the pack · keep setups as .json</span></summary>
+    <div class="foldbody">
+      <div class="toolbar bare">
+        <div class="grp"><span class="glabel">Op packs</span><div id="packBar" style="display:flex;gap:6px;flex-wrap:wrap"></div></div>
+        <div class="sep"></div>
+        <div class="grp"><span class="glabel">Config</span>
+          <button class="btn sm" id="saveCfg" type="button">⤓ Save .json</button>
+          <button class="btn sm" id="loadCfg" type="button">⤒ Load</button>
+          <input type="file" id="loadFile" accept="application/json,.json,.oph" hidden>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <div style="text-align:center;margin:8px 0">
+    <button class="btn cast" id="castBtn" type="button">⟳ Cast the Oracle</button>
+  </div>
+
+  <div class="resbar">
+    <div class="filt" id="resFilt">
+      <button type="button" data-k="all" class="on">ALL</button>
+      <button type="button" data-k="novel">✦ NOVEL ONLY</button>
+      <button type="button" data-k="phx">PHOENIX</button>
+      <button type="button" data-k="ev">DOCUMENTED</button>
+      <button type="button" data-k="pal">PALINDROME</button>
+      <button type="button" data-k="met">19·METONIC</button>
+      <button type="button" data-k="ecl">ECLIPSE</button>
+      <button type="button" data-k="future">FUTURE</button>
+    </div>
+    <div style="display:flex;gap:7px">
+      <span id="resCount" class="countnote"></span>
+      <button class="btn sm" id="exportCsv" type="button">⤓ CSV</button>
+    </div>
+  </div>
+  <div class="tbl-wrap"><div class="scroll">
+    <table id="resTable">
+      <thead><tr>
+        <th data-sort="score" aria-sort="descending">Score</th>
+        <th data-sort="date">Projected Date</th>
+        <th data-sort="am">AM</th>
+        <th data-sort="lc">LC</th>
+        <th data-sort="op">Operation</th>
+        <th data-sort="y">Y (rot.)</th>
+        <th>Resonance</th>
+      </tr></thead>
+      <tbody id="resBody"></tbody>
+    </table>
+  </div></div>
+  <p class="simple-hide" style="font-size:13px;color:var(--dim);font-style:italic;margin-top:10px">Rows marked <span class="rt echo" style="font-size:8.5px">ECHO</span> land back on an input anchor — confirmations of the cast, not novel projections. Use <b style="color:var(--violet)">✦ NOVEL ONLY</b> to hide them and surface dates the chronology doesn't already name.</p>
+</section>
+
+<!-- ============ I·b · THE CONVERGENCE ============ -->
+<section id="convergence">
+  <div class="sec-no">I·b · The Convergence — where the operations agree</div>
+  <h2>The strongest signal: independent agreement</h2>
+  <p class="lead">A single projection is a guess. But when <b>several different operations</b> — often from <b>different anchor pairs</b> — independently land on the same date, that agreement is the heart of the ARCHAIX method. These are ranked by <b>strength</b> (how many distinct operations concur), echoes excluded.</p>
+  <div class="resbar" style="margin-top:14px">
+    <div class="grp" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <span class="glabel">Agreement window</span>
+      <select class="convsel" id="convTolSel"></select>
+    </div>
+    <span id="convCount" class="countnote"></span>
+  </div>
+  <div class="tbl-wrap"><div class="scroll" style="max-height:480px">
+    <table>
+      <thead><tr><th>Strength</th><th>Converged Date</th><th>AM</th><th>LC</th><th>Resonance</th><th>Operations that agree</th></tr></thead>
+      <tbody id="convBody"></tbody>
+    </table>
+  </div></div>
+</section>
+
+<!-- ============ II · THE WHEELS ============ -->
+<section id="wheels">
+  <div class="sec-no">II · The Wheels — one moment, every reckoning</div>
+  <h2>The Chronicon, read at any instant</h2>
+  <p class="lead">Click any projected Z-Date above to send it here — or move the dial. Every wheel re-reads the same moment in the Breshears chronology, with the <b>Shar reckoned as a turning of the stars</b> (a day), per Archaix.</p>
+
+  <div class="dialbar">
+    <div class="ctl" style="flex:0 0 96px"><label class="fld" for="dYear">Year</label><input type="number" id="dYear" value="2026" min="1" max="9999"></div>
+    <div class="ctl" style="flex:0 0 88px"><label class="fld">Era</label>
+      <div class="era-toggle" id="dEra"><button type="button" data-era="bc">BC</button><button type="button" data-era="ad" class="on">CE</button></div></div>
+    <div class="ctl" style="flex:0 0 64px"><label class="fld" for="dMon">Mon</label><input type="number" id="dMon" value="5" min="1" max="12"></div>
+    <div class="ctl" style="flex:0 0 64px"><label class="fld" for="dDay">Day</label><input type="number" id="dDay" value="15" min="1" max="31"></div>
+    <div class="ctl" style="flex:1 1 100%;margin-top:4px">
+      <input type="range" id="dSlider" min="-2842" max="2178" value="2026" step="1" aria-label="Year dial">
+      <div class="dialticks">
+        <span>2843 BC</span><span>Flood 2239 BC</span><span>1 CE</span><span>2040 Phoenix</span><span>2178</span>
+      </div>
+    </div>
+    <div style="display:flex;gap:7px;flex-wrap:wrap" id="dialPresets">
+      <button class="btn red sm" type="button" id="dToday">◉ TODAY</button>
+      <button class="btn sm" type="button" data-jy="2040">→ 2040</button>
+      <button class="btn sm" type="button" data-jy="2046">→ 2046</button>
+      <button class="btn sm" type="button" data-jy="2178">→ 2178</button>
+    </div>
+  </div>
+
+  <div class="wheelgrid" id="wheelGrid"></div>
+</section>
+
+<!-- ============ III · THE LEDGER ============ -->
+<section id="ledger" class="simple-hide">
+  <div class="sec-no">III · The Ledger — the documented chronology</div>
+  <h2>The Chronicon event record</h2>
+  <p class="lead">The full dated spine of the Archaix thesis — <b id="ledgerCount">—</b> events. Click <b>seed</b> on any row to load it as an anchor with its date; click the row to read it on the wheels.</p>
+  <details class="fold">
+    <summary>Browse the event record <span class="hint">filter by Phoenix · Nemesis · NER · baktun · seed any row as an anchor</span></summary>
+    <div class="foldbody">
+      <div class="resbar" style="margin-top:10px">
+        <div class="filt" id="ledFilt">
+          <button type="button" data-k="all" class="on">ALL</button><button type="button" data-k="key">KEY</button>
+          <button type="button" data-k="phx">PHOENIX</button><button type="button" data-k="nem">NEMESIS</button>
+          <button type="button" data-k="ner">NER</button><button type="button" data-k="may">BAKTUN</button>
+          <button type="button" data-k="note">NOTES</button>
+        </div>
+      </div>
+      <div class="tbl-wrap"><div class="scroll" style="max-height:520px">
+        <table><thead><tr><th>Year</th><th>AM</th><th>Phx</th><th>Event</th><th></th></tr></thead>
+        <tbody id="ledBody"></tbody></table>
+      </div></div>
+    </div>
+  </details>
+</section>
+
+<!-- ============ IV · METHOD ============ -->
+<section id="about" class="simple-hide">
+  <div class="sec-no">IV · Method &amp; lineage</div>
+  <h2>How the cast is weighed</h2>
+  <p class="lead">NATORI-ON-PSYFR fuses two instruments: the <b>Ophis</b> predictive grammar (X-Dates → Y interval → operations → Z-Dates) and the <b>Chronicon</b> calendrics (the Breshears cycle lattice). The fusion is the scoring — and you can switch the lens.</p>
+  <details class="fold">
+    <summary>The scoring rules, constants &amp; the echo filter <span class="hint">what each lens rewards, point by point</span></summary>
+    <div class="foldbody">
+      <div class="grid2" style="margin-top:8px" id="lensDocs"></div>
+      <div class="grid2" style="margin-top:6px">
+        <div class="panel"><h3>The constants &amp; functions</h3>
+          <div id="grammarDocs" style="font-size:14px;line-height:1.8"></div>
+        </div>
+        <div class="panel"><h3>ECHO &amp; the novel filter</h3>
+          <p style="font-size:14px;line-height:1.7">A projection that lands back on one of your input anchors (±1 day) is an <b style="color:var(--dim)">ECHO</b> — a confirmation, not a discovery. It still scores, but it's dimmed and tagged. The <b style="color:var(--violet)">✦ NOVEL ONLY</b> filter hides echoes so you see only the dates the chronology doesn't already name.</p>
+          <p style="font-size:12.5px;color:var(--dim);font-style:italic;margin-top:6px">19 is in the resonance set by request — it is not in the stock Ophis MSRF table.</p>
+        </div>
+      </div>
+    </div>
+  </details>
+  <div class="note-card">
+    <h4>The recursion, noted not asserted</h4>
+    <p>NATORI-ON-PSYFR is a worldbuilding &amp; study instrument rendering the Archaix thesis of Jason Breshears (Archaix.com) as living predictive calendrics — the Chronicon, Doomsday Chronology, the 337 charts, the ANUNNA Files. The Shar-as-turning reckoning, Annus Mundi dating, and cycle lattice are presented as that thesis, not as established science. Deep-past conversions are cycle-true rather than historically observed.</p>
+  </div>
+</section>
+
+<footer>
+  <b>NATORI-ON-PSYFR · The Predictive Chronology Engine.</b> Ophis predictive grammar × Chronicon calendrics, fused over the Breshears lattice (Phoenix 138 · Nemesis 792 · NER 600 · Metonic 19). Self-contained &amp; air-gap friendly — no data leaves this page. Annus Mundi = 3895 − BC year; Long-Count year = astro + 3112; šar = a turning of the stars (a day) per Archaix. <b>You Are Here:</b> <span id="youAreHere">—</span>
+</footer>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script type="module" src="src/app.js"></script>
+</body>
+</html>

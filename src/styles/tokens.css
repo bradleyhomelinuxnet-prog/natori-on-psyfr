@@ -1,0 +1,80 @@
+/*
+ * Design tokens.
+ *
+ * MOD POINT — this file is the whole palette. Every colour in the app resolves
+ * through one of these variables, so a re-skin means editing here and nowhere
+ * else. Roles stay stable across themes; only the values swap.
+ */
+
+:root {
+  /* --- surfaces --- */
+  --bg: #07070c;
+  --bg2: #0d0d18;
+  --panel: rgba(20, 20, 32, 0.55);
+  --panel2: rgba(20, 20, 32, 0.75);
+  --field: #05050a;
+  --line: rgba(216, 169, 67, 0.2);
+
+  /* --- text --- */
+  --ink: #ece5d2;
+  --dim: #8a8470;
+  --body: #ddd6c4;
+  --on-gold: #100c02;
+  --on-cyan: #04141a;
+  --on-violet: #0a0612;
+
+  /* --- accents, by meaning --- */
+  --gold: #d8a943; /* primary accent, labels, headings */
+  --gold2: #f3d27a; /* brightened gold, emphasis */
+  --red: #d3402f; /* Phoenix, danger, the cast button */
+  --cyan: #54b8c9; /* Metonic, baktun, focus rings */
+  --green: #7faa5a; /* documented events, NER */
+  --violet: #9b7fd0; /* Nemesis, MSRF, convergence */
+  --moon: #8fb0c9; /* lunar */
+  --red-soft: #ff9d8f; /* 138 chips, red text on dark */
+  --cyan-soft: #9fe0ea; /* 19 chips, cyan text on dark */
+
+  /* --- typography --- */
+  --font-display: 'Cinzel', 'Times New Roman', serif;
+  --font-body: 'EB Garamond', Georgia, serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
+
+  /* --- shape --- */
+  --radius: 5px;
+  --radius-sm: 3px;
+
+  /* --- accessibility: driven by the A− / A / A+ control --- */
+  --zoom: 1;
+}
+
+/* Dark is the default; this block only nudges contrast where it helps. */
+:root[data-theme='dark'] {
+  --dim: #9c947c;
+}
+
+/* ---------- LIGHT THEME · aged parchment ---------- */
+:root[data-theme='light'] {
+  --bg: #ece0c6;
+  --bg2: #e0d2b2;
+  --panel: rgba(255, 251, 242, 0.7);
+  --panel2: rgba(255, 251, 242, 0.92);
+  --field: #fffdf6;
+  --line: rgba(90, 60, 15, 0.3);
+
+  --ink: #2c2317;
+  --dim: #6a5f45;
+  --body: #3a3020;
+  --on-gold: #fffdf6;
+  --on-cyan: #fffdf6;
+  --on-violet: #fffdf6;
+
+  --gold: #9a6f14;
+  --gold2: #7d5410;
+  --red: #b32a1a;
+  --cyan: #1d6c7d;
+  --green: #4d7730;
+  --violet: #69479c;
+  --moon: #3f5f77;
+  --red-soft: #8f2214;
+  --cyan-soft: #185a68;
+}

@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Field Guide · NATORI-ON-PSYFR</title>
+<meta name="description" content="A five-minute tour of the NATORI-ON-PSYFR predictive chronology engine — workflow, vocabulary, the formula cookbook, and FAQ.">
+<meta http-equiv="Content-Security-Policy"
+      content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self'; img-src 'self' data:">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="src/styles/tokens.css">
+<link rel="stylesheet" href="src/styles/base.css">
+<link rel="stylesheet" href="src/styles/components.css">
+<style>
+  .guidebody { max-width: 78ch; }
+  .guidebody h3 { font-family: var(--font-mono); font-size: 12px; letter-spacing: .18em;
+    text-transform: uppercase; color: var(--gold); margin: 1.6em 0 .5em; }
+  .guidebody ul, .guidebody ol { margin: 0 0 1em 1.2em; color: var(--body); line-height: 1.75; }
+  .guidebody li { margin-bottom: .35em; }
+  .guidebody code { font-family: var(--font-mono); font-size: .88em; color: var(--cyan);
+    background: var(--field); border: 1px solid var(--line); border-radius: 3px; padding: 1px 5px; }
+  .deck { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin: 14px 0; }
+  .vocab { border-left: 2px solid var(--line); padding-left: 14px; margin: 0 0 1.1em; }
+  .vocab dt { font-family: var(--font-mono); font-size: 11px; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--gold2); margin-top: .9em; }
+  .vocab dd { margin: .2em 0 0; color: var(--body); }
+  table.cook td:first-child { color: var(--cyan); }
+  table.cook td { white-space: normal; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="brand">NATORI-ON-PSYFR <span>· Field Guide</span></div>
+  <div class="links">
+    <a href="index.html">← The Engine</a>
+    <a href="#workflow">Workflow</a>
+    <a href="#vocabulary">Vocabulary</a>
+    <a href="#cookbook">Cookbook</a>
+    <a href="#reading">Reading a cast</a>
+    <a href="#faq">FAQ</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">Field Guide</div>
+  <h1>How to cast</h1>
+  <div class="tagline">Five minutes · seed · cast · read · <b>converge</b></div>
+  <p class="sub">Everything the engine does, in the order you will meet it. If you only read one section, read <a href="#reading" style="color:var(--gold2)">Reading a cast</a>.</p>
+</header>
+
+<!-- ============ WORKFLOW ============ -->
+<section id="workflow">
+  <div class="sec-no">I · The workflow</div>
+  <h2>Seed, cast, read</h2>
+  <div class="guidebody">
+
+    <div class="castflow">
+      <div class="cstep"><b class="n">1</b><span><b>Seed</b> two or more anchors.</span></div>
+      <div class="cstep"><b class="n">2</b><span><b>Cast</b> — every pair through every operation.</span></div>
+      <div class="cstep"><b class="n">3</b><span><b>Read</b> the scores, then the convergences.</span></div>
+    </div>
+
+    <h3>1 · Seed the anchors</h3>
+    <p>An <b>anchor</b> (an <b>X-Date</b>) is a date you consider significant. You need at least two,
+    because the engine works on the <em>interval between</em> dates, never on a date alone.</p>
+    <ul>
+      <li>Type one in: year, era, month, day, and an optional label.</li>
+      <li>Or pick one from <b>Seed from Chronicon ledger</b> — 69 dated events from the thesis.</li>
+      <li>Toggle an anchor off to exclude it without losing it.</li>
+    </ul>
+    <p><b>Order matters.</b> An operation beginning <code>X1+</code> projects from the anchor that
+    appears <em>earlier in the list</em>; <code>X2+</code> projects from the later one. That is list
+    position, not chronology — so rearranging the list is a real control, not cosmetic.</p>
+
+    <h3>2 · Choose the pack and the lens</h3>
+    <p>An <b>operation pack</b> is the set of formulas the cast runs. The default is the
+    19-operation palindromic pack; there are themed packs for the 138 lattice, the Metonic 19, the
+    Phoenix lattice, and the golden ratio. You can add your own formulas too.</p>
+    <p>The <b>scoring lens</b> decides what counts as resonance:</p>
+    <ul>
+      <li><b>V8 · Chronology-first</b> — rewards landing on the real timeline. Phoenix nodes and
+      documented events dominate. This is the default.</li>
+      <li><b>V7 · Numbers-first</b> — the Ophis-flavoured lens. The numerals dominate: 138 in the
+      digits, palindromes, 19.</li>
+    </ul>
+    <p>Switching the lens re-scores and re-sorts the existing cast immediately — you do not need to
+    cast again.</p>
+
+    <h3>3 · Cast</h3>
+    <p>Every unordered <em>pair</em> of enabled anchors is taken. Three anchors give three pairs;
+    five give ten. For each pair the whole-day interval <b>Y</b> is measured, then every enabled
+    operation converts Y into a day-offset and projects a <b>Z-Date</b>.</p>
+    <p>Because pairing is all-pairs rather than adjacent-only, adding anchors grows the cast
+    quadratically. Ten anchors and nineteen operations is 855 projections.</p>
+  </div>
+</section>
+
+<!-- ============ VOCABULARY ============ -->
+<section id="vocabulary">
+  <div class="sec-no">II · Vocabulary</div>
+  <h2>The terms of art</h2>
+  <div class="guidebody">
+    <dl class="vocab">
+      <dt>X-Date · anchor</dt>
+      <dd>An input date. The cast needs at least two.</dd>
+
+      <dt>Y · the interval</dt>
+      <dd>The whole number of days between a pair of anchors. Called <em>rotations</em> in the
+      thesis — axial turnings of the Earth. No time of day, no timezone.</dd>
+
+      <dt>Z-Date · the projection</dt>
+      <dd>The date an operation lands on: an anchor plus a day-offset derived from Y.</dd>
+
+      <dt>Operation</dt>
+      <dd>One formula, e.g. <code>X2+YxOPH_PHI</code>. Always begins <code>X1+</code> or
+      <code>X2+</code>, naming which anchor it measures from.</dd>
+
+      <dt>Echo</dt>
+      <dd>A projection that lands back on one of your own input anchors (±1 day). It is a
+      confirmation of the cast, not a discovery. Echoes still score, but they are dimmed and tagged,
+      and <b>✦ Novel only</b> hides them.</dd>
+
+      <dt>Convergence</dt>
+      <dd>A date that <em>two or more different operations</em> independently reach. Agreement
+      between unrelated formulas is the strongest signal the method produces.</dd>
+
+      <dt>MSRF</dt>
+      <dd>The Ophis resonance number set — 87 numbers the thesis treats as significant. A
+      projection scores an MSRF hit when either the interval Y <em>or</em> the day-offset is one of
+      them.</dd>
+
+      <dt>Phoenix node</dt>
+      <dd>A year where <code>year mod 138 = 108</code>. 1902, 2040, 2178. The 138-year Phoenix /
+      Sky Dragon cycle is the spine of the lattice.</dd>
+
+      <dt>Annus Mundi (AM)</dt>
+      <dd>Years counted from 3895 BC. <code>AM = astronomical year + 3894</code>.</dd>
+
+      <dt>Long-Count year (LC)</dt>
+      <dd><code>LC = astronomical year + 3112</code>. 2026 CE is LC 5138 — the 138-faced year.</dd>
+
+      <dt>Šar · turning</dt>
+      <dd>Reckoned here as a single turning of the stars — one day — per Archaix, rather than the
+      600-year Sumerian unit.</dd>
+
+      <dt>Astronomical year</dt>
+      <dd>1 BC is year 0, 2 BC is −1, and so on. It is why 2239 BC is stored as −2238. The engine
+      works in astronomical years and converts only for display.</dd>
+    </dl>
+  </div>
+</section>
+
+<!-- ============ COOKBOOK ============ -->
+<section id="cookbook">
+  <div class="sec-no">III · The formula cookbook</div>
+  <h2>Writing your own operations</h2>
+  <div class="guidebody">
+    <p>Every operation is <code>X1+</code> or <code>X2+</code> followed by arithmetic on <b>Y</b>.
+    Whitespace is ignored, and <code>x</code> or <code>×</code> may be used for multiplication.</p>
+
+    <h3>What you can use</h3>
+    <ul>
+      <li><b>Y</b> — the interval in days.</li>
+      <li><b>Constants</b> — <code>OPH_PHI</code> 1.61803398875 · <code>OPH_PI</code> <b>3.14</b>
+      (the Archaix π, deliberately not the true value) · <code>OPH_CRV</code> 5.08 ·
+      <code>OPH_HEP</code> 7.83.</li>
+      <li><b>Functions</b> — <code>oph_round</code> · <code>oph_floor</code> · <code>oph_ceil</code>
+      · <code>oph_abs</code> · <code>oph_sqrt</code> · <code>oph_flip</code>.</li>
+      <li><b>Arithmetic</b> — <code>+ − * /</code> and parentheses, with normal precedence.</li>
+    </ul>
+
+    <p><code>oph_flip</code> mirrors the digits: 138 ⮌ 831, 19 ⮌ 91. It is the "holo-" operation —
+    the palindromic mirror the whole instrument is named for.</p>
+
+    <h3>Patterns worth stealing</h3>
+    <div class="tbl-wrap"><table class="cook">
+      <thead><tr><th>Formula</th><th>What it does</th></tr></thead>
+      <tbody>
+        <tr><td>X2+oph_round(Y)</td><td>The isometric date — step the same interval forward again.</td></tr>
+        <tr><td>X2+oph_flip(oph_round(Y))</td><td>The mirror — step forward by the interval reversed.</td></tr>
+        <tr><td>X2+Y/OPH_PHI</td><td>Golden-section the interval.</td></tr>
+        <tr><td>X1+(Y/2)xOPH_PI</td><td>Half the interval as a radius, projected round the circle.</td></tr>
+        <tr><td>X2+oph_round(Y/138)*138</td><td>Snap the interval to the nearest whole Phoenix cycle.</td></tr>
+        <tr><td>X1+oph_round(Y/19)*19</td><td>Snap to whole Metonic cycles.</td></tr>
+        <tr><td>X1+Y*360/365.2422</td><td>Convert tropical days into ideal 360-day years.</td></tr>
+        <tr><td>X2+Y*792/600</td><td>Re-express the interval in the Nemesis:NER ratio.</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>The three rules</h3>
+    <ol>
+      <li>It must start <code>X1+</code> or <code>X2+</code>.</li>
+      <li>It must evaluate to a finite number — the editor checks as you type and tells you where
+      it broke.</li>
+      <li>No name may contain a lowercase <code>x</code>, because <code>x</code> means multiply.</li>
+    </ol>
+    <p>Formulas are parsed, not executed. A malformed one is a message, never a crash.</p>
+  </div>
+</section>
+
+<!-- ============ READING ============ -->
+<section id="reading">
+  <div class="sec-no">IV · Reading a cast</div>
+  <h2>What the table is telling you</h2>
+  <div class="guidebody">
+    <p>Score is a <em>sum of reasons</em>, not a probability. Each chip on a row is one reason, and
+    the lens decides what each is worth. A score of 12 means several independent things lined up on
+    that date — not that it is 12 times more likely than a 1.</p>
+
+    <h3>The chips</h3>
+    <div class="deck">
+      <div class="panel"><h3 style="margin-top:0">Chronology</h3>
+        <p style="font-size:13.5px"><span class="rt phx">PHOENIX NODE</span> exact 138-node ·
+        <span class="rt phx">≈PHOENIX</span> within 2 years ·
+        <span class="rt ev">DOCUMENTED</span> a ledger event lands that year ·
+        <span class="rt nem">NEMESIS</span> ·
+        <span class="rt ner">NER NODE</span> ·
+        <span class="rt bak">BAKTUN</span></p></div>
+      <div class="panel"><h3 style="margin-top:0">Numerals</h3>
+        <p style="font-size:13.5px"><span class="rt pal">PALINDROME ⮌</span> the year, AM year or
+        Julian day reads the same both ways ·
+        <span class="rt s138">138</span> and <span class="rt s19">19</span> appear in the digits ·
+        <span class="rt met">METONIC·19</span> a whole number of 19-year cycles from today ·
+        <span class="rt msrf">MSRF</span> the interval or the offset is a resonance number</p></div>
+      <div class="panel"><h3 style="margin-top:0">Sky</h3>
+        <p style="font-size:13.5px"><span class="rt sol">☉ SOLAR</span> and
+        <span class="rt lun">☾ LUNAR</span> mark a real eclipse within a day of the projection,
+        from precomputed tables covering roughly 1–3000 CE.</p></div>
+      <div class="panel"><h3 style="margin-top:0">Provenance</h3>
+        <p style="font-size:13.5px"><span class="rt echo">ECHO</span> means the projection landed
+        back on one of your own anchors. Informative, but it is your input coming back — not a
+        discovery.</p></div>
+    </div>
+
+    <h3>Then read the convergences</h3>
+    <p>This is the part that matters. A single high-scoring projection is one formula's opinion. A
+    <b>convergence</b> is several different formulas — often from different anchor pairs — landing
+    on the same date independently. <b>Strength</b> is the number of distinct operations that agree.</p>
+    <p>The <b>agreement window</b> controls how close counts as "the same date". One caution: the
+    day-windows chain, so with a ±30-day window a run of dates 30 days apart merges into one long
+    cluster. That is why each row shows how many days it actually spans — check it before treating a
+    wide cluster as a single moment.</p>
+
+    <h3>An honest reading</h3>
+    <ul>
+      <li>Prefer <b>convergence</b> over score.</li>
+      <li>Prefer <b>novel</b> over echo — turn on ✦ Novel only.</li>
+      <li>Distrust clusters with a large span.</li>
+      <li>Remember that more anchors and more operations produce more hits <em>by construction</em>.
+      Enough formulas will always find something; that is a property of the search, not of the
+      timeline.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section id="faq">
+  <div class="sec-no">V · FAQ</div>
+  <h2>Questions that come up</h2>
+  <div class="guidebody">
+    <h3>Why is OPH_PI 3.14 and not π?</h3>
+    <p>Because the original used 3.14, and the projections depend on it. Correcting it would move
+    every date that touches it. It is kept deliberately, and documented as a deviation everywhere it
+    matters.</p>
+
+    <h3>Why did my projection land a day off what I expected?</h3>
+    <p>Offsets are rounded to whole days at the end (<code>round(anchor + offset)</code>), and Y is
+    a whole-day count with no time component. Fractional formulas will land on a boundary sometimes.</p>
+
+    <h3>Why do I see the same date twice with the same formula?</h3>
+    <p>Because it was reached from two different anchor <em>pairs</em>. That repetition is signal, so
+    it is kept rather than deduplicated — look at the <b>Y</b> column to see which pair produced each.</p>
+
+    <h3>Does anything leave my machine?</h3>
+    <p>No. There are no network calls, no analytics, no storage beyond your own display preferences.
+    The eclipse tables and the ledger ship with the page. It runs air-gapped.</p>
+
+    <h3>Can I save a setup?</h3>
+    <p>Yes — <b>Advanced → Save .json</b> keeps your anchors, operations, pack and lens. Load brings
+    them back. Presets from the original Ophis desktop app (<code>.oph</code>) can also be loaded;
+    the first event is imported, and anything with no equivalent here is reported in the console
+    rather than silently dropped.</p>
+
+    <h3>Is any of this science?</h3>
+    <p>No, and it does not claim to be. This is a worldbuilding and study instrument that renders
+    the Archaix thesis of Jason Breshears as living calendrics. The cycle lattice, the Annus Mundi
+    dating and the šar-as-turning reckoning are presented <b>as that thesis</b>. Deep-past
+    conversions are cycle-true rather than historically observed. The eclipse tables are real
+    astronomy; what is done with them here is not.</p>
+
+    <h3>Can I change how it works?</h3>
+    <p>That is what it was rebuilt for. Packs, constants, functions, scoring lenses, the resonance
+    set, the ledger, the cycle periods and the entire colour palette are each a single data file.
+    See <b>docs/MODDING.md</b> in the repository.</p>
+  </div>
+
+  <div class="note-card">
+    <h4>The recursion, noted not asserted</h4>
+    <p>NATORI-ON-PSYFR is a worldbuilding &amp; study instrument rendering the Archaix thesis of
+    Jason Breshears (Archaix.com) as living predictive calendrics. Presented as that thesis, not as
+    established science. Not affiliated with Archaix.</p>
+  </div>
+</section>
+
+<footer>
+  <b>NATORI-ON-PSYFR · Field Guide.</b> Ophis predictive grammar × Chronicon calendrics, fused over
+  the Breshears lattice (Phoenix 138 · Nemesis 792 · NER 600 · Metonic 19). Self-contained &amp;
+  air-gap friendly — no data leaves this page. <a href="index.html" style="color:var(--gold2)">← Back to the engine</a>
+</footer>
+</div>
+
+</body>
+</html>

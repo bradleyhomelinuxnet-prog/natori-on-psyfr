@@ -1,0 +1,22 @@
+{
+  "name": "natori-on-psyfr",
+  "version": "1.0.0",
+  "description": "The Predictive Chronology Engine — Ophis predictive grammar × Chronicon calendrics. Self-contained, air-gap friendly, built to be modified.",
+  "type": "module",
+  "private": true,
+  "license": "MIT",
+  "homepage": "https://bradleyhomelinuxnet-prog.github.io/natori-on-psyfr/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bradleyhomelinuxnet-prog/natori-on-psyfr.git"
+  },
+  "scripts": {
+    "test": "node --test tests/parity.test.mjs",
+    "serve": "python -m http.server 8777",
+    "extract-data": "node tools/extract-data.mjs"
+  },
+  "keywords": ["chronology", "archaix", "ophis", "psyfr", "calendrics", "offline"],
+  "engines": {
+    "node": ">=20"
+  }
+}
