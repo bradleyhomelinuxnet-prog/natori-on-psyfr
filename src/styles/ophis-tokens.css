@@ -64,6 +64,17 @@
   --chart-axis:   rgba(236, 229, 210, 0.55);
   --chart-grid:   rgba(236, 229, 210, 0.07);
 
+  /* ---------- offline map ----------
+     The basemap is one fixed set of bright political tiles, so the graticule
+     has to be readable against them AND against the tint that settles them
+     into a dark room. Both move together; neither is decoration. */
+  --map-tint: saturate(0.62) brightness(0.66) contrast(1.06);
+  --map-sea:  #0d1420;
+  --map-grid: rgba(236, 229, 210, 0.30);
+  --map-axis: rgba(236, 229, 210, 0.58);
+  --map-veil: rgba(6, 6, 11, 0.58);
+  --map-halo: rgba(6, 6, 11, 0.85);
+
   /* ---------- typography ---------- */
   --font-display: 'Cinzel', 'Iowan Old Style', Georgia, serif;
   --font-body:    'EB Garamond', Georgia, 'Times New Roman', serif;
@@ -159,6 +170,13 @@
   --chart-axis: rgba(44, 35, 23, 0.7);
   --chart-grid: rgba(44, 35, 23, 0.09);
 
+  --map-tint: none;
+  --map-sea:  #cfe0ee;
+  --map-grid: rgba(30, 24, 12, 0.26);
+  --map-axis: rgba(30, 24, 12, 0.52);
+  --map-veil: rgba(40, 30, 12, 0.34);
+  --map-halo: rgba(255, 253, 246, 0.9);
+
   --glow: 0 0 0 1px var(--line), 0 10px 26px -20px rgba(60, 40, 10, 0.5);
 }
 
@@ -176,5 +194,8 @@
     --green: #416a27; --violet: #5c3d8e; --moon: #3f5f77; --warn: #96550b;
     --hits-low: #4a463d;
     --chart-axis: rgba(44, 35, 23, 0.7); --chart-grid: rgba(44, 35, 23, 0.09);
+    --map-tint: none; --map-sea: #cfe0ee;
+    --map-grid: rgba(30, 24, 12, 0.26); --map-axis: rgba(30, 24, 12, 0.52);
+    --map-veil: rgba(40, 30, 12, 0.34); --map-halo: rgba(255, 253, 246, 0.9);
   }
 }

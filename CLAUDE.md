@@ -3,7 +3,7 @@
 Read `docs/HANDOFF.md` first — fifteen minutes, and it is the difference
 between helping and breaking things. The short form:
 
-- **The maths is a contract.** `npm test` (94 fixtures, no dependencies) pins
+- **The maths is a contract.** `npm test` (115 fixtures, no dependencies) pins
   the engine against the original program. A failing test means your change
   drifted; it does not mean the fixture needs updating. Deliberate maths
   changes update the fixture AND say so in the commit message.

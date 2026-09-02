@@ -649,6 +649,11 @@ td.zlabel {
   color: var(--dim);
 }
 .chartbar .grow { flex: 1 1 auto; }
+
+/* The timeline takes wheel and drag gestures, so it says so with its cursor. */
+.chartpanel canvas { cursor: crosshair; touch-action: none; }
+.chartpanel canvas[data-panning] { cursor: grabbing; }
+.chartpanel header .spacer { display: flex; align-items: center; gap: var(--sp-3); }
 .legend { display: flex; gap: var(--sp-3); flex-wrap: wrap; font-family: var(--font-mono); font-size: 10px; }
 .legend i { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 5px; }
 
@@ -668,6 +673,70 @@ dialog header { padding: var(--sp-4); border-bottom: 1px solid var(--line); }
 dialog header h3 { font-family: var(--font-display); font-size: 16px; }
 dialog .body { padding: var(--sp-4); font-size: var(--fs-ui); color: var(--prose); }
 dialog footer { display: flex; justify-content: flex-end; gap: var(--sp-2); padding: var(--sp-4); border-top: 1px solid var(--line); }
+
+/* ---------------------------------------------------------- map picker -- */
+
+.mapdlg { max-width: min(1040px, 96vw); width: 1040px; }
+.mapdlg header { display: flex; align-items: center; gap: var(--sp-2); }
+.mapdlg header .grow { flex: 1 1 auto; }
+.mapdlg .body { padding: var(--sp-4); }
+.mapdlg .note { margin: var(--sp-3) 0 0; font-size: 11px; color: var(--dim); max-width: none; }
+
+.mapzoom {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--dim);
+  min-width: 22px;
+  text-align: center;
+}
+
+.mapsurface {
+  position: relative;
+  overflow: hidden;
+  height: min(58vh, 520px);
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-2);
+  background: var(--map-sea);
+  cursor: crosshair;
+  touch-action: none;
+  user-select: none;
+}
+.mapsurface:focus-visible { outline: none; box-shadow: var(--glow-focus); }
+
+/* The shipped tiles are a bright political basemap. In a dark room they are the
+   only thing on screen with a white ground, so they get tinted into the palette
+   rather than left to glare. `--map-tint` is `none` under a light theme. */
+.maptiles { position: absolute; inset: 0; filter: var(--map-tint); }
+.maptiles img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 256px;
+  height: 256px;
+  image-rendering: auto;
+  pointer-events: none;
+}
+/* A tile that is not in the shipped rows leaves the ground showing, rather
+   than a broken-image glyph. */
+.maptiles img.missing { visibility: hidden; }
+
+.mapoverlay { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+
+.maphud {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-2);
+  margin-top: var(--sp-3);
+  font-family: var(--font-mono);
+  font-size: var(--fs-ui);
+  color: var(--prose);
+}
+.maphud b { color: var(--gold-2); font-weight: 500; white-space: pre; }
+.maphud .sep { color: var(--faint); }
+
+@media (max-width: 720px) {
+  .mapsurface { height: 46vh; }
+}
 
 /* ---------------------------------------------------------------- toasts -- */
 

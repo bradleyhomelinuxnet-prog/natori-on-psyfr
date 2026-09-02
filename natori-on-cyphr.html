@@ -1,0 +1,1646 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NATORI-ON-CYPHR · Chronology Engine</title>
+<meta name="description" content="Predictive grammar crossed with cyclical calendrics — seed anchor dates, cast them through the operation pack, read which projections resonate with the lattice.">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="NATORI-ON-CYPHR · Chronology Engine">
+<meta property="og:description" content="Predictive grammar × cyclical calendrics. 138 lattice · 19 metonic · palindromic mirror. Nothing leaves the page.">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="NATORI-ON-CYPHR · Chronology Engine">
+<meta name="twitter:description" content="Predictive grammar × cyclical calendrics. 138 lattice · 19 metonic · palindromic mirror.">
+
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%230A0D12'/><circle cx='16' cy='16' r='9' fill='none' stroke='%23D9A441' stroke-width='2.6' stroke-dasharray='44 12' stroke-linecap='round' transform='rotate(-96 16 16)'/><circle cx='16' cy='7' r='2.7' fill='%23D9A441'/></svg>">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* ── Tokens ───────────────────────────────────────────────────────────────
+   Committed single visual world: an instrument screen. Every colour is
+   painted explicitly so the page holds on any host ground.            */
+:root{
+  --ground:#0A0D12;
+  --surface:#11161F;
+  --surface-2:#161E2B;
+  --raised:#1C2637;
+  --line:#232C3B;
+  --line-soft:#1A2230;
+
+  --ink:#E9E4D8;
+  --ink-soft:#BFBCB2;
+  --dim:#7B8798;
+  --faint:#525E6E;
+
+  --amber:#D9A441;
+  --amber-dim:#8A6A2C;
+  --cyan:#5FD4D0;
+  --cyan-dim:#2F7D7A;
+  --violet:#A88BE0;
+  --crimson:#D9544D;
+  --moss:#7FB069;
+
+  --f-display:"Cinzel",Georgia,"Times New Roman",serif;
+  --f-body:"EB Garamond",Georgia,"Times New Roman",serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+
+  --r:3px;
+  --maxw:1140px;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--ground);
+  color:var(--ink);
+  font-family:var(--f-body);
+  font-size:17px;
+  line-height:1.65;
+  font-variant-numeric:tabular-nums;
+  background-image:
+    radial-gradient(ellipse 900px 500px at 50% -8%, rgba(217,164,65,.055), transparent 70%),
+    radial-gradient(ellipse 700px 400px at 88% 42%, rgba(95,212,208,.03), transparent 70%);
+  background-attachment:fixed;
+}
+:focus-visible{outline:2px solid var(--amber);outline-offset:2px;border-radius:2px}
+
+/* ── Nav ─────────────────────────────────────────────────────────────── */
+nav{
+  position:sticky;top:0;z-index:50;
+  display:flex;align-items:center;gap:20px;flex-wrap:wrap;
+  padding:10px 22px;
+  background:rgba(10,13,18,.93);
+  backdrop-filter:blur(9px);
+  border-bottom:1px solid var(--line);
+}
+.brand{
+  font-family:var(--f-display);font-weight:800;font-size:14px;
+  letter-spacing:.16em;color:var(--amber);white-space:nowrap;
+}
+.brand em{font-style:normal;color:var(--faint);font-weight:400;letter-spacing:.08em}
+nav .links{display:flex;gap:17px;flex-wrap:wrap;margin-left:auto}
+nav .links a{
+  font-family:var(--f-mono);font-size:11px;letter-spacing:.11em;
+  text-transform:uppercase;color:var(--dim);text-decoration:none;
+  padding-bottom:2px;border-bottom:1px solid transparent;transition:color .15s,border-color .15s;
+}
+nav .links a:hover{color:var(--ink);border-bottom-color:var(--amber-dim)}
+
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px 90px}
+
+/* ── Header ──────────────────────────────────────────────────────────── */
+header.masthead{padding:64px 0 40px;text-align:center;position:relative}
+.eyebrow{
+  font-family:var(--f-mono);font-size:10.5px;letter-spacing:.3em;text-transform:uppercase;
+  color:var(--amber-dim);margin-bottom:24px;
+}
+header.masthead h1{
+  font-family:var(--f-display);font-weight:800;
+  font-size:clamp(38px,7.5vw,74px);line-height:1.02;letter-spacing:.03em;
+  margin:0 0 20px;color:var(--ink);text-wrap:balance;
+}
+.tagline{
+  font-size:19px;color:var(--ink-soft);font-style:italic;margin-bottom:6px;text-wrap:balance;
+}
+.tagline b{font-style:normal;color:var(--amber);font-family:var(--f-mono);font-size:16px}
+.tagline i{font-style:normal;color:var(--cyan);font-family:var(--f-mono);font-size:16px}
+.sub{max-width:62ch;margin:20px auto 0;color:var(--dim);font-size:16.5px;text-wrap:pretty}
+.rule{height:1px;background:linear-gradient(90deg,transparent,var(--line),transparent);margin:38px 0}
+
+/* ── Moment strip ────────────────────────────────────────────────────── */
+.moment{
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  padding:13px 16px;border:1px solid var(--line);border-left:2px solid var(--amber);
+  background:var(--surface);border-radius:var(--r);margin-bottom:8px;
+}
+.moment .lbl{
+  font-family:var(--f-mono);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--faint);
+}
+.moment .y{font-family:var(--f-display);font-weight:600;font-size:19px;color:var(--amber);letter-spacing:.04em}
+.tag{
+  font-family:var(--f-mono);font-size:11px;color:var(--dim);
+  padding:3px 9px;border:1px solid var(--line);border-radius:var(--r);background:var(--ground);
+}
+.tag b{color:var(--ink);font-weight:500}
+
+/* ── Sections ────────────────────────────────────────────────────────── */
+section{padding:52px 0 8px;scroll-margin-top:62px}
+.sec-no{
+  font-family:var(--f-mono);font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--cyan-dim);margin-bottom:12px;
+  display:flex;align-items:center;gap:12px;
+}
+.sec-no::after{content:"";flex:1;height:1px;background:var(--line-soft)}
+section h2{
+  font-family:var(--f-display);font-weight:600;font-size:clamp(25px,3.6vw,34px);
+  line-height:1.2;letter-spacing:.015em;margin:0 0 14px;color:var(--ink);text-wrap:balance;
+}
+.lead{max-width:74ch;color:var(--ink-soft);font-size:17px;margin:0 0 8px;text-wrap:pretty}
+.lead b{color:var(--ink);font-weight:600}
+
+/* ── Cast flow ───────────────────────────────────────────────────────── */
+.castflow{display:grid;grid-template-columns:repeat(auto-fit,minmax(228px,1fr));gap:12px;margin:22px 0 26px}
+.cstep{
+  display:flex;gap:12px;align-items:flex-start;
+  padding:14px 15px;background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--r);font-size:15.5px;color:var(--dim);line-height:1.55;
+}
+.cstep .n{
+  flex:0 0 24px;height:24px;display:grid;place-items:center;
+  font-family:var(--f-mono);font-size:11px;font-weight:600;
+  color:var(--ground);background:var(--amber);border-radius:50%;
+}
+.cstep b{color:var(--ink);font-weight:600}
+
+/* ── Panels ──────────────────────────────────────────────────────────── */
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:16px;align-items:start}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:17px 18px}
+.panel h3{
+  font-family:var(--f-mono);font-size:11px;letter-spacing:.19em;text-transform:uppercase;
+  color:var(--amber);margin:0 0 4px;display:flex;align-items:center;gap:10px;font-weight:600;
+}
+.panel h3 .spacer{margin-left:auto;font-weight:400;letter-spacing:.06em;text-transform:none;color:var(--faint)}
+.ph-sub{font-size:14.5px;color:var(--dim);margin-bottom:13px;line-height:1.5}
+
+.rowlist{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.row{
+  display:flex;align-items:center;gap:10px;
+  padding:8px 11px;background:var(--surface-2);border:1px solid var(--line-soft);
+  border-radius:var(--r);font-family:var(--f-mono);font-size:12.5px;color:var(--ink-soft);
+}
+.row .grow{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .meta{color:var(--faint);font-size:11px}
+.row .x{
+  flex:0 0 auto;background:none;border:0;color:var(--faint);cursor:pointer;
+  font-family:var(--f-mono);font-size:15px;line-height:1;padding:2px 4px;border-radius:2px;
+}
+.row .x:hover{color:var(--crimson)}
+.empty{
+  padding:16px;text-align:center;color:var(--faint);font-size:14px;font-style:italic;
+  border:1px dashed var(--line);border-radius:var(--r);
+}
+
+/* ── Controls ────────────────────────────────────────────────────────── */
+.addbar{display:flex;gap:9px;flex-wrap:wrap;align-items:flex-end}
+.ctl{display:flex;flex-direction:column;gap:4px}
+.fld{
+  font-family:var(--f-mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);
+}
+input[type=number],input[type=text],select{
+  background:var(--ground);border:1px solid var(--line);color:var(--ink);
+  font-family:var(--f-mono);font-size:13px;padding:7px 9px;border-radius:var(--r);
+  width:100%;min-width:0;
+}
+input:focus,select:focus{border-color:var(--amber-dim)}
+select{cursor:pointer}
+.era-toggle{display:flex;border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.era-toggle button{
+  flex:1;background:var(--ground);border:0;color:var(--dim);cursor:pointer;
+  font-family:var(--f-mono);font-size:11.5px;padding:7px 4px;letter-spacing:.06em;
+}
+.era-toggle button.on{background:var(--amber);color:var(--ground);font-weight:600}
+
+.btn{
+  background:var(--raised);border:1px solid var(--line);color:var(--ink-soft);
+  font-family:var(--f-mono);font-size:12px;letter-spacing:.06em;
+  padding:8px 14px;border-radius:var(--r);cursor:pointer;transition:.15s;white-space:nowrap;
+}
+.btn:hover{border-color:var(--amber-dim);color:var(--ink)}
+.btn.sm{font-size:11px;padding:5px 10px}
+.btn.cyan{border-color:var(--cyan-dim);color:var(--cyan)}
+.btn.cyan:hover{background:rgba(95,212,208,.08)}
+.btn.red{border-color:var(--crimson);color:var(--crimson)}
+.btn.cast{
+  background:var(--amber);color:var(--ground);border-color:var(--amber);
+  font-family:var(--f-display);font-weight:600;font-size:16px;letter-spacing:.13em;
+  padding:14px 42px;text-transform:uppercase;
+}
+.btn.cast:hover{filter:brightness(1.12)}
+.errline{color:var(--crimson);font-family:var(--f-mono);font-size:11.5px;margin-top:8px;min-height:15px}
+
+details.fold{border:1px solid var(--line);border-radius:var(--r);background:var(--surface);margin-top:14px}
+details.fold summary{
+  cursor:pointer;padding:11px 15px;font-family:var(--f-mono);font-size:11.5px;
+  letter-spacing:.09em;color:var(--ink-soft);list-style:none;display:flex;gap:10px;align-items:center;
+}
+details.fold summary::-webkit-details-marker{display:none}
+details.fold summary::before{content:"▸";color:var(--amber);font-size:10px;transition:transform .15s}
+details.fold[open] summary::before{transform:rotate(90deg)}
+details.fold summary .hint{margin-left:auto;color:var(--faint);font-size:10.5px;letter-spacing:.04em}
+.foldbody{padding:0 15px 16px;border-top:1px solid var(--line-soft);padding-top:14px}
+
+.sysrow{
+  display:flex;gap:12px;align-items:center;flex-wrap:wrap;
+  padding:13px 16px;background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--r);margin-top:16px;
+}
+.glabel{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.19em;text-transform:uppercase;color:var(--faint)}
+.systog{display:flex;border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.systog button{
+  background:var(--ground);border:0;color:var(--dim);cursor:pointer;
+  font-family:var(--f-mono);font-size:11.5px;padding:6px 13px;letter-spacing:.05em;
+}
+.systog button.on{background:var(--cyan);color:var(--ground);font-weight:600}
+.sysnote{font-size:13.5px;color:var(--dim);font-style:italic;flex:1;min-width:170px}
+
+/* ── Results ─────────────────────────────────────────────────────────── */
+.resbar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:22px 0 11px}
+.filt{display:flex;gap:5px;flex-wrap:wrap}
+.filt button{
+  background:var(--ground);border:1px solid var(--line);color:var(--dim);cursor:pointer;
+  font-family:var(--f-mono);font-size:10px;letter-spacing:.12em;padding:5px 10px;border-radius:var(--r);
+}
+.filt button:hover{color:var(--ink)}
+.filt button.on{background:var(--amber);color:var(--ground);border-color:var(--amber);font-weight:600}
+.filt button[data-k=novel].on{background:var(--violet);border-color:var(--violet)}
+.countnote{font-family:var(--f-mono);font-size:11px;color:var(--faint);margin-left:auto}
+
+.tbl-wrap{border:1px solid var(--line);border-radius:var(--r);background:var(--surface);overflow:hidden}
+.scroll{overflow:auto;max-height:560px}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+thead th{
+  position:sticky;top:0;z-index:2;background:var(--surface-2);
+  text-align:left;padding:0;border-bottom:1px solid var(--line);white-space:nowrap;
+}
+thead th .sortbtn,thead th .plain{
+  display:block;width:100%;text-align:left;
+  background:none;border:0;color:var(--dim);cursor:pointer;
+  font-family:var(--f-mono);font-size:10px;letter-spacing:.15em;text-transform:uppercase;
+  padding:10px 12px;font-weight:600;
+}
+thead th .plain{cursor:default}
+thead th .sortbtn:hover{color:var(--amber)}
+thead th[aria-sort] .sortbtn{color:var(--amber)}
+thead th[aria-sort] .sortbtn::after{content:" ↓";font-size:9px}
+thead th[aria-sort=ascending] .sortbtn::after{content:" ↑"}
+tbody td{padding:8px 12px;border-bottom:1px solid var(--line-soft);vertical-align:middle}
+tbody tr:last-child td{border-bottom:0}
+tbody tr{cursor:pointer;transition:background .12s}
+tbody tr:hover{background:var(--surface-2)}
+tbody tr.echo{opacity:.52}
+td.mono,.mono{font-family:var(--f-mono);font-size:12.5px}
+td.score{font-family:var(--f-mono);font-weight:600;font-size:14px;color:var(--amber);width:1%}
+td.score.nil{color:var(--faint);font-weight:400}
+td.date{font-family:var(--f-display);font-size:14.5px;color:var(--ink);white-space:nowrap;letter-spacing:.02em}
+td.op{font-family:var(--f-mono);font-size:11.5px;color:var(--cyan);max-width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+td.num{font-family:var(--f-mono);font-size:12px;color:var(--dim)}
+
+.rt{
+  display:inline-block;font-family:var(--f-mono);font-size:8.5px;letter-spacing:.11em;
+  padding:2px 6px;border-radius:2px;margin:1px 3px 1px 0;border:1px solid;white-space:nowrap;
+}
+.rt.phx{color:var(--amber);border-color:var(--amber-dim);background:rgba(217,164,65,.09)}
+.rt.doc{color:var(--moss);border-color:#3E5B33;background:rgba(127,176,105,.09)}
+.rt.pal{color:var(--violet);border-color:#5C4A82;background:rgba(168,139,224,.09)}
+.rt.met{color:var(--cyan);border-color:var(--cyan-dim);background:rgba(95,212,208,.09)}
+.rt.n138,.rt.n19{color:var(--ink-soft);border-color:var(--line);background:var(--raised)}
+.rt.msrf{color:#E0A0C8;border-color:#7A4A66;background:rgba(224,160,200,.08)}
+.rt.nem{color:#E08A5F;border-color:#7A4A33;background:rgba(224,138,95,.08)}
+.rt.ner{color:#9FB3D9;border-color:#3F4E69;background:rgba(159,179,217,.08)}
+.rt.echo{color:var(--faint);border-color:var(--line);background:none}
+.rt.fut{color:var(--crimson);border-color:#7A2F2C;background:rgba(217,84,77,.09)}
+
+.strength{display:flex;align-items:center;gap:7px}
+.sbar{display:flex;gap:2px}
+.sbar i{width:4px;height:15px;background:var(--amber);border-radius:1px;display:block}
+.sbar i.off{background:var(--line)}
+
+/* ── Wheels ──────────────────────────────────────────────────────────── */
+.dialbar{
+  display:flex;gap:11px;flex-wrap:wrap;align-items:flex-end;
+  padding:17px 18px;background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--r);margin:20px 0 16px;
+}
+input[type=range]{
+  width:100%;-webkit-appearance:none;appearance:none;background:transparent;cursor:pointer;margin:6px 0 0;
+}
+input[type=range]::-webkit-slider-runnable-track{height:3px;background:var(--line);border-radius:2px}
+input[type=range]::-moz-range-track{height:3px;background:var(--line);border-radius:2px}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:15px;height:15px;border-radius:50%;
+  background:var(--amber);margin-top:-6px;border:2px solid var(--ground);
+}
+input[type=range]::-moz-range-thumb{
+  width:13px;height:13px;border-radius:50%;background:var(--amber);border:2px solid var(--ground);
+}
+.dialticks{
+  display:flex;justify-content:space-between;margin-top:5px;
+  font-family:var(--f-mono);font-size:9.5px;color:var(--faint);letter-spacing:.05em;
+}
+.wheelgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:12px}
+.wheel{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
+  padding:15px 16px;position:relative;overflow:hidden;
+}
+.wheel::before{content:"";position:absolute;inset:0 auto 0 0;width:2px;background:var(--line)}
+.wheel.hot::before{background:var(--amber)}
+.wheel .wl{
+  font-family:var(--f-mono);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--faint);margin-bottom:7px;
+}
+.wheel .wv{
+  font-family:var(--f-display);font-size:26px;font-weight:600;color:var(--ink);
+  line-height:1.1;letter-spacing:.02em;word-break:break-word;
+}
+.wheel.hot .wv{color:var(--amber)}
+.wheel .wn{font-family:var(--f-mono);font-size:11px;color:var(--dim);margin-top:7px;line-height:1.5}
+.wheel .wprog{height:2px;background:var(--line);margin-top:10px;border-radius:1px;overflow:hidden}
+.wheel .wprog i{display:block;height:100%;background:var(--cyan)}
+
+/* ── Ledger / Method ─────────────────────────────────────────────────── */
+.seedbtn{
+  background:none;border:1px solid var(--line);color:var(--cyan);cursor:pointer;
+  font-family:var(--f-mono);font-size:10px;letter-spacing:.1em;padding:3px 9px;border-radius:2px;
+}
+.seedbtn:hover{background:rgba(95,212,208,.1);border-color:var(--cyan-dim)}
+.deftable{width:100%;border-collapse:collapse;font-size:14px}
+.deftable td{padding:6px 10px 6px 0;border-bottom:1px solid var(--line-soft);vertical-align:top}
+.deftable td:first-child{font-family:var(--f-mono);font-size:12px;color:var(--cyan);white-space:nowrap;width:1%}
+.deftable td:last-child{color:var(--dim)}
+.note-card{
+  border:1px solid var(--line);border-left:2px solid var(--amber-dim);
+  background:var(--surface);border-radius:var(--r);padding:18px 20px;margin-top:24px;
+}
+.note-card h4{
+  font-family:var(--f-mono);font-size:10.5px;letter-spacing:.19em;text-transform:uppercase;
+  color:var(--amber);margin:0 0 9px;font-weight:600;
+}
+.note-card p{margin:0 0 9px;font-size:15px;color:var(--dim);line-height:1.62;max-width:78ch}
+.note-card p:last-child{margin-bottom:0}
+
+footer{
+  border-top:1px solid var(--line);margin-top:66px;padding:26px 0 0;
+  font-size:14px;color:var(--faint);line-height:1.7;max-width:82ch;
+}
+footer b{color:var(--dim);font-weight:600}
+
+.toast{
+  position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);
+  background:var(--raised);border:1px solid var(--amber-dim);color:var(--ink);
+  font-family:var(--f-mono);font-size:12px;padding:10px 18px;border-radius:var(--r);
+  opacity:0;pointer-events:none;transition:.22s;z-index:99;
+}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+noscript .ns{
+  display:block;margin:40px auto;max-width:60ch;padding:20px 22px;
+  border:1px solid var(--amber-dim);border-left:2px solid var(--amber);
+  background:#11161F;color:#BFBCB2;border-radius:3px;font-size:16px;line-height:1.6;
+}
+noscript .ns b{color:#D9A441;font-weight:600}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
+@media (max-width:620px){
+  body{font-size:16px}
+  nav .links a:nth-child(n+4){display:none}
+  header.masthead{padding:44px 0 30px}
+  td.op{max-width:130px}
+}
+</style>
+</head>
+<body>
+
+<noscript>
+  <div class="ns">
+    <b>This instrument needs JavaScript.</b> The Natori engine computes every Julian day
+    number, cycle position and projection in your browser — nothing is pre-rendered and
+    nothing is fetched from a server. With scripting disabled there is no chronology to
+    show. Enable JavaScript for this page and reload.
+  </div>
+</noscript>
+
+<nav>
+  <div class="brand">NATORI-ON-CYPHR <em>· Chronology Engine</em></div>
+  <div class="links">
+    <a href="#oracle">The Oracle</a>
+    <a href="#convergence">Convergence</a>
+    <a href="#wheels">The Wheels</a>
+    <a href="#ledger">The Ledger</a>
+    <a href="#method">Method</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+<header class="masthead">
+  <div class="eyebrow">Predictive Chronology Engine · Palindromic Cast</div>
+  <h1>Natori on Cyphr</h1>
+  <div class="tagline">The serpent that rings the egg of time · <b>138</b> lattice · <i>19</i> metonic · ⮌ mirror</div>
+  <p class="sub">Seed anchor dates, cast them through the operation pack, and read which
+  projections resonate with the chronology. Everything runs in this page — no network, no
+  storage, nothing leaves the browser.</p>
+</header>
+
+<div class="moment">
+  <span class="lbl">You are here</span>
+  <span class="y" id="mY">—</span>
+  <span class="tag">Annus Mundi <b id="mAM">—</b></span>
+  <span class="tag">Long-Count yr <b id="mLC">—</b></span>
+  <span class="tag">since Cataclysm <b id="mCat">—</b></span>
+  <span class="tag">JDN <b id="mJDN">—</b></span>
+  <span id="mFlags"></span>
+</div>
+
+<!-- ═══ I · THE ORACLE ═══════════════════════════════════════════════ -->
+<section id="oracle">
+  <div class="sec-no">I · The Oracle — the predictive cast</div>
+  <h2>Seed it. Cast it. Read the resonance.</h2>
+
+  <div class="castflow">
+    <div class="cstep"><b class="n">1</b><span><b>Seed</b> two or more anchor dates — type one in, or take a documented event from the ledger.</span></div>
+    <div class="cstep"><b class="n">2</b><span><b>Cast</b> — every anchor pair runs through every operation in the pack.</span></div>
+    <div class="cstep"><b class="n">3</b><span><b>Read</b> — high scores and convergent dates are the signal worth following.</span></div>
+  </div>
+
+  <div class="grid2">
+    <div class="panel">
+      <h3>⚓ Anchor Dates <span class="spacer" id="anchorCount"></span></h3>
+      <div class="ph-sub">Two anchors give one interval. Three give three. Every pair is cast.</div>
+      <div class="rowlist" id="anchorList"></div>
+      <div class="addbar">
+        <div class="ctl" style="flex:0 0 84px"><label class="fld" for="aYear">Year</label><input type="number" id="aYear" value="2026" min="1" max="9999"></div>
+        <div class="ctl" style="flex:0 0 82px"><label class="fld" id="aEraLbl">Era</label>
+          <div class="era-toggle" id="aEra" role="group" aria-labelledby="aEraLbl">
+            <button type="button" data-era="bc">BC</button><button type="button" data-era="ad" class="on">CE</button>
+          </div>
+        </div>
+        <div class="ctl" style="flex:0 0 62px"><label class="fld" for="aMon">Mon</label><input type="number" id="aMon" value="5" min="1" max="12"></div>
+        <div class="ctl" style="flex:0 0 62px"><label class="fld" for="aDay">Day</label><input type="number" id="aDay" value="15" min="1" max="31"></div>
+        <div class="ctl" style="flex:1 1 120px"><label class="fld" for="aLabel">Label (optional)</label><input type="text" id="aLabel" placeholder="my anchor"></div>
+        <button class="btn" id="addAnchor" type="button">+ Add</button>
+      </div>
+      <div class="addbar" style="margin-top:9px">
+        <div class="ctl" style="flex:1 1 100%"><label class="fld" for="seedSel">Seed from the ledger</label>
+          <select id="seedSel"><option value="">— pick a documented event —</option></select>
+        </div>
+      </div>
+      <div class="errline" id="anchorErr"></div>
+    </div>
+
+    <div class="panel">
+      <h3>⚙ Operations <span class="spacer"><button class="btn sm" id="resetOps" type="button">reset pack</button></span></h3>
+      <div class="ph-sub" id="opSummary">The pack is loaded and ready — you can cast without touching anything here.</div>
+      <details class="fold" style="margin-top:0">
+        <summary>View / edit the pack <span class="hint">add your own</span></summary>
+        <div class="foldbody">
+          <div class="ph-sub">Each expression is evaluated over <span class="mono" style="color:var(--cyan)">X1</span>,
+          <span class="mono" style="color:var(--cyan)">X2</span> (the two anchor Julian days) and
+          <span class="mono" style="color:var(--cyan)">Y</span> (their interval in days). The result is a Julian day.
+          Constants and functions are listed under Method.</div>
+          <div class="rowlist" id="opList" style="max-height:280px;overflow:auto"></div>
+          <div class="addbar">
+            <div class="ctl" style="flex:1 1 100%"><label class="fld" for="opInput">Custom operation</label>
+              <input type="text" id="opInput" placeholder="X1 + oph_flip(oph_round(Y / PHI))" spellcheck="false"></div>
+            <button class="btn cyan" id="addOp" type="button">+ Operation</button>
+          </div>
+          <div class="errline" id="opErr"></div>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <div class="sysrow">
+    <span class="glabel">Scoring lens</span>
+    <div class="systog" id="lensTog" role="group" aria-label="Scoring lens"></div>
+    <span class="sysnote" id="lensNote"></span>
+  </div>
+
+  <div style="text-align:center;margin:26px 0 6px">
+    <button class="btn cast" id="castBtn" type="button">⟳ Cast the Oracle</button>
+  </div>
+
+  <div class="resbar">
+    <div class="filt" id="resFilt">
+      <button type="button" data-k="all" class="on">ALL</button>
+      <button type="button" data-k="novel">✦ NOVEL ONLY</button>
+      <button type="button" data-k="phx">PHOENIX</button>
+      <button type="button" data-k="doc">DOCUMENTED</button>
+      <button type="button" data-k="pal">PALINDROME</button>
+      <button type="button" data-k="met">19·METONIC</button>
+      <button type="button" data-k="msrf">MSRF</button>
+      <button type="button" data-k="future">FUTURE</button>
+    </div>
+    <span id="resCount" class="countnote"></span>
+    <button class="btn sm" id="exportCsv" type="button">⤓ CSV</button>
+  </div>
+
+  <div class="tbl-wrap"><div class="scroll">
+    <table id="resTable">
+      <thead><tr>
+        <th data-sort="score" aria-sort="descending"><button type="button" class="sortbtn">Score</button></th>
+        <th data-sort="jdn"><button type="button" class="sortbtn">Projected Date</button></th>
+        <th data-sort="am"><button type="button" class="sortbtn">AM</button></th>
+        <th data-sort="lc"><button type="button" class="sortbtn">LC</button></th>
+        <th data-sort="op"><button type="button" class="sortbtn">Operation</button></th>
+        <th data-sort="y"><button type="button" class="sortbtn">Y (days)</button></th>
+        <th><span class="plain">Resonance</span></th>
+      </tr></thead>
+      <tbody id="resBody"></tbody>
+    </table>
+  </div></div>
+  <p style="font-size:14px;color:var(--faint);font-style:italic;margin-top:11px;max-width:78ch">
+    Rows marked <span class="rt echo">ECHO</span> land back on an anchor you supplied — confirmations
+    of the cast, not novel projections. Use <b style="color:var(--violet);font-style:normal">✦ NOVEL ONLY</b>
+    to hide them and surface dates the chronology does not already name.
+  </p>
+</section>
+
+<!-- ═══ I·b · CONVERGENCE ════════════════════════════════════════════ -->
+<section id="convergence">
+  <div class="sec-no">I·b · The Convergence — where the operations agree</div>
+  <h2>The strongest signal is independent agreement</h2>
+  <p class="lead">A single projection is a guess. When <b>several different operations</b> — often from
+  <b>different anchor pairs</b> — land independently on the same date, that agreement is what the
+  method is actually hunting. Ranked by strength: the count of distinct operations that concur.
+  Echoes are excluded.</p>
+
+  <div class="resbar">
+    <span class="glabel">Agreement window</span>
+    <select id="convTol" style="width:auto;flex:0 0 auto"></select>
+    <span id="convCount" class="countnote"></span>
+  </div>
+  <div class="tbl-wrap"><div class="scroll" style="max-height:460px">
+    <table>
+      <thead><tr>
+        <th><span class="plain">Strength</span></th>
+        <th><span class="plain">Converged Date</span></th>
+        <th><span class="plain">AM</span></th>
+        <th><span class="plain">Resonance</span></th>
+        <th><span class="plain">Operations that agree</span></th>
+      </tr></thead>
+      <tbody id="convBody"></tbody>
+    </table>
+  </div></div>
+</section>
+
+<!-- ═══ II · THE WHEELS ══════════════════════════════════════════════ -->
+<section id="wheels">
+  <div class="sec-no">II · The Wheels — one moment, every reckoning</div>
+  <h2>The chronology, read at any instant</h2>
+  <p class="lead">Click any projected date above to send it here — or move the dial. Every wheel
+  re-reads the same moment across the lattice, with the <b>šar reckoned as a turning of the
+  stars</b> (a day).</p>
+
+  <div class="dialbar">
+    <div class="ctl" style="flex:0 0 92px"><label class="fld" for="dYear">Year</label><input type="number" id="dYear" value="2026" min="1" max="9999"></div>
+    <div class="ctl" style="flex:0 0 86px"><label class="fld" id="dEraLbl">Era</label>
+      <div class="era-toggle" id="dEra" role="group" aria-labelledby="dEraLbl">
+        <button type="button" data-era="bc">BC</button><button type="button" data-era="ad" class="on">CE</button>
+      </div></div>
+    <div class="ctl" style="flex:0 0 62px"><label class="fld" for="dMon">Mon</label><input type="number" id="dMon" value="5" min="1" max="12"></div>
+    <div class="ctl" style="flex:0 0 62px"><label class="fld" for="dDay">Day</label><input type="number" id="dDay" value="15" min="1" max="31"></div>
+    <div class="ctl" style="flex:1 1 100%;margin-top:2px">
+      <input type="range" id="dSlider" min="-2842" max="2178" value="2026" step="1" aria-label="Year dial">
+      <div class="dialticks">
+        <span>2843 BC</span><span>Flood 2239 BC</span><span>1 CE</span><span>2040</span><span>2178</span>
+      </div>
+    </div>
+    <div style="display:flex;gap:7px;flex-wrap:wrap">
+      <button class="btn red sm" type="button" id="dToday">◉ TODAY</button>
+      <button class="btn sm" type="button" data-jy="2040">→ 2040</button>
+      <button class="btn sm" type="button" data-jy="2046">→ 2046</button>
+      <button class="btn sm" type="button" data-jy="2178">→ 2178</button>
+    </div>
+  </div>
+
+  <div class="wheelgrid" id="wheelGrid"></div>
+</section>
+
+<!-- ═══ III · THE LEDGER ═════════════════════════════════════════════ -->
+<section id="ledger">
+  <div class="sec-no">III · The Ledger — the documented chronology</div>
+  <h2>The event record you can seed from</h2>
+  <p class="lead">The dated spine — <b id="ledgerCount">—</b> entries. Click <b>seed</b> to load a row
+  as an anchor; click the row itself to read it on the wheels.</p>
+  <div class="resbar">
+    <div class="filt" id="ledFilt">
+      <button type="button" data-k="all" class="on">ALL</button>
+      <button type="button" data-k="key">KEY</button>
+      <button type="button" data-k="phx">PHOENIX</button>
+      <button type="button" data-k="nem">NEMESIS</button>
+      <button type="button" data-k="ner">NER</button>
+    </div>
+    <span id="ledShown" class="countnote"></span>
+  </div>
+  <div class="tbl-wrap"><div class="scroll" style="max-height:440px">
+    <table>
+      <thead><tr>
+        <th><span class="plain">Year</span></th><th><span class="plain">AM</span></th>
+        <th><span class="plain">Phx</span></th><th><span class="plain">Event</span></th><th><span class="plain"></span></th>
+      </tr></thead>
+      <tbody id="ledBody"></tbody>
+    </table>
+  </div></div>
+</section>
+
+<!-- ═══ IV · METHOD ══════════════════════════════════════════════════ -->
+<section id="method">
+  <div class="sec-no">IV · Method &amp; lattice</div>
+  <h2>How the cast is weighed</h2>
+  <p class="lead">Natori fuses two instruments: a <b>predictive grammar</b>
+  (X-dates → Y interval → operations → Z-dates) and <b>cyclical calendrics</b>
+  (the cycle lattice). The fusion is the scoring — and the lens is switchable.</p>
+
+  <div class="grid2" style="margin-top:20px">
+    <div class="panel">
+      <h3>The lattice</h3>
+      <div class="ph-sub">Every cycle is a period and an anchor year. Change either and the whole
+      reading moves — that is the intended mod surface.</div>
+      <table class="deftable" id="latticeDocs"></table>
+    </div>
+    <div class="panel">
+      <h3>Constants &amp; functions</h3>
+      <div class="ph-sub">Available inside any operation expression.</div>
+      <table class="deftable" id="grammarDocs"></table>
+    </div>
+  </div>
+
+  <div class="grid2" style="margin-top:16px">
+    <div class="panel">
+      <h3>Scoring — what each lens rewards</h3>
+      <div class="ph-sub">Same traits, different weights. The Chronology lens favours the documented record;
+      the Numbers lens favours numeral resonance.</div>
+      <table class="deftable" id="scoreDocs"></table>
+    </div>
+    <div class="panel">
+      <h3>Echo &amp; the novel filter</h3>
+      <p style="font-size:15px;line-height:1.66;color:var(--dim);margin:0 0 10px">
+        A projection landing back on one of your input anchors (±1 day) is an
+        <b style="color:var(--ink-soft)">ECHO</b> — a confirmation, not a discovery. It still scores,
+        but it is dimmed and tagged, and excluded from convergence.
+        <b style="color:var(--violet)">✦ NOVEL ONLY</b> hides echoes entirely.</p>
+      <p style="font-size:14px;color:var(--faint);font-style:italic;margin:0">
+        19 sits in the resonance set by request — it is not in the stock MSRF table.
+        The MSRF set itself is the six four-digit multiples of 99 in the 2178 → 6534
+        reverse-and-subtract orbit.</p>
+    </div>
+  </div>
+
+  <div class="note-card">
+    <h4>The recursion, noted not asserted</h4>
+    <p>Natori is a <b style="color:var(--ink-soft)">worldbuilding and study instrument</b> rendering a
+    deep-time cyclical chronology as living predictive calendrics. The šar-as-turning reckoning,
+    Annus Mundi dating and the cycle lattice are presented
+    <b style="color:var(--ink-soft)">as that thesis, not as established science</b>.
+    Deep-past conversions are cycle-true rather than historically observed.</p>
+    <p>This build carries no eclipse tables. Where an earlier build scored coincidence with a real
+    solar or lunar eclipse, that trait is simply absent here rather than approximated — a missing
+    trait is honest; a fabricated one is not.</p>
+  </div>
+</section>
+
+<footer>
+  <b>Natori on Cyphr · The Predictive Chronology Engine.</b> Predictive grammar × cyclical
+  calendrics, fused over the cycle lattice (Phoenix 138 · Nemesis 792 · NER 600 · Metonic 19).
+  Self-contained — no network calls after the initial page load, no storage, no telemetry.
+  Annus Mundi = 3894 + astronomical year; Long-Count year = astronomical year + 3112;
+  šar = a turning of the stars (a day).
+  <b>19138 · 83191 — read the same returning.</b>
+</footer>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+"use strict";
+/* ═══════════════════════════════════════════════════════════════════════
+   NATORI — predictive chronology engine
+   Pure functions first (headless-testable), DOM strictly at the bottom.
+   No eval, no Function(): the expression layer is a real parser.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── Julian day ↔ proleptic Gregorian ──────────────────────────────────
+   Years are ASTRONOMICAL: 1 BC = 0, 2 BC = -1. So BC n = 1 - n.        */
+function jdnFrom(y, m, d){
+  const a = Math.floor((14 - m) / 12);
+  const yy = y + 4800 - a;
+  const mm = m + 12 * a - 3;
+  return d + Math.floor((153 * mm + 2) / 5) + 365 * yy
+       + Math.floor(yy / 4) - Math.floor(yy / 100) + Math.floor(yy / 400) - 32045;
+}
+function jdnTo(jdn){
+  const a = jdn + 32044;
+  const b = Math.floor((4 * a + 3) / 146097);
+  const c = a - Math.floor(146097 * b / 4);
+  const d2 = Math.floor((4 * c + 3) / 1461);
+  const e = c - Math.floor(1461 * d2 / 4);
+  const m2 = Math.floor((5 * e + 2) / 153);
+  return {
+    d: e - Math.floor((153 * m2 + 2) / 5) + 1,
+    m: m2 + 3 - 12 * Math.floor(m2 / 10),
+    y: 100 * b + d2 - 4800 + Math.floor(m2 / 10)
+  };
+}
+const MON = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+function eraYear(y){ return y <= 0 ? (1 - y) + " BC" : y + " CE"; }
+function fmtDate(jdn){
+  const g = jdnTo(jdn);
+  return g.d + " " + MON[g.m - 1] + " " + eraYear(g.y);
+}
+function fmtYear(jdn){ return eraYear(jdnTo(jdn).y); }
+
+/* ── The lattice ─────────────────────────────────────────────────────── */
+const LATTICE = {
+  phoenix: { period:138, anchor:2040, label:"Phoenix",  note:"the 138-year return" },
+  nemesis: { period:792, anchor:2046, label:"Nemesis",  note:"the 792-year orbit" },
+  ner:     { period:600, anchor:2040, label:"NER",      note:"the Sumerian 600" },
+  metonic: { period:19,  anchor:2026, label:"Metonic",  note:"19 solar years ≈ 235 lunations" }
+};
+const AM_OFFSET = 3894;          // Annus Mundi = AM_OFFSET + astronomical year
+const LC_OFFSET = 3112;          // Long-Count year = astronomical year + LC_OFFSET
+const CATACLYSM_Y = -2238;       // 2239 BC, astronomical
+const MSRF = [1089, 2178, 3267, 4356, 5445, 6534];
+
+const amOf = y => AM_OFFSET + y;
+const lcOf = y => y + LC_OFFSET;
+function cyclePos(y, c){
+  const p = LATTICE[c].period;
+  return ((y - LATTICE[c].anchor) % p + p) % p;
+}
+const onNode = (y, c) => cyclePos(y, c) === 0;
+
+function isPalin(n){
+  const s = String(Math.abs(Math.round(n)));
+  if (s.length < 2) return false;
+  return s === s.split("").reverse().join("");
+}
+function digitsHave(n, sub){ return String(Math.abs(Math.round(n))).includes(sub); }
+function msrfHit(vals){
+  return vals.some(v => {
+    const a = Math.abs(Math.round(v));
+    if (MSRF.includes(a)) return true;
+    return a !== 0 && a % 1089 === 0;
+  });
+}
+
+/* ── The ledger ───────────────────────────────────────────────────────
+   A seed set, not the full 69-event ledger. Every entry here is one
+   this build can actually stand behind: named in the source material, or
+   computed from the lattice and labelled as such. Extend freely.       */
+const LEDGER = [
+  { y:-2238, m:2, d:17, name:"The Flood / the Cataclysm",   tags:["key","phx"] },
+  { y:-2160, m:1, d:1,  name:"NER node",                    tags:["ner"] },
+  { y:-2100, m:1, d:1,  name:"Phoenix node",                tags:["phx"] },
+  { y:-1962, m:1, d:1,  name:"Phoenix node",                tags:["phx"] },
+  { y:-1914, m:1, d:1,  name:"Nemesis node",                tags:["nem"] },
+  { y:-1824, m:1, d:1,  name:"Phoenix node",                tags:["phx"] },
+  { y:-1686, m:1, d:1,  name:"Phoenix node",                tags:["phx"] },
+  { y:-1560, m:1, d:1,  name:"NER node",                    tags:["ner"] },
+  { y:-1548, m:1, d:1,  name:"Phoenix node",                tags:["phx"] },
+  { y:-1410, m:1, d:1,  name:"Phoenix node",                tags:["phx"] },
+  { y:-1122, m:1, d:1,  name:"Nemesis node",                tags:["nem"] },
+  { y:-996,  m:1, d:1,  name:"Phoenix node",                tags:["phx"] },
+  { y:-960,  m:1, d:1,  name:"NER node",                    tags:["ner"] },
+  { y:-720,  m:1, d:1,  name:"Phoenix node",                tags:["phx"] },
+  { y:-582,  m:1, d:1,  name:"Phoenix node",                tags:["phx"] },
+  { y:-360,  m:1, d:1,  name:"NER node",                    tags:["ner"] },
+  { y:-330,  m:1, d:1,  name:"Nemesis node",                tags:["nem"] },
+  { y:-168,  m:1, d:1,  name:"Phoenix node",                tags:["phx"] },
+  { y:-30,   m:1, d:1,  name:"Phoenix node",                tags:["phx"] },
+  { y:0,     m:1, d:1,  name:"Annus Mundi 3894 — the hinge",tags:["key"] },
+  { y:1,     m:1, d:1,  name:"1 CE · Annus Mundi 3895",     tags:["key"] },
+  { y:108,   m:1, d:1,  name:"Phoenix node",                tags:["phx"] },
+  { y:240,   m:1, d:1,  name:"NER node",                    tags:["ner"] },
+  { y:246,   m:1, d:1,  name:"Phoenix node",                tags:["phx"] },
+  { y:462,   m:1, d:1,  name:"Nemesis node",                tags:["nem"] },
+  { y:522,   m:1, d:1,  name:"Phoenix node",                tags:["phx"] },
+  { y:660,   m:1, d:1,  name:"Phoenix node",                tags:["phx"] },
+  { y:798,   m:1, d:1,  name:"Phoenix node",                tags:["phx"] },
+  { y:840,   m:1, d:1,  name:"NER node",                    tags:["ner"] },
+  { y:1074,  m:1, d:1,  name:"Phoenix node",                tags:["phx"] },
+  { y:1212,  m:1, d:1,  name:"Phoenix node",                tags:["phx"] },
+  { y:1254,  m:1, d:1,  name:"Nemesis node",                tags:["nem"] },
+  { y:1350,  m:1, d:1,  name:"Phoenix node",                tags:["phx"] },
+  { y:1440,  m:1, d:1,  name:"NER node",                    tags:["ner"] },
+  { y:1488,  m:1, d:1,  name:"Phoenix node",                tags:["phx"] },
+  { y:1626,  m:1, d:1,  name:"Phoenix node",                tags:["phx"] },
+  { y:1764,  m:1, d:1,  name:"Phoenix node",                tags:["phx"] },
+  { y:1902,  m:1, d:1,  name:"Phoenix node",                tags:["phx"] },
+  { y:2040,  m:1, d:1,  name:"Phoenix return · NER node",   tags:["key","phx","ner"] },
+  { y:2046,  m:1, d:1,  name:"Nemesis node",                tags:["key","nem"] },
+  { y:2178,  m:1, d:1,  name:"Phoenix +138",                tags:["key","phx"] }
+].map(e => ({ ...e, jdn: jdnFrom(e.y, e.m, e.d), am: amOf(e.y) }))
+ .sort((a, b) => a.jdn - b.jdn);
+
+/* ── Expression layer: tokeniser → parser → AST evaluator ─────────────
+   Deliberately NOT eval/Function. Unknown names are a parse error, so a
+   malformed pack fails loudly at add-time instead of silently at cast.  */
+const VARS = new Set(["X1", "X2", "Y"]);
+/* Null-prototype tables: with a plain object literal, `"constructor" in CONSTS`
+   is true and FUNCS["constructor"] hands back a callable. Both are closed here
+   by dropping the prototype AND checking ownership at every lookup.          */
+const CONSTS = Object.assign(Object.create(null), {
+  PHI: 1.6180339887498949,
+  PI: Math.PI,
+  E: Math.E,
+  PHOENIX: 138, NEMESIS: 792, NER: 600, METONIC: 19,
+  TROPICAL: 365.2425, SYNODIC: 29.530588, SAROS: 6585.3211,
+  INEX: 10571.95, DRACONIAN: 360,
+  ECM: 3141, PRECESSION: 25772,
+  AM_OFFSET, LC_OFFSET
+});
+const FUNCS = Object.assign(Object.create(null), {
+  oph_flip: n => {
+    const neg = n < 0, s = String(Math.abs(Math.round(n))).split("").reverse().join("");
+    return (neg ? -1 : 1) * parseInt(s, 10);
+  },
+  oph_round: Math.round, oph_floor: Math.floor, oph_ceil: Math.ceil,
+  oph_abs: Math.abs, oph_sqrt: n => Math.sqrt(Math.abs(n)),
+  oph_mod: (a, b) => b === 0 ? 0 : ((a % b) + b) % b,
+  oph_digsum: n => String(Math.abs(Math.round(n))).split("")
+                     .reduce((s, c) => s + (+c), 0),
+  oph_log: (n, b) => {
+    const v = Math.abs(n);
+    if (v === 0) return 0;
+    if (b === undefined) return Math.log(v);
+    const bb = Math.abs(b);
+    if (bb === 0 || bb === 1) return 0;
+    return Math.log(v) / Math.log(bb);
+  },
+  oph_gcd: (a, b) => {
+    a = Math.abs(Math.round(a)); b = Math.abs(Math.round(b));
+    while (b){ const t = a % b; a = b; b = t; }
+    return a;
+  },
+  oph_lcm: (a, b) => {
+    a = Math.abs(Math.round(a)); b = Math.abs(Math.round(b));
+    if (!a || !b) return 0;
+    let g = a, h = b;
+    while (h){ const t = g % h; g = h; h = t; }
+    return a / g * b;
+  },
+  oph_sin: Math.sin, oph_cos: Math.cos
+});
+
+function tokenise(src){
+  const out = []; let i = 0;
+  while (i < src.length){
+    const c = src[i];
+    if (/\s/.test(c)) { i++; continue; }
+    if (/[0-9.]/.test(c)){
+      let j = i; while (j < src.length && /[0-9.]/.test(src[j])) j++;
+      const raw = src.slice(i, j);
+      if (isNaN(Number(raw))) throw new Error("bad number: " + raw);
+      out.push({ t:"num", v:Number(raw) }); i = j; continue;
+    }
+    if (/[A-Za-z_]/.test(c)){
+      let j = i; while (j < src.length && /[A-Za-z0-9_]/.test(src[j])) j++;
+      out.push({ t:"id", v:src.slice(i, j) }); i = j; continue;
+    }
+    if ("+-*/%^(),".includes(c)){ out.push({ t:c }); i++; continue; }
+    throw new Error("unexpected character: " + c);
+  }
+  return out;
+}
+
+function parse(src){
+  const tk = tokenise(src);
+  let p = 0;
+  const peek = () => tk[p];
+  const eat = t => { if (!tk[p] || tk[p].t !== t) throw new Error("expected " + t); return tk[p++]; };
+
+  function expr(){
+    let n = term();
+    while (peek() && (peek().t === "+" || peek().t === "-")){
+      const op = tk[p++].t; n = { k:"bin", op, l:n, r:term() };
+    }
+    return n;
+  }
+  function term(){
+    let n = unary();
+    while (peek() && (peek().t === "*" || peek().t === "/" || peek().t === "%")){
+      const op = tk[p++].t; n = { k:"bin", op, l:n, r:unary() };
+    }
+    return n;
+  }
+  function unary(){
+    if (peek() && (peek().t === "-" || peek().t === "+")){
+      const op = tk[p++].t; return { k:"un", op, v:unary() };
+    }
+    return power();
+  }
+  function power(){
+    const base = primary();
+    if (peek() && peek().t === "^") { p++; return { k:"bin", op:"^", l:base, r:unary() }; }
+    return base;
+  }
+  function primary(){
+    const t = peek();
+    if (!t) throw new Error("unexpected end of expression");
+    if (t.t === "num"){ p++; return { k:"num", v:t.v }; }
+    if (t.t === "("){ p++; const n = expr(); eat(")"); return n; }
+    if (t.t === "id"){
+      p++;
+      if (peek() && peek().t === "("){
+        p++;
+        const args = [];
+        if (peek() && peek().t !== ")"){
+          args.push(expr());
+          while (peek() && peek().t === ","){ p++; args.push(expr()); }
+        }
+        eat(")");
+        if (!Object.hasOwn(FUNCS, t.v)) throw new Error("unknown function: " + t.v);
+        return { k:"call", name:t.v, args };
+      }
+      if (!VARS.has(t.v) && !Object.hasOwn(CONSTS, t.v))
+        throw new Error("unknown name: " + t.v);
+      return { k:"var", name:t.v };
+    }
+    throw new Error("unexpected token");
+  }
+
+  const ast = expr();
+  if (p !== tk.length) throw new Error("trailing input");
+  return ast;
+}
+
+function evaluate(ast, env){
+  switch (ast.k){
+    case "num": return ast.v;
+    case "var": {
+      if (Object.hasOwn(env, ast.name)) return env[ast.name];
+      if (Object.hasOwn(CONSTS, ast.name)) return CONSTS[ast.name];
+      throw new Error("unknown name: " + ast.name);
+    }
+    case "un": {
+      const v = evaluate(ast.v, env);
+      return ast.op === "-" ? -v : v;
+    }
+    case "call": {
+      if (!Object.hasOwn(FUNCS, ast.name)) throw new Error("unknown function: " + ast.name);
+      return FUNCS[ast.name](...ast.args.map(a => evaluate(a, env)));
+    }
+    case "bin": {
+      const a = evaluate(ast.l, env), b = evaluate(ast.r, env);
+      switch (ast.op){
+        case "+": return a + b;
+        case "-": return a - b;
+        case "*": return a * b;
+        case "/": return b === 0 ? 0 : a / b;
+        case "%": return b === 0 ? 0 : ((a % b) + b) % b;
+        case "^": return Math.pow(a, b);
+      }
+    }
+  }
+  throw new Error("bad node");
+}
+function compile(src){ const ast = parse(src); return env => evaluate(ast, env); }
+
+/* ── The default pack ────────────────────────────────────────────────── */
+const DEFAULT_OPS = [
+  "X1 + Y",
+  "X2 + Y",
+  "X1 - Y",
+  "X2 + oph_flip(Y)",
+  "X1 + oph_flip(Y)",
+  "X1 + oph_round(Y * PHI)",
+  "X1 + oph_round(Y / PHI)",
+  "X2 + oph_round(Y * PHI)",
+  "X2 + oph_round(Y / PHI)",
+  "X1 + oph_round(Y * METONIC / PHOENIX)",
+  "X2 + oph_round(Y * PHOENIX / METONIC)",
+  "X1 + Y + oph_round(PHOENIX * TROPICAL)",
+  "X2 + oph_round(Y / 2)",
+  "X1 + oph_round(Y * 2) - oph_digsum(Y)"
+];
+
+/* ── Scoring ─────────────────────────────────────────────────────────── */
+const TRAITS = [
+  { k:"phx",  cls:"phx",  label:"PHOENIX",     chronicon:30, ophis:15 },
+  { k:"doc",  cls:"doc",  label:"DOCUMENTED",  chronicon:35, ophis:15 },
+  { k:"nem",  cls:"nem",  label:"NEMESIS",     chronicon:15, ophis:8  },
+  { k:"ner",  cls:"ner",  label:"NER",         chronicon:12, ophis:8  },
+  { k:"met",  cls:"met",  label:"19·METONIC",  chronicon:10, ophis:20 },
+  { k:"pal",  cls:"pal",  label:"PALINDROME",  chronicon:10, ophis:25 },
+  { k:"n138", cls:"n138", label:"138",         chronicon:12, ophis:18 },
+  { k:"n19",  cls:"n19",  label:"19",          chronicon:6,  ophis:14 },
+  { k:"msrf", cls:"msrf", label:"MSRF",        chronicon:8,  ophis:22 }
+];
+const LENSES = {
+  chronicon:{ label:"V8 · Chronology", note:"Weights the documented record and the Phoenix lattice above numeral resonance." },
+  ophis:    { label:"V7 · Numbers",   note:"Weights palindromes, MSRF and the 138 / 19 numerals above the record." }
+};
+
+function traitsFor(jdn, ledgerByJdn){
+  const g = jdnTo(jdn), y = g.y, am = amOf(y);
+  const compact = String(Math.abs(y)) + String(g.m).padStart(2,"0") + String(g.d).padStart(2,"0");
+  const t = new Set();
+  if (onNode(y, "phoenix")) t.add("phx");
+  if (onNode(y, "nemesis")) t.add("nem");
+  if (onNode(y, "ner"))     t.add("ner");
+  if (onNode(y, "metonic")) t.add("met");
+  if (isPalin(compact) || isPalin(am) || isPalin(y)) t.add("pal");
+  if (digitsHave(am,"138") || digitsHave(y,"138") || am % 138 === 0) t.add("n138");
+  if (digitsHave(am,"19")  || digitsHave(y,"19")  || am % 19  === 0) t.add("n19");
+  if (msrfHit([am, y])) t.add("msrf");
+  for (let k = -1; k <= 1; k++) if (ledgerByJdn.has(jdn + k)) { t.add("doc"); break; }
+  return t;
+}
+function scoreOf(traits, lens){
+  let s = 0;
+  for (const T of TRAITS) if (traits.has(T.k)) s += T[lens];
+  return s;
+}
+
+/* ── The cast ────────────────────────────────────────────────────────── */
+function cast(anchors, ops, lens){
+  const ledgerByJdn = new Map(LEDGER.map(e => [e.jdn, e]));
+  const anchorJdns = new Set(anchors.map(a => a.jdn));
+  const isEcho = j => [-1,0,1].some(k => anchorJdns.has(j + k));
+  const todayJ = jdnFrom(...todayYMD());
+  const rows = [];
+
+  for (let i = 0; i < anchors.length; i++){
+    for (let j = i + 1; j < anchors.length; j++){
+      const A = anchors[i], B = anchors[j];
+      const Y = Math.abs(B.jdn - A.jdn);
+      if (Y === 0) continue;
+      for (const op of ops){
+        let z;
+        try { z = op.fn({ X1:A.jdn, X2:B.jdn, Y }); }
+        catch { continue; }
+        if (!isFinite(z)) continue;
+        z = Math.round(z);
+        const g = jdnTo(z);
+        if (g.y < -4700 || g.y > 9999) continue;      // outside the reckoning
+        const tr = traitsFor(z, ledgerByJdn);
+        rows.push({
+          jdn:z, y:g.y, am:amOf(g.y), lc:lcOf(g.y),
+          op:op.src, Y, traits:tr,
+          echo:isEcho(z), future:z > todayJ,
+          score:scoreOf(tr, lens),
+          pair:A.label + " ⇄ " + B.label
+        });
+      }
+    }
+  }
+  // de-duplicate identical (date, operation) pairs, keeping the first
+  const seen = new Set();
+  return rows.filter(r => {
+    const k = r.jdn + "|" + r.op;
+    if (seen.has(k)) return false;
+    seen.add(k); return true;
+  });
+}
+
+function converge(rows, tol){
+  const live = rows.filter(r => !r.echo);
+  const byJdn = new Map();
+  for (const r of live){
+    if (!byJdn.has(r.jdn)) byJdn.set(r.jdn, []);
+    byJdn.get(r.jdn).push(r);
+  }
+  const centres = [...byJdn.keys()].sort((a,b) => a - b);
+  const used = new Set(), out = [];
+  for (const c of centres){
+    if (used.has(c)) continue;
+    const members = [];
+    for (let k = c - tol; k <= c + tol; k++){
+      if (byJdn.has(k) && !used.has(k)){ members.push(...byJdn.get(k)); used.add(k); }
+    }
+    const distinctOps = new Set(members.map(m => m.op));
+    if (distinctOps.size < 2) continue;
+    const best = members.reduce((a,b) => b.score > a.score ? b : a);
+    out.push({
+      jdn:best.jdn, am:best.am, traits:best.traits,
+      strength:distinctOps.size, ops:[...distinctOps],
+      pairs:[...new Set(members.map(m => m.pair))]
+    });
+  }
+  return out.sort((a,b) => b.strength - a.strength || b.jdn - a.jdn);
+}
+
+function todayYMD(){
+  const n = new Date();
+  return [n.getFullYear(), n.getMonth() + 1, n.getDate()];
+}
+
+/* ═══ DOM ═══════════════════════════════════════════════════════════ */
+const $ = s => document.querySelector(s);
+const el = (t, c, txt) => { const n = document.createElement(t); if (c) n.className = c; if (txt != null) n.textContent = txt; return n; };
+
+const state = {
+  anchors: [],
+  ops: [],
+  lens: "chronicon",
+  rows: [],
+  filter: "all",
+  sort: { key:"score", dir:-1 },
+  convTol: 0,
+  ledFilter: "all",
+  dial: { y:2026, m:5, d:15 }
+};
+
+function toast(msg){
+  const t = $("#toast"); t.textContent = msg; t.classList.add("on");
+  clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove("on"), 2100);
+}
+
+/* ── Anchors ─────────────────────────────────────────────────────────── */
+let anchorSeq = 0;
+function addAnchor(y, m, d, label){
+  const jdn = jdnFrom(y, m, d);
+  if (state.anchors.some(a => a.jdn === jdn)) { return "That anchor is already seeded."; }
+  state.anchors.push({ id:++anchorSeq, y, m, d, jdn, label: label || fmtDate(jdn) });
+  state.anchors.sort((a,b) => a.jdn - b.jdn);
+  renderAnchors();
+  return null;
+}
+function renderAnchors(){
+  const box = $("#anchorList"); box.innerHTML = "";
+  if (!state.anchors.length){
+    box.appendChild(el("div","empty","No anchors yet — add one above, or seed from the ledger."));
+  }
+  for (const a of state.anchors){
+    const r = el("div","row");
+    const g = el("span","grow", a.label);
+    const meta = el("span","meta", fmtDate(a.jdn) + " · AM " + amOf(a.y));
+    const x = el("button","x","×");
+    x.type = "button";
+    x.setAttribute("aria-label","Remove anchor " + a.label);
+    x.onclick = () => { state.anchors = state.anchors.filter(v => v.id !== a.id); renderAnchors(); };
+    r.append(g, meta, x); box.appendChild(r);
+  }
+  const n = state.anchors.length;
+  const pairs = n * (n - 1) / 2;
+  $("#anchorCount").textContent = n + " anchor" + (n === 1 ? "" : "s") + " · " + pairs + " pair" + (pairs === 1 ? "" : "s");
+}
+
+/* ── Operations ──────────────────────────────────────────────────────── */
+function loadOps(list){
+  state.ops = [];
+  for (const src of list){
+    try { state.ops.push({ src, fn: compile(src) }); }
+    catch (e) { console.warn("skipped op", src, e.message); }
+  }
+  renderOps();
+}
+function renderOps(){
+  const box = $("#opList"); box.innerHTML = "";
+  state.ops.forEach((o, i) => {
+    const r = el("div","row");
+    const g = el("span","grow", o.src);
+    g.style.color = "var(--cyan)";
+    const x = el("button","x","×");
+    x.type = "button";
+    x.setAttribute("aria-label","Remove operation " + o.src);
+    x.onclick = () => { state.ops.splice(i,1); renderOps(); };
+    r.append(g, x); box.appendChild(r);
+  });
+  $("#opSummary").textContent = state.ops.length +
+    " operations loaded — you can cast without touching anything here.";
+}
+
+/* ── Results table ───────────────────────────────────────────────────── */
+function traitChips(traits, row){
+  const f = document.createDocumentFragment();
+  for (const T of TRAITS) if (traits.has(T.k)) f.appendChild(el("span","rt " + T.cls, T.label));
+  if (row && row.future) f.appendChild(el("span","rt fut","FUTURE"));
+  if (row && row.echo)   f.appendChild(el("span","rt echo","ECHO"));
+  return f;
+}
+function passesFilter(r){
+  switch (state.filter){
+    case "all":    return true;
+    case "novel":  return !r.echo;
+    case "future": return r.future;
+    case "phx": case "doc": case "pal": case "met": case "msrf":
+      return r.traits.has(state.filter);
+    default: return true;
+  }
+}
+function sortRows(rows){
+  const { key, dir } = state.sort;
+  return [...rows].sort((a,b) => {
+    let av, bv;
+    if (key === "op"){ av = a.op; bv = b.op; return av < bv ? -dir : av > bv ? dir : 0; }
+    av = key === "score" ? a.score : key === "jdn" ? a.jdn : key === "am" ? a.am : key === "lc" ? a.lc : a.Y;
+    bv = key === "score" ? b.score : key === "jdn" ? b.jdn : key === "am" ? b.am : key === "lc" ? b.lc : b.Y;
+    return (av - bv) * dir || b.score - a.score;
+  });
+}
+function renderResults(){
+  const body = $("#resBody"); body.innerHTML = "";
+  const shown = sortRows(state.rows.filter(passesFilter));
+  if (!shown.length){
+    const tr = el("tr"), td = el("td","", state.rows.length
+      ? "No projections match this filter."
+      : "Nothing cast yet — seed two anchors and press Cast the Oracle.");
+    td.colSpan = 7; td.style.cssText = "text-align:center;color:var(--faint);font-style:italic;padding:26px";
+    tr.appendChild(td); body.appendChild(tr);
+  }
+  for (const r of shown.slice(0, 400)){
+    const tr = el("tr", r.echo ? "echo" : "");
+    tr.appendChild(el("td", r.score ? "score" : "score nil", r.score ? String(r.score) : "·"));
+    tr.appendChild(el("td","date", fmtDate(r.jdn)));
+    tr.appendChild(el("td","num", String(r.am)));
+    tr.appendChild(el("td","num", String(r.lc)));
+    const opTd = el("td","op", r.op); opTd.title = r.op + "   —   " + r.pair;
+    tr.appendChild(opTd);
+    tr.appendChild(el("td","num", r.Y.toLocaleString()));
+    const rt = el("td"); rt.appendChild(traitChips(r.traits, r)); tr.appendChild(rt);
+    tr.onclick = () => sendToWheels(r.jdn);
+    body.appendChild(tr);
+  }
+  $("#resCount").textContent = shown.length + " of " + state.rows.length + " projections" +
+    (shown.length > 400 ? " · first 400 shown" : "");
+}
+
+/* ── Convergence ─────────────────────────────────────────────────────── */
+function renderConvergence(){
+  const body = $("#convBody"); body.innerHTML = "";
+  const groups = converge(state.rows, state.convTol);
+  if (!groups.length){
+    const tr = el("tr"), td = el("td","", state.rows.length
+      ? "No two operations agree inside this window — try widening it."
+      : "Cast the oracle to look for agreement.");
+    td.colSpan = 5; td.style.cssText = "text-align:center;color:var(--faint);font-style:italic;padding:26px";
+    tr.appendChild(td); body.appendChild(tr);
+  }
+  for (const gp of groups.slice(0, 120)){
+    const tr = el("tr");
+    const st = el("td");
+    const wrap = el("div","strength");
+    const bar = el("div","sbar");
+    for (let i = 0; i < 5; i++) bar.appendChild(el("i", i < gp.strength ? "" : "off"));
+    wrap.append(bar, el("span","mono", "×" + gp.strength));
+    st.appendChild(wrap); tr.appendChild(st);
+    tr.appendChild(el("td","date", fmtDate(gp.jdn)));
+    tr.appendChild(el("td","num", String(gp.am)));
+    const rt = el("td"); rt.appendChild(traitChips(gp.traits, null)); tr.appendChild(rt);
+    const opsTd = el("td","op", gp.ops.join("   ·   "));
+    opsTd.title = gp.ops.join("\n") + "\n\nfrom: " + gp.pairs.join(", ");
+    tr.appendChild(opsTd);
+    tr.onclick = () => sendToWheels(gp.jdn);
+    body.appendChild(tr);
+  }
+  $("#convCount").textContent = groups.length + " convergent date" + (groups.length === 1 ? "" : "s");
+}
+
+/* ── Wheels ──────────────────────────────────────────────────────────── */
+function sendToWheels(jdn){
+  const g = jdnTo(jdn);
+  state.dial = { y:g.y, m:g.m, d:g.d };
+  syncDialInputs(); renderWheels();
+  document.getElementById("wheels").scrollIntoView({ behavior:"smooth", block:"start" });
+  toast("Sent " + fmtDate(jdn) + " to the wheels");
+}
+function syncDialInputs(){
+  const { y, m, d } = state.dial;
+  $("#dYear").value = y <= 0 ? (1 - y) : y;
+  $("#dMon").value = m; $("#dDay").value = d;
+  $("#dSlider").value = Math.max(-2842, Math.min(2178, y));
+  const bc = y <= 0;
+  $("#dEra").querySelectorAll("button").forEach(b =>
+    b.classList.toggle("on", (b.dataset.era === "bc") === bc));
+}
+function renderWheels(){
+  const { y, m, d } = state.dial;
+  const jdn = jdnFrom(y, m, d);
+  const ledgerByJdn = new Map(LEDGER.map(e => [e.jdn, e]));
+  const tr = traitsFor(jdn, ledgerByJdn);
+  const grid = $("#wheelGrid"); grid.innerHTML = "";
+
+  const catDays = jdn - jdnFrom(CATACLYSM_Y, 2, 17);
+  const doc = LEDGER.find(e => Math.abs(e.jdn - jdn) <= 1);
+
+  const cards = [
+    { l:"Gregorian",    v:fmtDate(jdn), n:"proleptic · astronomical year " + y, hot:false },
+    { l:"Annus Mundi",  v:String(amOf(y)), n:"3894 + astronomical year", hot:tr.has("n138") },
+    { l:"Long-Count yr",v:String(lcOf(y)), n:"astronomical year + 3112", hot:false },
+    { l:"Julian day",   v:jdn.toLocaleString(), n:"šar count — a turning of the stars", hot:false },
+    { l:"Since Cataclysm", v:(catDays >= 0 ? "+" : "") + catDays.toLocaleString() + " d",
+      n:Math.abs(catDays / 365.2425).toFixed(1) + " tropical years from 2239 BC", hot:false }
+  ];
+  for (const key of ["phoenix","nemesis","ner","metonic"]){
+    const c = LATTICE[key], pos = cyclePos(y, key), on = pos === 0;
+    cards.push({
+      l:c.label + " " + c.period, v: on ? "◉ ON NODE" : pos + " / " + c.period,
+      n: on ? c.note : (c.period - pos) + " years to the next node · " + c.note,
+      hot:on, prog:pos / c.period
+    });
+  }
+  cards.push({
+    l:"Reading", v: doc ? "DOCUMENTED" : (tr.size ? tr.size + " traits" : "silent"),
+    n: doc ? doc.name : (tr.size ? [...tr].join(" · ") : "no lattice resonance at this moment"),
+    hot: !!doc
+  });
+
+  for (const c of cards){
+    const w = el("div","wheel" + (c.hot ? " hot" : ""));
+    w.append(el("div","wl", c.l), el("div","wv", c.v), el("div","wn", c.n));
+    if (c.prog != null){
+      const p = el("div","wprog"), i = el("i");
+      i.style.width = (c.prog * 100).toFixed(1) + "%";
+      p.appendChild(i); w.appendChild(p);
+    }
+    grid.appendChild(w);
+  }
+}
+
+/* ── Ledger ──────────────────────────────────────────────────────────── */
+function renderLedger(){
+  const body = $("#ledBody"); body.innerHTML = "";
+  const list = LEDGER.filter(e =>
+    state.ledFilter === "all" || e.tags.includes(state.ledFilter));
+  for (const e of list){
+    const tr = el("tr");
+    tr.appendChild(el("td","date", eraYear(e.y)));
+    tr.appendChild(el("td","num", String(e.am)));
+    tr.appendChild(el("td","num", onNode(e.y,"phoenix") ? "◉" : cyclePos(e.y,"phoenix")));
+    tr.appendChild(el("td","", e.name));
+    const act = el("td");
+    const b = el("button","seedbtn","seed"); b.type = "button";
+    b.onclick = ev => {
+      ev.stopPropagation();
+      const err = addAnchor(e.y, e.m, e.d, e.name);
+      toast(err || "Seeded " + e.name);
+    };
+    act.appendChild(b); tr.appendChild(act);
+    tr.onclick = () => sendToWheels(e.jdn);
+    body.appendChild(tr);
+  }
+  $("#ledShown").textContent = list.length + " of " + LEDGER.length + " entries";
+  $("#ledgerCount").textContent = LEDGER.length;
+}
+
+/* ── Docs tables ─────────────────────────────────────────────────────── */
+function renderDocs(){
+  const lat = $("#latticeDocs"); lat.innerHTML = "";
+  for (const k of Object.keys(LATTICE)){
+    const c = LATTICE[k], tr = el("tr");
+    tr.append(el("td","", c.label + " " + c.period),
+              el("td","", "anchored on " + eraYear(c.anchor) + " — " + c.note));
+    lat.appendChild(tr);
+  }
+  const g = $("#grammarDocs"); g.innerHTML = "";
+  const rows = [
+    ["X1, X2","the two anchor Julian day numbers of the pair"],
+    ["Y","their interval, in whole days, always positive"],
+    ["PHI · PI · E","1.61803398… · 3.14159265… · 2.71828182…"],
+    ["PHOENIX · NEMESIS · NER · METONIC","138 · 792 · 600 · 19"],
+    ["TROPICAL · SYNODIC · SAROS","365.2425 · 29.530588 · 6585.3211"],
+    ["INEX · DRACONIAN · ECM · PRECESSION","10571.95 d · 360 d · 3141 d (the π economic wave) · 25772 y"],
+    ["oph_flip(n)","reverses the decimal digits, keeping the sign"],
+    ["oph_digsum(n)","sums the decimal digits"],
+    ["oph_round · oph_floor · oph_ceil","rounding"],
+    ["oph_abs · oph_sqrt · oph_mod(a,b)","magnitude, root, floored modulo"],
+    ["oph_log(n) · oph_log(n,b)","natural log, or log to base b"],
+    ["oph_gcd(a,b) · oph_lcm(a,b)","greatest common divisor · least common multiple"],
+    ["oph_sin · oph_cos","radian trigonometry, for orbital arcs"],
+    ["+ − * / % ^","arithmetic; division and modulo by zero yield 0"]
+  ];
+  for (const [a,b] of rows){ const tr = el("tr"); tr.append(el("td","",a), el("td","",b)); g.appendChild(tr); }
+
+  const s = $("#scoreDocs"); s.innerHTML = "";
+  const head = el("tr");
+  head.append(el("td","","trait"), el("td","","Chronology / Numbers"));
+  s.appendChild(head);
+  for (const T of TRAITS){
+    const tr = el("tr");
+    tr.append(el("td","", T.label), el("td","", T.chronicon + " / " + T.ophis + " points"));
+    s.appendChild(tr);
+  }
+}
+
+/* ── CSV ─────────────────────────────────────────────────────────────
+   Two delivery paths. Self-hosted, an anchor with a blob URL is the whole
+   story. Inside the claude.ai artifact viewer that link is inert — the
+   frame is never granted a direct download — so the host's save surface
+   handles it instead. Feature-detected, so one file works in both.     */
+function buildCsv(rows){
+  const esc = v => '"' + String(v).replace(/"/g, '""') + '"';
+  const lines = [["score","date","astronomical_year","annus_mundi","long_count","operation",
+                  "Y_days","anchor_pair","traits","echo","future"].join(",")];
+  for (const r of rows){
+    lines.push([r.score, fmtDate(r.jdn), r.y, r.am, r.lc, r.op, r.Y, r.pair,
+                [...r.traits].join(" "), r.echo, r.future].map(esc).join(","));
+  }
+  return lines.join("\n");
+}
+function saveViaBlob(text, filename){
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([text], { type:"text/csv" }));
+  a.download = filename;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+async function exportCsv(){
+  const rows = sortRows(state.rows.filter(passesFilter));
+  if (!rows.length){ toast("Nothing to export yet."); return; }
+  const text = buildCsv(rows);
+
+  let host = null;
+  try {
+    if (typeof window.claude?.use === "function") host = await window.claude.use("downloads");
+  } catch { host = null; }
+
+  if (!host){ saveViaBlob(text, "natori-cast.csv"); toast("Exported " + rows.length + " rows"); return; }
+
+  try {
+    await host.save({ filename:"natori-cast.csv", data:text });
+    toast("Exported " + rows.length + " rows");
+  } catch (e){
+    // .csv sits in the extended type set and may not be enabled for this view
+    if (e && e.code === "extension_not_enabled"){
+      try {
+        await host.save({ filename:"natori-cast.txt", data:text });
+        toast("Exported " + rows.length + " rows as .txt");
+      } catch (e2){ reportSaveFailure(e2); }
+      return;
+    }
+    reportSaveFailure(e);
+  }
+}
+function reportSaveFailure(e){
+  const code = e && e.code;
+  if (code === "declined")      { toast("Export cancelled."); return; }
+  if (code === "rate_limited")  { toast("A save is already open — try again in a moment."); return; }
+  if (code === "too_large")     { toast("That cast is too large to export — narrow the filter first."); return; }
+  toast("Export unavailable in this view.");
+}
+
+/* ── Wiring ──────────────────────────────────────────────────────────── */
+function readEra(id){
+  return $(id).querySelector("button.on").dataset.era === "bc";
+}
+function bindEra(id, after){
+  $(id).querySelectorAll("button").forEach(b => {
+    b.onclick = () => {
+      $(id).querySelectorAll("button").forEach(v => v.classList.remove("on"));
+      b.classList.add("on");
+      if (after) after();
+    };
+  });
+}
+
+function doCast(){
+  if (state.anchors.length < 2){ toast("Seed at least two anchors first."); return; }
+  if (!state.ops.length){ toast("The operation pack is empty."); return; }
+  state.rows = cast(state.anchors, state.ops, state.lens);
+  renderResults(); renderConvergence();
+  toast(state.rows.length + " projections cast");
+  document.getElementById("oracle").querySelector(".resbar")
+    .scrollIntoView({ behavior:"smooth", block:"center" });
+}
+
+function init(){
+  // lens toggle
+  const lt = $("#lensTog");
+  for (const k of Object.keys(LENSES)){
+    const b = el("button","", LENSES[k].label);
+    b.type = "button";
+    if (k === state.lens) b.classList.add("on");
+    b.onclick = () => {
+      state.lens = k;
+      lt.querySelectorAll("button").forEach(v => v.classList.remove("on"));
+      b.classList.add("on");
+      $("#lensNote").textContent = LENSES[k].note;
+      for (const r of state.rows) r.score = scoreOf(r.traits, k);
+      renderResults(); renderConvergence();
+    };
+    lt.appendChild(b);
+  }
+  $("#lensNote").textContent = LENSES[state.lens].note;
+
+  // convergence tolerance
+  const ct = $("#convTol");
+  for (const [v,l] of [[0,"exact — same day"],[1,"± 1 day"],[7,"± 1 week"],[31,"± 1 month"],[366,"± 1 year"]]){
+    const o = el("option","",l); o.value = v; ct.appendChild(o);
+  }
+  ct.value = "0";
+  ct.onchange = () => { state.convTol = +ct.value; renderConvergence(); };
+
+  // anchors
+  bindEra("#aEra");
+  $("#addAnchor").onclick = () => {
+    const bc = readEra("#aEra");
+    const raw = parseInt($("#aYear").value, 10);
+    const m = parseInt($("#aMon").value, 10), d = parseInt($("#aDay").value, 10);
+    if (!raw || raw < 1 || !m || m < 1 || m > 12 || !d || d < 1 || d > 31){
+      $("#anchorErr").textContent = "Check the year, month and day."; return;
+    }
+    const y = bc ? 1 - raw : raw;
+    const err = addAnchor(y, m, d, $("#aLabel").value.trim());
+    $("#anchorErr").textContent = err || "";
+    if (!err) $("#aLabel").value = "";
+  };
+
+  // ledger seed select
+  const sel = $("#seedSel");
+  for (const e of LEDGER){
+    const o = el("option","", eraYear(e.y) + " — " + e.name);
+    o.value = e.jdn; sel.appendChild(o);
+  }
+  sel.onchange = () => {
+    const e = LEDGER.find(v => v.jdn === +sel.value);
+    if (e){ const err = addAnchor(e.y, e.m, e.d, e.name); toast(err || "Seeded " + e.name); }
+    sel.value = "";
+  };
+
+  // operations
+  loadOps(DEFAULT_OPS);
+  $("#resetOps").onclick = () => { loadOps(DEFAULT_OPS); toast("Pack reset"); };
+  $("#addOp").onclick = () => {
+    const src = $("#opInput").value.trim();
+    if (!src) return;
+    try {
+      const fn = compile(src);
+      fn({ X1:2451545, X2:2451545 + 1000, Y:1000 });   // smoke-test before accepting
+      state.ops.push({ src, fn });
+      renderOps(); $("#opInput").value = ""; $("#opErr").textContent = "";
+    } catch (e){ $("#opErr").textContent = e.message; }
+  };
+
+  // cast + filters
+  $("#castBtn").onclick = doCast;
+  $("#resFilt").querySelectorAll("button").forEach(b => {
+    b.onclick = () => {
+      state.filter = b.dataset.k;
+      $("#resFilt").querySelectorAll("button").forEach(v => v.classList.remove("on"));
+      b.classList.add("on");
+      renderResults();
+    };
+  });
+  $("#ledFilt").querySelectorAll("button").forEach(b => {
+    b.onclick = () => {
+      state.ledFilter = b.dataset.k;
+      $("#ledFilt").querySelectorAll("button").forEach(v => v.classList.remove("on"));
+      b.classList.add("on");
+      renderLedger();
+    };
+  });
+  $("#exportCsv").onclick = exportCsv;
+
+  // sortable headers — the button carries the interaction, the th carries the state
+  $("#resTable").querySelectorAll("th[data-sort]").forEach(th => {
+    th.querySelector(".sortbtn").onclick = () => {
+      const key = th.dataset.sort;
+      state.sort = state.sort.key === key
+        ? { key, dir: -state.sort.dir }
+        : { key, dir: key === "op" ? 1 : -1 };
+      $("#resTable").querySelectorAll("th[data-sort]").forEach(o => o.removeAttribute("aria-sort"));
+      th.setAttribute("aria-sort", state.sort.dir === 1 ? "ascending" : "descending");
+      renderResults();
+    };
+  });
+
+  // dial
+  bindEra("#dEra", readDial);
+  ["#dYear","#dMon","#dDay"].forEach(id => $(id).oninput = readDial);
+  $("#dSlider").oninput = () => {
+    state.dial.y = +$("#dSlider").value;
+    syncDialInputs(); renderWheels();
+  };
+  $("#dToday").onclick = () => {
+    const [y,m,d] = todayYMD();
+    state.dial = { y, m, d }; syncDialInputs(); renderWheels();
+  };
+  document.querySelectorAll("[data-jy]").forEach(b => {
+    b.onclick = () => { state.dial.y = +b.dataset.jy; syncDialInputs(); renderWheels(); };
+  });
+
+  // the moment strip
+  const [ty,tm,td] = todayYMD();
+  const tj = jdnFrom(ty,tm,td);
+  $("#mY").textContent = fmtDate(tj);
+  $("#mAM").textContent = amOf(ty);
+  $("#mLC").textContent = lcOf(ty);
+  $("#mCat").textContent = (tj - jdnFrom(CATACLYSM_Y,2,17)).toLocaleString() + " d";
+  $("#mJDN").textContent = tj.toLocaleString();
+  $("#mFlags").appendChild(traitChips(traitsFor(tj, new Map(LEDGER.map(e => [e.jdn, e]))), null));
+
+  // seed three anchors on arrival: three pairs, three distinct intervals,
+  // so the first cast shows what the instrument is actually for
+  addAnchor(CATACLYSM_Y, 2, 17, "The Flood / the Cataclysm");
+  addAnchor(1, 1, 1, "1 CE · Annus Mundi 3895");
+  addAnchor(2040, 1, 1, "Phoenix return");
+
+  state.dial = { y:ty, m:tm, d:td };
+  syncDialInputs();
+  renderWheels(); renderLedger(); renderDocs(); renderResults(); renderConvergence();
+}
+
+function readDial(){
+  const bc = readEra("#dEra");
+  const raw = parseInt($("#dYear").value, 10) || 1;
+  state.dial = {
+    y: bc ? 1 - raw : raw,
+    m: Math.min(12, Math.max(1, parseInt($("#dMon").value,10) || 1)),
+    d: Math.min(31, Math.max(1, parseInt($("#dDay").value,10) || 1))
+  };
+  $("#dSlider").value = Math.max(-2842, Math.min(2178, state.dial.y));
+  renderWheels();
+}
+
+document.addEventListener("DOMContentLoaded", init);
+</script>
+</body>
+</html>

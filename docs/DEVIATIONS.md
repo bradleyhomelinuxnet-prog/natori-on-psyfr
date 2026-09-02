@@ -149,7 +149,6 @@ Almost everything the Electron app did is now here. What is left:
 
 | Feature | Spec | Note |
 |---|---|---|
-| Offline Leaflet map for picking lat/long | `12-astronomy-data.md` | v12 shipped a 1 365-tile pyramid — 97 % of its asset payload — purely so the picker worked air-gapped. Coordinates are typed instead |
 | Skins and `EVENT_TYPE`-driven window titles | `14-domain-and-style.md` | `type` stays in the schema so a `.oph` round-trips, and is otherwise inert |
 | Headless mode and its query-parameter validation modes | `16-electron-main-process.md` | The strict/loose distinction survives in `io/oph.js`; there is no CLI to select it |
 
@@ -167,6 +166,8 @@ Places where the rewrite does something the original did not do at all.
 | **The Audit screen exists.** | v12's `renderDebugOutput` was written, commented out of the screen list, and shipped with two bugs |
 | **The activity log exists.** | The author's own `// TODO: Try to pipe these kinds of things to an activity log, ultimately. Toasts are limited.` Every toast is mirrored into it |
 | **Sunset is computed, not looked up.** ~60 lines of Meeus reduction replaces three libraries totalling ~150 KB | Only one of the three was ever reached, and the app consumed exactly one value from it. Agrees to about a minute |
+| **The coordinate picker draws what the coordinate does.** A graticule, the ±65 clamp as a shaded band, and the sunset time the point produces | v12's map showed a marker and a lat/long readout. The clamp was applied silently after the click, and the one thing a coordinate changes in this program — the hour a day begins — was not visible until the results redrew |
+| **The map has a floor zoom.** It will not zoom out past the point where the world fills the frame | Leaflet's zoom 0 put a 256 px world in the middle of an 80 %-of-window box |
 | **XLSX ships the same 8 columns as the CSV**, with a frozen bold header | v12's was an admitted 3-column proof of concept |
 | **The PDF is a real layout pass** | v12's callback state machine drifted 40 pt per page and could emit `<table width="NaN">` |
 | **An empty result is not an error.** A dedicated panel with a *Loosen filters* shortcut | v12 rendered it under a header reading *Errors* in red. An over-tight filter is not an error |
@@ -176,8 +177,16 @@ Places where the rewrite does something the original did not do at all.
 
 ## 12. Known reductions
 
-One place where this rebuild is *narrower* than the design, recorded so it is not mistaken for
-an oversight.
+Two places where this rebuild is *narrower* than the original, recorded so neither is mistaken
+for an oversight.
+
+**The map pyramid is trimmed.** The original shipped all 1 365 tiles of a zoom 0–5 world. This
+ships 725 of them — 6.40 MiB rather than 9.5 — because the picker clamps to ±65° latitude
+(`LAT_LIMIT`, which is where the original set its own Leaflet `maxBounds`) and the polar rows at
+zoom 4 and 5 therefore cannot be brought on screen. The tiles that *are* here are the original's
+own bytes, unmodified; only their extension changes, from a `.png` that was always a JPEG to
+`.jpg`. `tests/map.test.mjs` walks every tile the picker can request and fails if one is missing.
+The reasoning and the row table are in `assets/map/README.md`.
 
 **The MSRF probes one distance per projection, not three.** The author's flow chart (`[CC]`) says
 the filter measures "the distance in axial rotations between all 42 projected dates back to A, B

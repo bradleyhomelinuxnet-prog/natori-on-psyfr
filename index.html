@@ -34,6 +34,7 @@
         <button id="zoomReset" type="button" aria-label="Default text size" title="Default text size">A</button>
         <button id="zoomUp" type="button" aria-label="Larger text" title="Larger text">A+</button>
       </div>
+      <a class="btn" href="manual.html" title="Plain-English: use it on your own dates">Manual</a>
       <a class="btn" href="field-guide.html" title="A ten-minute tour">Guide</a>
       <button id="themeBtn" class="btn" type="button" aria-label="Change theme">☾ Dark</button>
       <span id="savedBadge" class="savedbadge" role="status">Saved</span>
@@ -60,7 +61,11 @@
         <section class="panel chartpanel">
           <header>
             <h3>Timeline</h3>
-            <div class="spacer"><span class="count" id="chartHint">hover an arc to measure it</span></div>
+            <div class="spacer">
+              <span class="count" id="chartHint">hover an arc to measure it · wheel to zoom</span>
+              <button id="recenterChart" class="btn sm" type="button"
+                      title="Back to the whole span (or double-click the chart)" disabled>Recentre</button>
+            </div>
           </header>
           <canvas id="timeline" role="img"
                   aria-label="Timeline of projections: each arc runs from a control to the date it projects."></canvas>

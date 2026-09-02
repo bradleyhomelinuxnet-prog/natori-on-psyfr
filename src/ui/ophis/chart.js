@@ -17,10 +17,16 @@
  *     several operations reads as several arcs.
  *   - The moon and eclipse rows were eight PNGs and four more. They are drawn,
  *     so they scale, follow the theme, and cost nothing to load.
+ *
+ * The one thing kept exactly as it was: the viewport. Wheel to zoom, drag to
+ * pan, double-click to recentre, and the window persists to `chart_x_min` /
+ * `chart_x_max` on the event, where 0 means auto-fit — the original's own
+ * sentinel and its own four schema fields. See `docs/reverse/10-view-chart.md`
+ * §7. Zoom is x-only here; §12 of `docs/DEVIATIONS.md` says why.
  */
 
 import { el } from '../dom.js';
-import { state, currentEvent } from '../../state/ophis-store.js';
+import { state, currentEvent, markDirty } from '../../state/ophis-store.js';
 import { MILLIS_PER_DAY, EVENT_SCOPE } from '../../core/ophis/constants.js';
 import {
   toJD, lunarPhase, phaseGapDays, PHASE_POINTS as PHASES,
@@ -36,6 +42,12 @@ import { CHART_OPTIONS } from '../../state/iso-event.js';
 /* ------------------------------------------------------------------ layout -- */
 
 const PAD = { top: 18, right: 26, bottom: 16, left: 26 };
+
+/** Closest the viewport may be zoomed, so an arc cannot fill the screen alone. */
+const MIN_SPAN_MS = 2 * MILLIS_PER_DAY;
+
+/** Wheel sensitivity. The original ran chartjs-plugin-zoom at `speed: 0.05`. */
+const WHEEL_SPEED = 0.05;
 /** Fixed-pixel furniture below the axis, as in the original. */
 const ROW = { label: 34, moon: 66, eclipse: 94 };
 
@@ -100,6 +112,10 @@ export function createChart(canvas) {
   let hovered = null;
   /** Where the axis was drawn. The hit test must measure from the same line. */
   let axisBaseline = 0;
+  /** The data extent of the last render — what "recentred" means. */
+  let fit = null;
+  /** Set while a pan is in flight, so a drag does not read as a hover. */
+  let panning = null;
 
   function build() {
     const r = state.results;
@@ -126,6 +142,41 @@ export function createChart(canvas) {
     return { results, anchors, min, max };
   }
 
+  /* ---- the viewport ----
+     `chart_x_min` / `chart_x_max` are the original's fields and carry the
+     original's sentinel: 0 means auto-fit, so a saved document that was never
+     zoomed opens fitted rather than pinned to 1970. */
+
+  /** The window actually drawn: the saved one if there is one, else the data. */
+  function viewport(fit) {
+    const ev = currentEvent();
+    const lo = Number(ev.chart_x_min) || 0;
+    const hi = Number(ev.chart_x_max) || 0;
+    if (!lo && !hi) return { min: fit.min, max: fit.max, zoomed: false };
+    // A window saved against different anchors can fall outside the new data.
+    // Clamp it back rather than drawing an empty chart.
+    return clampView({ min: lo || fit.min, max: hi || fit.max }, fit);
+  }
+
+  /** Keep a window inside the data, no narrower than MIN_SPAN_MS. */
+  function clampView(view, fit) {
+    const full = fit.max - fit.min;
+    let span = Math.min(full, Math.max(MIN_SPAN_MS, view.max - view.min));
+    let min = Math.max(fit.min, Math.min(fit.max - span, view.min));
+    return { min, max: min + span, zoomed: span < full - 1 };
+  }
+
+  /** Write the window back to the event, collapsing a full view to the sentinel. */
+  function saveView(view, fit) {
+    const ev = currentEvent();
+    const atFit = !view || (view.min <= fit.min + 1 && view.max >= fit.max - 1);
+    const next = atFit ? [0, 0] : [Math.round(view.min), Math.round(view.max)];
+    if (ev.chart_x_min === next[0] && ev.chart_x_max === next[1]) return;
+    [ev.chart_x_min, ev.chart_x_max] = next;
+    // A viewport is not an input to the engine, so this must never recalculate.
+    markDirty();
+  }
+
   function render() {
     const dpr = Math.min(devicePixelRatio || 1, 2);
     const cssW = canvas.clientWidth || 800;
@@ -147,7 +198,9 @@ export function createChart(canvas) {
       return;
     }
 
-    const { results, anchors, min, max } = data;
+    const { results, anchors } = data;
+    fit = { min: data.min, max: data.max };
+    const { min, max } = viewport(fit);
     const plotW = cssW - PAD.left - PAD.right;
 
     // Reserve the furniture band below the axis. The axis sits high enough that
@@ -177,7 +230,14 @@ export function createChart(canvas) {
     // Draw the strongest arcs last so they land on top of the crowd.
     arcs.sort((a, b) => a.z.hit_count - b.z.hit_count);
 
-    /* ---- arcs ---- */
+    /* ---- arcs ----
+       Zoomed in, most arcs start or end off-screen. Clipping to the canvas
+       keeps their strokes from being drawn into the furniture band below the
+       axis, where the hit test would still find them. */
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(0, 0, cssW, axisY);
+    ctx.clip();
     for (const a of arcs) {
       const rx = Math.abs(a.x1 - a.x0) / 2;
       const cx = (a.x0 + a.x1) / 2;
@@ -218,6 +278,7 @@ export function createChart(canvas) {
       }
       ctx.globalAlpha = 1;
     }
+    ctx.restore();
 
     /* ---- axis ---- */
     ctx.strokeStyle = cssVar('--chart-axis', 'rgba(255,255,255,.5)');
@@ -415,7 +476,73 @@ export function createChart(canvas) {
 
   /* ---- interaction ---- */
 
+  /** Time under a pixel, from the window the last render actually drew. */
+  function timeAt(px) {
+    if (!fit || !scaleX) return null;
+    const view = viewport(fit);
+    const plotW = (canvas.clientWidth || 800) - PAD.left - PAD.right;
+    return view.min + ((px - PAD.left) / plotW) * (view.max - view.min);
+  }
+
+  /** Announce a viewport change so the Recentre button can follow it. */
+  function viewChanged() {
+    document.dispatchEvent(new CustomEvent('ophis:chartview'));
+  }
+
+  canvas.addEventListener('wheel', (e) => {
+    if (!fit) return;
+    e.preventDefault();
+    const rect = canvas.getBoundingClientRect();
+    const anchorMs = timeAt(e.clientX - rect.left);
+    if (anchorMs === null) return;
+
+    const view = viewport(fit);
+    const factor = Math.exp(Math.sign(e.deltaY) * WHEEL_SPEED * 4);
+    const span = (view.max - view.min) * factor;
+    // Hold the instant under the cursor still, as the original's plugin did.
+    const t = (anchorMs - view.min) / (view.max - view.min || 1);
+    const next = clampView({ min: anchorMs - t * span, max: anchorMs + (1 - t) * span }, fit);
+
+    saveView(next, fit);
+    render();
+    viewChanged();
+  }, { passive: false });
+
+  canvas.addEventListener('pointerdown', (e) => {
+    if (!fit) return;
+    const view = viewport(fit);
+    if (!view.zoomed) return; // nothing to pan while the whole span is on screen
+    panning = { x: e.clientX, min: view.min, max: view.max };
+    canvas.setPointerCapture(e.pointerId);
+    canvas.dataset.panning = 'true';
+  });
+
+  const endPan = (e) => {
+    if (!panning) return;
+    panning = null;
+    delete canvas.dataset.panning;
+    canvas.releasePointerCapture?.(e.pointerId);
+  };
+  canvas.addEventListener('pointerup', endPan);
+  canvas.addEventListener('pointercancel', endPan);
+
+  canvas.addEventListener('dblclick', () => {
+    if (!fit) return;
+    saveView(null, fit);
+    render();
+    viewChanged();
+  });
+
   canvas.addEventListener('mousemove', (e) => {
+    if (panning) {
+      const plotW = (canvas.clientWidth || 800) - PAD.left - PAD.right;
+      const perPx = (panning.max - panning.min) / plotW;
+      const shift = (e.clientX - panning.x) * perPx;
+      saveView(clampView({ min: panning.min - shift, max: panning.max - shift }, fit), fit);
+      render();
+      viewChanged();
+      return;
+    }
     if (!arcs.length) return;
     const rect = canvas.getBoundingClientRect();
     const x = e.clientX - rect.left;
@@ -466,7 +593,21 @@ export function createChart(canvas) {
     render();
   });
 
-  return { render };
+  return {
+    render,
+    /** Back to auto-fit. The original called this "recenter". */
+    recenter() {
+      if (!fit) return;
+      saveView(null, fit);
+      render();
+      viewChanged();
+    },
+    /** Whether anything would change if `recenter()` were called. */
+    isZoomed() {
+      const ev = currentEvent();
+      return Boolean(Number(ev.chart_x_min) || Number(ev.chart_x_max));
+    },
+  };
 }
 
 function wantsEclipse(ev, kind, type) {

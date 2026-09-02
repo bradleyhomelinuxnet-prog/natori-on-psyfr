@@ -19,3 +19,9 @@ npm-debug.log*
 # Scratch fixtures written while testing
 __tmp-*
 *.tmp
+
+# Higgsfield companion skills, installed by `npx skills add higgsfield-ai/skills`.
+# Tooling for the session, not part of the instrument.
+.agents/
+.claude/
+skills-lock.json
