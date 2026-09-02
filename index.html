@@ -60,7 +60,11 @@
         <section class="panel chartpanel">
           <header>
             <h3>Timeline</h3>
-            <div class="spacer"><span class="count" id="chartHint">hover an arc to measure it</span></div>
+            <div class="spacer">
+              <span class="count" id="chartHint">hover an arc to measure it · wheel to zoom</span>
+              <button id="recenterChart" class="btn sm" type="button"
+                      title="Back to the whole span (or double-click the chart)" disabled>Recentre</button>
+            </div>
           </header>
           <canvas id="timeline" role="img"
                   aria-label="Timeline of projections: each arc runs from a control to the date it projects."></canvas>

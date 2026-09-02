@@ -24,7 +24,7 @@ npm run serve          # python -m http.server 8777
 Then open <http://localhost:8777/>. ES modules need `http://`, not `file://`.
 
 ```bash
-npm test               # 94 fixtures, no dependencies
+npm test               # 115 fixtures, no dependencies
 ```
 
 ---
@@ -70,6 +70,7 @@ src/
       filters.js        the nine predicates
       sort.js           the five sort types, plus the one v12 promised
       run.js            runOphis — the pipeline
+      mercator.js       the coordinate picker's projection
     equation/           tokeniser -> parser -> AST evaluator. No eval.
     eclipses.js         delta-decoded eclipse tables
   data/                 THE MOD SURFACE — MSRF numbers, operation packs
@@ -77,6 +78,7 @@ src/
   ui/ophis/             one file per surface; DOM only
   io/                   .oph documents, CSV / XLSX / PDF, a tiny zip writer
   styles/               ophis-tokens.css is the whole palette
+assets/map/             725 offline map tiles — the original's own, trimmed
 tests/                  parity fixtures taken from the original engine
 docs/reverse/           the full reverse-engineering study, 23 specs
 ```
@@ -117,6 +119,10 @@ implementation:
   evaluator chain bit-identically, 400 garbage strings that may only compile or raise, and the
   scoring identities held over 300 random match sets.
 
+`tests/map.test.mjs` adds the coordinate picker: the Mercator round trip at every zoom, the
+round-clamp-round the original applied to a click, and a walk over every map tile the picker can
+reach, which fails if one is not in `assets/map/`.
+
 What is deliberately *different* — no `eval`, no arbitrary-path writes, no sign-in theatre, and
 "today" read from the clock rather than baked in — is listed in
 **[docs/DEVIATIONS.md](docs/DEVIATIONS.md)**.
@@ -149,7 +155,14 @@ Breaking It.*
 
 ## Also here
 
-`chronicon.html` is a separate instrument — the Chronicon calendrics engine, which crosses the
-Ophis grammar with the Breshears cycle lattice. It is the owner's own addition and is **not** part
-of Ophis; it is kept because it works and is linked from nowhere in the Ophis app.
+Three separate instruments live beside the Ophis app. None of them is part of it, none shares its
+engine beyond the equation grammar, and none is linked from inside it.
+
+| File | What it is |
+|---|---|
+| `chronicon.html` | The Chronicon calendrics engine — the Ophis grammar crossed with the Breshears cycle lattice |
+| `natori-on-cyphr.html` | The Cyphr build of the same idea: a four-cycle lattice (Phoenix 138 · Nemesis 792 · NER 600 · Metonic 19), two switchable scoring lenses, a convergence table and the wheels. Carries no eclipse tables by design |
+| `PSYFR1.html` / `PSYFR2.html` | The preserved single-file engine and field guide the Chronicon line grew from |
+
+They are the owner's own additions and are kept because they work.
 `PSYFR1.html` and `PSYFR2.html` are its preserved single-file originals.

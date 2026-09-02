@@ -38,6 +38,15 @@ function main() {
   const chart = createChart($('timeline'));
   $('chartLegend').append(chartLegend());
 
+  // The Recentre button mirrors the chart's viewport; the chart announces a
+  // change rather than the button polling for one.
+  const recenterBtn = $('recenterChart');
+  const syncRecenter = () => {
+    recenterBtn.disabled = !chart.isZoomed();
+  };
+  recenterBtn.onclick = () => chart.recenter();
+  document.addEventListener('ophis:chartview', syncRecenter);
+
   // Restore what was on screen last time; seed a worked example on a first run,
   // so the app is never a blank page that gives no clue what it is for.
   if (!restoreDocument()) seedExample();
@@ -50,6 +59,7 @@ function main() {
       safely('columns', () => renderColumnToggles($('columnToggles')));
       safely('results', () => renderResults($('resultsHost')));
       safely('chart', () => chart.render());
+      syncRecenter();
     },
     operations: () => renderOperations($('operationsHost')),
     settings: () => renderSettings($('settingsHost')),

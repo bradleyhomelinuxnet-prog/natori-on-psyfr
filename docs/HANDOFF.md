@@ -38,14 +38,14 @@ recoverable. Its header says so. Everything else derives from the original or fr
 from-spec reference in `docs/reverse/fixtures/`.
 
 ```bash
-npm test        # 94 assertions, no dependencies, ~2s
+npm test        # 115 assertions, no dependencies, ~2s
 ```
 
 ---
 
 ## 3. Current state
 
-Everything the original did, except one thing.
+Everything the original did.
 
 | Area | State |
 |---|---|
@@ -58,7 +58,7 @@ Everything the original did, except one thing.
 | Working surface, results table, timeline | Complete |
 | Operations editor, settings, transfer, import/export, audit | Complete |
 | Export: CSV, XLSX, PDF | Complete, all three verified by real readers |
-| Offline map tile pyramid | **Not implemented** — coordinates are typed, not clicked |
+| Offline map tile pyramid | Complete — the picker is in the Scope & Location panel, and the tiles are the original's own |
 
 Verification, in brief:
 
@@ -81,6 +81,7 @@ Verification, in brief:
 ```
 index.html            the app          field-guide.html   the tour
 whitepaper.html       the study        chronicon.html     a SEPARATE instrument (see §8)
+natori-on-cyphr.html  ALSO separate    PSYFR1/2.html      the preserved originals
 
 src/core/ophis/       THE ENGINE — pure, no DOM, no clock, runs headless under node
   run.js              the pipeline: guards, pairs, projection, bucketing, score, filter, sort
@@ -90,11 +91,13 @@ src/core/ophis/       THE ENGINE — pure, no DOM, no clock, runs headless under
   filters.js sort.js numeric.js moon.js sun.js constants.js
 
 src/core/equation/    tokeniser -> parser -> AST evaluator. NO eval, NO new Function.
+src/core/ophis/mercator.js  the coordinate picker's projection — pure, tested headless
 src/data/             THE MOD SURFACE — resonance numbers, operation packs
 src/state/            the IsoEvent model, the store
-src/ui/ophis/         one file per surface; DOM only
+src/ui/ophis/         one file per surface; DOM only (map.js is the picker)
 src/io/               .oph, CSV/XLSX/PDF, a ~120-line zip + deflate writer
 src/styles/           ophis-tokens.css is the entire palette
+assets/map/           725 offline map tiles, and a README saying which are missing
 
 tests/                fixtures taken from the ORIGINAL, not from this code
 docs/reverse/         23 subsystem specifications — the teardown
@@ -151,26 +154,28 @@ another, add it to this table and to `DEVIATIONS.md`, with a fixture.
 
 ## 7. Open work
 
-Nothing is blocking. In rough order of value:
+Nothing is blocking, and nothing is left that can be done without the original running.
 
-**1 — The offline map.** The only capability from the original that is absent. Worth it only if
-someone actually works in `HH_MM` scope at coordinates they cannot type.
+**1 — An `HH_MM` fixture from the original.** The scope carries an end-to-end regression pin, but
+it is pinned to this implementation. If the original can ever be run again, capture its output for
+the same three controls and promote the pin to a parity fixture.
 
-**2 — An `HH_MM` fixture from the original.** The scope now carries an end-to-end regression pin,
-but it is pinned to this implementation. If the original can ever be run again, capture its output
-for the same three controls and promote the pin to a parity fixture.
-
-**3 — Differential property testing against the original.** The seeded property suite proves the
+**2 — Differential property testing against the original.** The seeded property suite proves the
 printer → parser → evaluator chain self-consistent; running the same random corpus through the
 original's engine would upgrade that to a differential claim. Needs the original runnable.
 
 ### Done since the first handoff
 
+- **The offline map is in** — the last capability the original had and this did not. `◍ Pick on
+  map` in the Scope & Location panel opens a pan-and-zoom picker over the original's own tiles,
+  with no Leaflet: `src/core/ophis/mercator.js` is the projection, `src/ui/ophis/map.js` is the
+  surface, `assets/map/` is the pyramid, and `tests/map.test.mjs` pins both the arithmetic and the
+  presence of every tile the picker can reach.
 - **Protocol Prime is in the app** — the `☉ Today · Protocol Prime` button in the X-Dates panel
   adds the projection date as a control, refuses a duplicate, and follows the Current-date
   override. The guide, the About screen and the button's own tooltip explain it.
-- The full 114-row golden, the property suite, and the `HH:MM` pin (items 3 and 4 above, as far
-  as they can go without the original).
+- The full 114-row golden, the property suite, and the `HH:MM` pin — as far as they can go
+  without the original.
 
 ### Explicitly decided against
 
@@ -191,19 +196,23 @@ Ophis equation grammar with a cycle lattice of his own. It has its own data file
 (`src/data/packs.js`, `msrf.js`, `ledger.js`, `lattice.js`, `src/core/scoring/`,
 `src/styles/tokens.css`) and shares only the equation engine. Editing an Ophis file will not change
 it, and editing a chronicon file will not change Ophis. `PSYFR1.html` and `PSYFR2.html` are its
-preserved single-file originals. **Do not merge the two.**
+preserved single-file originals, and `natori-on-cyphr.html` is a later single-file build of the
+same line — wholly self-contained, sharing not one byte with `src/`. **Do not merge any of them
+into Ophis.**
 
 **The reference material is not in this repository.** The `.exe` files, the unpacked asar, the
 author's PDFs and the workbook live on the owner's machine. `docs/reverse/` is the distillation of
 them, and it is detailed enough to rebuild from — that is what it was written for. If you need
-something the specs do not carry, ask the owner rather than guessing.
+something the specs do not carry, ask the owner rather than guessing. The one exception is
+`assets/map/`: those tiles are the original's, copied byte for byte, because the picker cannot be
+rebuilt from a description of a basemap.
 
 ---
 
 ## 9. Before you push
 
 ```bash
-npm test                                    # 84 assertions must pass
+npm test                                    # 115 assertions must pass
 node tools/md-to-html.mjs docs/*.md --out-dir docs/html   # if you touched a doc
 python -m http.server 8777                  # then drive the app at localhost:8777
 ```

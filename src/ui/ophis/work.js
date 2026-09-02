@@ -18,9 +18,12 @@ import {
 } from '../../state/ophis-store.js';
 import { makeXDate, parseXDate, CHART_OPTIONS, clampDayStart } from '../../state/iso-event.js';
 import { FILTER_ROWS, FILTER_DEFAULTS } from '../../core/ophis/filters.js';
-import { EVENT_SCOPE, MILLIS_PER_DAY } from '../../core/ophis/constants.js';
+import { EVENT_SCOPE, MILLIS_PER_DAY, LAT_LIMIT } from '../../core/ophis/constants.js';
 import { fmtDate, toInstant } from '../../core/ophis/calendar.js';
+import { sunsetMs, roundToNearestMinute } from '../../core/ophis/sun.js';
+import { pickCoordinate } from '../../core/ophis/mercator.js';
 import { toast, confirmDialog } from './shell.js';
+import { openMapPicker } from './map.js';
 
 /** A panel with a header cap and a body. */
 function panel(title, { count, actions = [], body }) {
@@ -407,6 +410,80 @@ function chartPanel() {
 
 /* ------------------------------------------------------------------- scope -- */
 
+/**
+ * The date the sunset preview is computed for: the event's first enabled
+ * anchor, because that is a date the reader has actually reasoned about. An
+ * event with no anchors yet falls back to the current date, which is the same
+ * date the projection would be measured against.
+ */
+function previewInstant(ev) {
+  const anchor = ev.x_dates.find((x) => x.enabled) ?? ev.x_dates[0];
+  return anchor ? toInstant(anchor, ev) : now();
+}
+
+/** Sunset at the event's coordinates, or why there is not one. */
+function sunsetPreview(ev) {
+  if (Math.abs(ev.lat) > LAT_LIMIT) return 'latitude outside the ±65 band';
+  const ms = roundToNearestMinute(sunsetMs(previewInstant(ev), ev.lat, ev.long));
+  if (!Number.isFinite(ms)) return 'no sunset there on that date';
+  const d = new Date(ms);
+  const p = (n) => String(n).padStart(2, '0');
+  return `days begin at ${p(d.getUTCHours())}:${p(d.getUTCMinutes())} UTC on ${fmtDate(previewInstant(ev))}`;
+}
+
+/**
+ * Latitude, longitude, and the map that fills them in.
+ *
+ * The typed inputs stay authoritative — the picker is an assist, not a
+ * replacement — and both routes land on the same `pickCoordinate`, so a value
+ * clicked and a value typed round identically.
+ */
+function locationFields(ev) {
+  const commit = (lat, long) => {
+    const p = pickCoordinate(lat, long);
+    ev.lat = p.lat;
+    ev.long = p.long;
+    touch();
+  };
+
+  return el('div', { style: 'margin-top:12px' }, [
+    el('div.formrow', {}, [
+      el('div.field', {}, [
+        el('label', { text: 'Latitude' }),
+        el('input', {
+          type: 'number', step: '0.1', min: '-65', max: '65', value: String(ev.lat),
+          onchange: (e) => commit(Number(e.target.value) || 0, ev.long),
+        }),
+      ]),
+      el('div.field', {}, [
+        el('label', { text: 'Longitude' }),
+        el('input', {
+          type: 'number', step: '0.1', min: '-180', max: '180', value: String(ev.long),
+          onchange: (e) => commit(ev.lat, Number(e.target.value) || 0),
+        }),
+      ]),
+    ]),
+
+    el('div.row', { style: 'margin-top:10px' }, [
+      el('button.btn.sm', {
+        type: 'button',
+        title: 'Pick the coordinates off the offline map',
+        text: '◍ Pick on map',
+        onclick: async () => {
+          const picked = await openMapPicker({
+            lat: ev.lat, long: ev.long, whenMs: previewInstant(ev),
+          });
+          if (!picked) return;
+          commit(picked.lat, picked.long);
+          toast(`New coords: lat=${picked.lat}  long=${picked.long}`);
+        },
+      }),
+      el('div.grow', {}),
+      el('span.note', { style: 'margin:0;font-size:11px', text: sunsetPreview(ev) }),
+    ]),
+  ]);
+}
+
 function scopePanel() {
   const ev = currentEvent();
   const hhmm = ev.scope === EVENT_SCOPE.HH_MM;
@@ -440,22 +517,7 @@ function scopePanel() {
       ]),
 
       hhmm
-        ? el('div.formrow', { style: 'margin-top:12px' }, [
-            el('div.field', {}, [
-              el('label', { text: 'Latitude' }),
-              el('input', {
-                type: 'number', step: '0.1', min: '-65', max: '65', value: String(ev.lat),
-                onchange: (e) => { ev.lat = Number(e.target.value) || 0; touch(); },
-              }),
-            ]),
-            el('div.field', {}, [
-              el('label', { text: 'Longitude' }),
-              el('input', {
-                type: 'number', step: '0.1', min: '-180', max: '180', value: String(ev.long),
-                onchange: (e) => { ev.long = Number(e.target.value) || 0; touch(); },
-              }),
-            ]),
-          ])
+        ? locationFields(ev)
         : el('div.field', { style: 'margin-top:12px' }, [
             el('label', { text: 'Day begins at' }),
             el('input', {
