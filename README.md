@@ -148,6 +148,10 @@ documents against the shipped behaviour, and is where the findings live: Protoco
 operations whose class the author's notes contradict, the four MSRF numbers where the author's
 workbook and the binary disagree, and the 2556-versus-2559 day window.
 
+**[docs/MANUAL.md](docs/MANUAL.md)** — *Your Own Dates.* A plain-English manual for anyone who
+wants to put their own significant dates in and read the score honestly. No maths assumed; the
+worked example and the score distribution in it are computed by the engine, not described.
+
 **[docs/WHITEPAPER.md](docs/WHITEPAPER.md)** — *Rebuilding a Closed Prediction Engine Without
 Breaking It.*
 
