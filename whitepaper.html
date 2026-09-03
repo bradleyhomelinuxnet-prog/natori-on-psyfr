@@ -357,8 +357,8 @@ rewrite  :  1b45516616a067b07ba892c31331e863cda9bd54f60a99ea0013df965108821a</co
 <h2 id="appendix-b-reproducing-the-verification">Appendix B — Reproducing the verification</h2>
 <pre data-lang="bash"><code>git clone https://github.com/bradleyhomelinuxnet-prog/natori-on-psyfr
 cd natori-on-psyfr
-npm test                               # 94 assertions, no dependencies
-python -m http.server 8777             # then open http://localhost:8777/</code></pre>
+npm test                               # 115 assertions, no dependencies
+npm run serve                          # then open http://127.0.0.1:8777/</code></pre>
 <p>The teardown itself is reproducible from the original <code>.exe</code> using the commands in §3.1. The extraction tooling is in <code>tools/</code>; the subsystem specifications are in <code>docs/reverse/</code>.</p>
 <hr>
 <p><em>Prepared as a technical study of the author's own software. NATORI-ON-PSYFR is a worldbuilding and study instrument rendering the Archaix thesis of Jason Breshears as predictive calendrics, presented as that thesis and not as established science. Not affiliated with Archaix.</em></p>

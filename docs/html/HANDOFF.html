@@ -127,7 +127,7 @@ assets/map/           725 offline map tiles, and a README saying which are missi
 
 tests/                fixtures taken from the ORIGINAL, not from this code
 docs/reverse/         23 subsystem specifications — the teardown
-tools/                extraction and doc-rendering helpers</code></pre>
+tools/                the dev server, the .exe extraction, the doc renderer</code></pre>
 <p>Dependencies point one way: <code>ui</code> may import <code>core</code>, <code>state</code>, <code>io</code>; <code>core</code> may import <code>data</code>; <strong>nothing in <code>core</code> may import from <code>ui</code>.</strong> That is not style — it is why the engine runs headless in the test suite.</p>
 <hr>
 <h2 id="5-read-these-in-this-order">5. Read these, in this order</h2>
@@ -154,8 +154,9 @@ tools/                extraction and doc-rendering helpers</code></pre>
 <hr>
 <h2 id="9-before-you-push">9. Before you push</h2>
 <pre data-lang="bash"><code>npm test                                    # 115 assertions must pass
-node tools/md-to-html.mjs docs/*.md --out-dir docs/html   # if you touched a doc
-python -m http.server 8777                  # then drive the app at localhost:8777</code></pre>
+npm run docs                                # if you touched a doc — it also checks every link
+npm run serve                               # then drive the app at 127.0.0.1:8777
+npm run test:serve                          # only if you touched tools/serve.mjs</code></pre>
 <p>CI additionally enforces two properties. Both are load-bearing and neither has an exception:</p>
 <ul><li><strong>No <code>eval</code>, no <code>new Function</code>.</strong> The original compiled operation strings — which arrive from files — with <code>new Function()</code>, and validated a <em>different</em> string than the one it compiled. The rewrite cannot regress into that defect because it no longer generates code.</li><li><strong>No <code>innerHTML</code> or any markup sink in <code>src/</code>.</strong> User text — an event name, a note, an equation — goes in as a text node. <code>src/ui/dom.js</code> offers no way to set markup at all.</li></ul>
 <p>And drive the actual app before pushing a UI change. Three real defects in this project were invisible in the source and obvious the moment someone moved a pointer over the chart.</p>

@@ -88,10 +88,17 @@
 <p>Nothing leaves the page. There is no network call, no sign-in, and no dependency.</p>
 <hr>
 <h2 id="running-it">Running it</h2>
-<p>Static files — any web server will do:</p>
-<pre data-lang="bash"><code>npm run serve          # python -m http.server 8777</code></pre>
-<p>Then open &lt;http://localhost:8777/&gt;. ES modules need <code>http://</code>, not <code>file://</code>.</p>
-<pre data-lang="bash"><code>npm test               # 115 fixtures, no dependencies</code></pre>
+<pre data-lang="bash"><code>git clone https://github.com/bradleyhomelinuxnet-prog/natori-on-psyfr
+cd natori-on-psyfr
+npm run serve            # then open http://127.0.0.1:8777/</code></pre>
+<p>That is the whole setup. There is no <code>npm install</code> step — the app has no dependencies and neither does the suite. <code>package.json</code> lists two devDependencies, and they exist only to unpack the original <code>.exe</code> inside <code>tools/</code>. Install them if you are redoing the teardown; skip them otherwise.</p>
+<p>ES modules will not load over <code>file://</code>, so double-clicking <code>index.html</code> gives you a blank page. It has to come off a server. Any server will do — <code>npm run serve</code> is one that ships with the repository, dependency-free, so the instruction above works on a machine with no registry and no <code>python</code> on PATH:</p>
+<pre data-lang="bash"><code>npm run serve -- --port 9000      # if 8777 is taken
+npm run serve -- --host 0.0.0.0   # if you are browsing in from another machine
+npm run serve -- --help           # every flag
+python3 -m http.server 8777       # equally fine, if you would rather</code></pre>
+<pre data-lang="bash"><code>npm test                 # 115 fixtures pinning the engine against the original
+npm run test:serve       # the server above, separately — it is not part of the contract</code></pre>
 <hr>
 <h2 id="what-it-does">What it does</h2>
 <ol><li><strong>Controls.</strong> Enter the X-Dates — the past occurrences. Every unordered <em>pair</em> gives one <strong>Y</strong>, the distance between them in whole days.</li><li><strong>Cast.</strong> Each of the sixteen operations turns a Y into a day-offset and projects a <strong>Z-Date</strong> from one of the two controls in that pair. Five controls give ten pairs and 160 projections.</li><li><strong>Resonate.</strong> Every projection's distance from its anchor is probed against the <strong>MSRF</strong> — the Multidimensional Spatial Recognition Filters, 390 numbers in three tiers.</li><li><strong>Score.</strong> Each operation contributes its own weight. Each MSRF match contributes its tier's points — except the strongest, which <em>multiplies</em> the total instead.</li><li><strong>Filter and read.</strong> Eight filters cut the noise; the table and the timeline show what is left.</li></ol>

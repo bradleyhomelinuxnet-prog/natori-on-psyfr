@@ -12,7 +12,8 @@
   },
   "scripts": {
     "test": "node --test tests/parity.test.mjs tests/vortex.test.mjs tests/ophis.test.mjs tests/golden.test.mjs tests/property.test.mjs tests/map.test.mjs",
-    "serve": "python -m http.server 8777",
+    "serve": "node tools/serve.mjs",
+    "test:serve": "node --test tests/serve.test.mjs",
     "extract-data": "node tools/extract-data.mjs",
     "build-map-tiles": "python3 tools/build-map-tiles.py",
     "docs": "node tools/md-to-html.mjs docs/WHITEPAPER.md --out whitepaper.html && node tools/md-to-html.mjs docs/MANUAL.md --out manual.html && node tools/md-to-html.mjs docs/HANDOFF.md docs/DEVIATIONS.md docs/MODDING.md docs/DOMAIN.md docs/VORTEX.md docs/reverse/00-BUILD-SPEC.md docs/reverse/22-author-source-documents.md README.md --out-dir docs/html && node tools/check-links.mjs"

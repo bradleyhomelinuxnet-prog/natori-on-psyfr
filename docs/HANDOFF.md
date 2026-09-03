@@ -101,7 +101,7 @@ assets/map/           725 offline map tiles, and a README saying which are missi
 
 tests/                fixtures taken from the ORIGINAL, not from this code
 docs/reverse/         23 subsystem specifications — the teardown
-tools/                extraction and doc-rendering helpers
+tools/                the dev server, the .exe extraction, the doc renderer
 ```
 
 Dependencies point one way: `ui` may import `core`, `state`, `io`; `core` may import `data`;
@@ -213,8 +213,9 @@ rebuilt from a description of a basemap.
 
 ```bash
 npm test                                    # 115 assertions must pass
-node tools/md-to-html.mjs docs/*.md --out-dir docs/html   # if you touched a doc
-python -m http.server 8777                  # then drive the app at localhost:8777
+npm run docs                                # if you touched a doc — it also checks every link
+npm run serve                               # then drive the app at 127.0.0.1:8777
+npm run test:serve                          # only if you touched tools/serve.mjs
 ```
 
 CI additionally enforces two properties. Both are load-bearing and neither has an exception:

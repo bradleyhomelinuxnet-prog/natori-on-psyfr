@@ -15,16 +15,31 @@ Nothing leaves the page. There is no network call, no sign-in, and no dependency
 
 ## Running it
 
-Static files — any web server will do:
-
 ```bash
-npm run serve          # python -m http.server 8777
+git clone https://github.com/bradleyhomelinuxnet-prog/natori-on-psyfr
+cd natori-on-psyfr
+npm run serve            # then open http://127.0.0.1:8777/
 ```
 
-Then open <http://localhost:8777/>. ES modules need `http://`, not `file://`.
+That is the whole setup. There is no `npm install` step — the app has no dependencies and neither
+does the suite. `package.json` lists two devDependencies, and they exist only to unpack the
+original `.exe` inside `tools/`. Install them if you are redoing the teardown; skip them otherwise.
+
+ES modules will not load over `file://`, so double-clicking `index.html` gives you a blank page.
+It has to come off a server. Any server will do — `npm run serve` is one that ships with the
+repository, dependency-free, so the instruction above works on a machine with no registry and no
+`python` on PATH:
 
 ```bash
-npm test               # 115 fixtures, no dependencies
+npm run serve -- --port 9000      # if 8777 is taken
+npm run serve -- --host 0.0.0.0   # if you are browsing in from another machine
+npm run serve -- --help           # every flag
+python3 -m http.server 8777       # equally fine, if you would rather
+```
+
+```bash
+npm test                 # 115 fixtures pinning the engine against the original
+npm run test:serve       # the server above, separately — it is not part of the contract
 ```
 
 ---

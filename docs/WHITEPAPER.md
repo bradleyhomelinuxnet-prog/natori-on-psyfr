@@ -871,8 +871,8 @@ together.
 ```bash
 git clone https://github.com/bradleyhomelinuxnet-prog/natori-on-psyfr
 cd natori-on-psyfr
-npm test                               # 94 assertions, no dependencies
-python -m http.server 8777             # then open http://localhost:8777/
+npm test                               # 115 assertions, no dependencies
+npm run serve                          # then open http://127.0.0.1:8777/
 ```
 
 The teardown itself is reproducible from the original `.exe` using the commands in §3.1. The

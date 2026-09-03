@@ -22,6 +22,12 @@ jobs:
       - name: Run the parity suite
         run: npm test
 
+      # Separate from the parity suite on purpose: that suite's count is the
+      # contract with the original engine, and a web server does not belong in
+      # it. It still has to pass.
+      - name: Check the development server
+        run: npm run test:serve
+
       - name: Check nothing reaches for eval
         run: |
           if grep -rnE '\bnew Function\b|\beval\(' src/ --include='*.js' \
