@@ -81,14 +81,19 @@ were asking six months from now.
 next to each row until the list is empty. (X-Dates is what the app calls your
 input dates — X for the ones you know, Z for the ones it projects.)
 
-**Step 3 — Add your dates.** Use the `MON / DAY / YEAR` boxes at the bottom of
-the X-Dates panel and press **+ X-Date** for each one. Order does not matter for
-correctness, but enter them oldest-first — it makes the timeline easier to read.
+**Step 3 — Add your dates, oldest first.** Use the `MON / DAY / YEAR` boxes at
+the bottom of the X-Dates panel and press **+ X-Date** for each one.
+
+**Order is not cosmetic — get it wrong and you get nothing.** The list has to
+climb: each date later than the one above it, by at least a day. Enter them out
+of sequence and the engine refuses to run at all, reporting `X2 must be greater
+than X1` and producing zero rows. It will not reorder them for you; the order is
+a deliberate control, and X1 means *the first row*, not *the earliest date*.
 
 **Step 4 — Look at the status bar.** Above the timeline you will see something
 like `3 ANCHORS · 3 PAIRS · 16 OPERATIONS · 47 Z-DATES · 24 HIDDEN`. If PAIRS is
-0, you have fewer than two dates enabled. If Z-DATES is 0, check your dates
-entered correctly.
+0, you have fewer than two dates enabled. If Z-DATES is 0, check the status area
+for that ordering error first, then check your dates entered correctly.
 
 **Step 5 — Read the table.** It is already sorted by date. Click the **SCORE**
 column header to sort by score instead, highest first. That is your shortlist.
@@ -218,26 +223,45 @@ adds today as a control, refuses if it is already there, and follows the
 Current-date setting if you have overridden it.
 
 **What it does to the numbers.** Adding a fourth date takes you from 3 pairs to
-6, which doubles the projections. In a real test:
+6, which doubles the projections. Here are the job dates of §8 run both ways,
+with the Current date held at `09/02/2026` for both — the comparison only means
+something if that is the same on each row:
 
 | | Pairs | Projections | Shown | Hidden |
 |---|---|---|---|---|
-| Three job dates | 3 | 48 | 23 | 24 |
-| + today | 6 | 96 | 25 | 70 |
+| Three job dates | 3 | 48 | 6 | 41 |
+| + today | 6 | 96 | **25** | 70 |
 
-Note the shape of that: twice as many projections, but only two more rows
-survived the filters — because most of the new ones fall in the past and get cut.
-More input does not automatically mean more signal.
+(*Shown* plus *Hidden* counts distinct days, and comes to one less than the
+projections cast: in each run, one projection lands on a day another already
+occupies, and the two merge into a single row.)
+
+Six rows becomes twenty-five, and most of that is not the extra projections. It
+is that Protocol Prime makes *today* the last X-Date, which slides the "beyond
+2,559 days from the last X-Date" filter more than four years forward. The window
+moved; the arithmetic barely changed.
+
+And look at what arrived. The top four rows are **the same four dates in both
+runs** — 09/29/2026, 01/21/2027, 02/15/2027, 11/10/2027 — each scoring 1.00, and
+**not one row in either run carries an MSRF chip.** The nineteen new rows all
+score 1.00 or 0.50.
+
+So: more input gave a longer list and an identical top. More input does not
+automatically mean more signal, and a list getting longer is not the same thing
+as it getting better.
 
 ---
 
 ## 8. When nothing lights up
 
 Here is a real run on three real-shaped job dates — 14 Mar 2016, 6 Sep 2019,
-11 Jan 2022:
+11 Jan 2022 — cast with the **Current date set to `02/01/2022`**, just after the
+last of them. (That setting matters: leave the Current date at today and the
+*hide before the current date* filter cuts this run down to six rows, because
+everything below already happened. Set it to reproduce what you see here.)
 
 ```
-3 anchors | 3 pairs | 48 projections | 23 shown | 24 hidden
+3 anchors | 3 pairs | 48 projections | 47 distinct dates | 23 shown | 24 hidden
 
 Top rows:
   05/18/2024   score 2   hits 2   MSRF: none
@@ -245,7 +269,8 @@ Top rows:
   02/28/2023   score 1   hits 1   MSRF: none
 ```
 
-Top score of 2, not a single significant-number match in the entire run.
+Top score of 2 — two Alpha formulas landing on one day, with no help from the
+number list — and not a single significant-number match in the entire run.
 
 **This is the normal outcome, and it is the honest one.** The instrument is not
 broken and you did not do it wrong. Three arbitrary real-world dates mostly do
