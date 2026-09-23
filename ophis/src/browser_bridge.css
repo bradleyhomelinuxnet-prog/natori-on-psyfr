@@ -1,0 +1,134 @@
+/*
+ * browser_bridge.css — layout for the in-page application menu that stands in for Electron's
+ * native menu bar. ophis.css is loaded after this file, so the two body rules carry !important:
+ * the app sizes its panels from document.body.clientHeight, and the body must therefore be
+ * exactly the viewport minus the menu bar.
+ */
+
+:root {
+    --ophis-menubar-height: 30px;
+    --ophis-menubar-bg: #f6e8d5;
+    --ophis-menubar-border: #735c42;
+    --ophis-menubar-fg: #2b2118;
+    --ophis-menubar-hover: #ffd9ad;
+    --ophis-menu-bg: #fffaf3;
+}
+
+html > body {
+    height: calc(100% - var(--ophis-menubar-height)) !important;
+    margin-top: var(--ophis-menubar-height) !important;
+}
+
+#ophis-menubar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--ophis-menubar-height);
+    box-sizing: border-box;
+    display: flex;
+    align-items: stretch;
+    background: var(--ophis-menubar-bg);
+    border-bottom: 1px solid var(--ophis-menubar-border);
+    font-family: "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    color: var(--ophis-menubar-fg);
+    z-index: 20;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.ophis-menu {
+    position: relative;
+    display: flex;
+}
+
+.ophis-menu-title {
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    padding: 0 12px;
+    cursor: default;
+}
+
+.ophis-menu-title:hover,
+.ophis-menu--open > .ophis-menu-title {
+    background: var(--ophis-menubar-hover);
+}
+
+.ophis-menu-items {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 240px;
+    padding: 4px 0;
+    background: var(--ophis-menu-bg);
+    border: 1px solid var(--ophis-menubar-border);
+    border-radius: 0 0 6px 6px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+    z-index: 30;
+}
+
+.ophis-menu--open > .ophis-menu-items {
+    display: block;
+}
+
+.ophis-menu-item {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    padding: 5px 14px 5px 8px;
+    cursor: default;
+    white-space: nowrap;
+}
+
+.ophis-menu-item:hover:not(:disabled) {
+    background: var(--ophis-menubar-hover);
+}
+
+.ophis-menu-item--disabled,
+.ophis-menu-item:disabled {
+    color: #9a8a7a;
+}
+
+.ophis-menu-check {
+    display: inline-block;
+    width: 18px;
+    visibility: hidden;
+}
+
+.ophis-menu-item--checked > .ophis-menu-check {
+    visibility: visible;
+}
+
+.ophis-menu-label {
+    flex: 1;
+}
+
+.ophis-menu-accel {
+    margin-left: 32px;
+    color: #7a6a5a;
+    font-size: 12px;
+}
+
+.ophis-menu-separator {
+    height: 1px;
+    margin: 4px 0;
+    background: #e0cdb5;
+}
+
+.ophis-menubar-brand {
+    margin-left: auto;
+    padding: 0 12px;
+    align-self: center;
+    letter-spacing: 2px;
+    font-weight: 600;
+    color: #735c42;
+}

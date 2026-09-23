@@ -1,0 +1,10 @@
+{
+  "name": "Ophis",
+  "//": "If setting version for a release candidate, it must appear like '10.0.0-rc1' with proper 3-part semver. Otherwise can be simple 2-part like '10.0'.",
+  "version": "12.0.0",
+  "description": "A cross-platform desktop app for performing date sequence predicitive analytics based on the work of Jason Breshears of Archaix.",
+  "main": "main.js",
+  "author": {
+    "name": "Ophis"
+  }
+}
