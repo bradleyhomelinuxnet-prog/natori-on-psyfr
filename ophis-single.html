@@ -4131,7 +4131,7 @@ pre.blob {
         toast("That is not a date that exists.");
         return;
       }
-      list.push(parsed);
+      insertXDateInOrder(list, parsed, ev);
       touch();
     };
     const addToday = () => {

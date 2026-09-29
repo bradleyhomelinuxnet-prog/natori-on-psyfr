@@ -216,7 +216,10 @@ function datesPanel({ key, title, note, addLabel }) {
       toast('That is not a date that exists.');
       return;
     }
-    list.push(parsed);
+    // In date order, never appended — a date typed earlier than an existing
+    // anchor would otherwise break the strictly-ascending rule and brick the
+    // cast, exactly as Protocol Prime did. See insertXDateInOrder.
+    insertXDateInOrder(list, parsed, ev);
     touch();
   };
 

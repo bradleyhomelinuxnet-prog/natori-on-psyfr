@@ -3980,6 +3980,24 @@ pre.blob {
       ]
     });
   }
+  // Add an X-Date at its place in date order, never appended.
+  //
+  // Enabled anchors must be strictly ascending or the event cannot be cast at
+  // all, so appending a date that is not the latest bricks the event outright.
+  // The seeded example ends in 2027, so "Today / Protocol Prime" appended an
+  // EARLIER date and turned 114 projections into "X6 must be greater than X5".
+  // A castable list is already ascending, so the sorted slot is the only one
+  // that stays castable -- index order stays load-bearing either way.
+  function insertXDateInOrder(list, xdate, ev) {
+    const at = list.findIndex((x) => toInstant(x, ev) > toInstant(xdate, ev));
+    if (at === -1) {
+      list.push(xdate);
+      return list.length - 1;
+    }
+    list.splice(at, 0, xdate);
+    return at;
+  }
+
   function datesPanel({ key, title, note, addLabel }) {
     const ev = currentEvent();
     const list = ev[key];
@@ -4045,7 +4063,7 @@ pre.blob {
         toast("That is not a date that exists.");
         return;
       }
-      list.push(parsed);
+      insertXDateInOrder(list, parsed, ev);
       touch();
     };
     const addToday = () => {
@@ -4057,7 +4075,7 @@ pre.blob {
         toast("Today is already a control.");
         return;
       }
-      list.push(makeXDate(y, m, d));
+      insertXDateInOrder(list, makeXDate(y, m, d), ev);
       touch();
       toast("Added today as a control \u2014 every historical date now casts against it.");
     };

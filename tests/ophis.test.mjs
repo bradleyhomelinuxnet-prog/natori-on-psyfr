@@ -959,3 +959,13 @@ test('a date earlier than every control goes on the front', () => {
   assert.equal(at, 0);
   assert.deepEqual(validateXDateSpread(ev), []);
 });
+
+test('a manually typed date lands in order too, not just Protocol Prime', () => {
+  // Both entry points share insertXDateInOrder. Typing a date that predates an
+  // existing control is the same defect wearing different clothes.
+  const ev = exampleEvent();
+  const at = insertXDateInOrder(ev.x_dates, parseXDate('12/25/2026'), ev);
+  assert.equal(at, 2, 'between 2026-08-20 and 2027-03-09');
+  assert.deepEqual(validateXDateSpread(ev), []);
+  assert.ok(runOphis(ev, { now: Date.UTC(2026, 8, 29) }).processed_z_dates.length > 0);
+});
