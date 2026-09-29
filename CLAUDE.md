@@ -20,6 +20,12 @@ between helping and breaking things. The short form:
   `index.html` + `src/` via `npm run bundle`; CI fails if it is stale. Never
   hand-edit it. Two hand-made copies had already drifted apart and kept a fixed
   defect alive in both — that is what the generator exists to prevent.
+- **`OPHIS-Natorion-Cipher.html` is NOT that generated build and is not a stale
+  copy of it.** It is hand-maintained, in live use off-repo, and *ahead* of
+  `src/`: it is the only copy of the second eclipse table (`CANON_S_BASE`,
+  `ECLIPSE_SOURCES`, `decode(..., correctCalendar)`, the `eclipse_table`
+  option). Deleting it as a duplicate loses that work. Until the canon is ported
+  into `src/`, the generator cannot replace it.
 - Drive the app before pushing a UI change: `npm run serve`, then
   http://localhost:8777/. Several real defects here were invisible in source
   and obvious on the first hover.
