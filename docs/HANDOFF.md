@@ -38,7 +38,7 @@ recoverable. Its header says so. Everything else derives from the original or fr
 from-spec reference in `docs/reverse/fixtures/`.
 
 ```bash
-npm test        # 120 assertions, no dependencies, ~2s
+npm test        # 126 assertions, no dependencies, ~2s
 ```
 
 ---
@@ -212,7 +212,7 @@ rebuilt from a description of a basemap.
 ## 9. Before you push
 
 ```bash
-npm test                                    # 120 assertions must pass
+npm test                                    # 126 assertions must pass
 node tools/md-to-html.mjs docs/*.md --out-dir docs/html   # if you touched a doc
 python -m http.server 8777                  # then drive the app at localhost:8777
 ```

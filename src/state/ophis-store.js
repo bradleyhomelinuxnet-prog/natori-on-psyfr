@@ -39,6 +39,13 @@ export const DEFAULT_OPTIONS = {
   theme: 'dark',
   density: 'full',
   text_zoom: 1,
+  /**
+   * Which eclipse table the chart overlay reads. 'original' is the table the
+   * desktop program shipped and is the default; 'canon' is the NASA rebuild.
+   * An app preference, beside theme -- not a per-event field, so it is not in
+   * the `.oph` and changing it does not dirty the document.
+   */
+  eclipse_table: 'original',
 };
 
 const listeners = new Set();

@@ -3,7 +3,7 @@
 Read `docs/HANDOFF.md` first — fifteen minutes, and it is the difference
 between helping and breaking things. The short form:
 
-- **The maths is a contract.** `npm test` (120 fixtures, no dependencies) pins
+- **The maths is a contract.** `npm test` (126 fixtures, no dependencies) pins
   the engine against the original program. A failing test means your change
   drifted; it does not mean the fixture needs updating. Deliberate maths
   changes update the fixture AND say so in the commit message.
@@ -21,11 +21,12 @@ between helping and breaking things. The short form:
   hand-edit it. Two hand-made copies had already drifted apart and kept a fixed
   defect alive in both — that is what the generator exists to prevent.
 - **`OPHIS-Natorion-Cipher.html` is NOT that generated build and is not a stale
-  copy of it.** It is hand-maintained, in live use off-repo, and *ahead* of
-  `src/`: it is the only copy of the second eclipse table (`CANON_S_BASE`,
-  `ECLIPSE_SOURCES`, `decode(..., correctCalendar)`, the `eclipse_table`
-  option). Deleting it as a duplicate loses that work. Until the canon is ported
-  into `src/`, the generator cannot replace it.
+  copy of it.** It is hand-maintained and in live use off-repo, with its own tile
+  tree (`img/offline_map/map/...png`) and its own absolute doc links. Its eclipse
+  canon has now been ported into `src/`, so that is no longer the reason to keep
+  it; what it still holds alone is the calendar lift on the *original* table,
+  which is deliberately not adopted -- see `DEVIATIONS.md` 13 for the measurement.
+  Do not delete it without checking with the person who deploys it.
 - Drive the app before pushing a UI change: `npm run serve`, then
   http://localhost:8777/. Several real defects here were invisible in source
   and obvious on the first hover.

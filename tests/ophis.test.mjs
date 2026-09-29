@@ -28,7 +28,11 @@ import { SORT_TYPE, EVENT_SCOPE } from '../src/core/ophis/constants.js';
 import {
   lunarPhase, phaseName, phaseGapDays, toJD, LUNAR_MATCH_DAYS, ECLIPSE_MATCH_DAYS,
 } from '../src/core/ophis/moon.js';
-import { eclipseNear } from '../src/core/eclipses.js';
+import {
+  eclipseNear, coverage, solarTable, lunarTable,
+  eclipseSource, setEclipseSource, isEclipseSource, ECLIPSE_SOURCES,
+} from '../src/core/eclipses.js';
+import { jdn } from '../src/core/jdn.js';
 
 /* ---------------------------------------------------------------- Group A --
  * The filter arrays, and the three structural properties the original's own
@@ -814,4 +818,83 @@ test('adopting that same blob raw is what produced the empty table', () => {
   assert.equal(r.processed_z_dates.length, 0, 'nothing survives');
   assert.deepEqual(r.errors, [], 'and nothing is reported — which is why it looked like a dead page');
   assert.ok(r.diagnostics.some((d) => d.kind === 'NON_FINITE_Z'));
+});
+
+/* ---------------------------------------------------------------- Group N --
+ * The second eclipse table.
+ *
+ * `original` is the table the desktop program shipped and MUST remain the
+ * default: it is what every other fixture here is measured against, and what
+ * Chronicon's cast scores eclipse hits from. `canon` is opt-in. These pins
+ * exist so that stays true, and so the axis difference between the two is a
+ * recorded fact rather than a surprise.
+ * ------------------------------------------------------------------------ */
+
+/** Run `fn` with a source selected, and put the default back whatever happens. */
+function withSource(name, fn) {
+  const before = eclipseSource();
+  try {
+    setEclipseSource(name);
+    return fn();
+  } finally {
+    setEclipseSource(before);
+  }
+}
+
+test('the shipped table is the default, and it is the one the other pins use', () => {
+  assert.equal(eclipseSource(), 'original');
+  assert.deepEqual(ECLIPSE_SOURCES, ['original', 'canon']);
+  assert.deepEqual(coverage(), { min: 1721231, max: 2817079 });
+});
+
+test('an unknown eclipse source is rejected rather than silently coerced', () => {
+  // The hand-made build mapped anything not 'canon' onto the shipped table, so
+  // a typo quietly selected it. Here it throws, and the boot guards with the
+  // predicate instead of a try/catch.
+  assert.equal(isEclipseSource('original'), true);
+  assert.equal(isEclipseSource('canon'), true);
+  assert.equal(isEclipseSource('desktop'), false, 'the hand-made build\'s name is not ours');
+  assert.throws(() => setEclipseSource('desktop'), /unknown eclipse source/);
+  assert.equal(eclipseSource(), 'original', 'and the failed set changed nothing');
+});
+
+test('the canon table decodes to the record counts NASA was checked against', () => {
+  withSource('canon', () => {
+    assert.equal(solarTable().J.length, 11898, 'solar records');
+    assert.equal(lunarTable().J.length, 7686, 'umbral lunar days — the figure NASA was matched on');
+    // It reaches roughly two millennia further back than the shipped table.
+    assert.equal(coverage().min, 991085);
+  });
+});
+
+test('selecting the canon and going back leaves the shipped table untouched', () => {
+  const before = coverage();
+  const solar0 = solarTable().J[0];
+  withSource('canon', () => assert.notDeepEqual(coverage(), before));
+  assert.deepEqual(coverage(), before, 'coverage restored');
+  assert.equal(solarTable().J[0], solar0, 'and the cache did not bleed');
+});
+
+test("Thales' eclipse is in the canon and has no counterpart in the shipped table", () => {
+  // -584-05-22 on the Gregorian axis the canon is built on.
+  const jd = jdn(-584, 5, 22);
+  assert.equal(withSource('canon', () => eclipseNear(jd, 1).solar), 'T');
+  assert.equal(eclipseNear(jd, 40).solar, null, 'nothing within forty days of it');
+});
+
+test("Henry I's eclipse is in BOTH tables, seven days apart — the calendar axis", () => {
+  // A hand-made build's comment claims this one is canon-only. It is not: both
+  // carry it, and the gap is exactly the Julian/Gregorian offset for 1133,
+  // which is the shipped table's pre-reform rows sitting on the Julian axis.
+  const julian = jdn(1133, 8, 2);
+  assert.equal(eclipseNear(julian, 1).solar, 'T', 'shipped table dates it 8/2');
+  assert.equal(withSource('canon', () => eclipseNear(julian, 1).solar), null, 'canon does not');
+
+  const gjDiff = (y) => Math.floor(y / 100) - Math.floor(y / 400) - 2;
+  assert.equal(gjDiff(1133), 7);
+  assert.equal(
+    withSource('canon', () => eclipseNear(julian + gjDiff(1133), 1).solar),
+    'T',
+    'canon dates the same eclipse exactly gjDiff days later'
+  );
 });
