@@ -4126,7 +4126,9 @@ pre.blob {
         }), `Enable all ${title}`),
         el("button.btn.sm", {
           type: "button",
-          text: "Reset",
+          // Not "Reset" -- it empties the list, and the dialog always said
+          // "Delete all". The button should say what the dialog says.
+          text: "Delete all",
           disabled: list.length === 0,
           onclick: async () => {
             const ok = await confirmDialog({

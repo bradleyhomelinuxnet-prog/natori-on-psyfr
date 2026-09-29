@@ -252,7 +252,11 @@ function datesPanel({ key, title, note, addLabel }) {
       master(list, (on) => list.forEach((x) => { x.enabled = on; }), `Enable all ${title}`),
       el('button.btn.sm', {
         type: 'button',
-        text: 'Reset',
+        // Not "Reset". It empties the list, and everywhere else Reset means
+        // "back to defaults" -- a user cleared their T-Dates expecting the
+        // former and got the latter. The confirmation always said "Delete
+        // all"; the button should say what the dialog says.
+        text: 'Delete all',
         disabled: list.length === 0,
         onclick: async () => {
           const ok = await confirmDialog({
