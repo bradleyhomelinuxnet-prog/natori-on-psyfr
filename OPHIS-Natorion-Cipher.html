@@ -2825,6 +2825,12 @@ pre.blob {
 
   // src/io/oph.js
   var APP_VERSION = "13.0.0";
+  // A short stamp shown on the About screen, so "is the build I uploaded the
+  // one I meant?" is answerable by looking at the app. This exists because it
+  // was not: a deployed copy had to be checked by reading view-source for a
+  // function name, which needs developer tools and says nothing when it fails.
+  // Bump this whenever you ship a build.
+  var BUILD_TAG = "2026-09-29 \u00B7 ordered anchors + restore repair";
   var SCHEMA_VERSION = 1;
   var VALIDATION = { STRICT: "strict", LOOSE: "loose" };
   var isObj = (v) => v !== null && typeof v === "object" && !Array.isArray(v);
@@ -6249,6 +6255,10 @@ stream
     ]);
     replace(host, [
       el("div.doc", {}, [
+        el("p.note", {
+          style: "color:var(--faint);letter-spacing:.04em",
+          text: `Build ${APP_VERSION} \u00B7 ${BUILD_TAG}`
+        }),
         el("h2", { text: "What this is" }),
         el("p", {
           text: "Ophis is a relativity-based date-projection instrument. You give it two or more dates on which similar events occurred; it measures the distance between every pair of them in axial rotations of the Earth, runs each distance through a table of operations, and projects the results forward. The filters then remove the projections that bear no arithmetic relationship to the controls."

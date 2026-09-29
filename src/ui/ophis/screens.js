@@ -18,7 +18,9 @@ import { operationClass } from '../../core/ophis/scoring.js';
 import { round1, round2, intToDecimalString } from '../../core/ophis/numeric.js';
 import { fmtDate } from '../../core/ophis/calendar.js';
 import { clampDayStart, makeIsoEvent } from '../../state/iso-event.js';
-import { parseDocument, serialiseDocument, VALIDATION } from '../../io/oph.js';
+import {
+  parseDocument, serialiseDocument, VALIDATION, APP_VERSION, BUILD_TAG,
+} from '../../io/oph.js';
 import { toCSV, toXLSX, toPDF, exportBasename } from '../../io/export-results.js';
 import { download } from '../../io/download.js';
 import {
@@ -677,6 +679,12 @@ export function renderAbout(host) {
 
   replace(host, [
     el('div.doc', {}, [
+      // First thing on the page, so confirming which build is deployed needs
+      // no developer tools and no reading of source.
+      el('p.note', {
+        style: 'color:var(--faint);letter-spacing:.04em',
+        text: `Build ${APP_VERSION} \u00B7 ${BUILD_TAG}`,
+      }),
       el('h2', { text: 'What this is' }),
       el('p', {
         text:

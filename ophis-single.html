@@ -2833,6 +2833,7 @@ pre.blob {
 
   // src/io/oph.js
   var APP_VERSION = "13.0.0";
+  var BUILD_TAG = "2026-09-29 · ordered anchors + restore repair";
   var SCHEMA_VERSION = 1;
   var VALIDATION = { STRICT: "strict", LOOSE: "loose" };
   var isObj = (v) => v !== null && typeof v === "object" && !Array.isArray(v);
@@ -6206,6 +6207,12 @@ stream
     ]);
     replace(host, [
       el("div.doc", {}, [
+        // First thing on the page, so confirming which build is deployed needs
+        // no developer tools and no reading of source.
+        el("p.note", {
+          style: "color:var(--faint);letter-spacing:.04em",
+          text: `Build ${APP_VERSION} · ${BUILD_TAG}`
+        }),
         el("h2", { text: "What this is" }),
         el("p", {
           text: "Ophis is a relativity-based date-projection instrument. You give it two or more dates on which similar events occurred; it measures the distance between every pair of them in axial rotations of the Earth, runs each distance through a table of operations, and projects the results forward. The filters then remove the projections that bear no arithmetic relationship to the controls."

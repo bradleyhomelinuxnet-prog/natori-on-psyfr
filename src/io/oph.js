@@ -28,6 +28,16 @@ import { FILTER_DEFAULTS } from '../core/ophis/filters.js';
 import { packOperations, DEFAULT_OPHIS_PACK } from '../data/packs-ophis.js';
 
 export const APP_VERSION = '13.0.0';
+
+/**
+ * A short stamp shown on the About screen, so "is the build I uploaded the one
+ * I meant?" is answerable by looking at the app.
+ *
+ * This exists because it was not. A deployed copy had to be checked by reading
+ * view-source for a function name, which is fragile, needs developer tools, and
+ * tells you nothing when it fails. Bump this whenever you ship a build.
+ */
+export const BUILD_TAG = '2026-09-29 · ordered anchors + restore repair';
 export const SCHEMA_VERSION = 1;
 
 /** `strict` rejects anything unrecognised; `loose` repairs and warns. */
