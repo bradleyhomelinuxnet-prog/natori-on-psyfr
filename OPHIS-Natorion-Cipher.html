@@ -721,6 +721,9 @@ tbody td {
 tbody tr:last-child td { border-bottom: 0; }
 tbody tr { transition: background var(--dur-fast) var(--ease); }
 tbody tr:hover { background: var(--panel-2); }
+tbody tr.hit { cursor: pointer; }
+tbody tr.hit:hover { background: color-mix(in srgb, var(--gold) 7%, var(--panel-2)); }
+tbody tr.hit:focus-visible { outline: none; background: color-mix(in srgb, var(--gold) 9%, var(--panel-2)); box-shadow: inset 2px 0 0 var(--gold); }
 tbody tr[data-highlight='true'] {
   background: color-mix(in srgb, var(--gold) 11%, transparent);
   box-shadow: inset 2px 0 0 var(--gold);
@@ -4115,15 +4118,28 @@ pre.blob {
       touch();
       toast("Added today as a control \u2014 every historical date now casts against it.");
     };
+    // "1 / 3" does not say what it counts, and for T-Dates the difference
+    // between 0 and 1 enabled is the difference between seeing everything and
+    // seeing one day.
+    const _on = list.filter((x) => x.enabled).length;
+    const _count = key === "t_dates"
+      ? (list.length === 0
+          ? "none \u00b7 showing every date"
+          : _on === 0
+            ? `${list.length} off \u00b7 showing every date`
+            : `${_on} of ${list.length} targeting`)
+      : `${_on} / ${list.length}`;
     return panel(title, {
-      count: `${list.filter((x) => x.enabled).length} / ${list.length}`,
+      count: _count,
       actions: [
         master(list, (on) => list.forEach((x) => {
           x.enabled = on;
         }), `Enable all ${title}`),
         el("button.btn.sm", {
           type: "button",
-          text: "Reset",
+          // Not "Reset" -- it empties the list, and the dialog always said
+          // "Delete all". The button should say what the dialog says.
+          text: "Delete all",
           disabled: list.length === 0,
           onclick: async () => {
             const ok = await confirmDialog({
@@ -4547,23 +4563,43 @@ pre.blob {
     if (active) th.setAttribute("aria-sort", col.sort === SORT_TYPE.DATE ? "ascending" : "descending");
     return th;
   }
+  // Say WHICH filter emptied the run, not that one probably did. "You probably
+  // have to loosen up a filter" sent a user to the Filters panel for an hour
+  // while the cause was T-Dates, which are not in that panel and are not
+  // filters in the checkbox sense -- and the old Loosen button cleared four of
+  // the eight, leaving the four date ones, so it changed nothing and looked
+  // broken.
   function emptyPanel() {
+    const ev = currentEvent();
+    const tOn = (ev.t_dates ?? []).filter((t) => t.enabled === true);
+    const filtersOn = FILTER_ROWS.filter((f) => ev[f.flag] === true);
+    const why = tOn.length
+      ? `${tOn.length} T-Date${tOn.length === 1 ? "" : "s"} (${tOn.map((t) => `${t.m}/${t.d}/${t.y}`).join(", ")}) \u2014 only projections landing on exactly those days are shown, and none do.`
+      : filtersOn.length
+        ? `${filtersOn.length} filter${filtersOn.length === 1 ? " is" : "s are"} on: ${filtersOn.map((f) => f.label).join("; ")}.`
+        : "Nothing is filtering, so the operations produced no dates in range.";
     return el("div.empty", {}, [
       el("div.mark", { text: "\u25C7" }),
       el("h3", { text: "No results" }),
-      el("p", { text: "No results. You probably have to loosen up a filter." }),
-      el("button.btn", {
-        type: "button",
-        text: "Loosen filters",
-        onclick: () => {
-          const ev = currentEvent();
-          ev.iso_event_filter_min_score = false;
-          ev.iso_event_filter_min_hit_count = false;
-          ev.iso_event_filter_msrf_match = false;
-          ev.iso_event_filter_beyond_max_days = false;
-          touch();
-        }
-      })
+      el("p", { text: why }),
+      el("div.btnrow", { style: "justify-content:center;gap:8px" }, [
+        tOn.length
+          ? el("button.btn.primary", {
+              type: "button",
+              text: "Clear T-Dates",
+              onclick: () => { currentEvent().t_dates = []; touch(); }
+            })
+          : null,
+        el("button.btn", {
+          type: "button",
+          text: "Turn off every filter",
+          onclick: () => {
+            const e = currentEvent();
+            for (const f of FILTER_ROWS) e[f.flag] = false;
+            touch();
+          }
+        })
+      ])
     ]);
   }
   function noInputPanel(errors) {
@@ -4645,7 +4681,16 @@ pre.blob {
           ])
         );
       }
-      const tr = el("tr", { data: { key: z.key, highlight: String(state.highlightKey === z.key) } }, cells);
+      // `.hit` marks the row as the control it already was. The header has
+      // always said "click a row to audit it" and the row said nothing back:
+      // no pointer, no focus ring, no keyboard route. The behaviour was there;
+      // the affordance was not, which reads as broken.
+      const tr = el("tr.hit", {
+        data: { key: z.key, highlight: String(state.highlightKey === z.key) },
+        tabindex: "0",
+        role: "button",
+        "aria-label": `Audit ${z.key}`
+      }, cells);
       tr.addEventListener("mouseenter", () => {
         state.highlightKey = z.key;
         document.dispatchEvent(new CustomEvent("ophis:highlight", { detail: z.key }));
@@ -4654,9 +4699,13 @@ pre.blob {
         state.highlightKey = null;
         document.dispatchEvent(new CustomEvent("ophis:highlight", { detail: null }));
       });
-      tr.addEventListener("click", () => {
+      const audit = () => {
         state.auditKey = z.key;
         goto("audit");
+      };
+      tr.addEventListener("click", audit);
+      tr.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); audit(); }
       });
       return tr;
     });

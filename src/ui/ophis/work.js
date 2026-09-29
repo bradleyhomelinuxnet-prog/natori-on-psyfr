@@ -246,13 +246,29 @@ function datesPanel({ key, title, note, addLabel }) {
     toast('Added today as a control — every historical date now casts against it.');
   };
 
+  // "1 / 3" does not say what it counts, and for T-Dates the difference between
+  // 0 and 1 enabled is the difference between seeing everything and seeing one
+  // day. Say which, rather than leaving it to be inferred.
+  const on = list.filter((x) => x.enabled).length;
+  const count = key === 't_dates'
+    ? (list.length === 0
+        ? 'none · showing every date'
+        : on === 0
+          ? `${list.length} off · showing every date`
+          : `${on} of ${list.length} targeting`)
+    : `${on} / ${list.length}`;
+
   return panel(title, {
-    count: `${list.filter((x) => x.enabled).length} / ${list.length}`,
+    count,
     actions: [
       master(list, (on) => list.forEach((x) => { x.enabled = on; }), `Enable all ${title}`),
       el('button.btn.sm', {
         type: 'button',
-        text: 'Reset',
+        // Not "Reset". It empties the list, and everywhere else Reset means
+        // "back to defaults" -- a user cleared their T-Dates expecting the
+        // former and got the latter. The confirmation always said "Delete
+        // all"; the button should say what the dialog says.
+        text: 'Delete all',
         disabled: list.length === 0,
         onclick: async () => {
           const ok = await confirmDialog({

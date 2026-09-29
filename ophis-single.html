@@ -720,6 +720,17 @@ tbody td {
 tbody tr:last-child td { border-bottom: 0; }
 tbody tr { transition: background var(--dur-fast) var(--ease); }
 tbody tr:hover { background: var(--panel-2); }
+
+/* A result row opens the audit. Say so: the table header promises "click a row
+   to audit it", and without a cursor, a hover lift and a focus ring the row
+   looks like static output. */
+tbody tr.hit { cursor: pointer; }
+tbody tr.hit:hover { background: color-mix(in srgb, var(--gold) 7%, var(--panel-2)); }
+tbody tr.hit:focus-visible {
+  outline: none;
+  background: color-mix(in srgb, var(--gold) 9%, var(--panel-2));
+  box-shadow: inset 2px 0 0 var(--gold);
+}
 tbody tr[data-highlight='true'] {
   background: color-mix(in srgb, var(--gold) 11%, transparent);
   box-shadow: inset 2px 0 0 var(--gold);
@@ -4164,15 +4175,21 @@ pre.blob {
       touch();
       toast("Added today as a control — every historical date now casts against it.");
     };
+    const on = list.filter((x) => x.enabled).length;
+    const count = key === "t_dates" ? list.length === 0 ? "none · showing every date" : on === 0 ? `${list.length} off · showing every date` : `${on} of ${list.length} targeting` : `${on} / ${list.length}`;
     return panel(title, {
-      count: `${list.filter((x) => x.enabled).length} / ${list.length}`,
+      count,
       actions: [
-        master(list, (on) => list.forEach((x) => {
-          x.enabled = on;
+        master(list, (on2) => list.forEach((x) => {
+          x.enabled = on2;
         }), `Enable all ${title}`),
         el("button.btn.sm", {
           type: "button",
-          text: "Reset",
+          // Not "Reset". It empties the list, and everywhere else Reset means
+          // "back to defaults" -- a user cleared their T-Dates expecting the
+          // former and got the latter. The confirmation always said "Delete
+          // all"; the button should say what the dialog says.
+          text: "Delete all",
           disabled: list.length === 0,
           onclick: async () => {
             const ok = await confirmDialog({
@@ -4612,22 +4629,33 @@ pre.blob {
     return th;
   }
   function emptyPanel() {
+    const ev = currentEvent();
+    const tOn = (ev.t_dates ?? []).filter((t) => t.enabled === true);
+    const filtersOn = FILTER_ROWS.filter((f) => ev[f.flag] === true);
+    const why = tOn.length ? `${tOn.length} T-Date${tOn.length === 1 ? "" : "s"} (${tOn.map((t) => `${t.m}/${t.d}/${t.y}`).join(", ")}) — only projections landing on exactly those days are shown, and none do.` : filtersOn.length ? `${filtersOn.length} filter${filtersOn.length === 1 ? " is" : "s are"} on: ${filtersOn.map((f) => f.label).join("; ")}.` : "Nothing is filtering, so the operations produced no dates in range.";
     return el("div.empty", {}, [
       el("div.mark", { text: "◇" }),
       el("h3", { text: "No results" }),
-      el("p", { text: "No results. You probably have to loosen up a filter." }),
-      el("button.btn", {
-        type: "button",
-        text: "Loosen filters",
-        onclick: () => {
-          const ev = currentEvent();
-          ev.iso_event_filter_min_score = false;
-          ev.iso_event_filter_min_hit_count = false;
-          ev.iso_event_filter_msrf_match = false;
-          ev.iso_event_filter_beyond_max_days = false;
-          touch();
-        }
-      })
+      el("p", { text: why }),
+      el("div.btnrow", { style: "justify-content:center;gap:8px" }, [
+        tOn.length ? el("button.btn.primary", {
+          type: "button",
+          text: "Clear T-Dates",
+          onclick: () => {
+            currentEvent().t_dates = [];
+            touch();
+          }
+        }) : null,
+        el("button.btn", {
+          type: "button",
+          text: "Turn off every filter",
+          onclick: () => {
+            const e = currentEvent();
+            for (const f of FILTER_ROWS) e[f.flag] = false;
+            touch();
+          }
+        })
+      ])
     ]);
   }
   function noInputPanel(errors) {
@@ -4709,7 +4737,12 @@ pre.blob {
           ])
         );
       }
-      const tr = el("tr", { data: { key: z.key, highlight: String(state.highlightKey === z.key) } }, cells);
+      const tr = el("tr.hit", {
+        data: { key: z.key, highlight: String(state.highlightKey === z.key) },
+        tabindex: "0",
+        role: "button",
+        "aria-label": `Audit ${z.key}`
+      }, cells);
       tr.addEventListener("mouseenter", () => {
         state.highlightKey = z.key;
         document.dispatchEvent(new CustomEvent("ophis:highlight", { detail: z.key }));
@@ -4718,9 +4751,16 @@ pre.blob {
         state.highlightKey = null;
         document.dispatchEvent(new CustomEvent("ophis:highlight", { detail: null }));
       });
-      tr.addEventListener("click", () => {
+      const audit = () => {
         state.auditKey = z.key;
         goto("audit");
+      };
+      tr.addEventListener("click", audit);
+      tr.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          audit();
+        }
       });
       return tr;
     });
