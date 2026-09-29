@@ -91,7 +91,7 @@
 <p>Static files — any web server will do:</p>
 <pre data-lang="bash"><code>npm run serve          # python -m http.server 8777</code></pre>
 <p>Then open &lt;http://localhost:8777/&gt;. ES modules need <code>http://</code>, not <code>file://</code>.</p>
-<pre data-lang="bash"><code>npm test               # 115 fixtures, no dependencies</code></pre>
+<pre data-lang="bash"><code>npm test               # 120 fixtures, no dependencies</code></pre>
 <hr>
 <h2 id="what-it-does">What it does</h2>
 <ol><li><strong>Controls.</strong> Enter the X-Dates — the past occurrences. Every unordered <em>pair</em> gives one <strong>Y</strong>, the distance between them in whole days.</li><li><strong>Cast.</strong> Each of the sixteen operations turns a Y into a day-offset and projects a <strong>Z-Date</strong> from one of the two controls in that pair. Five controls give ten pairs and 160 projections.</li><li><strong>Resonate.</strong> Every projection's distance from its anchor is probed against the <strong>MSRF</strong> — the Multidimensional Spatial Recognition Filters, 390 numbers in three tiers.</li><li><strong>Score.</strong> Each operation contributes its own weight. Each MSRF match contributes its tier's points — except the strongest, which <em>multiplies</em> the total instead.</li><li><strong>Filter and read.</strong> Eight filters cut the noise; the table and the timeline show what is left.</li></ol>

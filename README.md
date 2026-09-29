@@ -24,7 +24,7 @@ npm run serve          # python -m http.server 8777
 Then open <http://localhost:8777/>. ES modules need `http://`, not `file://`.
 
 ```bash
-npm test               # 115 fixtures, no dependencies
+npm test               # 120 fixtures, no dependencies
 ```
 
 ---
