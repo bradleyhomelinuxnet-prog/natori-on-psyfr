@@ -30,3 +30,9 @@ between helping and breaking things. The short form:
 - Drive the app before pushing a UI change: `npm run serve`, then
   http://localhost:8777/. Several real defects here were invisible in source
   and obvious on the first hover.
+- **Before debugging a deployed page, read `docs/DEPLOYING.md`.** Two traps have
+  each cost a session: a stale page is usually the CDN, not your upload (test
+  `?v=2` first), and localStorage is scoped to an ORIGIN, not a path, so a
+  preview host and a live host do not share state and two copies in one folder
+  do. `BUILD_TAG` in `src/io/oph.js` shows on the About screen — bump it when
+  you ship, and use it rather than grepping view-source.

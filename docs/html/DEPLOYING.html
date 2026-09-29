@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deploying</title>
+<meta http-equiv="Content-Security-Policy"
+      content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'none'; img-src 'self' data:; connect-src 'none'">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../src/styles/ophis-tokens.css">
+<link rel="stylesheet" href="../../src/styles/ophis-app.css">
+<style>
+  body { padding-bottom: 96px; }
+  .doc-top {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding: 20px var(--gutter); max-width: 1180px; margin: 0 auto;
+  }
+  .paper {
+    display: grid; grid-template-columns: 232px minmax(0, 1fr); gap: 48px;
+    max-width: 1180px; margin: 0 auto; padding: 0 var(--gutter);
+  }
+  .paper > nav {
+    position: sticky; top: 24px; align-self: start;
+    max-height: calc(100vh - 48px); overflow-y: auto;
+    padding: 24px 0; font-size: 12.5px;
+  }
+  .paper > nav a { display: block; color: var(--dim); text-decoration: none; padding: 3px 0; line-height: 1.4; }
+  .paper > nav a:hover { color: var(--gold-2); }
+  .paper > nav a.l3 { padding-left: 14px; font-size: 11.5px; color: var(--faint); }
+
+  article { padding: 24px 0; max-width: 76ch; }
+  article h1 { font-family: var(--font-display); font-size: clamp(28px, 4vw, 40px); color: var(--ink); margin: 0 0 20px; letter-spacing: .01em; }
+  article h2 { font-family: var(--font-display); font-size: 24px; color: var(--gold-2); margin: 52px 0 16px; }
+  article h3 { font-size: 17px; color: var(--ink); margin: 34px 0 12px; font-weight: 600; }
+  article h4 { font-size: 14px; color: var(--gold); margin: 26px 0 10px; font-weight: 600; letter-spacing: .04em; }
+  article p { font-size: 15.5px; line-height: 1.68; color: var(--prose); margin: 0 0 15px; max-width: none; }
+  article strong { color: var(--ink); }
+  article ul, article ol { color: var(--prose); font-size: 15.5px; line-height: 1.68; padding-left: 22px; margin: 0 0 16px; }
+  article li { margin-bottom: 6px; }
+  article hr { border: 0; border-top: 1px solid var(--line); margin: 40px 0; }
+  article blockquote {
+    border-left: 3px solid var(--gold); background: var(--panel);
+    margin: 20px 0; padding: 12px 20px; border-radius: 0 var(--r-2) var(--r-2) 0;
+  }
+  article blockquote p:last-child { margin-bottom: 0; }
+  article pre {
+    background: var(--well); border: 1px solid var(--line); border-radius: var(--r-2);
+    padding: 14px 16px; overflow-x: auto; font-family: var(--font-mono);
+    font-size: 12px; line-height: 1.55; color: var(--prose); margin: 0 0 18px;
+  }
+  article pre code { background: none; border: 0; padding: 0; font-size: inherit; }
+  article .tablewrap { margin: 0 0 20px; }
+  article td, article th { font-size: 12.5px; }
+  article td:first-child { color: var(--ink); }
+
+  @media (max-width: 900px) {
+    .paper { grid-template-columns: 1fr; gap: 0; }
+    .paper > nav { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="doc-top">
+  <div class="brand">OPHIS <small>Deploying</small></div>
+  <a class="btn" href="../../index.html">Open the instrument &rarr;</a>
+</div>
+
+<div class="paper">
+  <nav aria-label="Contents">
+    <a class="l2" href="#github-pages-automatic">GitHub Pages — automatic</a>
+    <a class="l2" href="#w3spaces-manual-single-file">w3spaces — manual, single file</a>
+    <a class="l3" href="#confirm-which-build-is-live">Confirm which build is live</a>
+    <a class="l2" href="#the-two-traps">The two traps</a>
+    <a class="l3" href="#1-a-stale-page-is-usually-the-cdn-not-your-upload">1. A stale page is usually the CDN, not your upload</a>
+    <a class="l3" href="#2-localstorage-is-scoped-to-an-origin-not-a-path">2. localStorage is scoped to an ORIGIN, not a path</a>
+    <a class="l2" href="#checklist">Checklist</a>
+  </nav>
+  <article>
+<h1 id="deploying">Deploying</h1>
+<p>Two places run this, and they behave differently. Most of the trouble here has come from assuming a symptom was in the code when it was in the deployment.</p>
+<h2 id="github-pages-automatic">GitHub Pages — automatic</h2>
+<p><code>.github/workflows/pages.yml</code> publishes the whole checkout on every push to <code>main</code>. Merge a PR and the site updates; nothing to do by hand.</p>
+<p>https://bradleyhomelinuxnet-prog.github.io/natori-on-psyfr/</p>
+<h2 id="w3spaces-manual-single-file">w3spaces — manual, single file</h2>
+<p>A single-file build is uploaded by hand to the <code>OPHIS-PSYFR/</code> folder. The file in use is <code>OPHIS-Natorion-Cipher.html</code>, which is hand-maintained and carries its own tile tree (<code>img/offline_map/map/{z}/{x}/{y}.png</code>) and absolute doc links — so it is <strong>not</strong> interchangeable with the generated <code>ophis-single.html</code>. See <code>CLAUDE.md</code>.</p>
+<h3 id="confirm-which-build-is-live">Confirm which build is live</h3>
+<p>Open <strong>About</strong>. The first line reads:</p>
+<p>Build 13.0.0 · &lt;tag&gt;</p>
+<p>That is <code>BUILD_TAG</code>, beside <code>APP_VERSION</code> in <code>src/io/oph.js</code>. <strong>Bump it when you ship a build</strong> — a stamp that never changes is worse than none.</p>
+<p>Do not confirm a deployment by searching view-source for a function name. It needs developer tools, it is easy to search the rendered page by mistake, and an empty result cannot distinguish "the upload failed" from "you searched the wrong thing" from "that name is not in this build". All three happened here.</p>
+<p>There is also a check that needs nothing at all: click <strong>☉ Today · Protocol Prime</strong>. It should add rows. If it empties the table with <em>"X6 must be greater than X5"</em>, the build predates the anchor-order fix.</p>
+<h2 id="the-two-traps">The two traps</h2>
+<h3 id="1-a-stale-page-is-usually-the-cdn-not-your-upload">1. A stale page is usually the CDN, not your upload</h3>
+<p><strong>A new filename always works; overwriting an existing one appears not to.</strong> That is the signature of a cached response, and it cost this project most of a session. Uploading under a fresh name creates a cache entry that is by definition current, so the new build "works". Overwriting <code>index.html</code> leaves the edge still serving the old copy, so a correct upload looks like it never happened.</p>
+<p>Test it before you debug anything else:</p>
+<p>…/OPHIS-PSYFR/index.html?v=2</p>
+<p>A query string the cache has not seen forces a fresh fetch. If that loads the new build, your upload landed and the plain URL will catch up — <code>Ctrl+Shift+R</code> in the meantime. Only if <code>?v=2</code> is <em>also</em> stale is it genuinely an upload problem.</p>
+<h3 id="2-localstorage-is-scoped-to-an-origin-not-a-path">2. localStorage is scoped to an ORIGIN, not a path</h3>
+<p>Every path on a host shares one store. Consequences that have all bitten:</p>
+<ul><li>Two copies of the app in one folder share a document. Fixing one file does not fix what the other wrote.</li><li>A preview host (<code>*-preview.w3spaces.com</code>) is a <em>different</em> origin, so it has its own clean store. "Works in preview, not live" is usually this, not the file.</li><li>The original program's <code>save_blob</code> key is read as a legacy document. On a host serving both, the original writes a blob this app then reads.</li></ul>
+<p>This is why <code>restoreDocument</code> normalises everything it reads and repairs an anchor order it cannot cast, then writes the repair back. A bad document outlives the build that created it, and no upload can reach into a browser to fix one — the app has to.</p>
+<h2 id="checklist">Checklist</h2>
+<ol><li><code>npm test</code>, <code>npm run bundle</code>, <code>npm run docs</code> all clean.</li><li>Bump <code>BUILD_TAG</code> in <code>src/io/oph.js</code>.</li><li>Merge to <code>main</code> — Pages updates itself.</li><li>Upload the single-file build to w3spaces.</li><li>Open About; confirm the stamp. If it is old, try <code>?v=2</code> before re-uploading.</li><li>Keep exactly one copy of the app per folder. A second copy is the divergence trap the generator exists to prevent.</li></ol>
+  </article>
+</div>
+
+</body>
+</html>
