@@ -16,6 +16,10 @@ between helping and breaking things. The short form:
   the build otherwise. User text goes in as text nodes via `src/ui/dom.js`.
 - Docs are Markdown-first: edit `docs/*.md`, then `npm run docs` regenerates
   the HTML pages and fails on any broken link.
+- **The single-file build is generated.** `ophis-single.html` comes from
+  `index.html` + `src/` via `npm run bundle`; CI fails if it is stale. Never
+  hand-edit it. Two hand-made copies had already drifted apart and kept a fixed
+  defect alive in both — that is what the generator exists to prevent.
 - Drive the app before pushing a UI change: `npm run serve`, then
   http://localhost:8777/. Several real defects here were invisible in source
   and obvious on the first hover.
