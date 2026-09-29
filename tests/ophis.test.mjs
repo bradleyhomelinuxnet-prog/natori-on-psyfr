@@ -746,3 +746,72 @@ test('MANUAL §8: the job-dates run reproduces at its stated Current date', () =
     ['05/18/2024', 2, 2, 0], ['06/30/2022', 1, 1, 0], ['02/28/2023', 1, 1, 0],
   ]);
 });
+
+/* ------------------------------------------- the shared-origin legacy blob -- */
+
+/**
+ * `save_blob` is the ORIGINAL program's localStorage key, and this one reads it
+ * as its legacy key. localStorage is scoped to an ORIGIN, not a path, and
+ * GitHub Pages serves every path of a site from one origin — with the original
+ * shipping at `ophis/`. So the original writes a blob this program then reads.
+ *
+ * Its X-Dates carry `date`/`time`; these carry `y`/`m`/`d`. Adopted raw, every
+ * anchor instant came out NaN: Y clamped to 36500, all sixteen operations
+ * non-finite, an empty table, and `errors` empty so nothing was shown. Reading
+ * it through the `.oph` normaliser is what stops that.
+ */
+test('a legacy blob in the original shape normalises instead of casting to nothing', async () => {
+  const { readDocument, VALIDATION } = await import('../src/io/oph.js');
+
+  const legacy = {
+    app_version: '12',
+    iso_events: [
+      {
+        name: 'From the original',
+        // The original's own serialised form — note `date`, not y/m/d.
+        x_dates: [
+          { date: '07/04/2026', time: '00:00', enabled: true },
+          { date: '08/20/2026', time: '00:00', enabled: true },
+        ],
+        operations: [{ equation: 'X2+oph_round(Y)', weight: 1, enabled: true }],
+      },
+    ],
+  };
+
+  const { document: doc, errors } = readDocument(legacy, VALIDATION.LOOSE);
+  assert.deepEqual(errors, [], 'the original shape is readable, not an error');
+
+  const ev = doc.iso_events[0];
+  assert.deepEqual(
+    ev.x_dates.map((x) => [x.y, x.m, x.d]),
+    [[2026, 7, 4], [2026, 8, 20]],
+    'date strings become y/m/d'
+  );
+
+  // The point of the fix: it now casts.
+  const r = runOphis(ev, { now: Date.UTC(2026, 7, 25) });
+  assert.deepEqual(r.errors, []);
+  assert.equal(r.y_structs[0].rotation_count_y, 47, 'Y is real, not clamped to the maximum');
+  assert.ok(r.processed_z_dates.length > 0, 'projections survive');
+  assert.equal(
+    r.diagnostics.filter((d) => d.kind === 'NON_FINITE_Z').length,
+    0,
+    'no operation produced a non-finite offset'
+  );
+});
+
+test('adopting that same blob raw is what produced the empty table', () => {
+  // The pre-fix behaviour, asserted directly so the regression is legible.
+  const raw = {
+    ...makeIsoEvent(0),
+    x_dates: [
+      { date: '07/04/2026', time: '00:00', enabled: true },
+      { date: '08/20/2026', time: '00:00', enabled: true },
+    ],
+  };
+  const r = runOphis(raw, { now: Date.UTC(2026, 7, 25) });
+
+  assert.equal(r.processed_z_dates.length, 0, 'nothing survives');
+  assert.deepEqual(r.errors, [], 'and nothing is reported — which is why it looked like a dead page');
+  assert.ok(r.diagnostics.some((d) => d.kind === 'NON_FINITE_Z'));
+});
