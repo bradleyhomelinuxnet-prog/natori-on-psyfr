@@ -205,19 +205,19 @@ function readIsoEvent(raw, index, out, mode) {
 }
 
 /**
- * Parse a `.oph` document.
+ * Normalise an already-parsed document object.
+ *
+ * Split out of `parseDocument` because the restore path has an object, not
+ * text, and must go through exactly the same normalisation. Adopting a stored
+ * blob raw was a real defect: the original program's X-Dates carry `date` and
+ * `time` where this one carries `y`/`m`/`d`, so a raw adopt produced anchors
+ * whose instants were NaN, a Y clamped to the maximum, and sixteen non-finite
+ * offsets — an empty table with no error shown.
  *
  * @returns {{document: object|null, errors: string[], warnings: string[]}}
  */
-export function parseDocument(text, mode = VALIDATION.LOOSE) {
+export function readDocument(raw, mode = VALIDATION.LOOSE) {
   const out = { errors: [], warnings: [] };
-
-  let raw;
-  try {
-    raw = JSON.parse(text);
-  } catch (e) {
-    return { document: null, errors: [`Could not parse JSON due to error: ${e.message}`], warnings: [] };
-  }
 
   const events = Array.isArray(raw) ? raw : raw?.iso_events;
   if (!Array.isArray(events)) {
@@ -242,6 +242,21 @@ export function parseDocument(text, mode = VALIDATION.LOOSE) {
     errors: [],
     warnings: out.warnings,
   };
+}
+
+/**
+ * Parse a `.oph` document.
+ *
+ * @returns {{document: object|null, errors: string[], warnings: string[]}}
+ */
+export function parseDocument(text, mode = VALIDATION.LOOSE) {
+  let raw;
+  try {
+    raw = JSON.parse(text);
+  } catch (e) {
+    return { document: null, errors: [`Could not parse JSON due to error: ${e.message}`], warnings: [] };
+  }
+  return readDocument(raw, mode);
 }
 
 /** Every default an event could be compared against, for the minifier. */

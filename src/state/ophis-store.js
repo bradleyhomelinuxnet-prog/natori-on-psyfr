@@ -11,7 +11,7 @@
 
 import { runOphis } from '../core/ophis/run.js';
 import { makeIsoEvent, makeXDate } from './iso-event.js';
-import { APP_VERSION, SCHEMA_VERSION } from '../io/oph.js';
+import { APP_VERSION, SCHEMA_VERSION, readDocument, VALIDATION } from '../io/oph.js';
 
 const KEY = {
   document: 'psyfr:document',
@@ -265,15 +265,28 @@ export function persistDocument() {
   });
 }
 
-/** Restore the working document, accepting the legacy key on first read. */
+/**
+ * Restore the working document, accepting the legacy key on first read.
+ *
+ * Everything read here goes through the `.oph` normaliser, including our own
+ * `psyfr:document`. That is not belt-and-braces: `save_blob` is the ORIGINAL
+ * program's key, and on a host that serves both programs from one origin —
+ * GitHub Pages serves every path of a site from the same origin, and the
+ * original ships at `ophis/` — the original writes a blob this one then reads.
+ * Its X-Dates carry `date`/`time` where these carry `y`/`m`/`d`, so adopting
+ * the events raw gave anchors whose instants were NaN: Y clamped to 36500,
+ * every operation non-finite, an empty table, and no error on screen.
+ */
 export function restoreDocument() {
   const blob = readJSON(KEY.document) ?? readJSON(KEY.legacyDocument);
   if (!blob || !Array.isArray(blob.iso_events) || !blob.iso_events.length) return false;
-  state.document = {
-    app_version: blob.app_version ?? APP_VERSION,
-    schema: blob.schema ?? SCHEMA_VERSION,
-    iso_events: blob.iso_events,
-  };
+
+  const { document: doc, warnings } = readDocument(blob, VALIDATION.LOOSE);
+  if (!doc) return false;
+
+  for (const w of warnings) log('restore', w);
+
+  state.document = doc;
   state.currentEventIndex = Math.min(
     Number(state.options.current_iso_event_index) || 0,
     state.document.iso_events.length - 1

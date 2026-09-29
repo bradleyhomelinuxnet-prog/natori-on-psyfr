@@ -222,7 +222,6 @@
     --map-veil: rgba(40, 30, 12, 0.34); --map-halo: rgba(255, 253, 246, 0.9);
   }
 }
-
 </style>
 <style>
 /* ============================================================================
@@ -1062,7 +1061,6 @@ pre.blob {
     scroll-behavior: auto !important;
   }
 }
-
 </style>
 </head>
 <body>
@@ -1078,7 +1076,8 @@ pre.blob {
         <button id="zoomReset" type="button" aria-label="Default text size" title="Default text size">A</button>
         <button id="zoomUp" type="button" aria-label="Larger text" title="Larger text">A+</button>
       </div>
-      <a class="btn" href="PSYFR1.html" title="The chronology engine: the same cast read against the Chronicon">↗ PSYFR</a>
+      <a class="btn" href="manual.html" title="Plain-English: use it on your own dates">Manual</a>
+      <a class="btn" href="field-guide.html" title="A ten-minute tour">Guide</a>
       <button id="themeBtn" class="btn" type="button" aria-label="Change theme">☾ Dark</button>
       <span id="savedBadge" class="savedbadge" role="status">Saved</span>
     </div>
@@ -1429,7 +1428,7 @@ pre.blob {
         i++;
         continue;
       }
-      if (c === "x" || c === "\xD7") {
+      if (c === "x" || c === "×") {
         tokens.push({ type: TOKEN.OP, value: "*", pos: i });
         i++;
         continue;
@@ -1533,26 +1532,26 @@ pre.blob {
     OPH_TAU: 6.283185307179586
   };
   var CONSTANT_NOTES = {
-    OPH_PHI: "Golden ratio \u03C6",
-    OPH_PI: "\u03C0 truncated to 3.14 (as the original \u2014 not Math.PI)",
-    OPH_CRV: "Curvature \xB7 \u03C0 \xD7 \u03C6 rounded to 5.08",
-    OPH_HEP: "Hepta-cycle \xB7 7.01",
-    OPH_SAROS: "Saros eclipse cycle \xB7 6585.32 days (18.03 yr)",
-    OPH_INEX: "Inex eclipse cycle \xB7 10571.95 days (28.94 yr)",
-    OPH_LUNATION: "Mean synodic month \xB7 29.5306 days",
-    OPH_YEAR_TROPICAL: "Tropical year \xB7 365.24219 days",
-    OPH_YEAR_SIDEREAL: "Sidereal year \xB7 365.25636 days",
-    OPH_YEAR_ANOMALISTIC: "Anomalistic year \xB7 365.25964 days",
+    OPH_PHI: "Golden ratio φ",
+    OPH_PI: "π truncated to 3.14 (as the original — not Math.PI)",
+    OPH_CRV: "Curvature · π × φ rounded to 5.08",
+    OPH_HEP: "Hepta-cycle · 7.01",
+    OPH_SAROS: "Saros eclipse cycle · 6585.32 days (18.03 yr)",
+    OPH_INEX: "Inex eclipse cycle · 10571.95 days (28.94 yr)",
+    OPH_LUNATION: "Mean synodic month · 29.5306 days",
+    OPH_YEAR_TROPICAL: "Tropical year · 365.24219 days",
+    OPH_YEAR_SIDEREAL: "Sidereal year · 365.25636 days",
+    OPH_YEAR_ANOMALISTIC: "Anomalistic year · 365.25964 days",
     OPH_YEAR_IDEAL: "The ideal 360-day year",
-    OPH_SOTHIC: "Sothic cycle \xB7 1461 years",
-    OPH_PRECESSION: "Precession of the equinoxes \xB7 25772 years",
-    OPH_JUPSAT: "Jupiter\u2013Saturn great conjunction \xB7 19.86 years",
-    OPH_SATURN: "Saturn return \xB7 29.4571 years",
-    OPH_JUPITER: "Jupiter return \xB7 11.862 years",
-    OPH_URANUS: "Uranus return \xB7 84.0205 years",
-    OPH_CHIRON: "Chiron return \xB7 50.42 years",
+    OPH_SOTHIC: "Sothic cycle · 1461 years",
+    OPH_PRECESSION: "Precession of the equinoxes · 25772 years",
+    OPH_JUPSAT: "Jupiter–Saturn great conjunction · 19.86 years",
+    OPH_SATURN: "Saturn return · 29.4571 years",
+    OPH_JUPITER: "Jupiter return · 11.862 years",
+    OPH_URANUS: "Uranus return · 84.0205 years",
+    OPH_CHIRON: "Chiron return · 50.42 years",
     OPH_E: "Euler's number e",
-    OPH_TAU: "\u03C4 \u2014 one full turn in radians"
+    OPH_TAU: "τ — one full turn in radians"
   };
 
   // src/core/equation/functions.js
@@ -1603,16 +1602,16 @@ pre.blob {
     oph_abs: "Absolute value",
     oph_sqrt: "Square root of the absolute value",
     oph_flip: "Reverse the digits (decimal point keeps its position)",
-    oph_mod: "Remainder, always non-negative \u2014 oph_mod(a, b)",
-    oph_pow: "a raised to the power b \u2014 oph_pow(a, b)",
+    oph_mod: "Remainder, always non-negative — oph_mod(a, b)",
+    oph_pow: "a raised to the power b — oph_pow(a, b)",
     oph_log: "Natural logarithm (0 for non-positive input)",
-    oph_gcd: "Greatest common divisor \u2014 oph_gcd(a, b)",
-    oph_lcm: "Lowest common multiple \u2014 oph_lcm(a, b)",
-    oph_snap: "Snap to the nearest multiple \u2014 oph_snap(Y, 138)",
+    oph_gcd: "Greatest common divisor — oph_gcd(a, b)",
+    oph_lcm: "Lowest common multiple — oph_lcm(a, b)",
+    oph_snap: "Snap to the nearest multiple — oph_snap(Y, 138)",
     oph_sin: "Sine (radians)",
     oph_cos: "Cosine (radians)",
     oph_tan: "Tangent (radians)",
-    oph_atan2: "Angle of the point (x, y) \u2014 oph_atan2(y, x)"
+    oph_atan2: "Angle of the point (x, y) — oph_atan2(y, x)"
   };
 
   // src/core/equation/parser.js
@@ -1765,10 +1764,10 @@ pre.blob {
       constants: OPHIS_CONSTANTS,
       functions: OPHIS_FUNCTIONS,
       constantNotes: {
-        OPH_PI: "\u03C0 truncated to 3.14 \u2014 the Archaix value",
-        OPH_PHI: "Golden ratio \u03C6, to three places",
-        OPH_CRV: "Curvature \xB7 \u03C0 \xD7 \u03C6 rounded to 5.08",
-        OPH_HEP: "Hepta-cycle \xB7 7.01"
+        OPH_PI: "π truncated to 3.14 — the Archaix value",
+        OPH_PHI: "Golden ratio φ, to three places",
+        OPH_CRV: "Curvature · π × φ rounded to 5.08",
+        OPH_HEP: "Hepta-cycle · 7.01"
       },
       functionNotes: {
         oph_sqrt: "Square root (NaN for a negative)",
@@ -2708,7 +2707,7 @@ pre.blob {
   var OPHIS_PACKS = {
     "ophis-gte-v10": {
       id: "ophis-gte-v10",
-      label: "Ophis v10+ \xB7 16 operations",
+      label: "Ophis v10+ · 16 operations",
       note: "The live default. Adds the two hepta-cycle operations to the v8 table.",
       operations: GTE_V10.map(row("ophis-gte-v10"))
     },
@@ -2720,7 +2719,7 @@ pre.blob {
      */
     "ophis-gte-v8": {
       id: "ophis-gte-v8",
-      label: "Ophis v8-v9 \xB7 15 operations",
+      label: "Ophis v8-v9 · 15 operations",
       note: "The v9 default. The v12 table is this plus the X2 hepta-cycle, and nothing else.",
       operations: GTE_V10.slice(0, 15).map(row("ophis-gte-v8"))
     },
@@ -2737,13 +2736,13 @@ pre.blob {
      */
     "ophis-lte-v7": {
       id: "ophis-lte-v7",
-      label: "Ophis v7 and earlier \xB7 15 operations",
+      label: "Ophis v7 and earlier · 15 operations",
       note: "The v7 table: the first fifteen, with #5 and #9 still at weight 0.5.",
       operations: GTE_V10.slice(0, 15).map(([eq, w, note], i) => [eq, i === 5 || i === 9 ? 0.5 : w, note]).map(row("ophis-lte-v7"))
     },
     "ophis-xtras": {
       id: "ophis-xtras",
-      label: "Extras \xB7 10 operations",
+      label: "Extras · 10 operations",
       note: "Hand-written variants that never shipped. Ship disabled; enable to experiment.",
       operations: XTRAS.map(row("ophis-xtras")).map((o) => ({ ...o, enabled: false }))
     }
@@ -3071,7 +3070,6 @@ pre.blob {
   };
   var DEFAULT_OPTIONS = {
     start_screen: "work",
-    eclipse_table: "original",
     local_time_offset_in_millis: 0,
     current_iso_event_index: 0,
     auto_recalculate_z_dates: true,
@@ -3233,21 +3231,13 @@ pre.blob {
       global_options: state.options
     });
   }
-  /**
-   * `save_blob` is the ORIGINAL program's localStorage key, read here as the
-   * legacy key. localStorage is scoped to an ORIGIN, not a path, so on any host
-   * serving both programs the original writes a blob this one then reads. Its
-   * X-Dates carry `date`/`time` where these carry `y`/`m`/`d`: adopted raw,
-   * every anchor instant came out NaN and the table cast nothing, with no error
-   * shown. Everything restored goes through the normaliser.
-   */
   function restoreDocument() {
     const blob = readJSON(KEY.document) ?? readJSON(KEY.legacyDocument);
     if (!blob || !Array.isArray(blob.iso_events) || !blob.iso_events.length) return false;
-    const parsed = readDocument(blob, VALIDATION.LOOSE);
-    if (!parsed.document) return false;
-    for (const w of parsed.warnings) log("restore", w);
-    state.document = parsed.document;
+    const { document: doc, warnings } = readDocument(blob, VALIDATION.LOOSE);
+    if (!doc) return false;
+    for (const w of warnings) log("restore", w);
+    state.document = doc;
     state.currentEventIndex = Math.min(
       Number(state.options.current_iso_event_index) || 0,
       state.document.iso_events.length - 1
@@ -3310,7 +3300,7 @@ pre.blob {
       id: "export",
       label: "Export",
       title: "Export events",
-      lede: "The document as text \u2014 copy it, or write it to a file."
+      lede: "The document as text — copy it, or write it to a file."
     },
     {
       id: "zexport",
@@ -3322,7 +3312,7 @@ pre.blob {
       id: "audit",
       label: "Audit",
       title: "Audit",
-      lede: "How a projection was derived, one arithmetic step at a time \u2014 and everything the engine wanted to tell you."
+      lede: "How a projection was derived, one arithmetic step at a time — and everything the engine wanted to tell you."
     },
     {
       id: "about",
@@ -3380,7 +3370,7 @@ pre.blob {
     $("zoomUp").onclick = () => applyZoom((Number(state.options.text_zoom) || 1) + ZOOM_STEP);
     const themeBtn = $("themeBtn");
     const cycle = { dark: "light", light: "system", system: "dark" };
-    const face = { dark: "\u263E Dark", light: "\u2600 Light", system: "\u25D1 System" };
+    const face = { dark: "☾ Dark", light: "☀ Light", system: "◑ System" };
     const paint = () => {
       themeBtn.textContent = face[state.options.theme] ?? face.dark;
     };
@@ -3570,15 +3560,15 @@ pre.blob {
   }
 
   // src/ui/ophis/map.js
-  var TILE_URL = (z, x, y) => `img/offline_map/map/${z}/${x}/${y}.png`;
+  var TILE_URL = (z, x, y) => `assets/map/${z}/${x}/${y}.jpg`;
   var GRATICULE_STEP = [60, 60, 30, 30, 15, 10];
   var DRAG_SLOP = 4;
   function readableCoordinate(value, axis) {
     const hemi = axis === "lat" ? value < 0 ? "S" : "N" : value < 0 ? "W" : "E";
-    return `${Math.abs(value).toFixed(1)}\xB0 ${hemi}`;
+    return `${Math.abs(value).toFixed(1)}° ${hemi}`;
   }
   function sunsetLabel(lat, long, whenMs) {
-    if (Math.abs(lat) > LAT_LIMIT) return "outside the \xB165 band";
+    if (Math.abs(lat) > LAT_LIMIT) return "outside the ±65 band";
     const ms = roundToNearestMinute(sunsetMs(whenMs, lat, long));
     if (!Number.isFinite(ms)) return "no sunset (polar day or night)";
     const d = new Date(ms);
@@ -3602,7 +3592,7 @@ pre.blob {
       surface.append(tileLayer, overlay);
       const hudCoords = el("b", { text: "" });
       const hudSunset = el("span", { text: "" });
-      const hud = el("div.maphud", {}, [hudCoords, el("span.sep", { text: "\xB7" }), hudSunset]);
+      const hud = el("div.maphud", {}, [hudCoords, el("span.sep", { text: "·" }), hudSunset]);
       const zoomLabel = el("span.mapzoom", { text: "" });
       const zoomBtn = (label, delta, title) => el("button.btn.sm", { type: "button", text: label, title, onclick: () => setZoom(zoom + delta) });
       const confirm = el("button.btn.primary", {
@@ -3614,7 +3604,7 @@ pre.blob {
         el("header", {}, [
           el("h3", { text: "Pick a location" }),
           el("div.grow", {}),
-          zoomBtn("\u2212", -1, "Zoom out"),
+          zoomBtn("−", -1, "Zoom out"),
           zoomLabel,
           zoomBtn("+", 1, "Zoom in")
         ]),
@@ -3622,7 +3612,7 @@ pre.blob {
           surface,
           hud,
           el("p.note", {
-            text: "Latitude is clamped to \xB165: every sunset library becomes unreliable nearer the poles, and the original clamped there for the same reason. Coordinates round to a tenth of a degree."
+            text: "Latitude is clamped to ±65: every sunset library becomes unreliable nearer the poles, and the original clamped there for the same reason. Coordinates round to a tenth of a degree."
           })
         ]),
         el("footer", {}, [
@@ -3949,11 +3939,11 @@ pre.blob {
             }
           }),
           el("div.sub", {
-            text: `${ev.x_dates.length} X-Date${ev.x_dates.length === 1 ? "" : "s"} \xB7 ${ev.scope === EVENT_SCOPE.HH_MM ? "HH:MM" : "Days"}`
+            text: `${ev.x_dates.length} X-Date${ev.x_dates.length === 1 ? "" : "s"} · ${ev.scope === EVENT_SCOPE.HH_MM ? "HH:MM" : "Days"}`
           })
         ]),
-        iconBtn("\u29C9", `Clone ${ev.name}`, () => cloneEvent(i)),
-        iconBtn("\u2715", `Delete ${ev.name}`, async () => {
+        iconBtn("⧉", `Clone ${ev.name}`, () => cloneEvent(i)),
+        iconBtn("✕", `Delete ${ev.name}`, async () => {
           if (events.length <= 1) {
             toast("The document must keep at least one event.");
             return;
@@ -3974,7 +3964,7 @@ pre.blob {
       actions: [el("button.btn.sm", { type: "button", text: "+ Add", onclick: addEvent })],
       body: [
         el("p.note", {
-          text: "An Iso-Event \u2014 Isometric Event \u2014 is an event that has repeated itself two or more times in the past, and will likely repeat again."
+          text: "An Iso-Event — Isometric Event — is an event that has repeated itself two or more times in the past, and will likely repeat again."
         }),
         el("div.rowlist", {}, rows)
       ]
@@ -4029,7 +4019,7 @@ pre.blob {
         );
       }
       children.push(
-        iconBtn("\u2715", `Remove ${prefix}${i + 1}`, () => {
+        iconBtn("✕", `Remove ${prefix}${i + 1}`, () => {
           list.splice(i, 1);
           touch();
         }, "danger")
@@ -4059,7 +4049,7 @@ pre.blob {
       }
       list.push(makeXDate(y, m, d));
       touch();
-      toast("Added today as a control \u2014 every historical date now casts against it.");
+      toast("Added today as a control — every historical date now casts against it.");
     };
     return panel(title, {
       count: `${list.filter((x) => x.enabled).length} / ${list.length}`,
@@ -4098,8 +4088,8 @@ pre.blob {
         key === "x_dates" ? el("div.formrow", { style: "margin-top:6px" }, [
           el("button.btn", {
             type: "button",
-            text: "\u2609 Today \xB7 Protocol Prime",
-            title: "The author\u2019s operating procedure: enter the date the projection is being conducted as a control alongside the historical dates. Three controls give three spans \u2014 and three times the projections.",
+            text: "☉ Today · Protocol Prime",
+            title: "The author’s operating procedure: enter the date the projection is being conducted as a control alongside the historical dates. Three controls give three spans — and three times the projections.",
             onclick: addToday
           })
         ]) : null
@@ -4144,7 +4134,7 @@ pre.blob {
     });
     const hidden = state.results?.hidden ?? 0;
     return panel("Filters", {
-      count: state.stale ? "\u2014" : `${hidden} hidden`,
+      count: state.stale ? "—" : `${hidden} hidden`,
       actions: [
         el("button.btn.sm", {
           type: "button",
@@ -4196,24 +4186,7 @@ pre.blob {
       body: [
         ...base.map((o) => toggle(o, CHART_OPTIONS.indexOf(o))),
         group("Moon phases", moons),
-        group("Eclipses", eclipses),
-        el("div", {}, [
-          el("div", { style: "font:600 9.5px/1 var(--font-body);letter-spacing:.16em;text-transform:uppercase;color:var(--faint);margin:10px 0 4px", text: "Eclipse table" }),
-          el("select", {
-            "aria-label": "Eclipse table",
-            style: "width:100%;margin:2px 0 4px",
-            onchange: (e) => {
-              state.options.eclipse_table = e.target.value;
-              setEclipseSource(e.target.value === "canon" ? "canon" : "desktop");
-              saveOptions();
-              notify();
-            }
-          }, [
-            el("option", { value: "original", selected: state.options.eclipse_table !== "canon", text: "Original \u2014 as the desktop app shipped it" }),
-            el("option", { value: "canon", selected: state.options.eclipse_table === "canon", text: "NASA canon \u2014 calendar, \u0394T and year corrected" })
-          ]),
-          el("p.note", { text: "The original table mis-dates every eclipse before 1582 and invents about half of those between 1969 and 2068. The canon is rebuilt from NASA\u2019s catalogue and checked against it. This only changes what the chart draws; it never touches a score." })
-        ])
+        group("Eclipses", eclipses)
       ]
     });
   }
@@ -4222,7 +4195,7 @@ pre.blob {
     return anchor ? toInstant(anchor, ev) : now();
   }
   function sunsetPreview(ev) {
-    if (Math.abs(ev.lat) > LAT_LIMIT) return "latitude outside the \xB165 band";
+    if (Math.abs(ev.lat) > LAT_LIMIT) return "latitude outside the ±65 band";
     const ms = roundToNearestMinute(sunsetMs(previewInstant(ev), ev.lat, ev.long));
     if (!Number.isFinite(ms)) return "no sunset there on that date";
     const d = new Date(ms);
@@ -4265,7 +4238,7 @@ pre.blob {
         el("button.btn.sm", {
           type: "button",
           title: "Pick the coordinates off the offline map",
-          text: "\u25CD Pick on map",
+          text: "◍ Pick on map",
           onclick: async () => {
             const picked = await openMapPicker({
               lat: ev.lat,
@@ -4323,7 +4296,7 @@ pre.blob {
         ]),
         el("p.note", {
           style: "margin-top:12px;margin-bottom:0",
-          text: hhmm ? "Latitude is clamped to \xB165 \u2014 every sunset library becomes unreliable nearer the poles." : "Days scope is locked to UTC, so the same document gives the same answer on any machine."
+          text: hhmm ? "Latitude is clamped to ±65 — every sunset library becomes unreliable nearer the poles." : "Days scope is locked to UTC, so the same document gives the same answer on any machine."
         })
       ]
     });
@@ -4336,10 +4309,10 @@ pre.blob {
     const nowStr = fmtDate(now());
     return el("div.statusbar", {}, [
       stat(enabled, "anchors"),
-      stat(r ? r.y_structs.length : "\u2014", "pairs"),
+      stat(r ? r.y_structs.length : "—", "pairs"),
       stat(ev.operations.filter((o) => o.enabled).length, "operations"),
-      stat(r ? r.processed_z_dates.length : "\u2014", "Z-Dates"),
-      stat(r ? r.hidden : "\u2014", "hidden"),
+      stat(r ? r.processed_z_dates.length : "—", "Z-Dates"),
+      stat(r ? r.hidden : "—", "hidden"),
       el("div.grow", {}),
       el("div.field", { style: "flex:0 0 150px" }, [
         el("label", { text: "Current date" }),
@@ -4382,7 +4355,7 @@ pre.blob {
         key: "t_dates",
         title: "T-Dates",
         addLabel: "+ T-Date",
-        note: "T-Dates (Target Dates) are a way to only show Z-Dates for the future dates you are interested in \u2014 e.g. when a team will actually play again. Leave empty to see everything."
+        note: "T-Dates (Target Dates) are a way to only show Z-Dates for the future dates you are interested in — e.g. when a team will actually play again. Leave empty to see everything."
       }),
       filtersPanel(),
       chartPanel()
@@ -4394,8 +4367,8 @@ pre.blob {
 
   // src/ui/ophis/results.js
   var MAX_ROWS = 500;
-  var GLYPH = { 2: "\u264A", 3: "\u25B2", 4: "\u25C6" };
-  var glyphFor = (n) => n >= 5 ? "\u25CF" : GLYPH[n] ?? "";
+  var GLYPH = { 2: "♊", 3: "▲", 4: "◆" };
+  var glyphFor = (n) => n >= 5 ? "●" : GLYPH[n] ?? "";
   var COLUMNS = [
     { key: null, label: "", sort: null, hide: null },
     {
@@ -4445,14 +4418,14 @@ pre.blob {
     const cls = operationClass(op).toLowerCase();
     const pill = el("span", { class: `pill ${cls}`, tabindex: "0" }, [
       `O${r.operation_ordinal + 1}`,
-      el("sub", { text: `(X${ys.x_1_ordinal + 1}\u2192X${ys.x_2_ordinal + 1})` })
+      el("sub", { text: `(X${ys.x_1_ordinal + 1}→X${ys.x_2_ordinal + 1})` })
     ]);
     tooltip(pill, () => [
       ["Equation", r.operation.equation],
       ["Substituted", substituted(r.operation.equation, intToDecimalString(r.rotation_count_y))],
       ["Type", operationClass(op)],
       ["Weight", String(op?.weight ?? r.operation.weight)],
-      ["Anchor", `${r.anchor} \u2014 ${fmtDate(r.x_instant_base)}`],
+      ["Anchor", `${r.anchor} — ${fmtDate(r.x_instant_base)}`],
       ["Y", intToDecimalString(r.rotation_count_y)],
       ["Z-Value", String(r.z_value)],
       ["Rotations to Z", intToDecimalString(r.rotation_count_z)],
@@ -4487,7 +4460,7 @@ pre.blob {
         }
       }, [
         col.key === "date" ? `${col.label} (${state.results?.processed_z_dates.length ?? 0})` : col.label,
-        el("span.arrow", { text: col.sort === SORT_TYPE.DATE ? "\u2191" : "\u2193" })
+        el("span.arrow", { text: col.sort === SORT_TYPE.DATE ? "↑" : "↓" })
       ])
     ]);
     if (active) th.setAttribute("aria-sort", col.sort === SORT_TYPE.DATE ? "ascending" : "descending");
@@ -4495,7 +4468,7 @@ pre.blob {
   }
   function emptyPanel() {
     return el("div.empty", {}, [
-      el("div.mark", { text: "\u25C7" }),
+      el("div.mark", { text: "◇" }),
       el("h3", { text: "No results" }),
       el("p", { text: "No results. You probably have to loosen up a filter." }),
       el("button.btn", {
@@ -4514,7 +4487,7 @@ pre.blob {
   }
   function noInputPanel(errors) {
     return el("div.empty", {}, [
-      el("div.mark", { text: "\u2316" }),
+      el("div.mark", { text: "⌖" }),
       el("h3", { text: "Nothing to cast yet" }),
       el("p", { text: errors[0] ?? "At least 2 X-Dates are required." }),
       el("p", {
@@ -4581,7 +4554,7 @@ pre.blob {
           ])
         ]),
         el("td", { class: opts.hide_msrf_col ? "hidden-col" : "" }, [
-          z.resonance_matches.length ? el("div.pills", {}, z.resonance_matches.map((m) => msrfPill(m, z))) : el("span", { style: "color:var(--faint)", text: "\u2014" })
+          z.resonance_matches.length ? el("div.pills", {}, z.resonance_matches.map((m) => msrfPill(m, z))) : el("span", { style: "color:var(--faint)", text: "—" })
         ])
       ];
       if (!opts.hide_operations_col_completely) {
@@ -4611,7 +4584,7 @@ pre.blob {
       el("div.tablewrap", { class: state.stale ? "stale" : "" }, [
         el("table", {}, [
           el("caption", {
-            text: capped ? `Showing ${MAX_ROWS} of ${rows.length} Z-Dates \xB7 ${r.hidden} hidden by filters \xB7 click a row to audit it` : `${rows.length} Z-Date${rows.length === 1 ? "" : "s"} \xB7 ${r.hidden} hidden by filters \xB7 click a row to audit it`
+            text: capped ? `Showing ${MAX_ROWS} of ${rows.length} Z-Dates · ${r.hidden} hidden by filters · click a row to audit it` : `${rows.length} Z-Date${rows.length === 1 ? "" : "s"} · ${r.hidden} hidden by filters · click a row to audit it`
           }),
           el("thead", {}, [el("tr", {}, visible.map((c) => headerCell(c, sortType)))]),
           el("tbody", {}, body)
@@ -4680,31 +4653,8 @@ pre.blob {
   var ECL_L_D = "178,177,177,325,177,177,177,178,176,503,177,177,178,176,178,502,32927,175,178,176,179,176,502,178,176,178,177,502,177,177,177,178,177,502,177,177,178,176,178,502,177,178,176,178,502,176,179,176,178,176,502,178,177,177,177,502,178,177,177,177,177,503,176,178,177,177,178,501,177,178,177,177,502,177,178,176,178,177,502,178,176,178,177,177,324,178,177,177,178,176,503,177,177,177,177,178,502,177,177,177,178,176,326,354,176,179,176,502,178,176,178,177,177,502,177,177,178,176,503,177,177,178,176,178,502,177,178,176,178,177,325,355,176,178,176,502,178,177,177,177,177,503,177,177,177,177,503,176,178,177,177,177,502,177,178,176,178,177,325,355,176,178,177,502,177,177,177,178,177,679,177,178,176,502,177,177,177,177,178,502,176,178,177,178,176,326,354,176,178,177,502,178,177,177,177,177,679,177,178,176,680,177,178,176,178,502,177,178,176,178,177,680,176,178,176,502,178,177,177,178,176,680,177,177,177,178,501,178,177,177,177,503,176,178,176,178,177,680,176,178,177,502,354,177,178,176,680,177,178,176,178,177,325,177,177,177,178,502,176,178,177,178,176,680,176,178,177,355,147,355,177,177,177,679,177,178,176,179,176,502,178,176,178,502,355,176,178,177,679,177,178,176,178,177,502,177,178,176,680,177,177,177,178,176,502,178,177,177,177,326,354,176,178,177,680,176,177,177,177,177,502,177,178,176,355,325,177,178,176,178,177,502,177,177,178,177,325,354,177,178,176,680,177,177,177,177,178,502,176,178,177,354,325,177,178,177,177,177,502,178,176,178,177,325,355,176,178,177,679,177,177,178,176,178,502,177,178,176,354,326,177,177,177,178,176,502,178,177,177,177,680,176,178,177,355,325,176,178,177,177,178,501,177,178,176,178,177,502,178,176,178,177,502,177,177,178,177,177,502,177,178,176,355,325,177,177,177,177,178,502,176,178,177,178,176,502,178,177,177,177,502,178,176,178,177,177,503,176,178,177,354,502,177,178,176,178,502,177,178,176,178,176,503,177,177,178,176,502,178,177,177,177,177,503,176,178,177,177,178,501,177,178,176,179,501,177,178,176,178,177,502,177,177,178,177,680,176,178,176,178,502,177,177,177,177,178,502,177,177,177,178,176,326,176,178,177,178,176,502,178,177,177,177,177,503,176,178,177,177,503,176,178,177,177,177,502,177,178,176,178,176,326,177,178,176,178,176,503,177,177,177,177,177,503,176,178,177,177,503,176,178,177,177,178,501,177,178,176,179,176,325,177,178,176,178,177,502,177,177,178,177,177,503,176,178,176,178,177,325,177,177,177,177,178,502,177,177,177,178,176,325,177,178,177,178,176,502,178,177,177,177,177,503,176,178,177,177,177,325,177,178,177,177,177,502,177,178,176,177,176,503,177,177,178,176,502,178,177,177,177,177,503,176,178,177,177,178,501,178,177,177,178,501,177,178,176,179,176,502,178,176,178,177,502,178,176,178,177,177,503,176,178,176,178,177,502,177,177,177,178,502,176,178,177,178,176,502,178,177,177,177,502,178,176,178,177,177,503,176,178,177,177,177,502,177,178,176,178,502,177,178,176,178,176,503,177,177,178,177,177,502,177,177,177,177,503,176,178,177,177,178,502,177,177,177,178,176,325,177,178,176,179,176,502,178,176,178,177,177,503,176,178,177,177,502,177,178,176,178,177,502,177,178,176,178,176,326,176,178,177,178,176,502,178,177,177,177,177,503,176,178,177,177,503,176,177,177,177,177,502,177,178,176,178,177,325,177,178,176,178,176,503,177,177,178,177,177,502,177,177,177,177,178,325,176,178,177,177,178,502,176,178,177,178,176,325,177,178,176,178,177,502,178,176,178,177,177,503,176,178,177,177,177,325,177,177,177,177,178,502,177,178,176,178,176,502,178,177,178,176,502,178,177,177,177,177,503,176,178,177,177,178,501,178,177,177,177,502,177,178,176,178,177,502,178,176,178,177,502,177,177,177,178,176,503,177,177,177,177,178,502,177,177,177,178,502,176,178,176,179,176,502,178,176,178,177,680,176,178,177,177,503,176,178,177,177,177,502,177,178,176,178,502,177,178,176,178,176,503,177,177,178,176,178,501,177,177,177,177,503,176,178,177,177,178,501,177,178,177,177,177,325,355,176,178,177,502,178,176,178,177,177,502,177,177,178,176,503,177,177,177,177,178,502,177,177,177,178,176,326,354,176,179,176,502,178,176,178,177,177,503,176,178,177,177,503,176,178,177,177,177,502,177,178,176,178,177,325,355,176,178,176,502,178,177,177,177,177,503,177,177,177,177,178,325,176,178,177,177,177,502,177,178,176,178,177,680,176,178,177,502,177,177,178,177,177,502,177,177,178,176,178,325,177,177,177,177,178,502,177,177,177,178,176,680,176,179,176,502,178,176,178,177,177,503,176,178,177,177,178,501,178,177,177,177,502,177,178,176,178,176,681,176,178,176,680,177,177,177,177,503,176,178,177,177,178,501,178,177,177,177,502,355,176,179,176,680,176,178,177,354,502,178,177,177,502,177,177,177,177,178,502,177,177,177,178,502,354,177,178,176,680,176,178,177,178,177,501,178,177,177,503,176,178,177,177,177,502,177,178,176,178,177,325,355,176,178,176,680,177,178,176,178,177,502,177,177,177,503,176,178,177,177,178,501,178,177,177,178,176,325,355,176,179,176,680,176,178,177,177,177,502,178,177,176,178,177,148,177,177,177,177,178,502,177,177,177,178,176,326,354,177,178,176,355,325,177,177,177,177,178,501,178,177,177,178,176,325,178,176,177,177,502,177,178,176,178,177,680,176,178,176,355,325,177,178,177,177,177,502,177,177,177,178,176,503,177,177,178,501,177,178,177,178,176,680,176,178,177,354,326,176,178,177,177,178,501,177,178,176,178,177,502,177,177,178,177,325,177,177,177,178,176,680,177,178,176,355,502,177,177,177,178,501,178,177,177,178,176,503,177,177,177,177,680,176,178,177,680,176,178,176,178,177,502,177,178,176,178,502,177,177,177,178,176,503,177,177,178,176,680,176,179,176,680,176,178,177,177,177,502,178,177,177,178,176,325,177,178,176,178,177,502,177,177,178,177,177,503,176,178,176,680,177,178,176,178,177,501,177,177,177,178,176,325,178,177,177,178,176,503,177,177,177,177,177,503,176,178,177,354,326,176,178,177,177,177,502,177,178,176,178,176,326,177,177,177,178,176,503,177,177,178,176,178,502,176,179,176,355,325,176,178,177,177,178,501,178,177,177,178,176,502,178,176,178,177,502,177,177,178,177,177,503,176,178,176,178,177,325,177,177,177,177,178,502,177,177,177,178,176,503,177,177,178,176,502,178,176,178,177,177,503,176,178,177,177,177,502,178,177,177,177,502,177,178,176,178,176,503,177,177,178,176,503,177,177,178,176,178,502,176,179,176,178,177,501,178,177,177,178,501,178,177,177,178,176,502,178,176,178,177,680,176,178,176,177,503,176,178,176,178,177,502,177,177,177,178,502,177,177,177,178,176,503,177,177,177,177,178,502,176,178,177,177,503,176,178,177,177,177,502,178,177,177,177,177,325,177,178,176,178,176,503,177,177,178,176,178,502,177,178,176,178,502,176,178,177,178,177,501,178,177,177,178,176,325,178,177,177,178,176,502,178,176,178,177,177,503,176,178,176,178,177,325,177,178,176,178,177,502,177,177,177,178,176,325,178,177,177,178,176,503,177,177,177,177,178,502,176,178,177,177,177,326,176,178,177,177,177,502,177,178,176,178,177,502,178,176,178,176,503,177,177,178,176,178,502,177,178,176,178,177,325,176,178,177,177,178,501,178,177,177,178,176,503,177,177,177,177,502,178,176,178,177,177,503,176,178,176,178,177,502,178,176,178,177,502,177,177,177,178,176,503,177,177,178,176,680,177,177,177,178,502,176,178,177,177,177,502,178,177,177,177,502,177,178,176,178,177,502,177,177,178,177,177,502,177,178,176,178,502,176,179,176,178,177,501,178,177,177,178,501,178,177,177,178,176,503,177,177,177,177,178,502,176,178,177,177,503,176,178,176,178,177,502,177,177,177,178,177,325,177,177,177,178,176,503,177,177,178,176,178,502,177,177,177,177,503,176,178,177,177,177,502,178,177,177,177,177,325,177,178,176,178,177,502,177,177,178,177,177,502,177,178,176,178,177,325,176,179,176,178,177,501,177,177,177,178,176,503,177,177,178,176,502,178,177,177,177,177,503,176,178,177,177,177,326,176,178,176,178,177,502,177,178,176,178,176,680,177,178,176,503,177,177,178,176,178,502,176,178,177,177,178,325,176,178,177,177,177,502,178,177,177,178,176,680,176,178,177,679,177,178,177,177,502,177,178,176,178,177,501,179,176,178,177,502,177,177,177,178,176,680,177,178,176,680,177,177,177,177,503,176,178,177,177,177,502,178,176,178,177,502,355,176,178,176,680,177,178,176,178,502,177,177,177,178,502,176,178,177,177,178,501,178,177,177,177,502,355,176,179,176,680,176,178,177,177,502,177,178,176,177,503,176,178,176,178,177,502,177,177,177,178,177,325,354,177,178,176,680,177,178,176,178,502,176,178,177,177,178,325,176,178,177,177,177,502,178,177,177,177,177,325,355,176,178,176,355,325,177,178,176,178,679,177,177,178,177,325,354,177,177,178,501,178,177,177,178,176,680,176,179,176,354,326,176,178,177,177,679,178,177,177,177,326,354,176,178,177,502,177,177,177,178,176,680,177,178,176,355,325,177,177,177,178,177,501,178,177,177,178,176,503,177,177,177,502,177,178,176,178,177,680,176,178,176,355,325,177,178,176,178,177,502,178,176,178,177,177,502,177,177,178,501,355,177,178,176,679,176,179,176,354,502,178,177,177,177,502,178,177,177,177,177,503,176,178,177,177,679,177,178,176,680,177,178,176,178,177,502,177,177,177,178,501,178,177,177,178,176,503,177,177,177,177,178,502,176,178,177,680,176,178,176,178,177,502,178,176,178,177,501,179,176,178,177,177,502,177,177,178,176,178,502,177,178,176,354,326,176,178,177,178,176,502,178,177,177,177,177,503,176,178,177,177,502,177,178,177,177,177,502,177,178,176,355,325,177,178,176,178,177,502,177,177,177,178,176,503,177,177,177,177,513,177,177,177,177,178,502,176,178,176,355,325,177,178,176,178,177,502,178,176,178,177,177,503,176,178,177,177,502,177,177,178,176,178,502,176,179,176,354,326,176,178,177,177,177,502,178,177,177,177,177,503,176,178,177,177,502,177,177,178,177,177,502,177,178,176,178,177,502,178,176,178,177,502,177,177,177,178,176,503,177,177,177,177,178,502,177,177,177,178,502,176,178,176,179,176,502,178,177,177,177,502,178,176,178,177,177,502,177,177,178,177,177,502,177,178,176,178,502,176,179,176,178,176,502,178,177,177,178,501,178,177,177,177,177,503,176,178,177,177,178,502,176,178,176,178,502,177,178,176,178,177,502,177,177,178,177,177,324,178,177,177,178,176,503,177,177,177,177,178,502,176,178,177,178,176,326,176,178,176,179,176,502,178,177,177,177,177,503,176,178,177,177,502,177,177,178,177,177,502,177,178,176,178,177,325,176,179,176,178,176,502,178,177,177,178,176,503,177,177,177,177,503,176,178,177,177,177,503,176,178,176,178,177,325,177,178,176,178,177,502,177,177,177,178,176,503,177,177,178,176,503,177,177,177,177,178,502,176,179,176,178,176,326,176,178,177,177,177,502,178,177,177,177,177,503,176,178,177,177,502,177,177,178,176,178,502,177,178,176,178,177,501,178,177,178,177,501,178,177,177,178,176,503,177,177,177,177,178,502,176,178,177,177,503,176,178,176,178,177,502,178,176,178,177,502,177,177,177,178,176,503,177,177,178,176,178,502,177,177,177,178,502,176,179,176,178,176,502,178,177,177,177,502,178,177,177,177,177,503,176,178,177,177,177,502,177,178,176,178,502,177,178,176,178,177,502,177,177,177,178,176,325,178,177,177,178,176,503,177,177,177,177,178,502,176,178,177,177,177,326,176,178,176,178,177,502,178,176,178,177,177,502,177,177,178,176,503,177,177,178,176,178,502,177,178,176,178,177,325,176,178,177,178,176,502,178,177,177,177,177,503,177,177,177,177,502,177,177,178,177,177,502,177,178,176,178,177,325,177,178,176,178,177,502,177,177,177,178,176,503,177,177,178,176,503,177,177,177,177,178,502,176,178,177,178,176,502,178,176,178,177,502,177,177,178,177,177,502,177,177,178,176,680,177,178,176,178,502,176,179,176,178,176,680,177,178,176,502,178,177,177,177,177,503,176,178,177,177,178,501,177,178,177,177,502,177,178,176,178,177,680,176,178,177,502,177,177,177,178,176,503,177,177,178,176,178,502,177,177,177,178,502,176,178,176,179,176,680,176,178,177,177,325,354,177,178,176,503,177,177,178,176,178,502,177,178,176,178,177,325,355,176,178,176,680,177,177,177,177,680,177,177,177,201,176,126,176,178,22,155,23,154,23,155,22,177,177,125,177,178,23,154,23,154,23,154,23,177,125,355,22,154,23,155,22,155,23,177,177,303,176,23,155,22,155,23,154,22,178,177,302,177,23,155,23,153,23,178,177,302,177,23,154,23,154,23,155,22,178,176,126,177,177,23,154,23,155,22,154,24,176,126,52,302,176,24,154,23,154,23,177,178,302,176,178,177,177,679,177,178,176,355,325,177,178,176,178,502,166,11,167,11,165,11,167,11,177,314,11,165,179,11,165,11,167,11,165,11,491,178,11,166,11,166,11,166,12,165,11,492,177,11,166,11,166,12,165,11,354,138,176,11,167,11,166,11,166,11,166,12,490,11,166,11,167,11,165,11,167,11,166,11,314,177,178,11,165,11,167,11,166,11,354,137,177,11,166,11,166,11,167,11,165,12,491,177,11,166,11,167,11,165,11,178,176,138,177,177,11,166,11,166,11,167,11,491,11,165,11,167,11,166,11,167,11,165,11,315,176,178,11,165,11,167,11,166,11,355,136,178,176,12,166,11,166,11,166,11,491,177,11,166,11,167,11,165,11,179,176,137,177,177,11,167,11,165,11,167,11,177,314,11,166,11,167,11,165,11,167,11,165,12,314,176,178,12,165,11,178,176,355,502,177,178,176,680,177,177,177,178,176,503,177,177,177,177,326,354,176,178,177,680,176,178,177,177,177,502,177,178,176,680,177,178,176,178,177,502,177,177,178,177,679,177,178,176,680,176,178,177,177,178,502,177,177,177,354,325,177,178,176,179,176,502,178,176,178,177,177,503,176,178,177,679,177,178,177,177,177,502,177,178,176,354,326,177,177,177,178,176,502,178,177,177,177,177,503,176,178,177,680,176,178,177,177,177,502,177,178,176,179,176,325,177,178,176,178,177,502,177,177,178,177,177,502,177,178,176,178,177,325,177,177,177,177,178,502,176,178,177,178,176,502,178,177,177,177,502,178,176,178,177,177,503,176,178,177,177,177,325,177,177,178,176,178,502,177,178,176,178,176,503,177,177,178,176,502,178,177,177,177,177,503,176,178,177,177,178,501,178,177,177,178,501,177,178,176,179,176,502,178,176,178,177,502,177,177,178,177,177,502,177,178,176,178,177,502,177,177,177,178,502,176,178,177,178,176,502,178,177,177,177,680,176,178,177,177,503,176,178,177,177,177,502,177,178,176,178,502,177,178,176,178,176,503,177,177,178,176,178,502,177,177,177,177,503,176,178,177,177,178,501,177,178,177,178,176,325,177,178,176,178,177,502,178,176,178,177,177,502,177,178,177,177,502,177,177,177,177,178,502,177,177,177,178,176,326,176,178,177,178,176,502,178,177,177,177,177,503,176,178,177,177,503,176,178,177,177,177,502,177,178,176,178,177,325,177,178,176,178,176,503,177,177,177,178,176,503,177,177,177,177,178,325,176,178,177,177,178,502,176,178,176,179,176,502,178,176,178,177,502,177,177,178,177,177,503,176,178,177,177,177,325,177,177,177,177,178,502,177,178,176,178,176,502,178,177,178,176,502,178,177,177,177,177,503,176,178,177,177,177,502,178,177,177,177,502,177,178,176,178,176,503,177,177,178,176,502,178,177,177,178,176,503,176,178,177,177,178,501,178,177,177,178,502,176,178,176,179,176,502,178,176,178,177,177,503,176,178,177,177,503,176,178,176,178,177,502,177,177,177,178,177,325,176,179,176,178,176,502,178,177,177,177,178,502,176,178,177,177,503,176,178,177,177,177,502,177,178,176,178,177,325,177,178,176,178,176,503,177,177,178,177,177,502,177,177,177,177,503,176,178,177,177,178,502,177,177,177,178,176,325,177,178,176,179,176,502,178,176,178,177,177,503,176,178,177,177,177,325,177,178,176,178,177,502,177,178,176,178,176,326,354,177,178,176,502,178,177,177,177,177,503,176,178,177,177,178,325,176,178,177,177,177,502,177,178,176,178,177,680,176,178,176,503,177,177,178,177,177,502,177,177,177,177,178,501,178,177,177,178,502,176,178,177,178,176,680,176,178,177,502,178,176,178,177,177,503,176,178,177,177,177,502,177,177,177,178,502,177,178,176,178,176,680,177,178,176,680,177,177,177,177,503,176,178,177,177,178,501,178,177,177,177,502,355,176,178,177,680,176,178,177,177,502,177,178,177,177,502,177,177,177,177,178,502,177,177,177,178,176,326,354,176,179,176,680,176,178,177,177,679,178,177,177,503,176,178,177,177,177,502,177,178,176,178,177,325,355,176,178,176,680,177,178,176,178,679,177,177,177,503,176,178,177,177,178,501,177,178,177,177,177,325,355,176,178,177,680,176,178,177,177,679,177,178,176,178,325,177,177,177,177,178,502,177,177,177,178,176,680,176,179,176,355,325,176,178,177,177,679,178,177,177,178,176,503,177,177,177,502,177,178,176,178,177,680,176,178,176,355,325,177,177,177,177,680,177,177,177,178,176,503,177,177,178,501,177,178,176,178,177,680,176,178,177,354,502,178,177,177,679,177,178,176,178,177,502,177,177,178,177,325,354,177,178,176,680,176,179,176,178,177,502,177,177,177,178,501,178,177,177,178,176,503,177,177,177,177,325,355,176,178,177,680,176,178,176,178,177,502,177,178,176,178,502,177,177,177,178,176,503,177,177,178,176,680,176,179,176,680,176,178,177,177,177,502,178,177,177,178,176,325,177,178,176,178,177,502,177,177,178,177,177,502,177,178,176,680,177,178,176,178,177,502,177,177,177,178,176,325,178,177,177,178,176,502,178,177,177,177,177,503,176,178,176,355,325,177,178,176,178,177,502,177,178,176,178,176,503,177,177,178,176,503,177,177,178,176,178,502,176,179,176,355,325,176,178,177,177,177,502,178,177,177,178,176,502,178,176,178,177,502,177,177,178,177,177,503,176,178,176,355,502,177,177,177,178,502,177,177,177,178,176,503,177,177,177,177,502,178,176,178,177,177,503,176,178,176,178,177,502,178,177,177,177,502,177,178,176,178,176,503,177,177,178,176,680,177,178,176,178,502,176,179,176,178,176,502,178,177,177,178,501,177,178,176,179,176,502,177,177,178,177,177,503,176,178,176,178,502,177,178,176,178,177,502,177,177,177,178,176,325,178,177,177,178,176,503,177,177,177,177,178,502,176,178,177,177,503,176,178,176,178,177,502,177,178,176,178,177,325,177,177,177,178,176,503,177,177,178,176,178,502,177,178,176,178,177,325,176,178,177,177,177,502,178,177,177,178,176,325,177,178,176,178,177,502,177,177,178,177,177,503,176,178,176,178,177,325,177,178,176,178,177,502,177,177,177,178,176,503,177,177,178,176,503,177,177,177,177,178,502,176,178,177,177,177,326,176,178,177,177,177,502,177,178,176,178,177,502,177,177,178,176,503,177,177,178,176,178,502,176,179,176,178,177,501,178,177,177,178,501,178,177,177,178,176,502,178,177,177,177,680,176,178,177,177,503,176,178,176,178,177,502,178,176,178,177,502,177,177,177,178,176,503,177,177,178,176,178,502,177,177,177,177,503,176,178,177,177,177,502,178,177,177,177,502,177,178,176,178,176,503,177,177,178,176,178,502,177,178,176,178,502,176,179,176,178,177,501,178,177,177,178,176,325,178,177,177,178,176,502,178,177,177,177,178,502,176,178,177,177,503,176,178,176,178,177,502,177,177,177,178,177,325,177,177,177,178,176,503,177,177,178,176,178,502,176,178,177,177,178,325,176,178,177,177,177,502,178,177,177,177,177,502,178,176,178,176,503,177,177,178,177,177,502,177,178,176,178,177,325,176,179,176,178,177,502,177,177,177,178,176,503,177,177,178,176,502,178,177,177,177,177,503,176,178,177,177,177,326,176,178,176,178,177";
   var ECL_L_T = "TTPPPPTTPPPPTTPPPPPTTPPPTTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPTTPPPPTTPPPTTTTPPTTPPPPTTPPPTTPTPPTTPPPTTTTPPTTPPPPTTPPPTTPTPPTTPPTTTTPPTTPPPPTTPPPTTPTPPTTPPPTTTPTTPPPPTTPPTTTTPPTTTPPTTTPPTTTTPPTTPPTTTTPTTTPPTTTPPPTTTTPPTTPPPTTTPPTTTTPTTTPPPTTTPTTPPPTTTPPTTTTPTTTPPPTTTPPTTPTPTTTPPTPTTPPTTTPPPTTTPPTTPTPTTTPPTPTTPPTTTPPPTTTPPTTTTPTTTPPTPTTPPTTTPPPTTTPTTTTPPTTTPPPPTTPPTTTTPPTTTPPTPTTPPTTTPPPPTTPPPTTTPPTTTPPPPTTPTTTTPPPTTPPPTTTPPTTTPPPPTTPPTTTTPPPTTPPPPTTPTTTPPPPTTPPTPTTPPPPTTPPPPTTPPTTTTPPPTTPPTPTTPPPPTTPPPPTTPPTTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPTPPTTPPPTTTPPPTTPPPPTTPPPTTPTPPTTPPPPTTPPPPTTPPPPTTPPTTTTPPTTPPPPTTPPPPTTPPPPTTPPTTTTPPTTPPPPTTTPPTTTTPPTTPPTTTTPTTTPPPTTTPPTTTTPTTPPPTTTPTTTTPPTTTPPPTTTPTTPTPTTTPPTTTTPPTTTPPPTTTPPTTPTPTTTPPTTTTPPTTTPPPTTTPPTTPTPTTTPPTTTTPPPPTTTPPPTTTPPTTTTPPTTTPPPTTTPPPTTTTPPTTTPTPTTPPTTTPPPPTTPPTTTTPPTTTPTPTTPPTTTPPPPTTPPTTTTPPPTTTPPPTTPTTTTPPPTTPPPTTTPTTTPPPTTPPTTTTPPPTTPPPPTTPTTTTPPTTPPTPTTPPPPTTPPPPTTPPTTTTPPTTPPPPTTPPPPTTPPPPTTPPTPTTPPPTTPPPPTTPPPPTTPPPPTTPPTPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPTTPPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPPTTPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPTPPTTPPPPTTPPPPTTPPPPTTPPPTTTTPPTTPPPPTTPPPPTTPTPPTTPPTTTTPPTTPPPPTTPPPPTTPTPPTTPPTTTTPTTPPPPTTPPPTTTTPPTTPPPTTTPTTTPPPTTPPPTTTTPTTPPPTTTPPTTTPPPTTPPPPTTTPTTPTPTTTPPTTTTPPTTPPPPTTTPPTTPTPTTTPPPTTTPPPTTPPPPTTTPPTTTTPPTTTPPTTTPPTTPTPPTTTPTPTTPPTTTPPTTTPPTTTTPPTTTPTPTTPPTTTPPPTTTPPTTTTPPTTTPTPTTPPTTTPPPTTTPPTTTTPTTTPPPTTPTTTTPPTTTPPPTTTPTTTTPPTTPPTTTTPPTTTPPPTTTPPTTTTPPTTPPPPTTPPTTTPPPPTTPPTPTTPPPTTPPPPTTPPTTTTPPPTTPPTPTTPPPTTPPPPTTPPTTTTPPPTTPPTPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPTPPTTPPPTTTPPPTTPPPPTTPPPTTPTPPTTPPPPTTPPTTPPPPTTPPTTTTPPTTPPPPTTTPPTTTPPPTTPPTTTTPPTTPPPPTTTPPTTTPPPTTPPPTTTPPTTTTPPTTTPPPTTTPPTTPPPTTTPTTTTPPPPTPTPTTPTPPPPTPTPTTPTPPTPTPPTTTPPPTPTPTTPTPPTTPTTTTPPPTPTPTTPTPPPPTPTPTTPTPPPTTPPTTTPPPTTTPTTTTPPTTTPPPPTTTTPTPPPPTTTTPTPTPPPTTTTPTPPPTTTPTTPTPPPPTTTTPTPPPPPPTTTTPTPPPPTTTTPTPTPPPPTTTTPTPPPTPTPTTPTPPPPTTTTPTPTPPPPTTTTPTPPPPTTTTPTPTPPPTTTTPTPPPTPTPTTPTPPPPTTTTPTPTPPPPPTTTTPTPPPPTPTTTTPTTTTPPTTPPPTTTPPTTTPPPTTPPTTTTPPTTPPPTTTPTTTTPPTTPPTPTTPPPTTPPPPTTPPTTTTPPTTPPTPTTPPPTTPPPPTTPPTTTTPPTTPPTPTTPPPPTTPPPPTTPPTTTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPTTPPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPPTTPPPPTTPPPTTPTPPTTPPPPTTPPPPTTPPPPTTPPTTTTPPTTPPPPTTPPPTTPPPPTTPPTTTTPPTTPPPPTTPPPTTTTPPTTPPPTTTPTTTPPPTTPPPTTTTPTTPPPTTTPPTTTTPPTTPPPPTTTPPTTPTPTTTPTTTTPPTTPPPPTTTPPTTPTPTTTPTTTTPPTTPPPPTTTPPTTPTPTTTPPTTTPPPTTTTPPTTTPTTTTPPTTTPPTTTPPTTTTPPTTTPTTTTPPTTTPPTTTPPTTTTPPTTTPPPTTPTTTTPTTTPPTTTTPPTTTPPPTTPPTTTTPPTTTPPPTTTPPTTTTPPTTPPTTTTPPTTTPPPTTTPTTTTPPTTPPTPTTPPPPTTPPPPTTPPTTTTPPTTPPPPTTPPPPTTPPPPTTPPTPTTPPPTTPPPPTTPPPTTTPPPTTPPTPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPPTTPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTTPPTTPPPPTTPPPPTTPT";
 
-  // src/data/eclipses-canon.data.js
-  // The same eclipses rebuilt from the NASA/Espenak-Meeus Five Millennium Canon
-  // with the calendar, the time scale and the year parse all handled correctly.
-  // Already on the proleptic-Gregorian axis as UT calendar days, so it must NOT
-  // pass through the Julian correction that decode() applies to the shipped table.
-  var CANON_S_BASE = 991085;
-  var CANON_S_D = "177,178,176,149,29,147,30,148,177,177,177,177,178,147,30,147,178,176,178,177,178,176,148,178,176,178,177,177,177,148,29,148,177,177,178,176,178,177,148,177,29,148,177,177,178,177,148,29,148,29,148,177,177,178,176,178,148,29,147,178,176,179,176,178,177,147,178,176,178,177,177,178,147,29,149,176,178,177,177,178,176,149,176,29,149,177,177,177,177,178,147,29,148,178,176,178,177,177,148,29,147,30,149,176,178,176,178,177,147,178,177,177,177,178,177,147,30,148,177,177,177,177,178,176,149,176,30,148,177,177,178,176,178,147,30,147,178,177,177,177,178,147,30,147,30,148,176,178,177,177,177,148,178,176,178,177,177,177,147,30,148,177,177,178,176,178,177,148,177,29,148,177,177,178,177,177,148,29,148,177,177,178,176,178,148,29,147,30,148,176,179,176,178,177,147,178,29,148,177,177,177,178,176,149,176,178,177,177,178,176,149,29,147,29,149,177,177,177,177,177,148,30,147,178,176,178,177,177,148,29,147,30,149,176,178,176,178,177,147,178,30,147,177,178,176,178,177,148,177,177,177,177,178,176,149,29,147,30,148,177,177,178,176,178,148,29,147,178,176,179,176,178,147,30,147,30,148,176,178,177,177,177,148,29,148,30,147,178,177,177,178,176,148,177,177,178,176,178,177,148,30,147,29,148,177,177,178,177,177,148,29,147,30,149,176,178,176,178,148,29,147,30,148,177,178,176,178,177,147,30,148,29,148,177,177,177,178,176,149,176,30,148,177,177,178,176,148,30,147,30,147,178,177,177,177,177,148,30,147,29,149,176,178,177,177,177,148,29,149,176,178,176,178,177,147,30,148,30,147,177,178,176,178,176,149,177,29,148,177,177,178,176,149,29,147,30,148,177,177,178,176,178,148,29,147,30,148,176,179,176,178,177,147,30,148,176,178,177,177,177,148,29,148,30,147,177,178,176,179,176,148,177,29,148,178,176,178,177,178,147,29,148,177,177,178,177,177,148,29,147,30,149,176,178,176,178,177,147,30,148,177,177,177,177,178,147,30,148,29,148,177,177,177,178,176,149,29,147,30,148,177,177,178,176,178,147,30,147,178,176,178,177,177,148,30,147,29,149,176,178,177,177,177,148,29,148,30,147,178,177,177,177,147,30,148,30,147,177,178,176,178,176,149,30,147,29,148,177,177,178,176,178,148,29,148,177,177,178,176,178,148,29,177,148,176,179,176,178,177,147,30,148,29,147,178,177,177,178,176,148,30,147,177,178,176,179,176,148,30,147,29,148,178,176,178,177,177,148,29,148,178,176,178,177,177,148,29,177,149,176,178,176,178,177,147,30,148,30,147,177,177,177,178,176,149,29,148,177,177,177,178,176,149,29,147,30,148,177,177,177,177,178,147,30,147,178,176,178,177,177,148,30,176,149,176,178,177,177,177,148,29,148,30,147,177,178,177,177,177,148,30,147,177,178,176,178,176,149,30,147,29,148,177,177,178,176,178,148,29,147,30,148,177,178,176,178,148,29,177,148,176,178,177,177,178,147,30,148,29,147,178,177,177,178,176,148,30,147,30,147,178,176,179,176,148,30,147,29,148,178,176,178,177,177,148,29,148,29,149,176,178,177,177,177,177,149,176,178,176,178,177,147,30,148,29,148,177,177,177,178,176,178,148,29,148,177,177,178,176,178,147,30,148,177,177,177,177,178,147,30,147,30,148,176,178,177,177,178,176,149,176,178,177,177,177,148,29,148,30,147,177,178,176,178,177,178,147,29,148,178,176,178,176,178,148,29,148,177,177,178,177,177,148,29,147,30,148,177,178,176,178,177,177,148,176,178,177,177,178,176,178,148,177,177,177,178,176,178,147,29,148,178,176,178,177,178,176,148,178,176,178,177,177,148,30,176,149,176,178,176,178,177,177,148,30,147,178,176,178,177,177,177,148,177,178,176,178,176,178,147,30,148,177,177,178,176,178,177,147,178,177,177,177,177,149,29,176,149,176,178,177,177,178,176,149,29,147,178,177,177,177,177,178,147,177,178,176,178,177,178,147,29,148,178,176,178,177,177,177,148,177,177,178,177,177,148,29,177,148,176,179,176,178,177,177,148,29,147,178,177,177,178,176,178,148,177,177,177,178,176,178,147,29,148,178,177,177,177,178,177,147,178,176,178,177,177,148,30,176,149,176,178,176,178,177,177,148,30,147,177,177,177,178,177,177,148,177,178,176,178,176,178,147,30,148,177,177,178,176,178,177,147,30,148,177,177,177,177,178,176,149,176,178,177,177,177,177,149,29,147,178,177,177,177,177,178,147,29,148,178,176,178,177,178,176,148,177,177,178,177,177,177,148,29,148,177,178,176,178,177,177,148,176,179,176,178,177,177,148,29,148,177,177,177,178,176,178,147,30,147,178,177,178,176,178,176,148,178,177,177,177,177,178,147,29,149,176,178,177,177,178,176,149,176,178,176,178,177,177,178,147,177,178,176,178,177,178,147,29,148,178,176,178,176,178,177,148,177,177,178,176,178,177,147,30,148,176,178,177,177,178,176,149,176,178,177,177,177,177,178,147,177,178,177,178,176,178,147,29,148,178,176,178,177,178,176,148,177,177,178,177,177,177,177,148,177,178,176,178,177,177,148,30,147,177,177,177,178,177,177,148,177,177,177,178,176,178,147,30,147,178,177,178,176,178,177,147,178,177,177,177,177,178,176,149,176,178,177,177,177,177,149,29,147,178,177,177,177,177,178,147,177,178,176,178,176,179,147,29,148,177,177,178,176,178,177,148,177,177,177,177,178,177,177,148,176,178,177,177,178,176,149,29,147,178,177,177,178,176,178,147,177,178,176,179,176,178,147,29,148,178,176,178,177,177,177,148,177,177,178,177,177,177,177,149,176,178,176,178,177,177,148,30,147,177,177,177,178,177,177,148,177,177,177,178,176,178,147,30,147,178,177,178,176,178,177,147,30,148,176,178,177,177,178,176,149,176,178,177,177,177,177,148,30,147,178,177,177,177,177,178,147,29,148,178,176,178,176,179,176,148,177,177,178,176,178,177,147,30,148,177,177,177,177,178,176,149,176,178,177,177,178,176,149,29,147,178,177,177,178,176,178,147,30,147,178,176,179,176,178,176,148,178,176,178,177,177,177,148,29,148,177,178,177,177,177,177,149,176,29,149,176,178,177,177,178,147,177,177,177,178,176,178,148,29,148,177,177,178,176,178,177,147,178,177,177,177,178,177,147,30,148,176,178,177,177,178,176,149,176,29,149,177,177,177,177,178,147,177,178,176,178,177,178,147,29,148,178,176,178,176,179,176,148,177,30,147,178,176,178,177,177,148,177,177,177,177,178,176,149,30,146,30,148,177,177,178,176,178,147,178,177,177,178,176,178,147,30,147,178,176,179,176,178,176,148,178,29,147,178,177,177,178,176,149,176,178,177,177,177,177,148,30,147,29,149,176,178,177,177,177,148,177,177,177,178,176,178,148,29,148,177,177,178,176,178,177,147,178,29,148,177,177,177,178,176,149,176,178,177,177,178,176,149,29,147,29,149,177,177,177,177,178,147,30,147,178,176,178,177,178,147,29,148,178,176,178,176,178,177,148,177,30,147,178,177,177,177,177,148,177,177,177,177,178,176,149,30,146,30,148,177,177,178,176,178,148,29,147,178,177,178,176,178,147,30,147,178,176,178,177,178,176,148,30,148,29,147,178,177,177,178,176,149,176,178,177,177,177,177,148,30,147,29,148,177,178,177,177,177,148,29,148,178,176,178,176,178,177,148,177,177,178,176,178,177,147,30,148,29,148,177,177,177,178,176,149,176,30,148,177,177,178,176,149,29,147,30,148,177,177,177,177,178,147,30,147,30,148,176,178,177,178,176,148,178,176,178,177,177,177,148,29,148,30,147,178,177,177,177,177,148,177,29,148,177,177,178,177,177,147,30,148,177,177,178,176,178,148,29,147,30,148,176,179,176,178,177,147,178,29,147,178,177,177,178,147,30,148,29,147,178,177,177,178,176,149,29,147,29,149,177,177,177,177,178,147,29,148,177,177,178,177,177,148,29,148,29,149,176,178,176,178,177,148,177,30,147,178,176,178,177,177,148,30,147,177,177,177,178,176,149,30,146,30,148,177,177,178,176,178,147,30,148,177,177,177,177,178,147,30,147,30,148,176,178,177,178,176,148,178,29,147,178,177,177,177,177,148,30,147,178,177,176,178,177,148,30,147,29,148,177,177,178,177,177,148,29,148,177,177,178,176,178,148,29,177,148,176,179,176,178,177,147,30,148,29,147,178,177,177,178,176,149,29,147,178,177,177,178,176,149,29,147,29,149,177,177,177,177,178,147,29,148,178,176,178,177,177,148,29,177,149,176,178,176,178,177,148,29,148,30,147,177,177,178,177,177,148,30,147,177,177,177,178,176,149,29,147,30,148,177,177,177,177,178,147,30,147,30,148,176,179,176,178,147,30,177,148,176,178,177,178,176,148,30,147,30,147,178,177,177,177,177,148,30,147,29,149,177,176,178,177,148,30,147,29,148,177,177,178,177,177,148,29,148,29,148,177,178,176,178,177,177,148,176,179,176,178,177,147,30,148,29,148,177,177,177,178,176,149,29,147,30,148,177,177,178,176,149,29,147,29,149,177,177,177,177,178,147,29,148,30,148,176,178,176,178,177,177,149,176,178,176,178,177,148,29,148,30,147,177,177,177,178,176,149,30,146,30,148,177,177,178,176,178,147,30,148,177,177,177,177,178,147,30,147,30,148,176,179,176,178,176,178,148,29,147,178,177,177,177,177,148,30,147,178,177,177,177,177,148,30,147,29,149,176,178,177,177,178,147,29,148,177,177,178,177,177,148,29,177,148,177,178,176,178,177,177,148,29,148,178,176,178,177,177,177,148,177,177,177,178,176,149,29,147,29,149,177,177,177,177,178,147,29,148,178,177,177,177,177,148,29,177,149,176,178,176,178,177,177,148,30,147,178,176,178,177,177,178,147,177,177,177,178,176,149,30,146,30,148,177,177,178,176,178,147,30,148,177,177,178,176,178,147,30,177,148,176,179,176,178,176,178,148,29,147,178,177,177,177,177,178,147,178,177,177,177,177,148,30,147,29,149,176,178,177,177,177,148,29,148,177,177,178,176,178,148,29,177,148,177,178,176,178,177,177,148,29,148,177,177,177,178,177,177,147,178,177,177,178,176,149,29,147,29,149,177,177,177,177,178,147,30,147,30,148,176,178,177,177,148,29,177,149,176,178,176,178,177,177,148,30,147,178,177,177,177,177,178,147,29,148,177,177,178,176,179,176,148,177,177,178,176,178,147,30,148,29,148,177,178,176,178,177,177,148,176,179,176,178,176,178,148,29,147,178,177,177,178,176,178,147,29,149,177,177,177,177,178,176,148,177,177,178,177,177,148,29,148,29,148,177,178,176,178,177,177,148,177,178,176,178,177,177,177,148,177,177,177,178,176,178,147,30,148,177,177,178,176,178,176,149,177,177,177,177,178,147,30,177,148,176,178,177,177,177,177,149,29,147,178,176,178,177,177,178,147,178,177,177,177,177,178,147,29,148,177,177,178,176,179,176,148,177,177,178,176,178,148,29,177,148,177,178,176,178,177,177,148,29,147,178,177,178,176,178,177,147,178,177,177,178,176,178,147,29,149,177,177,177,177,178,176,148,177,177,178,177,177,148,29,177,149,176,178,176,178,177,177,148,30,147,178,176,178,177,177,177,148,177,177,177,178,176,178,147,30,148,177,177,178,176,178,177,148,177,177,177,177,178,177,177,148,176,178,177,178,176,177,149,29,147,178,177,177,177,177,178,147,177,178,176,178,177,178,147,29,148,177,177,178,176,178,177,148,177,177,178,176,178,177,177,148,176,179,176,178,177,177,148,29,147,178,177,177,178,176,178,147,178,177,177,178,176,178,176,149,177,177,177,177,178,176,148,30,147,177,178,177,177,177,177,149,176,178,176,178,177,177,148,30,147,178,176,178,177,177,177,148,29,148,177,177,178,176,179,176,148,177,177,178,176,178,177,147,30,148,177,177,177,178,177,177,148,176,178,177,177,177,177,149,29,147,178,177,177,177,177,178,147,29,148,178,176,178,176,179,176,148,177,177,178,177,177,177,148,29,148,177,178,176,178,177,177,148,176,179,176,178,177,177,177,147,178,177,177,178,176,178,147,30,148,177,177,178,176,178,176,149,177,177,177,177,178,176,178,148,176,178,177,177,177,177,149,29,147,178,176,178,177,177,178,147,177,177,177,178,177,178,147,29,148,177,177,178,176,178,177,148,177,29,148,178,176,178,177,177,148,176,178,177,178,177,177,148,29,147,178,177,177,177,177,178,147,178,177,177,177,177,178,147,29,148,178,176,178,176,179,176,148,177,30,147,178,177,177,177,177,148,177,178,176,178,177,177,148,30,146,179,176,178,177,177,177,147,178,177,177,178,176,178,147,30,148,177,177,178,176,178,176,149,177,29,148,177,177,177,177,177,149,176,178,177,177,177,177,149,29,147,178,176,178,177,177,178,147,177,177,177,178,176,179,147,29,148,177,177,178,176,178,177,148,177,29,148,177,177,178,177,177,148,176,178,177,178,177,177,148,29,147,178,177,177,177,177,178,147,30,148,177,177,177,177,178,176,148,178,176,178,177,178,176,148,30,147,30,147,178,177,177,177,177,148,177,178,176,178,177,177,148,30,146,178,177,178,177,177,177,148,29,148,177,177,178,176,178,176,149,177,177,178,176,178,176,148,30,148,29,147,178,177,177,178,176,149,176,29,149,176,178,177,177,148,30,147,29,149,176,178,177,177,178,147,29,148,178,176,178,176,179,176,148,177,177,178,176,178,177,148,29,148,29,148,177,177,178,177,177,148,30,146,30,149,176,178,176,178,177,147,30,148,177,177,177,177,178,147,30,147,178,176,179,176,178,176,148,178,29,147,178,177,177,177,178,147,30,147,178,177,177,177,177,148,30,147,29,149,176,178,177,177,177,148,29,148,177,177,178,176,178,148,29,148,29,148,177,178,176,178,176,149,177,29,148,177,177,178,177,177,148,29,147,178,177,177,178,176,149,29,147,29,149,176,178,177,177,178,147,29,149,177,177,177,177,178,147,29,148,30,148,176,178,176,179,176,148,177,29,148,178,176,178,177,177,148,30,147,178,176,178,177,177,148,30,146,30,148,177,178,176,178,177,147,30,148,177,177,178,176,178,147,29,148,30,148,176,179,176,178,176,148,177,30,147,178,177,177,177,177,148,30,147,178,176,178,177,177,148,30,147,29,149,176,178,177,177,177,148,29,148,177,177,178,176,178,147,30,148,30,147,177,178,176,178,176,149,29,148,29,148,177,177,178,177,177,148,29,147,178,177,177,177,177,149,29,147,29,149,176,178,177,177,178,147,29,148,30,148,176,178,177,178,176,148,30,147,177,178,176,179,176,148,30,147,30,147,178,176,178,177,177,148,30,147,29,149,176,178,177,177,148,29,147,30,148,177,177,177,177,178,147,30,148,29,148,177,178,176,178,176,148,30,148,176,178,177,178,176,148,30,147,30,147,178,177,177,177,177,149,29,147,29,149,176,178,177,177,148,30,147,29,149,176,178,177,177,177,148,29,148,30,147,177,178,176,178,177,148,30,147,29,148,178,176,178,177,148,29,148,29,148,177,177,177,178,176,149,29,147,30,148,177,177,177,177,178,147,29,149,177,177,177,177,178,147,29,148,30,148,176,178,176,179,176,148,30,147,30,147,178,176,178,177,177,148,30,147,178,176,178,177,177,148,30,146,30,149,176,178,177,177,177,147,30,148,177,177,178,176,178,147,30,177,148,177,178,176,178,176,148,30,148,29,147,178,177,178,176,178,147,30,147,178,177,177,177,177,149,29,147,29,149,176,178,177,177,178,147,29,149,176,178,177,177,177,148,29,178,147,177,178,176,178,177,148,30,147,29,148,178,176,178,177,177,148,29,148,177,177,177,178,176,149,29,147,30,148,177,177,177,177,178,147,30,148,177,177,177,177,178,147,29,178,148,176,178,176,179,176,148,30,147,30,147,178,176,178,177,177,148,30,147,178,176,178,177,177,148,30,146,30,149,176,178,177,177,177,147,30,148,177,177,178,176,178,147,30,177,148,176,179,176,178,176,148,30,148,29,147,178,177,177,177,178,148,29,147,178,177,177,177,177,149,29,176,149,176,178,177,177,178,147,29,148,30,147,177,178,177,177,177,178,147,177,178,176,178,177,177,148,29,148,178,176,178,177,177,148,29,147,30,148,177,177,178,176,149,29,177,148,177,177,177,177,178,147,30,148,29,148,177,177,177,178,176,178,148,176,178,176,179,176,178,147,30,147,178,177,177,177,177,148,30,147,29,149,176,178,177,177,178,176,149,176,178,177,177,177,147,30,148,29,148,177,178,176,178,177,177,148,29,147,179,176,178,176,178,148,29,147,178,177,177,178,176,149,29,147,29,149,177,177,177,177,178,176,149,176,178,177,177,178,147,29,178,147,177,178,176,179,176,178,147,30,147,178,176,178,177,177,177,148,177,177,178,177,177,148,30,146,30,148,177,177,178,176,178,177,148,177,177,177,177,178,147,30,177,148,176,178,177,178,176,178,148,29,147,178,176,179,176,178,177,147,178,177,177,177,177,148,30,147,29,149,176,178,177,177,178,176,148,177,177,178,177,177,148,29,177,148,177,178,176,178,177,177,148,29,147,179,176,178,176,178,177,147,178,177,177,178,176,149,29,147,29,149,177,177,177,177,178,176,149,176,178,177,177,178,176,178,148,176,178,176,179,176,178,147,30,147,178,176,178,177,177,177,148,177,177,177,178,176,179,176,148,177,177,178,176,178,177,148,177,177,177,177,178,177,177,148,176,179,176,178,176,178,148,29,147,178,177,177,177,177,178,147,178,177,177,177,177,178,176,149,176,178,177,177,177,177,148,30,147,177,178,176,178,177,177,148,177,178,176,178,177,177,148,29,148,177,177,178,177,177,177,147,30,148,177,177,178,176,178,176,149,177,177,177,177,178,176,148,30,148,177,177,177,178,176,178,148,176,178,176,179,176,178,147,30,147,178,176,178,177,177,178,147,29,148,177,177,178,176,179,176,148,177,177,178,176,178,177,148,29,148,177,177,177,178,177,177,148,29,147,179,176,178,176,178,177,147,178,177,177,177,177,178,147,29,149,177,177,177,177,178,176,149,176,178,177,177,177,177,178,147,177,178,176,178,177,177,148,30,147,178,176,178,177,177,177,148,177,177,177,178,176,178,147,30,148,177,177,178,176,178,176,149,177,177,177,177,178,176,178,148,176,178,177,178,176,178,148,29,147,178,176,178,177,177,178,147,178,176,178,177,177,178,147,29,148,177,177,178,176,179,176,148,177,29,148,178,176,178,177,177,148,177,178,176,178,176,178,148,29,147,178,177,178,176,178,177,147,178,177,177,177,177,178,147,29,149,176,178,177,177,178,176,149,176,30,148,177,177,177,177,178,147,177,178,176,178,177,177,148,29,148,178,176,178,177,177,177,148,177,177,177,178,176,178,177,148,177,177,178,176,178,176,149,29,148,29,148,177,177,178,176,178,148,176,178,176,179,176,178,148,29,147,178,176,178,177,177,178,147,178,176,178,177,177,178,176,148,177,177,178,176,178,177,148,30,147,29,148,178,176,178,177,177,148,176,179,176,178,176,178,148,29,147,178,177,178,176,178,177,147,30,148,177,177,177,177,178,176,149,176,178,177,177,178,176,148,30,147,30,147,178,177,177,177,177,148,30,147,178,176,178,177,177,148,29,148,178,176,178,177,177,177,148,29,148,177,177,178,176,178,176,149,177,29,148,177,177,178,176,149,29,148,29,148,177,177,178,176,178,148,29,147,178,176,179,176,178,177,147,178,176,178,177,177,178,147,29,148,177,178,177,177,178,176,148,177,29,148,178,176,178,177,178,147,29,148,178,176,178,177,177,148,29,147,30,149,176,178,176,178,177,147,178,177,177,177,177,178,147,30,148,177,177,177,177,178,176,149,176,30,148,177,177,178,176,178,147,30,147,178,177,177,177,177,148,30,147,29,149,176,178,177,177,177,148,177,177,178,177,177,177,147,30,148,177,177,178,176,178,176,149,177,29,148,177,177,178,177,177,148,29,148,177,177,178,176,178,148,29,147,30,148,176,179,176,178,177,147,178,177,177,177,177,178,147,29,148,177,177,178,176,179,176,148,177,29,148,178,177,177,177,177,148,30,147,178,176,178,177,177,148,29,147,30,149,176,178,176,178,177,147,30,148,30,147,177,178,176,178,176,149,177,177,177,177,178,176,149,29,147,30,148,177,177,177,177,178,147,30,147,178,176,178,177,177,148,30,147,29,149,176,178,177,177,177,148,29,148,30,147,177,178,176,179,176,148,177,177,178,176,178,177,148,30,147,29,148,177,177,178,177,177,148,29,147,178,177,178,176,178,148,29,147,30,148,176,178,177,177,178,147,30,148,29,148,177,177,177,178,176,148,177,177,178,177,178,176,148,30,147,29,148,178,176,178,177,177,148,30,147,29,149,176,178,177,177,148,29,147,30,149,176,178,176,178,177,147,30,148,30,147,177,178,176,178,176,149,177,29,148,177,177,178,176,149,29,147,30,148,177,177,177,177,178,148,29,147,30,148,176,178,177,177,178,147,29,149,176,178,177,177,177,148,29,148,30,147,177,178,176,179,176,148,177,29,148,178,176,178,177,177,148,29,148,177,177,178,177,177,148,29,147,30,148,177,178,176,178,177,147,30,148,177,177,177,177,178,147,29,149,29,148,177,177,177,178,176,149,29,147,30,147,178,177,177,177,178,147,30,147,178,176,178,177,177,148,30,147,29,149,176,178,177,177,177,147,30,148,177,178,177,177,177,147,30,148,30,147,177,178,176,178,176,149,30,147,29,148,177,177,178,176,178,147,30,147,178,177,177,177,177,149,29,147,29,149,176,178,177,177,178,147,29,149,29,147,178,177,177,178,176,178,147,177,178,176,179,176,148,30,147,29,148,178,176,178,177,177,148,29,148,177,177,178,177,177,148,29,177,148,177,178,176,178,177,147,30,148,29,148,177,177,177,178,176,178,148,177,177,177,178,176,148,30,147,30,147,178,177,177,177,178,147,30,147,178,176,178,177,177,148,30,176,149,176,178,177,177,177,147,30,148,30,147,177,178,176,178,177,178,147,177,178,176,178,176,149,29,148,29,148,177,177,178,176,178,148,29,147,30,148,177,177,177,177,149,29,176,149,176,178,177,177,178,147,29,149,29,147,178,177,177,178,176,178,147,177,178,176,179,176,148,30,147,29,148,178,176,178,177,177,148,29,148,29,149,176,178,177,177,177,177,148,177,178,176,178,177,147,30,148,29,148,177,177,177,178,176,178,148,29,148,177,177,178,176,178,147,30,147,178,177,177,177,177,148,30,147,29,149,176,178,177,177,178,176,149,176,178,177,177,177,148,29,148,30,147,177,178,176,178,177,178,147,29,148,178,176,178,176,178,148,29,148,177,177,178,176,178,148,29,147,30,148,177,177,177,177,178,176,149,176,178,177,177,178,147,29,178,147,177,178,177,178,176,178,147,29,148,178,176,178,177,178,176,148,178,176,178,177,177,148,29,147,30,149,176,178,176,178,177,177,148,177,177,177,177,178,177,177,148,177,177,177,178,176,178,147,30,148,177,177,178,176,178,177,147,178,177,177,177,177,148,30,176,149,176,178,177,177,177,177,149,29,147,178,177,177,177,177,178,147,177,178,176,178,176,179,147,29,148,177,177,178,176,178,177,148,177,177,178,176,178,148,29,177,148,176,178,177,177,178,176,149,29,147,178,177,177,178,176,178,147,177,178,176,179,176,178,147,29,148,178,176,178,177,177,177,148,178,176,178,177,177,148,30,176,149,176,178,176,178,177,177,148,30,147,177,177,177,178,177,177,148,177,177,177,178,176,178,147,30,148,177,177,178,176,178,177,147,30,148,177,177,177,177,178,176,149,176,178,177,177,177,177,148,30,147,178,177,177,177,177,178,147,177,178,176,178,176,179,147,29,148,177,177,178,177,177,177,147,30,148,177,177,177,177,178,177,148,176,178,177,177,178,177,148,29,147,178,177,177,178,176,178,147,30,147,178,176,179,176,178,176,148,178,176,178,177,177,178,147,29,149,176,178,177,177,177,177,149,176,178,176,178,177,177,178,147,177,178,176,178,176,178,148,29,148,177,177,178,176,178,177,148,177,177,177,177,178,177,147,30,148,176,178,177,177,178,176,149,176,178,177,177,177,177,178,147,177,178,176,178,177,178,147,29,148,178,176,178,176,179,176,148,177,177,178,177,177,177,177,148,177,178,176,177,178,177,148,176,178,177,177,178,177,177,148,177,177,177,178,176,178,147,30,147,178,176,179,176,178,176,148,178,176,178,177,177,178,176,149,176,178,177,177,177,177,148,30,147,178,176,178,177,177,177,148,177,178,176,178,176,178,148,29,148,177,177,178,176,178,177,147,178,177,177,177,177,178,176,149,176,178,177,177,178,176,149,29,147,178,177,177,177,177,178,147,177,178,176,178,177,178,147,29,148,178,176,178,177,177,177,148,177,177,178,177,177,177,177,148,177,178,176,177,178,177,148,30,146,178,177,177,178,176,178,148,176,178,177,178,176,178,147,30,147,178,176,178,177,178,177,147,30,148,176,178,177,177,178,176,149,176,178,177,177,177,177,148,30,147,177,178,176,178,177,177,148,29,148,178,176,178,176,178,177,148,177,177,178,176,178,177,147,30,148,177,177,177,177,178,176,149,176,178,177,177,178,176,149,29,147,178,177,177,177,177,178,147,30,147,178,176,179,176,178,176,148,178,176,178,177,177,177,148,29,148,177,178,177,177,177,177,148,177,29,149,176,177,178,177,177,148,177,177,177,178,176,178,148,29,147,178,176,179,176,178,177,147,178,177,177,177,177,178,147,29,149,176,178,177,177,178,176,149,176,29,149,177,177,177,177,178,147,177,178,176,178,177,177,148,29,148,178,176,178,176,178,177,148,177,177,178,176,178,177,177,148,177,177,177,177,178,176,149,176,30,148,177,177,178,176,178,147,30,148,177,177,178,176,178,147,30,147,178,176,178,177,178,176,148,178,29,147,178,177,177,177,177,148,177,178,177,177,177,177,148,30,147,29,148,177,177,178,177,177,148,29,148,177,177,178,176,178,148,29,147,178,176,179,176,178,177,147,178,29,148,177,177,177,178,176,149,176,178,177,177,178,176,149,29,147,29,149,177,177,177,177,178,147,30,147,178,176,178,177,177,148,29,148,178,176,178,176,178,177,148,29,148,30,147,177,177,178,177,177,148,177,177,177,177,178,176,149,29,147,30,148,177,177,178,176,178,147,30,147,178,176,179,176,178,147,30,147,178,176,178,177,178,176,148,30,147,30,147,178,177,177,177,177,148,177,178,177,177,177,177,148,30,147,29,148,177,177,178,177,177,148,29,148,29,148,177,178,176,178,177,147,178,177,178,176,178,177,147,30,148,29,148,177,177,177,178,176,149,176,30,148,177,177,178,176,149,29,147,29,149,177,177,177,177,178,147,30,147,30,148,176,178,176,178,177,148,29,149,176,178,176,178,177,148,29,148,30,147,177,178,176,178,176,149,30,146,30,148,177,177,178,176,178,147,30,148,177,177,178,176,178,148,29,147,30,148,176,179,176,178,176,148,30,148,176,178,177,177,177,148,29,148,30,147,178,177,177,178,176,149,29,147,29,149,176,178,177,177,178,147,29,148,177,177,178,177,177,148,29,147,30,149,176,178,176,178,177,147,30,148,29,148,178,176,178,177,177,148,29,148,177,177,177,178,176,149,29,147,29,149,177,177,177,177,178,147,30,147,178,177,177,177,178,147,30,177,148,176,178,176,178,177,148,29,148,30,147,178,177,177,177,177,148,30,147,177,178,176,178,176,149,30,146,30,148,177,177,178,176,178,147,30,148,177,177,178,176,178,148,29,177,148,176,179,176,178,176,148,30,148,29,147,178,177,177,178,176,148,30,147,178,177,177,178,176,148,30,147,29,149,176,178,177,177,177,148,29,148,177,177,178,176,178,148,29,177,149,176,178,176,178,177,147,30,148,29,148,177,177,177,178,176,149,29,147,178,177,177,178,176,149,29,147,29,149,177,177,177,177,178,147,30,147,30,148,176,178,177,178,147,29,177,149,176,178,176,178,177,148,29,148,30,147,178,177,177,177,177,148,30,147,29,148,177,177,178,176,149,30,146,30,148,177,177,178,176,178,148,29,147,30,148,177,178,176,178,177,177,148,176,179,176,178,176,148,30,148,29,147,178,177,177,178,176,149,29,147,29,149,177,177,177,177,178,147,29,148,177,177,178,177,177,148,29,148,29,149,176,178,176,178,177,177,148,177,178,176,178,177,177,148,29,148,177,177,177,178,176,149,30,146,30,148,177,177,178,176,178,147,30,148,177,177,177,177,178,147,30,147,30,148,176,178,177,178,176,177,149,176,178,177,177,177,177,178,147,177,178,176,178,177,148,30,147,29,148,177,177,178,176,179,146,30,148,177,177,178,176,178,148,29,177,148,177,178,176,178,177,177,148,29,147,178,177,177,178,177,177,147,178,177,177,178,176,149,29,147,29,149,177,177,177,177,178,176,148,178,176,178,177,177,148,29,177,149,176,178,176,178,177,177,148,30,147,178,176,178,177,177,177,148,177,177,177,178,176,149,30,146,30,148,177,177,178,176,178,177,148,177,177,177,177,178,147,30,177,148,176,178,177,178,176,178,148,29,147,178,177,177,177,177,178,147,177,178,176,178,177,178,147,29,148,177,177,178,177,177,177,148,177,177,178,176,178,148,29,177,148,176,179,176,178,177,177,148,29,147,178,177,177,178,176,178,147,178,177,177,178,176,178,147,29,149,177,177,177,177,178,176,148,30,148,176,178,177,177,177,177,149,176,178,176,178,177,177,148,30,147,178,176,178,177,177,178,147,29,148,177,177,178,176,179,176,148,177,177,178,176,178,177,147,30,148,177,177,177,178,177,177,148,176,178,177,177,177,177,149,29,147,178,177,177,177,177,178,147,29,148,178,176,178,177,178,176,148,177,177,178,177,177,177,148,29,148,177,178,176,178,177,177,148,176,179,176,178,177,177,177,148,177,177,177,178,176,178,147,30,148,177,177,178,176,178,176,149,177,177,177,177,178,177,177,148,176,178,177,177,177,177,149,29,147,178,176,178,177,177,178,147,177,177,177,178,177,178,147,29,148,177,177,178,176,178,177,148,177,177,178,176,178,177,177,148,176,178,177,178,177,177,148,29,147,178,177,177,177,177,178,147,178,177,177,177,177,178,147,29,148,178,176,178,177,178,176,148,177,177,178,177,177,177,177,148,177,178,176,178,177,177,148,30,146,179,176,178,177,177,177,148,177,177,177,178,176,178,147,30,148,177,177,178,176,178,176,148,178,177,177,177,177,178,176,149,176,178,177,177,177,177,149,29,147,178,176,178,177,177,178,147,177,178,176,178,176,179,147,29,148,177,177,178,176,178,177,148,177,177,178,176,178,177,177,148,176,179,176,178,177,177,148,29,147,178,177,177,177,177,178,147,178,177,177,178,176,178,147,29,148,178,176,178,177,178,176,148,30,147,177,178,177,177,177,177,148,177,178,176,178,177,177,148,30,147,177,177,177,178,177,177,148,29,148,177,177,178,176,178,176,149,177,177,177,177,178,177,147,30,148,176,178,177,177,178,176,149,176,178,176,178,177,177,148,30,147,178,176,178,177,177,178,147,29,148,178,176,178,176,179,176,148,177,177,178,176,178,177,148,29,148,177,178,176,178,177,177,148,176,179,176,178,177,177,177,147,178,177,177,178,176,178,147,30,147,178,176,179,176,178,176,148,178,29,147,178,177,177,177,177,148,177,178,177,177,177,177,149,29,147,29,149,176,178,177,177,177,148,177,177,177,178,176,178,148,29,148,177,177,178,176,178,176,149,177,29,148,177,177,178,177,177,148,176,178,177,177,178,176,149,29,147,29,149,176,178,177,177,178,147,178,177,177,177,177,178,147,29,148,178,176,178,176,179,176,148,177,30,147,178,176,178,177,177,148,177,178,176,178,177,177,148,30,146,30,148,177,177,178,177,177,147,178,177,177,178,176,178,147,29,148,178,176,178,177,178,176,148,177,30,147,178,177,177,177,177,149,176,178,176,178,177,177,148,30,147,29,149,176,178,177,177,177,148,29,148,177,177,178,176,178,147,30,148,177,177,178,176,178,177,148,177,29,148,177,177,178,177,177,148,29,147,178,177,177,177,177,149,29,147,29,149,177,177,177,177,178,147,29,148,178,176,178,177,178,176,148,177,177,178,176,178,177,148,30,147,30,147,178,176,178,177,177,148,30,146,179,176,178,177,177,148,29,147,30,148,177,177,178,176,178,147,30,148,177,177,178,176,178,176,148,178,176,178,177,178,176,148,30,147,30,147,178,177,177,177,177,149,29,147,29,149,176,178,177,177,148,30,147,29,149,176,178,177,177,177,148,29,148,30,147,177,178,176,178,177,148,177,177,178,176,178,177,147,30,148,29,148,177,177,177,178,176,149,29,147,30,148,177,177,177,177,178,147,30,148,177,177,177,177,178,147,29,148,30,148,176,178,176,179,176,148,177,30,147,178,176,178,177,177,148,30,147,178,176,178,177,177,148,30,146,30,149,176,178,177,177,177,147,30,148,177,177,178,176,178,147,30,148,29,148,177,178,176,178,176,148,178,29,147,178,177,178,176,178,148,29,147,178,177,177,177,177,149,29,147,29,149,176,178,177,177,178,147,29,148,177,177,178,177,177,148,29,148,30,147,177,178,176,178,177,148,177,29,148,178,176,178,177,177,148,29,148,177,177,177,178,176,149,29,147,30,148,177,177,177,177,178,147,30,148,177,177,177,177,178,147,29,148,30,148,176,178,176,179,176,148,30,147,30,147,178,177,177,177,177,148,30,147,178,176,178,177,177,148,30,146,30,149,176,178,177,177,177,147,30,148,177,177,178,176,178,147,30,177,148,176,179,176,178,176,148,30,148,29,147,178,177,177,177,177,149,29,147,178,177,177,177,177,149,29,147,29,149,176,178,177,177,178,147,29,148,30,147,177,178,176,178,177,178,147,177,178,176,178,177,148,29,148,29,148,177,177,178,177,177,148,29,147,30,148,177,177,178,176,149,29,147,30,148,177,177,177,177,178,147,30,148,29,148,177,177,177,178,176,178,148,176,178,176,179,176,148,30,147,30,147,178,177,177,177,177,148,30,147,29,149,176,178,177,177,178,146,30,148,177,177,178,177,177,148,29,148,29,148,177,178,176,178,177,177,148,29,147,179,176,178,176,178,148,29,147,178,177,177,178,176,149,29,147,29,149,177,177,177,177,178,176,149,176,178,177,177,178,147,29,148,30,148,176,178,176,179,176,178,147,30,147,178,176,178,177,177,148,29,148,177,177,178,177,177,148,30,146,30,148,177,177,178,176,178,177,148,177,177,177,177,178,147,30,177,148,176,179,176,178,176,178,148,29,147,178,177,177,177,178,147,30,147,178,177,177,177,177,148,30,147,29,149,176,178,177,177,178,176,148,177,177,178,176,178,148,29,177,148,177,178,176,178,177,177,148,29,148,177,177,178,176,178,177,147,178,177,177,178,176,149,29,147,29,149,177,177,177,177,178,176,149,176,178,177,177,178,147,29,178,148,176,178,176,179,176,178,147,30,147,178,176,178,177,177,178,147,177,177,177,178,176,149,30,176,148,177,177,178,176,178,177,148,29,148,177,177,177,178,177,177,148,176,179,176,178,176,178,148,29,147,178,177,177,177,177,178,147,178,177,177,177,177,148,30,176,149,176,178,177,177,177,177,148,30,147,177,178,176,178,177,177,148,177,178,176,178,177,177,148,29,148,177,177,178,177,177,177,147,30,148,177,177,178,176,178,176,149,176,178,177,177,178,176,148,30,148,176,178,177,178,176,178,148,176,178,176,178,177,178,147,30,147,178,176,178,177,177,178,147,29,148,177,177,178,176,179,176,148,177,177,178,176,178,177,148,29,148,177,178,176,178,176,178,148,29,147,178,177,178,176,178,177,147,178,177,177,177,177,178,147,29,149,176,178,177,177,178,176,149,176,178,177,177,177,177,178,147,177,178,176,178,177,177,148,30,147,178,176,178,177,177,177,148,177,177,177,178,176,178,147,30,148,177,177,178,176,178,176,149,177,177,177,177,178,176,178,148,176,178,177,178,176,178,148,29,147,178,176,178,177,177,178,147,178,176,178,177,177,178,146,30,148,177,177,178,176,178,177,148,177,177,178,176,178,177,177,148,177,178,176,178,176,178,148,29,147,178,177,178,176,178,177,147,178,177,177,177,177,178,147,29,149,176,178,177,177,178,176,148,177,177,178,177,177,177,177,148,177,178,176,178,177,177,148,29,148,178,176,178,177,177,177,148,177,177,177,178,176,178,177,148,177,177,177,177,178,176,149,29,148,177,177,177,178,176,178,148,176,178,176,179,176,178,147,30,147,178,176,178,177,177,178,147,177,177,178,177,177,178,176,148,177,177,178,176,178,177,148,30,147,177,178,176,178,177,177,148,176,179,176,178,176,178,148,29,147,178,177,177,177,177,178,147,30,148,177,177,177,177,178,176,149,176,178,177,177,178,176,148,30,147,177,178,177,177,177,177,148,30,147,178,176,178,177,177,148,29,148,178,176,178,177,177,177,147,30,148,177,177,178,176,178,176,149,177,177,177,177,178,177,148,29,148,177,177,177,178,176,178,148,29,147,178,176,179,176,178,177,147,178,176,178,177,177,178,147,29,148,177,177,178,176,179,176,148,177,29,148,178,176,178,177,177,148,177,178,176,178,177,177,148,29,147,179,176,178,176,178,177,147,178,177,177,177,177,178,147,30,148,177,177,177,177,178,176,149,176,30,148,177,177,178,176,178,147,177,178,176,178,177,177,148,30,147,178,176,178,177,177,177,148,177,177,178,177,177,177,147,30,148,177,177,178,176,178,176,149,177,29,148,177,177,178,177,177,148,176,178,177,178,176,178,148,29,147,178,176,179,176,178,177,147,178,177,177,177,177,178,147,29,148,177,177,178,176,179,176,148,177,29,148,178,176,178,177,177,148,177,178,176,178,177,177,148,29,147,179,176,178,176,178,177,147,178,177,177,178,176,178,176,149,177,177,177,177,178,176,149,29,147,30,148,177,177,177,177,178,148,29,147,178,176,178,177,177,148,30,147,178,176,178,177,177,177,148,29,148,30,147,177,178,176,179,176,148,177,177,178,176,178,177,148,30,147,29,148,177,177,178,177,177,148,29,147,178,177,178,176,178,148,29,147,30,148,176,178,177,177,178,147,30,148,29,148,177,177,177,178,176,148,177,177,178,177,178,176,148,30,147,29,148,178,176,178,177,177,148,30,147,29,149,176,178,177,177,177,147,30,148,177,178,176,178,177,147,30,148,30,147,177,178,176,178,176,149,177,29,148,177,177,178,176,148,30,147,30,147,178,177,177,177,177,149,29,147,29,149,176,178,177,177,178,147,29,149,176,178,177,177,177,148,29,148,30,147,177,178,176,179,176,148,177,29,148,178,176,178,177,177,148,29,148,177,177,178,177,177,148,29,147,30,148,177,178,176,178,177,147,30,148,177,177,177,177,178,147,29,149,29,148,177,177,177,178,176,148,177,30,147,178,177,177,177,178,147,30,147,178,176,178,177,177,148,30,146,30,149,176,178,177,177,177,147,30,148,177,177,178,176,178,147,30,148,30,147,177,178,176,178,176,149,177,29,148,177,177,178,176,178,148,29,147,178,177,177,177,177,149,29,147,29,149,176,178,177,177,178,147,29,149,29,147,178,177,177,178,176,148,30,147,177,178,176,179,176,148,30,147,29,148,178,176,178,177,177,148,29,148,177,177,178,177,177,148,29,147,30,148,177,178,176,178,177,147,30,148,29,148,177,177,177,178,176,149,29,148,177,177,177,178,176,148,30,147,30,147,178,177,177,177,177,148,30,147,178,176,178,177,177,148,30,176,149,176,178,177,177,177,147,30,148,30,147,177,178,176,178,177,148,30,147,177,178,176,178,176,149,29,148,29,148,177,177,178,176,178,148,29,147,30,148,177,177,177,177,149,29,176,149,176,178,177,177,178,147,29,148,30,147,178,177,177,178,176,148,30,147,177,178,176,178,177,148,30,147,29,148,177,177,178,177,177,148,29,147,30,149,176,178,176,178,177,177,148,177,178,176,178,177,147,30,148,29,148,177,177,177,178,176,149,29,147,30,148,177,177,178,176,178,147,30,147,178,177,177,177,177,148,30,147,29,149,176,178,177,177,177,177,149,176,178,177,177,177,147,30,148,30,147,177,178,176,178,176,149,30,147,29,148,177,177,178,176,178,148,29,148,177,177,178,176,178,148,29,147,30,148,176,178,177,177,178,176,149,176,178,177,177,178,147,29,178,147,177,178,176,179,176,148,30,147,29,148,178,176,178,177,178,147,29,148,177,177,178,177,177,148,29,147,30,149,176,178,176,178,177,177,148,177,177,177,177,178,177,177,148,177,177,177,178,176,149,29,147,30,148,177,177,178,176,178,147,30,147,178,177,177,177,177,148,30,176,149,176,178,177,177,177,177,148,30,147,178,177,177,177,177,178,147,177,178,176,178,176,179,147,29,148,177,177,178,176,178,148,29,147,178,177,177,177,177,149,29,177,148,176,178,177,177,178,176,149,29,147,178,177,177,178,176,178,147,177,178,176,179,176,178,147,29,148,178,176,178,177,177,148,29,148,178,176,178,177,177,148,29,177,149,176,178,176,178,177,177,148,30,147,177,177,177,178,176,178,148,177,177,177,178,176,178,147,30,148,177,177,177,177,178,147,30,147,30,148,176,178,177,177,178,176,149,176,178,177,177,177,177,148,30,147,177,178,176,178,177,178,147,29,148,178,176,178,176,179,147,29,148,177,177,178,177,177,148,29,147,30,148,177,177,177,177,178,176,149,176,178,177,177,178,176,149,29,147,178,177,177,178,176,178,147,30,147,178,176,179,176,178,176,148,178,176,178,177,177,178,147,29,149,176,178,177,177,177,177,149,176,178,176,178,177,177,177,148,177,178,176,178,176,178,148,29,148,177,177,178,176,178,177,147,178,177,177,177,177,178,147,29,149,176,178,177,177,178,176,149,176,178,177,177,177,177,178,147,177,178,176,178,177,178,147,29,148,178,176,178,176,178,177,148,177,177,178,177,177,177,177,148,177,177,177,177,178,177,148,176,178,177,177,178,176,178,148,177,177,177,178,176,178,147,30,147,178,176,178,177,178,176,148,178,176,178,177,177,178,176,149,176,178,177,177,177,177,148,30,147,177,177,178,177,177,177,148,177,178,176,178,176,178,148,29,148,177,177,178,176,178,177,147,178,177,177,177,177,178,176,149,176,178,177,177,178,176,149,29,147,178,177,177,177,177,178,147,177,178,176,178,177,178,147,29,148,178,176,178,177,177,177,148,177,177,178,177,177,177,177,148,177,177,177,177,178,177,148,29,147,178,177,177,178,176,178,148,176,178,176,179,176,178,147,30,147,178,176,178,177,177,178,147,30,148,176,178,177,177,178,176,149,176,178,177,177,177,177,148,30,147,177,178,176,178,177,177,148,29,148,178,176,178,176,178,177,148,177,177,178,176,178,177,147,30,148,177,177,177,177,178,176,149,176,178,177,177,178,176,149,29,147,178,177,177,177,177,178,147,30,147,178,176,178,177,178,176,148,178,176,178,177,177,177,148,29,148,177,178,177,177,177,177,148,177,29,148,177,177,178,177,177,148,177,177,177,178,176,178,148,29,147,178,176,179,176,178,177,147,178,176,178,177,177,178,147,29,149,176,178,177,177,178,176,149,176,29,149,177,177,177,177,178,147,177,178,176,178,177,177,148,29,148,178,176,178,176,178,177,148,177,177,177,177,178,177,177,148,177,177,177,177,178,176,149,29,147,30,148,177,177,178,176,178,147,177,178,176,179,176,178,147,29,148,178,176,178,177,178,176,148,177,30,147,178,177,177,177,177,148,177,178,177,177,177,177,148,30,147,29,148,177,177,178,177,177,148,177,177,177,178,176,178,148,29,147,178,176,179,176,178,177,147,178,29,147,178,177,177,178,176,149,176,178,177,177,178,176,149,29,147,29,149,177,177,177,177,178,147,29,148,178,176,178,176,178,148,29,148,178,176,178,176,178,177,147,30,148,30,147,177,177,177,178,176,149,176,178,177,177,178,176,149,29,147,30,148,177,177,177,177,178,147,30,147,178,176,179,176,178,147,29,148,178,176,178,177,177,177,148,29,148,30,147,178,177,177,177,177,148,177,29,149,176,178,177,177,148,30,147,29,148,177,177,178,177,177,148,29,147,178,177,178,176,178,177,147,178,177,178,176,178,177,147,30,148,29,147,178,177,177,178,176,149,176,29,149,177,177,177,177,178,147,29,148,178,177,177,177,177,148,29,148,30,148,176,178,176,178,177,148,177,177,178,176,178,177,147,30,148,30,147,177,177,177,178,176,149,176,30,148,177,177,178,176,178,147,30,148,177,177,178,176,178,147,30,147,30,148,176,179,176,178,176,148,178,29,147,178,177,177,177,177,148,30,147,178,177,177,177,177,148,30,147,29,149,176,178,177,177,177,148,29,148,177,177,178,176,178,148,29,147,30,148,177,178,176,178,177,147,178,29,148,177,177,177,178,177,148,29,147,178,177,177,178,176,149,29,147,29,149,177,177,177,177,178,147,30,147,178,176,178,177,177,148,29,148,29,149,176,178,176,178,177,148,29,148,30,147,178,176,178,177,177,148,30,147,177,177,177,178,176,149,30,146,30,148,177,177,178,176,178,147,30,148,177,177,178,176,178,147,30,177,148,176,179,176,178,176,148,30,148,29,147,178,177,177,177,177,148,30,147,178,177,177,177,177,148,30,147,29,148,177,177,178,177,177,148,29,148,177,177,178,176,178,148,29,177,148,177,178,176,178,177,147,30,148,29,148,177,177,177,178,176,149,29,147,178,177,177,178,176,149,29,147,29,149,177,177,177,177,178,147,30,147,30,148,176,178,177,177,177,177,149,176,178,176,178,177,148,29,148,30,147,178,177,177,177,177,148,30,147,29,148,177,177,178,176,149,30,146,30,148,177,177,178,176,178,148,29,147,30,148,177,178,176,178,177,177,148,176,178,177,178,176,148,30,148,29,147,178,177,177,178,176,149,29,147,29,149,177,177,177,177,178,147,29,148,177,177,178,177,177,148,29,148,29,149,176,178,176,178,177,177,148,177,178,176,178,177,177,148,29,148,177,177,177,178,176,149,29,147,30,148,177,177,178,176,178,147,30,148,177,177,177,177,178,147,30,177,148,176,178,177,177,177,177,149,29,147,178,176,178,177,177,148,30,147,177,178,176,178,177,148,30,147,29,148,177,177,178,176,178,147,30,148,177,177,178,176,178,148,29,177,148,176,179,176,178,177,177,148,29,147,178,177,177,178,176,178,147,178,177,177,178,176,149,29,147,29,149,177,177,177,177,178,147,29,148,177,177,178,177,177,148,29,177,149,176,178,176,178,177,177,148,30,147,178,176,178,177,177,177,148,177,177,177,178,176,149,29,147,30,148,177,177,178,176,178,147,30,147,178,177,177,177,178,147,30,177,148,176,178,177,177,177,177,149,29,147,178,177,177,177,177,178,147,177,178,176,178,176,149,30,147,29,148,177,177,178,176,178,148,29,148,177,177,178,176,178,148,29,177,148,176,179,176,178,177,177,148,29,147,178,177,177,178,176,178,147,178,177,177,178,176,178,147,29,149,177,177,177,177,178,147,29,148,30,148,176,178,177,177,177,177,149,176,178,176,178,177,177,148,30,147,177,177,177,178,177,177,148,29,148,177,177,178,176,178,177,148,177,177,177,177,178,147,30,147,30,148,176,178,177,178,177,177,148,176,178,177,177,177,177,148,30,147,178,177,177,177,177,178,147,29,148,178,176,178,176,179,176,148,177,177,178,176,178,148,29,148,29,148,177,178,176,178,177,177,148,176,179,176,178,177,177,177,147,178,177,177,178,176,178,147,29,149,177,177,178,176,178,176,148,178,177,177,177,177,148,29,177,149,176,178,176,178,177,177,149,29,147,178,176,178,177,177,178,147,177,177,177,178,176,179,146,30,148,177,177,178,176,178,177,148,177,177,177,177,178,177,177,148,176,178,177,178,176,178,148,29,147,178,177,177,177,177,178,147,178,177,177,177,177,178,147,29,148,177,177,178,176,179,176,148,177,177,178,176,178,177,177,148,177,178,176,178,177,177,148,29,147,178,177,178,177,177,177,147,178,177,177,178,176,178,147,29,149,177,177,177,177,178,176,148,178,176,178,177,177,177,177,149,176,178,176,178,177,177,148,30,147,178,176,178,177,177,178,147,177,177,177,178,176,179,146,30,148,177,177,178,176,178,177,148,29,148,177,177,177,178,177,177,148,176,178,177,178,176,178,148,29,147,178,177,177,177,177,178,147,29,148,178,176,178,177,178,176,148,177,177,178,177,177,177,148,29,148,177,178,176,178,177,177,148,176,179,176,178,177,177,148,29,147,178,177,177,178,176,178,147,30,148,177,177,178,176,178,176,149,177,177,177,177,178,176,148,30,148,176,178,177,177,177,177,149,176,178,176,178,177,177,178,147,178,176,178,177,177,178,147,29,148,177,177,178,176,179,176,148,177,177,178,176,178,177,177,148,177,177,177,178,177,177,148,29,147,178,177,177,177,177,178,147,178,177,177,177,177,178,147,29,148,178,176,178,177,178,176,148,177,30,147,178,177,177,177,177,148,177,178,176,178,177,177,148,30,146,179,176,178,177,177,177,148,177,177,177,178,176,178,147,30,148,177,177,178,176,178,176,149,177,29,148,177,177,178,177,177,148,176,178,177,177,177,177,149,29,147,29,149,176,178,177,177,178,147,177,178,176,178,177,178,147,29,148,177,177,178,176,178,177,148,177,29,148,178,176,178,177,177,148,176,179,176,178,177,177,148,29,147,30,148,177,177,177,177,178,147,178,177,177,178,176,178,147,29,148,178,176,178,177,178,176,148,177,30,147,178,177,177,177,177,148,177,178,176,178,177,177,148,30,146,30,149,176,178,177,177,177,148,29,148,177,177,178,176,178,177,148,177,177,178,176,178,176,148,30,148,29,148,177,177,177,178,176,149,176,178,177,177,177,177,149,29,147,29,149,176,178,177,177,178,147,29,148,178,176,178,176,179,176,148,177,177,178,176,178,177,148,29,148,29,148,178,176,178,177,177,148,30,146,30,149,176,178,177,177,148,29,147,30,148,177,177,177,177,178,147,30,148,177,177,178,176,178,176,148,178,176,178,177,178,176,148,30,147,30,147,178,177,177,177,177,149,29,147,29,149,176,178,177,177,178,147,29,148,177,177,178,177,177,148,29,148,30,147,177,178,176,178,177,148,177,29,148,178,176,178,177,177,148,29,147,178,177,177,178,176,149,29,147,29,149,177,177,177,177,178,147,29,149,177,177,177,177,178,147,29,148,30,148,176,178,176,179,176,148,177,30,147,178,176,178,177,177,148,30,147,178,176,178,177,177,148,30,146,30,149,176,178,177,177,177,147,30,148,177,177,178,176,178,147,30,147,30,148,176,179,176,178,176,148,178,29,147,178,177,177,177,177,148,30,147,178,177,177,177,177,149,29,147,29,149,176,178,177,177,177,148,29,148,177,177,178,176,178,148,29,148,30,147,177,178,176,178,177,148,29,148,29,148,177,177,178,177,177,148,29,147,178,177,177,178,176,149,29,147,29,149,177,177,177,177,178,147,29,149,177,177,177,177,178,147,29,148,30,148,176,178,176,179,176,148,30,147,30,147,178,176,178,177,177,148,30,147,178,176,178,177,177,148,30,146,30,148,177,177,178,177,177,147,30,148,29,148,177,178,176,178,176,148,30,148,176,179,176,178,176,148,30,148,29,147,178,177,177,177,177,149,29,147,29,149,176,178,177,177,148,30,147,29,149,176,178,177,177,177,148,29,148,30,147,177,178,176,178,177,148,30,147,177,178,176,178,177,148,29,148,29,148,177,177,178,177,177,148,29,147,30,148,177,177,177,177,149,29,147,29,149,177,177,177,177,178,147,29,148,30,148,176,178,177,178,176,178,148,29,147,178,176,178,177,178,147,30,147,178,176,178,177,177,148,30,147,29,149,176,178,177,177,177,147,30,148,177,177,178,176,178,147,30,148,29,148,177,178,176,178,176,178,148,29,147,178,177,178,176,178,148,29,147,178,177,177,177,177,149,29,147,29,149,176,178,177,177,178,147,29,149,176,178,177,177,177,148,29,178,147,177,178,176,178,177,178,147,29,148,178,176,178,177,177,148,29,148,177,177,177,178,176,149,29,147,30,148,177,177,177,177,178,147,30,148,177,177,177,177,178,147,29,178,148,176,178,176,179,176,178,147,30,147,178,176,178,177,177,148,30,147,178,176,178,177,177,148,30,146,30,149,176,178,177,177,177,147,30,148,177,177,178,176,178,147,30,177,148,177,178,176,178,176,178,148,29,147,178,177,178,176,178,148,29,147,178,177,177,177,177,149,29,147,29,149,176,178,177,177,178,147,29,148,30,147,177,178,177,177,177,178,147,177,178,176";
-  var CANON_S_T = "TATAPPPPATAATAPPPTHATPTPHHATATPPPTATATAPPPATATAPPPPATAATAPPPTHATPTPAHATATPPPTATATAPPPATATAPPPATAATAPPPPTHATATPPHATATPPPTATATAPPPATAHAPPPAHHATAPPPPTHATATPPHATATPPPTATATAPPPATAHHPPPPHHATAPPPPTHATATPPPTATATPPTATATAPPPPATAHHAPPPHHATAPPPPTHATATPPPTATATAPTATATAPPPPATAATAPPPHHATAPPPPHHATATPPPPTATATAPTATATAPPPPATAATAPPPPHHATAPPPPHHATATPPPPTATATAPTPATATAPPPPATAATAPPPPHHATATPPHHATATPPPPTATATAPPPATATAPPPPATAATAPPPPHTATATPPAHATATPPPPTATATAPPPATATAPPPATAATAPPPPHTATATPPPHATATPPPPTATATAPPPPATATAPPPAHAATAPPPPHTATATPPPPHATATPPPPTATATAPPPPATAHHAPPPHHATAPPPHTATATPPPPTATATPPPTATATAPPPPATAHHAPPPHHATAPPPHTATATPPPPTATATAPPTATATAPPPPATAHHAPPPHHATAPPPHTATATPPPPTATATAPPTATATAPPPPATAATAPPPPATATAPPPATATATPPPPTATAHAPPTPATATHPPPPATAATAPPPPATATATPATATATPPPPTATAHHPPPATATHPPPATAATAPPPPATATATPATATATPPPPTATAHHPPPATATHPPPATAATAPPPPATATATPPTATATPPTATAHHPPPATAHHPPATAATAPPPATATATPPPTATATPPTATAHHPPPATAHHPPPHHATAPPPATATATPPPTATATPPTPTAHHPPPATAHHAPPAHATAPPPATATATPPPTATATAPTPTAHHPPPATAHHAPPAHATAPPPATATATPPPTATAHAPTPTAHHPPPATAATAPPPATATAPPATATATPPPTATAHHPPPPTAHHPPATAATAPPPATATATPAPATATPPPTATAHHPPPPTAHHPTATAATAPPPATATATPAPATATPPTATAHHPPPPTAHHPTPTAATAPPPATATATPPPATATPPTATAHTPPPPTAHHPTPPAATAPPATATATPPPPATATPPTPTAHTPPPPTAHHATPPAATAPPATATATPPPPATATPPTPTAHTPPPPTAHHATPPAATAPPATATATPPPPATATAPTPTAHTPPPPTAHHATPPHATATAATATATPPPPATAHAAPPTAHTPPPPTAHTATPPPHATATAPPATATPPPPATAHAAPPPTAHTPTPTAATATPPPTATATAPPATATAPPPATAHHAPPPTAHTPTPTAATATPPPTATATAPPPATATAPPATAHHAPPPTAHTPTPPAATATPPPTATATAPPPATATAPPATAHTAPPPTAHTPTPPPAATATPPTATATAPPPPATATAAPPTAATAPPPTAHTATPPPAATATPPTATATAPPPPATATAAPPTAATAPPPTAHTATPPPAATATAPTATATAPPPPATATAAPPPTAATAPPPTAATATPPPAATATAPTATATAPPPPATATAAPPPTAATAPTPTAATATPPPPHATATAPPATATAPPPPATAHAAPPPTAATATPTAATATPPPPHATATAPPPATATAPPPPATAHHAPPPPTAATATPTAATATPPPPTATATAPPPATATAPPPATAHHAPPPPTAATATPPPAATATPPPPTATATAPPPPATATAPPPATAHTAPPPPTAATATPPPAATATPPPTATATAPPPPATATAAPPPTAATAPPPPTAATATPPPAATATPPPTATATAPPPPATATAAPPPTAATAPPPTAATATPPPPAATATAPPTATATAPPPPATATAAPPPTAATAPPPTAATATPPPPAATATAPPTATATAPPPPATATAAPPPPTAATAPTPTAATATPPPPAATATAPPPPATATAPPPPATATAAPPPPTAATATPTAATATPPPPHATATAPPPPATATAPPPPATAHAAPPPPTAATATPTAATATPPPPHATATAPPPPATATAPPPATAHHAPPPPTAATATPPPAATATPPPTATATAPPPPATATAPPPATAHHAPPPTAATATPPPAATATPPTATATAPPPPATATAAPPPTAATAPPPTAATATPPPAATATPPTATATAPPPPATATAAPPPTAATAPPPTAATATPPPAATATAPTATATAPPPPATATAAPPPTAATAPPPTAATATPPPAATATAPTATATAPPPPATATAAPPPPTAATAPTPTPATATPPPAATATAPPPATATAPPATATAAPPPPTAATATPTPATATPPPAATATAPPPATATAPPATATAAPPPPTAATATPTPATATPPAATATAPPPATATAPPATAHAAPPPTAATATPPPPATATPPHATATAPPPPTATAPPPTAHHAPPPTAATATPPPPATATPPTATATAPPPPTATAAPPPAHHAPPPTAATATPPPPATATPPTPTATAPPPPTATAAPPPAATAPPTAATATPPPPATATAPTPTATAPPPPTATAATPPAATATPTPATATPPPPATATAPPPTATAPPPTATAATPPPAATATPTPATATPPPPATATAPPPPTATAPTPTATAATPPPAATATATPATATPPPPATATAPPPPTATAPTPTATAATPPPAATATAPPATATPPPATATAPPPPTATAPTPTATAATPPAATATAPPPATATPTPATATAPPPPTATAATPPPAHHATPPAATATAPPPATATPTPPTATAPPPPTATAATPPPAHHATPPAATATAPPPATATATPPTATAPPPPTATAATPPPAHHATPPPATATAPPPATATAHPPTATAPPPPTATAATPPPAATATAPPATATAPPPATATAAPPPTATAPTPTATAATPPPPAATATAPPATATAPPPATATAAPPPTATAATPTATAATPPPPAATATAPPPATATAPPPPATATAAPPPTATAATPTATAATPPPPAATATAPPPPATATAPPPATATAAPPPTATAATPPPATAATPPPAATATAPPPPATATATPPATATAAPPPPTATAATPPPATAATPPPAATATAPPPPATATATPPPTATAAPPPPTATAATPPPAHHATPPPAATATAPPPPATATATPPPTATAAPPPPTATAATPPPAHHATAPPPATATAPPPPATATATPPPTATAAPPPPTATAATPPPPAHHATAPPPATATAPPPPATATAHPPPPTATAATPPTATAATPPPPAATATAPPPPATATAPPPPATATAHPPPPTATAATPPTATAATPPPPAATATAPPPPATATAPPPPATATAAPPPPTATAATPPTPATAATPPPPAATATAPPPPATATAPPPATATAAPPPPTATHATPPPPATAATPPPAATATAPPPPATATATPPATATAAPPPTATHATPPPPATAATPPPAATATAPPPPATATATPPPTATAAPPPTATHATPPPPATHATPPPAATATAPPPPATATATPPPTATAAPPPTATHATPPPPAHHATAPPPATATAPPPPATATATPPPTATAAPPPTATHATPPPPAHHATAPPPATATAPPPATATATPPPPTATAATPTATHATPPPAAHATAPPPPATATAPPPATATAHPPPPTATHATPTPTHATPPPAATATAPPPPATATAPPATATAHPPPPTAHHATPTPPTHATPPPAATATAPPPPATATAPPATATAAPPPTAHHATPPPPTHATPPAATATAPPPPATATATPATATAAPPPTAHHATPPPPTHATPPAATATAPPPPATATATPPTATAAPPPTAHHATPPPPHHATPPPATATAPPPPATATATPPTATAAPPTPHHATPPPPHHATAPPPTATAPPATATATPPTATAAPPTPHHATPPPPHHATAPPPTATAPPATATATPPPTATAATPTPHHATPPPPHHATAPPPPTATAPPATATAHPPPTAHHATPTPHHATPPPPAHATAPPPPTATAPAATATAHPPPTAHHATPPPPHHATPTPATATAPPPPTATATAPPATAHPPTAHHATPPPPHHATPTPATATAPPPPTATATAPPATAAPPTAHHATPPPPHHATPTPPTATAPPPPTATATAPPPATAAPPTAHHATPPPPHHATPTPPTATAPPPPTATATAPPPATAATPPPHTATPPPPHHATATPPTATAPPPTATATAPPPPATAATAPPHTATPPPPHHATATPPTATAPAPTATATAPPPPATAATAPPHTATPPPPHHATATPPPTATATAPTATATAPPPPATAATAPPPHTATPPPPATATATPPPTATATAPTPATAHAPPPPAHHATAPPPHTATATPATATATPPPTATATAPPPATAHHPPPAHHATAPPPPHTATATPATATATPPPTATATAPPPATAHHPPPAHHATAPPPPHTATATPPTATATPPPTATATHPPPATAATPPPAHHATAPPPPHTATATPPTATAHPPPTATATHPPPATAATAPPPATATAPPPPATATATPPPPTATAHPPTATATHPPPPATAATAPPPATATAPPPPATATATPPPPTATAHAPTATATHPPPPATAATAPPPATATAPPPPATATATPPPPTATAHHPTATAHHPPPPATAATAPPPPATATAPTPPATATATPPPPTATAHHPPPATAHHPPPPATAATAPPPPATATATPPATATATPPPPTATAHHPPPATAHHPPPAHHATAPPPPATATATPPATATATPPPPTATAHHPPPPATAHHPPPAHHATAPPPPATATATPPPTATATPPPPTATAHHPPPPATAHHPPPAAHATAPPPPATATATPPPPTATAHPPTATAHHPPPPATAATAPPPATATAPPPATATATPPPPTATAHPPTATAHHPPPPATAATAPPPATATAPPPATATATPPPPTATAHHPTATAHHPPPPATAATAPPPPATATAPPPATATATPPPPTATAHHPTATAHHPPPPATAATAPPPPATATATPATATATPPPPTATAHTPPPATAHHPPPATAATAPPPPATATATPATATATPPPPTATAATPPPATAHHPPPATAATAPPPPATATATPATATATPPPTATAATPPPATAHTPPAHHATAPPPPATATATPPTATATPPTATAATPPPATAHTPPPAHATAPPPATATATPPPTATAHPPTPTAATPPPATAATAPPAHATAPPPATATATPPPTATAHPPTPTAATPPPATAATAPPATATAPPPATATATPPPTATAHHPTPTAATPPPATAATAPPPATATAPPATATATPPPTATAHHPTPTAATPPPPTAATAPPPPTATATPAPATATPPPTATAATPPPPTAATPTPTAATAPPPPTATATAAPATATPPTATAATPPPPTAATPTPTAATAPPPPTATATAPPATATPPTATAATPPPPTAATPTPPAATAPPPTATATAPPATATPPTPTAATPPPPTAATPTPPHATAPPPTATATAPPPATATAPTPTAATPPPPTAATATPPHATAPPPTATATAPPPATAHAATPTAATPPPPTAATATPPHATATAPTATATAPPPATAHAAPPTAATPPPPTAATATPPPTATATAPPATATAPPPATAHHAPPPTAATPTPTAATATPPPTATATAPPATATAPPPATAHTAPPPTAATPTPTAATATPPPTATATAPPPATATAPPATAATAPPPTAATPTPTAATATPPPTATATAPPPATATAPPATAATAPPPTAATATPPAATATPPTATATAPPPATATAPPPPTAATAPPPTAATATPPPAATATPPTATATAPPPPATATAAPPPTAATAPPPTAATATPPPAATATPPTATATAPPPPATATAAPPPTAATAPPPTAATATPPPPHATATAPTATATAPPPPATAHAAPPPTAATAPPPTAATATPPPPHATATAPPATATAPPPPATAHHAPPPPTAATATPTAATATPPPPTATATAPPPATATAPPPPATAHHAPPPPTAATATPPTAATATPPPPTATATAPPPPATATAPPPATAATAPPPPTAATATPPPAATATPPPPTATATAPPPPATATAPPPATAATAPPPPTAATATPPPPAATATPPPTATATAPPPPATATAAPPPTAATAPPPTAATATPPPPAATATPPPTATATAPPPPATATAAPPPTAATAPPPTAATATPPPPAATATAPPTATATAPPPPATATAAPPPTAATAPPPTAATATPPPPAATATAPPTATATAPPPPATATAAPPPPTAATAPPPTAATATPPPPHATATAPPPPATATAPPPPATATAAPPPPTAATATPTAATATPPPPHATATAPPPPATATAPPPATAHHAPPPPTAATATPTAATATPPPTATATAPPPPATATAPPPATAHHAPPPPTAATATPPAATATPPTATATAPPPPATATAPPPATAATAPPPTAATATPPPAATATPPTATATAPPPPATATAAPPTAATAPPPTAATATPPPAATATPPTATATAPPPPATATAAPPTAATAPPPTAATATPPPAATATAPTATATAPPPATATAAPPTAATAPPPTAATATPPPAATATAPTPTATAPPPATATAAPPPTAATATPTPATATPPPAATATAPPPPTATAPPATATAAPPPTAATATPTPATATPPPAATATAPPPPTATAPPATATAAPPPTAATATPTPATATPPHATATAPPPPTATAPTPTAHHAPPTAATATPPPPATATPPTATATAPPPPTATAPTPTAHHAPPTAATATPPPPATATPPTATATAPPPPTATAATPPAAHAPPTAATATPPPPATATPPTPTATAPPPPTATAATPPAATAPPTAATATPPPPATATAAPPTATAPPPPTATAATPPAATATPTPATATPPPPATATAAPPTATAPPPPTATAATPPPAATATAPPATATPPPPATATAAPPPTATAPTPTATAATPPPAATATAPPATATPPPPATATAAPPPTATAPTPTATAATPPPAATATAPPATATAPPATATAAPPPTATAPTPPPATHATPPAATATAPPPPATATATPATATAAPPPTATAATPPPAHHATPPAATATAPPPPATATATPPTATAAPPPTATAATPPPAHHATPPAATATAPPPPATATAHPPTATAAPPPTATAATPPPAAHATPPAATATAPPPPATATAAPPPTATAAPPPTATAATPPPAATATAPPPATATAPPPPATATAAPPPTATAATPTATAATPPPPAATATAPPPATATAPPPPATATAAPPPTATAATPTATAATPPPPAATATAPPPPATATAPPPPATATAAPPPPTATHATPTATAATPPPPAATATAPPPPATATAPPPATATAAPPPPTATHATPPPATHATPPPAATATAPPPPATATATPPATATAAPPPPTATHATPPPAHHATPPPAATATAPPPPATATATPPPTATAAPPPPTATHATPPPAHHATPPPAATATAPPPPATATATPPPTATAAPPPPTATHATPPPPAHHATAPPPATATAPPPPATATAHPPPTATAAPPPTATHATPPPPAAHATAPPPATATAPPPPATATAHPPPPTATHATPTATHATPPPPAATATAPPPPATATAPPPPATATAAPPPPTAHHATPTATHATPPPPAATATAPPPPATATAPPPATATAAPPPPTAHHATPTPATHATPPPAATATAPPPPATATAPPATATAAPPPPTAHHATPPPATHATPPPAATATAPPPPATATATPATATAAPPPTAHHATPPPAHHATPPPAATATAPPPPATATATPPTATAAPPPTAHHATPPPAHHATPPAATATAPPPPATATATPPTATAAPPPTAHHATPPPAHHATAPPATATAPPPATATATPPPTATAAPPTPHHATPPPAHHATAPPATATAPPPATATAHPPPTAHHATPTPHHATPPPAATATAPPPATATAPPATATAHPPPTAHHATPTPHHATPPPAATATAPPPATATAPPATATAAPPPTAHHATPPPPHHATPPAATATAPPPATATAPPATATAAPPTAHHATPPPPHHATPPAATATAPPPATATATPPTATAAPPTAHHATPPPPHHATPTPATATAPPPPTATATAPPATAAPPTAHTATPPPPHHATPTPPTATAPPPPTATATAPPATAAPPTPHTATPPPPHHATATPPTATAPPPTATATAPPPATAATPTPHTATPPPPHHATATPPTATAPPPTATAHAPPPATAATPTPHTATPPPPATATATPPPTATAPAPTATAHAPPPAHHATAPPPHTATPPPPATATATPPPTATATAPTATAHAPPPAHHATAPPPHTATPTPATATATPPPTATATAPPPATAHHPPAHHATAPPPHTATPTPATATATPPPTATATAPPPATAATPPAHHATAPPPHTATATPPTATAHPPPTATATAPPPATAATPPPATATAPPPHTATATPPTATAHPPPTATATAPPPATAATAPPATATAPPPATATATPPTATAHPPTATATHPPPPATAATAPPPATATAPPPATATATPPPPTATAHHPTATAHHPPPPATAATAPPPATATAPPPPATATATPPPPTATAHHPTATAHHPPPPATAATAPPPPATATATPPATATATPPPPTATAHHPPPATAHHPPPPAHHATAPPPPATATATPPATATATPPPPTATAHHPPPATAHHPPPAHHATAPPPPATATATPPPTATATPPPPTATAHHPPPATAHHPPPAAHATAPPPPATATATPPPTATAHPPPPTATAHHPPPATAATPPPPATATAPPPPATATATPPPPTATAHPPPTATAHHPPPPATAATAPPPATATAPPPPATATATPPPPTATAHPPPTATAHHPPPPATAATAPPPATATAPPPATATATPPPPTATAHHPPTATAHHPPPPATAATAPPPPATATAPPPATATATPPPPTATAHTPPTATAHHPPPPATAATAPPPPATATATPATATATPPPPTATAHTPPPPATAHHPPPATAATAPPPPATATATPATATATPPPPTATAATPPPPATAHHPPPAHHATAPPPPATATATPPTATATPPPTATAATPPPPATAHTPPPAHHATAPPPPATATATPPTATAHPPTATAATPPPPATAATPPPPAHATAPPPATATATPPPTATAHPPTATAATPPPATAATAPPPATATAPPPATATATPPPTATAHAPTPTAHTPPPATAATAPPPATATAPPPATATATPPPTATAHHPTPTAHTPPPATAATAPPPPATATAPPATATATPPPTATAATPTPPTAHTPPPATAATAPPPPATATATPATATATPPPTATAATPPPPTAATPPATAATAPPPATATATPATATATPPTATAATPPPPTAATPTPTAATAPPPATATATPPPATATPPTATAATPPPPTAATPTPHHATAPPATATATPPPATATPPTPTAATPPPPTAATATPPHATAPPATATATPPPPATAHAPTPTAATPPPPTAATATPPHATAPPATATATPPPPATAHAPTPTAATPPPPTAATATPPTATATAATATATPPPPATAHHPPPTAATPPPPTAATATPPPTATATAPPATATPPPPATAHTPPPPTAATPTPTAATATPPPTATATAPPATATPPPPATAATPPPPTAATPTPTAATATPPPTATATAPPPATATAPPATAATAPPPTAATPTPPAATATPPPTATATAPPPATATAPPATAATAPPPTAATATPPAATATPPTATATAPPPPATATAPPPTAATAPPPTAATATPPPAATATPPTATATAPPPPATATAAPPTAATAPPPTAATATPPPHATATAPTATATAPPPPATAHAAPPPTAATAPPPTAATATPPPPHATATAPTATATAPPPPATAHAAPPPTAATAPTPTAATATPPPPTATATAPPPATATAPPPPATAHHAPPPTAATATPTAATATPPPPTATATAPPPATATAPPPATAHTAPPPPTAATATPTAATATPPPPTATATAPPPATATAPPPATAATAPPPPTAATATPPPAATATPPPTATATAPPPPATATAPPPPTAATAPPPPTAATATPPPAATATPPPTATATAPPPPATATAAPPPTAATAPPPPTAATATPPPPAATATPPPTATATAPPPPATATAAPPPTAATAPPPTAATATPPPPAATATAPPTATATAPPPPATATAAPPPTAATAPPPTAATATPPPPHATATAPPPATATAPPPPATATAAPPPPTAATATPTAATATPPPPHATATAPPPPATATAPPPPATAHHAPPPPTAATATPTAATATPPPPTATATAPPPPATATAPPPATAHHAPPPPTAATATPTAATATPPPTATATAPPPPATATAPPPATAHHAPPPTAATATPPPAATATPPPTATATAPPPPATATAPPPPTAATAPPPTAATATPPPAATATPPTATATAPPPPATATAAPPPTAATAPPPTAATATPPPAATATPPTATATAPPPPATATAAPPPTAATAPPPTAATATPPPAATATAPTATATAPPPPATATAAPPPTAATAPTPTAATATPPPAATATAPPATATAPPPATATAAPPPPTAATATPTPATATPPPAATATAPPPATATAPPATATAAPPPPTAATATPTPATATPPPHATATAPPPPTATAPPATAHHAPPPPTAATATPPPATATPPTATATAPPPPTATAPPPTAHHAPPPTAATATPPPPATATPPTATATAPPPPTATAATPTAHHAPPTAATATPPPPATATPPTPTATAPPPPTATAATPPAATAPPTAATATPPPPATATAPPPTATAPPPPTATAATPPAATATPTPATATPPPPATATAPPPTATAPPPPTATAATPPPAATATPTPATATPPPPATATAPPPPTATAPTPTATAATPPPAATATAPPATATPPPPATATAPPPPTATAPTPTATAATPPPAATATAPPATATPPPATATAAPPPTATAPTPTATAATPPAATATAPPPATATPPPATATAAPPPTATAATPPPAHHATPPAATATAPPPATATATPPTATAAPPPTATAATPPPAHHATPPAATATAPPPPATATAHPPTATAAPPPTATAATPPPAHHATPPAATATAPPPPATATAHPPTATAAPPPTATAATPPPAATATAPPATATAPPPPATATAAPPPTATAATPTATAATPPPPAATATAPPATATAPPPPATATAAPPPTATAATPTATAATPPPPAATATAPPPPATATAPPPPATATAAPPPTATAATPTATAATPPPPAATATAPPPPATATAPPPATATAAPPPPTATAATPPPATAATPPPAATATAPPPPATATATPPATATAAPPPPTATAATPPPATHATPPPAATATAPPPPATATATPPPTATAAPPPPTATAATPPPAHHATPPPAATATAPPPPATATATPPPTATAAPPPPTATAATPPPPAHHATAPPPATATAPPPPATATAHPPPTATAAPPPPTATAATPPPPAAHATAPPPATATAPPPPATATAHPPPPTATAATPPTATAATPPPPAATATAPPPPATATAPPPPATATAHPPPPTATAATPPTATAATPPPPAATATAPPPPATATAPPPPATATAAPPPPTATHATPTPATAATPPPAATATAPPPPATATAPPPATATAAPPPPTATHATPPPATAATPPPAATATAPPPPATATATPPATATAAPPPTATHATPPPATHATPPPAATATAPPPPATATATPPPTATAAPPPTATHATPPPAHHATPPPAATATAPPPPATATATPPPTATAAPPPTATHATPPPAHHATAPPPATATAPPPPATATATPPPPTATAAPPTATH";
-  var CANON_L_BASE = 991424;
-  var CANON_L_D = "178,177,177,177,177,503,176,178,177,177,178,502,176,178,177,679,177,178,176,178,177,502,178,176,178,177,501,179,176,178,177,177,502,177,177,177,177,178,502,177,178,176,680,176,178,177,178,176,502,178,177,177,177,177,503,176,178,177,177,503,176,178,177,177,177,502,177,178,176,355,325,177,178,176,178,177,502,177,177,177,178,176,503,177,177,177,177,503,177,177,177,177,178,502,176,178,176,179,176,325,177,178,176,178,177,502,178,176,178,177,177,503,176,178,177,177,502,177,177,178,176,178,502,177,178,176,178,176,326,176,178,177,178,176,502,178,177,177,177,177,503,176,178,177,177,502,177,177,178,177,177,502,177,178,176,178,177,502,178,176,178,177,502,177,177,177,178,176,503,177,177,177,177,178,325,177,177,177,177,178,502,176,178,176,179,176,502,178,176,178,177,502,178,176,178,177,177,503,176,178,177,177,177,502,177,178,176,178,502,176,179,176,178,176,502,178,177,177,177,502,178,177,177,177,177,503,176,178,177,177,178,501,177,178,176,178,502,177,178,176,178,177,502,177,177,178,177,501,178,177,177,178,176,503,177,177,177,177,178,502,177,177,177,178,502,176,178,176,179,176,502,178,177,177,177,177,503,176,178,177,177,503,176,178,177,177,177,502,177,178,176,178,177,325,176,179,176,178,176,502,178,177,177,178,176,503,177,177,177,177,503,176,178,177,177,178,502,176,178,176,178,177,325,177,178,176,178,177,502,177,177,178,177,177,502,177,177,178,176,503,177,177,177,177,178,502,176,178,177,178,176,326,176,178,176,179,176,502,178,177,177,177,177,503,176,178,177,177,502,177,177,178,177,177,502,177,178,176,178,177,501,179,176,178,176,502,178,177,177,178,176,503,177,177,177,177,178,325,176,178,177,177,177,503,176,178,176,179,176,502,178,176,178,177,502,177,177,177,178,176,503,177,177,178,176,178,502,177,177,177,178,502,176,179,176,178,176,502,178,177,177,177,502,178,177,177,177,177,503,176,178,177,177,177,502,177,178,176,178,502,177,178,176,178,177,502,177,177,178,177,501,178,177,177,178,176,503,177,177,177,177,178,502,176,178,177,178,502,176,178,176,179,176,502,178,176,178,177,177,502,177,177,178,176,503,177,177,178,176,178,502,177,177,177,178,177,325,355,176,178,176,502,178,177,177,177,177,503,177,177,177,177,503,176,178,177,177,177,502,177,178,176,178,177,325,355,176,178,177,502,177,177,177,178,176,503,177,177,178,176,503,177,177,177,177,178,502,176,178,177,178,176,326,354,176,178,177,502,178,176,178,177,177,502,177,177,178,176,503,177,177,178,176,178,502,177,178,176,178,176,680,177,178,176,502,178,177,177,177,177,503,176,178,177,177,178,501,178,177,177,177,502,177,178,176,178,177,680,176,178,177,502,177,177,177,178,176,503,177,177,178,176,178,502,177,177,177,178,502,176,178,176,179,176,680,176,178,177,502,354,178,177,177,502,177,177,178,176,178,502,177,178,176,178,502,355,176,178,176,680,177,178,176,857,177,177,177,503,176,178,177,177,178,501,177,178,177,177,502,355,176,178,177,680,176,178,177,177,679,177,178,176,503,177,177,177,177,178,502,177,177,177,178,176,326,354,176,179,176,680,176,178,177,177,679,177,178,177,354,325,177,178,176,178,502,177,178,176,178,177,325,355,176,178,176,680,177,177,177,177,680,177,177,177,354,325,178,177,177,178,501,177,178,177,177,177,325,355,176,178,177,679,177,178,177,177,679,177,178,176,354,326,177,177,177,178,502,177,177,177,178,176,680,176,179,176,355,325,177,177,177,177,679,177,178,176,179,176,502,178,177,177,502,177,178,176,178,177,680,176,178,176,355,502,177,178,176,680,177,177,177,178,176,503,177,177,177,177,326,176,178,176,178,177,680,176,178,177,354,502,177,178,176,680,177,178,176,178,177,502,177,177,178,177,679,177,178,176,680,176,178,177,177,178,502,177,177,177,679,177,178,177,178,176,502,178,176,178,177,680,176,178,177,680,176,178,176,178,177,502,177,178,176,354,326,177,177,177,178,176,503,177,177,177,177,177,503,176,178,177,680,176,178,177,177,177,502,177,178,176,179,176,325,177,178,176,178,177,502,177,177,178,177,177,502,177,178,176,680,177,177,177,177,178,502,177,177,177,178,176,325,177,178,177,177,177,502,178,176,178,177,177,503,176,178,177,354,325,177,178,177,177,177,502,177,178,176,178,176,503,177,177,178,176,502,178,177,177,177,177,503,176,178,177,177,178,325,176,178,177,177,178,501,177,178,176,179,176,502,178,176,178,177,502,177,177,178,177,177,502,177,178,176,178,177,502,177,177,177,178,502,177,177,177,178,176,502,178,177,177,177,502,178,176,178,177,177,503,176,178,177,177,177,502,177,178,176,178,502,177,178,176,178,176,503,177,177,178,176,680,177,177,177,177,503,176,178,177,177,178,501,178,177,177,178,501,177,178,176,179,176,502,178,176,178,177,177,503,176,178,177,177,502,177,178,176,178,177,502,177,177,177,178,176,326,177,177,177,178,176,502,178,177,177,177,177,503,176,178,177,177,503,176,178,177,177,177,502,177,178,176,178,177,325,177,178,176,178,176,503,177,177,178,177,177,502,177,177,177,177,503,176,178,177,177,178,501,177,178,177,178,176,325,177,178,176,178,177,502,178,176,178,177,177,503,176,178,177,177,177,325,177,177,177,177,178,502,177,178,176,178,176,503,177,177,178,176,502,178,177,177,177,177,503,176,178,177,177,178,325,176,178,177,177,177,502,177,178,176,178,176,503,178,176,178,176,503,177,177,177,178,177,502,176,178,177,177,178,501,178,177,177,178,502,176,178,176,179,176,502,178,176,178,177,502,178,176,178,177,177,503,176,178,176,178,177,502,177,177,177,178,502,177,178,176,178,176,503,177,177,178,176,680,177,177,177,177,503,176,178,177,177,177,502,178,177,177,177,502,177,178,176,178,176,503,177,177,178,177,177,502,177,177,178,176,503,176,178,177,177,178,502,177,177,177,178,176,326,176,178,176,179,176,502,178,176,178,177,177,503,176,178,177,177,503,176,178,176,178,177,502,177,178,176,178,176,326,177,178,176,178,176,503,177,177,177,177,177,503,176,178,177,177,503,176,178,177,177,177,502,177,178,176,178,177,325,177,178,176,178,177,502,177,177,178,177,177,502,177,178,176,177,178,325,176,178,177,177,178,502,177,177,177,178,176,680,176,179,176,502,178,176,178,177,177,503,176,178,177,177,177,326,176,178,176,178,177,502,177,178,176,178,176,680,177,178,176,502,178,177,177,177,177,503,176,178,177,177,178,501,178,177,177,177,502,177,178,176,179,176,680,176,178,177,679,177,178,177,177,502,177,178,176,177,178,502,177,177,177,178,502,354,177,178,176,680,176,178,177,680,176,178,177,177,503,176,178,177,177,177,502,177,178,176,178,502,355,176,178,176,680,177,178,176,178,502,177,177,177,177,503,176,178,177,177,178,501,178,177,177,177,177,325,355,176,179,176,680,176,178,177,177,679,178,177,177,502,177,178,176,177,178,502,177,177,177,178,176,326,354,177,178,176,680,177,177,177,177,679,178,177,177,503,176,178,177,177,177,502,177,178,176,178,177,325,355,176,178,176,355,325,177,178,176,178,679,177,177,177,178,325,176,178,177,177,178,501,177,178,177,178,176,680,176,179,176,354,326,176,178,177,177,679,178,177,177,177,177,502,177,177,178,502,177,177,177,178,176,680,177,178,176,355,325,177,177,177,177,679,178,177,177,178,176,503,177,177,177,502,177,178,176,178,177,680,176,178,176,355,502,177,178,176,680,177,177,177,178,176,503,177,177,178,502,354,176,179,176,680,176,178,177,354,502,178,177,177,679,178,177,177,177,177,502,177,177,178,177,325,355,176,178,176,680,177,178,176,178,177,502,177,177,177,679,178,177,177,178,176,503,177,177,177,177,325,355,176,178,177,680,176,178,176,178,177,502,177,178,176,178,176,326,177,177,177,178,176,503,177,177,178,176,178,502,176,179,176,355,325,176,178,177,177,177,502,178,177,177,178,176,325,178,177,177,177,177,502,177,177,178,177,177,503,176,178,176,355,325,177,178,176,178,177,502,177,177,177,178,176,503,177,177,178,176,502,178,177,177,177,178,502,176,178,177,354,325,177,178,177,177,177,502,177,178,176,178,176,503,177,177,178,176,503,177,177,178,176,178,502,176,179,176,355,501,178,177,177,178,501,178,177,177,178,176,503,177,177,177,177,502,178,176,178,177,177,503,176,178,176,178,177,502,177,177,177,178,502,177,177,177,178,176,503,177,177,177,177,680,176,178,177,178,502,176,178,177,177,177,502,178,177,177,177,502,177,178,176,178,176,503,177,177,178,177,177,502,177,178,176,178,502,176,179,176,178,177,501,178,177,177,178,176,325,178,177,177,178,176,502,178,177,177,177,177,503,176,178,176,178,503,176,178,176,178,177,502,177,177,177,178,176,325,178,177,177,178,176,503,177,177,177,177,178,502,176,178,177,178,176,326,176,178,177,177,177,502,177,178,176,178,177,502,177,177,178,177,502,177,177,178,177,177,502,177,178,176,178,177,325,176,178,177,177,178,501,178,177,177,178,176,503,177,177,177,177,502,178,176,178,177,177,503,176,178,176,178,177,325,177,178,176,178,177,502,177,177,177,178,176,503,177,177,178,176,503,177,177,177,177,178,502,176,178,177,178,176,502,178,177,177,177,502,177,178,176,178,177,502,177,177,178,177,502,177,177,178,176,178,502,176,179,176,178,177,501,178,177,177,178,501,178,177,177,178,176,503,177,177,177,177,178,502,176,178,177,177,503,176,178,176,178,177,502,178,176,178,177,502,177,177,177,178,176,503,177,177,178,176,178,502,177,177,177,178,502,176,178,177,177,177,502,178,177,177,177,177,325,177,178,176,178,177,502,177,177,178,177,177,502,177,178,176,178,502,176,179,176,178,177,502,177,177,177,178,176,325,178,177,177,178,176,503,177,177,177,177,178,502,176,178,177,177,177,326,176,178,176,178,177,502,177,178,176,178,177,325,177,177,177,178,176,503,177,177,178,176,178,502,176,179,176,178,177,325,176,178,177,177,177,502,178,177,177,178,176,502,178,176,178,177,502,177,177,178,177,177,503,176,178,176,178,177,325,177,178,176,178,177,502,177,177,177,178,176,503,177,177,178,176,502,178,177,177,177,177,503,176,178,177,177,177,502,178,176,178,177,502,177,178,176,178,176,503,177,177,178,176,680,177,178,176,178,502,176,179,176,178,177,501,178,177,177,177,502,178,177,177,178,176,502,178,176,178,177,178,501,177,178,177,177,503,176,178,176,178,177,502,177,177,177,178,502,354,177,178,176,503,177,177,178,176,178,502,176,178,177,177,503,176,178,177,177,177,502,178,177,177,177,177,325,355,176,178,176,503,177,177,178,176,178,502,177,178,176,178,502,176,179,176,178,177,501,178,177,177,178,176,325,355,176,179,176,502,178,176,178,177,177,503,176,178,177,177,177,326,176,178,176,178,177,502,177,177,177,178,176,680,177,178,176,503,177,177,177,177,178,502,176,178,177,177,178,325,354,177,177,177,502,178,177,177,177,177,680,176,178,176,355,325,177,178,176,178,502,177,178,176,178,177,325,354,177,178,177,501,178,177,177,178,176,680,176,179,176,354,326,176,178,177,177,503,176,178,177,177,177,680,176,178,177,502,177,177,177,178,176,680,177,178,176,355,325,177,177,177,178,502,176,178,177,177,178,679,177,177,177,502,355,176,178,177,680,176,178,176,179,176,502,178,177,177,502,177,178,176,178,177,679,177,177,178,176,325,355,177,178,176,680,176,178,177,178,176,502,178,177,177,178,325,176,178,176,178,177,680,176,178,177,177,325,355,176,178,176,680,177,178,176,178,177,502,177,177,177,178,325,354,177,177,178,679,177,177,177,177,178,502,176,178,177,354,326,176,178,177,177,177,502,178,177,177,177,177,148,355,176,178,177,679,177,177,178,176,178,502,177,178,176,354,326,177,177,177,178,176,502,178,177,177,178,176,503,176,178,177,679,177,177,178,177,178,502,176,178,176,355,325,177,178,176,178,177,502,177,177,177,178,176,503,177,177,177,680,177,177,177,177,178,502,176,178,177,354,502,178,177,177,177,502,178,176,178,177,177,503,176,178,177,177,679,177,178,176,178,502,177,178,176,178,176,503,177,177,177,178,501,178,177,177,177,177,503,176,178,177,177,178,502,176,178,177,178,501,177,178,176,178,177,502,178,176,178,177,501,178,177,177,178,176,503,177,177,177,177,178,502,177,178,176,178,502,176,178,177,178,176,502,178,177,177,177,177,325,178,176,178,177,177,503,176,178,177,177,177,502,177,178,176,178,502,177,178,176,178,177,502,177,177,177,178,176,503,177,177,177,177,503,176,178,177,177,178,502,176,178,176,179,176,325,177,178,176,178,177,502,177,177,178,177,177,502,177,177,178,176,503,177,177,177,177,178,502,176,179,176,178,176,326,176,178,177,178,176,502,178,177,177,177,177,503,176,178,177,177,502,177,177,178,177,177,502,177,178,176,178,177,325,177,178,176,178,177,501,178,177,177,178,176,503,177,177,177,177,503,177,177,177,177,178,502,176,178,176,179,176,502,178,176,178,177,502,177,177,177,178,176,503,177,177,178,176,178,502,177,178,176,178,502,176,179,176,178,176,502,178,177,177,177,502,178,177,177,177,177,503,176,178,177,177,178,501,177,178,176,178,502,177,178,176,178,177,502,177,177,178,177,501,178,177,177,178,176,503,177,177,177,177,178,502,176,178,177,178,502,176,178,176,179,176,502,178,176,178,177,177,325,177,177,177,178,176,503,177,177,178,176,178,502,177,178,176,178,502,176,179,176,178,176,502,178,177,177,177,177,503,177,177,177,177,503,176,178,177,177,177,502,177,178,176,178,177,325,177,178,176,178,177,502,177,177,177,178,176,503,177,177,178,176,503,177,177,177,177,178,502,176,178,177,178,176,326,176,178,176,178,177,502,178,177,177,177,177,502,177,177,178,176,503,177,177,178,176,178,502,177,178,176,178,177,325,176,178,177,178,176,502,178,177,177,178,176,503,177,177,177,177,503,176,178,177,177,177,503,176,178,176,178,177,502,178,176,178,177,502,177,177,177,178,176,503,177,177,178,176,178,502,177,177,177,178,502,176,178,177,178,176,502,178,176,178,177,502,178,177,177,177,177,502,177,177,178,177,177,502,177,178,176,178,502,176,179,176,178,176,502,178,177,177,177,502,178,177,177,178,176,503,177,177,177,177,178,501,177,178,177,177,503,176,178,176,178,177,502,178,176,178,177,177,325,177,177,177,178,176,503,177,177,178,176,178,502,177,177,177,178,177,325,354,176,179,176,502,178,177,177,177,177,503,177,177,177,177,502,177,177,178,177,177,502,177,178,176,178,177,325,355,176,178,176,502,178,177,177,178,176,503,177,177,178,176,503,176,178,177,177,178,502,176,178,177,177,177,326,354,176,178,177,502,177,177,178,177,177,679,177,178,176,503,177,177,177,177,178,502,176,178,177,178,176,326,354,177,178,176,502,178,177,177,177,177,679,177,178,177,679,177,178,177,177,502,177,178,176,178,177,680,176,178,177,501,178,177,177,178,176,680,177,177,177,178,502,177,177,177,178,502,176,178,176,178,177,680,176,178,177,502,354,177,178,176,680,177,178,176,178,177,325,177,177,177,178,502,176,179,176,178,176,680,177,177,177,355,147,355,177,177,177,679,178,177,177,178,176,502,178,177,177,502,355,176,178,177,680,176,178,177,177,177,502,177,178,176,680,177,177,177,178,176,503,177,177,177,177,326,354,176,178,177,680,176,178,177,177,178,501,177,178,176,355,325,177,178,176,178,177,502,177,177,178,177,325,355,176,178,176,680,177,177,177,177,178,502,177,177,177,354,325,178,177,177,177,177,502,178,176,178,177,325,355,176,178,177,679,177,177,178,177,177,502,177,178,176,354,326,177,177,177,178,176,502,178,177,177,177,680,176,178,177,355,325,176,178,177,177,178,501,177,178,176,179,176,502,178,176,178,177,502,178,176,178,177,177,503,176,178,176,355,325,177,177,177,177,178,502,177,177,177,178,176,502,178,177,177,177,502,178,176,178,177,177,503,176,178,177,354,502,177,178,176,178,502,177,178,176,178,176,503,177,177,178,177,501,178,177,177,177,177,503,176,178,177,177,178,502,177,177,177,178,501,177,178,176,179,176,502,178,176,178,177,680,176,178,177,177,502,177,178,176,178,177,502,177,178,176,178,176,326,177,177,177,178,176,502,178,177,177,177,177,503,176,178,177,177,503,176,178,177,177,177,502,177,178,176,178,177,325,177,178,176,178,176,503,177,177,178,177,177,502,177,178,176,177,503,176,178,177,177,178,502,176,178,177,178,176,325,177,178,176,178,177,502,178,176,178,177,177,503,176,178,177,177,177,325,177,177,177,177,178,502,177,178,176,178,176,326,177,177,177,178,176,502,178,177,177,177,177,503,176,178,177,177,178,325,176,178,177,177,177,502,177,178,176,178,177,502,178,176,178,177,502,177,177,178,177,177,502,177,177,177,177,178,502,177,177,177,178,502,176,178,176,179,176,502,178,176,178,177,502,178,176,178,177,177,503,176,178,177,177,177,502,177,178,176,178,502,177,178,176,178,176,503,177,177,178,176,502,178,177,177,177,177,503,176,178,177,177,178,501,177,178,177,177,502,177,178,176,178,177,502,177,177,178,177,177,502,177,178,177,177,502,177,177,177,177,178,502,177,177,177,178,176,326,176,178,176,179,176,502,178,177,177,177,177,503,176,178,177,177,503,176,178,177,177,177,502,177,178,176,178,176,326,177,178,176,178,176,503,177,177,177,177,177,503,176,178,177,177,503,176,178,177,177,177,502,177,178,176,179,176,325,177,178,176,178,177,502,177,177,178,177,177,502,177,178,176,178,177,325,177,177,177,177,178,502,177,177,177,178,176,325,177,178,176,179,176,502,178,177,177,177,177,503,176,178,177,177,177,325,177,178,177,177,177,502,177,178,176,178,176,503,177,177,178,176,502,178,177,177,177,177,503,176,178,177,177,178,501,178,177,177,178,501,177,178,176,179,176,502,178,176,178,177,502,177,177,178,177,177,502,177,178,176,178,177,502,177,177,177,178,502,176,178,177,178,176,502,178,177,177,177,680,176,178,177,177,503,176,178,177,177,177,502,177,178,176,178,502,177,178,176,178,176,503,177,177,178,176,178,502,177,177,177,177,503,176,178,177,177,178,501,178,177,177,178,176,325,355,176,179,176,502,178,176,178,177,177,502,177,178,177,177,502,177,178,176,178,177,502,177,177,177,178,176,326,354,177,178,176,502,178,177,177,177,177,503,176,178,177,177,503,176,178,177,177,177,502,177,178,176,178,177,325,355,176,178,176,503,177,177,178,177,177,502,177,177,177,177,178,325,176,178,177,177,178,502,176,178,177,178,176,680,176,178,177,502,178,176,178,177,177,503,176,178,177,177,177,325,177,177,177,177,178,502,177,178,176,178,176,680,177,178,176,502,178,177,177,177,177,503,176,178,177,177,178,501,178,177,177,177,502,177,178,176,178,177,680,176,178,176,680,177,177,178,176,503,177,177,177,177,178,501,178,177,177,178,502,354,176,179,176,680,176,178,177,354,502,178,177,177,503,176,178,177,177,177,502,177,177,177,178,502,355,176,178,176,680,177,178,176,178,177,502,177,177,177,503,176,178,177,177,178,501,178,177,177,177,177,325,355,176,178,177,680,176,178,177,177,177,502,177,178,176,503,177,177,177,177,178,502,177,177,177,178,176,326,354,176,179,176,680,176,178,177,177,178,501,178,177,177,178,176,149,176,178,177,177,177,502,177,178,176,178,177,325,355,176,178,176,355,325,177,177,177,178,177,502,177,177,177,178,176,325,178,177,177,178,501,177,178,176,178,177,680,176,178,177,354,325,177,178,177,177,177,502,177,178,176,178,176,503,177,177,178,502,177,177,177,178,176,680,176,179,176,355,325,176,178,177,177,178,501,178,177,177,178,176,503,177,177,177,177,325,177,178,176,178,177,680,176,178,176,355,502,177,177,177,178,502,177,177,177,178,176,503,177,177,177,177,680,176,178,177,680,176,178,177,177,177,502,178,177,177,177,502,177,178,176,178,177,502,177,177,178,177,679,177,178,176,680,176,179,176,178,177,501,178,177,177,178,176,325,178,177,177,178,176,502,178,176,178,177,177,503,176,178,176,680,177,178,176,178,177,502,177,177,177,178,176,325,178,177,177,178,176,503,177,177,177,177,178,502,176,178,177,354,326,176,178,177,177,177,502,177,178,176,178,177,325,177,177,177,178,177,502,177,177,178,177,177,502,177,178,176,355,325,176,178,177,177,178,501,178,177,177,178,176,503,177,177,177,177,502,178,176,178,177,177,503,176,178,176,178,177,325,177,178,176,178,177,502,177,177,177,178,176,503,177,177,178,176,503,177,177,177,177,178,502,176,178,177,178,176,502,178,177,177,177,502,177,178,176,178,177,502,177,177,178,177,502,177,177,178,176,178,502,176,179,176,178,177,502,177,177,177,178,501,178,177,177,178,176,503,177,177,177,177,680,176,178,177,177,503,176,178,176,178,177,502,177,178,176,178,502,177,177,177,178,176,503,177,177,178,176,178,502,177,178,176,178,502,176,178,177,177,177,502,178,177,177,178,176,325,177,178,176,178,177,502,177,177,178,177,177,502,177,178,176,178,502,177,178,176,178,177,502,177,177,177,178,176,325,178,177,177,178,176,503,177,177,177,177,177,503,176,178,177,177,177,326,176,178,176,178,177,502,177,178,176,178,176,326,177,177,177,178,176,503,177,177,178,176,178,502,176,179,176,178,177,325,176,178,177,177,177,502,178,177,177,178,176,502,178,176,178,177,502,177,177,178,177,177,503,176,178,176,178,177,325,177,178,176,178,177,502,177,177,177,178,176,503,177,177,178,176,502,178,177,177,177,177,503,176,178,177,177,177,502,178,177,177,177,502,177,178,176,178,176,503,177,177,178,176,680,177,178,176,178,502,176,179,176,178,177,501,178,177,177,178,501,177,178,176,179,176,502,178,176,178,177,178,502,176,178,177,177,503,176,178,176,178,177,502,177,177,177,178,502,177,177,177,178,176,503,177,177,178,176,178,502,176,178,177,177,503,176,178,177,177,177,502,178,177,177,177,177,325,177,178,176,178,176,503,177,177,178,176,178,502,177,178,176,178,502,176,179,176,178,177,501,178,177,177,178,176,325,177,178,176,179,176,502,178,176,178,177,177,503,176,178,177,177,177,326,176,178,176,178,177,502,177,177,177,178,176,503,177,177,178,176,503,177,177,177,177,178,502,176,178,177,177,178,325,176,178,177,177,177,502,177,178,176,178,177,680,176,178,176,503,177,177,178,177,177,502,177,178,176,178,177,325,176,178,177,177,178,501,178,177,177,178,176,680,176,179,176,680,176,178,177,177,503,176,178,177,177,177,502,178,176,178,177,502,177,177,177,178,176,680,177,178,176,680,177,177,177,177,503,176,178,177,177,178,501,178,177,177,177,502,355,176,178,177,680,176,178,176,178,502,177,178,177,177,502,177,178,176,178,177,501,178,177,177,178,501,355,177,178,176,680,176,178,177,178,502,176,178,177,177,503,176,178,176,178,177,502,178,176,178,177,177,325,355,176,178,176,680,177,178,176,178,502,177,177,177,177,178,325,176,178,177,177,177,502,178,177,177,177,177,325,355,176,178,177,354,325,177,178,177,177,679,178,176,178,177,325,355,176,178,177,502,177,177,177,178,176,680,177,178,176,354,326,177,177,177,178,678,178,177,177,177,326,354,176,178,177,502,177,178,176,178,177,679,177,178,176,355,325,177,178,176,178,177,502,177,177,177,178,176,503,177,177,177,502,178,177,177,177,177,680,176,178,177,354,325,177,178,177,177,177,502,178,176,178,177,177,503,176,178,177,502,354,177,178,176,680,177,178,176,354,503,177,177,177,178,501,178,177,177,177,177,503,176,178,177,177,680,176,178,176,680,177,178,176,178,177,502,177,177,178,177,501,178,177,177,178,176,503,177,177,177,177,178,502,176,179,176,680,176,178,177,178,176,502,178,177,177,177,502,178,176,178,177,177,502,177,177,178,177,177,502,177,178,176,355,325,177,178,176,178,177,501,178,177,177,178,176,503,177,177,177,177,503,177,177,177,177,178,502,176,178,176,355,325,177,178,176,178,177,502,177,177,178,177,177,502,177,177,178,176,503,177,177,178,176,178,502,176,179,176,354,326,176,178,177,177,177,502,178,177,177,177,177,503,176,178,177,177,502,177,177,178,176,178,502,177,178,176,355,325,177,177,177,178,177,501,178,177,177,178,176,503,177,177,177,177,503,177,177,177,177,178,502,176,178,176,179,176,502,178,176,178,177,502,177,177,177,178,176,503,177,177,178,176,178,502,177,178,176,178,502,176,179,176,178,176,502,178,177,177,177,502,178,177,177,177,177,503,176,178,177,177,177,502,177,178,176,178,502,177,178,176,178,177,502,177,177,177,178,501,178,177,177,178,176,503,177,177,177,177,178,502,176,178,177,178,502,176,178,176,178,177,502,178,176,178,177,177,325,177,177,177,178,176,503,177,177,178,176,178,502,177,178,176,178,177,325,176,178,177,178,176,502,178,177,177,177,177,503,177,177,177,177,503,176,178,177,177,177,502,177,178,176,178,177,325,177,178,176,178,177,502,177,177,177,178,176,503,177,177,178,176,503,177,177,177,177,178,502,176,178,177,178,176,326,176,178,176,178,177,502,178,177,177,177,177,502,177,177,178,176,503,177,177,178,176,178,502,176,179,176,178,176,326,176,178,177,178,176,502,178,177,177,178,176,503,176,178,177,177,502,177,177,178,177,177,503,176,178,176,178,177,502,178,176,178,177,502,177,177,177,178,176,503,177,177,178,176,178,502,177,177,177,178,502,176,178,176,179,176,502,178,176,178,177,502,178,176,178,177,177,502,177,177,178,177,177,502,177,178,176,178,502,176,179,176,178,176,502,178,177,177,178,501,178,177,177,178,176,503,176,178,177,177,178,501,177,178,177,177,503,176,178,176,178,177,502,178,176,178,177,177,325,177,177,177,178,176,503,177,177,177,177,178,502,177,177,177,178,176,326,176,178,176,179,176,502,178,177,177,177,177,503,176,177,178,177,502,177,177,178,177,177,502,177,178,176,178,177,325,176,179,176,178,176,502,178,177,177,178,176,503,177,177,177,177,503,176,178,177,177,178,502,176,178,176,178,177,325,177,178,176,178,177,502,177,177,177,178,177,502,177,177,178,176,503,177,177,177,177,178,502,176,178,177,178,176,502,178,177,177,177,502,178,177,177,177,177,503,176,177,178,177,679,177,178,177,177,502,177,178,176,178,177,680,176,178,177,501,178,177,177,178,176,503,177,177,177,177,178,501,178,177,177,177,503,176,178,176,178,177,680,176,178,177,502,177,177,177,178,176,503,177,177,178,176,178,502,177,177,177,178,502,176,179,176,178,176,680,177,177,177,177,325,355,177,177,177,503,176,177,178,177,178,501,177,178,176,178,177,325,355,176,178,177,679,177,178,177,177,679,177,178,176,503,177,177,177,177,178,502,176,178,177,177,177,326,354,176,178,177,680,176,178,177,177,679,177,178,176,680,177,178,176,178,502,177,177,177,178,177,325,355,176,178,176,680,177,177,177,177,680,177,177,177,354,325,177,178,177,177,502,177,178,176,178,177,325,355,176,178,177,679,177,177,178,176,680,177,178,176,354,326,177,177,177,178,502,176,178,177,177,177,680,176,178,177,355,325,176,178,177,177,679,177,178,176,179,176,502,178,176,178,502,177,178,176,178,177,679,177,178,176,355,502,177,177,177,680,177,177,177,178,176,502,178,177,177,177,325,177,178,176,178,177,680,176,178,177,354,502,177,178,176,680,177,178,176,178,176,503,177,177,178,177,325,354,177,177,177,680,176,178,177,177,178,501,177,178,177,679,177,178,176,178,177,502,178,176,178,177,680,176,178,177,679,177,177,177,177,178,502,177,178,176,354,326,177,177,177,178,176,502,178,177,177,177,177,503,176,178,177,680,176,178,177,177,177,502,177,178,176,355,325,177,178,176,178,176,503,177,177,178,177,177,502,176,178,177,680,176,178,177,177,178,502,176,178,176,179,176,325,177,178,176,178,177,502,178,176,178,177,177,503,176,178,176,178,177,325,177,177,177,177,178,502,177,178,176,178,176,503,177,177,178,176,502,178,177,177,177,177,503,176,178,177,177,177,325,177,178,177,177,177,502,177,178,176,178,176,503,177,177,178,177,501,178,177,178,176,177,503,176,178,177,177,178,502,177,177,177,178,501,177,178,176,179,176,502,178,176,178,177,502,178,176,178,177,177,503,176,178,176,178,177,502,177,178,176,178,502,177,177,177,178,176,503,177,177,177,177,680,176,178,177,177,503,176,178,177,177,177,502,177,178,176,178,502,177,178,176,178,177,502,177,177,178,177,177,502,177,178,176,177,503,176,178,177,177,178,502,177,177,177,178,176,325,177,178,176,179,176,502,178,176,178,177,177,503,176,178,177,177,502,177,178,176,178,177,502,177,178,176,178,176,326,177,177,177,178,176,502,178,177,177,177,177,503,176,178,177,177,503,176,178,177,177,177,502,177,178,176,179,176,325,177,178,176,178,177,502,177,177,178,177,177,502,177,178,176,177,178,325,177,177,177,177,178,502,176,178,177,178,176,502,178,176,178,177,502,178,176,178,177,177,503,176,178,177,177,177,325,177,177,178,176,178,502,177,178,176,178,176,503,177,177,178,176,502,178,177,177,177,177,503,176,178,177,177,178,501,178,177,177,177,502,177,178,176,179,176,502,178,176,178,177,502,177,177,178,177,177,502,177,177,177,177,178,502,177,177,177,178,502,176,178,177,178,176,502,178,177,177,177,177,503,176,178,177,177,503,176,178,177,177,177,502,177,178,176,178,177,325,177,178,176,178,176,503,177,177,178,176,178,502,177,177,177,177,503,176,178,177,177,178,501,177,178,177,178,176,325,177,178,176,178,177,502,178,176,178,177,177,502,177,178,177,177,502,177,177,177,177,178,502,177,177,177,178,176,326,176,178,176,179,176,502,178,177,177,177,177,503,176,178,177,177,178,325,176,178,177,177,177,502,177,178,176,178,177,325,355,176,178,176,503,177,177,177,177,177,503,177,177,177,177,178,325,176,178,177,177,178,501,177,178,176,179,176,680,176,178,177,502,177,177,178,177,177,502,177,178,177,177,177,502,177,177,177,178,502,177,177,177,178,176,680,177,178,176,502,178,177,177,177,177,503,176,178,177,177,178,501,178,177,177,177,502,177,178,176,178,176,681,176,178,176,680,177,177,178,176,503,176,178,177,177,178,501,178,177,177,178,502,354,176,179,176,680,176,178,177,177,502,177,178,177,177,502,177,178,176,178,177,502,177,177,177,178,177,325,355,176,178,176,680,177,177,177,178,679,177,177,177,503,176,178,177,177,177,502,177,178,176,178,177,325,355,176,178,176,680,177,178,177,177,679,177,178,176,503,176,178,177,177,178,501,178,177,177,178,176,326,354,176,179,176,680,176,178,177,177,679,178,177,177,178,324,177,178,176,178,177,502,177,177,177,178,176,680,177,178,176,355,325,177,177,177,177,679,178,177,177,178,176,503,177,177,177,502,177,178,176,178,177,680,176,178,176,355,325,177,178,177,177,679,177,177,177,178,176,503,177,177,178,502,176,178,177,178,176,680,176,179,176,354,502,178,177,177,679,178,177,177,177,177,502,177,177,178,177,325,355,176,178,176,680,177,178,176,178,177,502,177,177,177,178,501,178,177,177,178,176,503,177,177,177,177,325,355,176,178,177,680,176,178,177,177,177,502,177,178,176,178,502,177,177,177,178,176,503,177,177,178,176,680,176,179,176,680,176,178,177,177,178,501,178,177,177,178,176,325,178,177,177,177,177,502,178,176,178,177,177,503,176,178,176,680,177,178,176,178,177,502,177,177,177,178,176,325,178,177,177,178,176,503,177,177,177,177,178,502,176,178,177,354,326,176,178,177,177,177,502,177,178,176,178,177,502,177,177,178,177,502,177,177,178,176,178,502,176,179,176,355,325,176,178,177,177,178,501,178,177,177,178,176,503,177,177,177,177,502,178,176,178,177,177,503,176,178,176,355,502,177,177,178,177,502,177,177,177,178,176,503,177,177,178,176,502,178,177,177,177,178,502,176,178,177,177,177,502,178,177,177,177,502,177,178,176,178,176,503,177,177,178,177,679,177,178,176,178,502,176,179,176,178,177,501,178,177,177,178,501,178,177,177,178,176,503,177,177,177,177,177,503,176,178,177,177,503,176,178,176,178,177,502,177,177,177,178,176,326,177,177,177,178,176,503,177,177,177,177,178,502,176,178,177,178,502,176,178,177,177,177,502,178,177,177,177,177,325,177,178,176,178,177,502,177,177,178,177,177,502,177,178,176,178,177,325,176,179,176,178,177,502,177,177,177,178,176,325,178,177,177,178,176,502,178,176,178,177,177,503,176,178,176,178,177,326,176,178,176,178,177,502,177,178,176,178,176,503,177,177,178,176,503,177,177,177,177,178,502,176,178,177,178,177,325,176,178,177,177,177,502,177,178,176,178,177,502,178,176,178,177,502,177,177,178,177,177,502,177,178,176,178,177,501,178,177,177,178,502,177,177,177,178,176,503,177,177,177,177,680,176,178,177,177,503,176,178,176,178,177,502,178,176,178,177,502,177,178,176,178,176,503,177,177,178,176,178,502,177,177,177,178,502,176,178,177,178,176,502,178,177,177,177,502,177,178,176,178,177,502,177,177,178,177,177,502,177,178,176,178,502,177,178,176,178,177,502,177,177,177,178,176,325,178,177,177,178,176,503,177,177,177,177,178,502,176,178,177,177,503,176,178,176,178,177,502,177,178,176,178,177,325,177,177,177,178,176,503,177,177,178,176,178,502,177,178,176,178,177,325,176,178,177,177,177,502,178,177,177,178,176,502,178,176,178,177,502,177,177,178,177,177,502,177,178,176,178,177,325,177,178,176,178,177,502,177,177,177,178,176,503,177,177,178,176,503,177,177,177,177,177,503,176,178,177,177,177,326,176,178,176,178,177";
-  var CANON_L_T = "PPTTPPPPTTPPTTTTPPTTPPPPTTPPPTTPPPPTTPPTPTTPPTTPPPPTTPPPTTPPPPTTPPTPTTPPPTTPPPPTTPPPTTTPPPTTPPTPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPPTTPPPTTPPPPTTPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPTPPTTPPPTTTTPPTTPPPPTTPPPTTPTPPTTPPPTTTTPPTTPPPPTTPPPTTPTPPTTPPPTTTTPPTTPPPPTTPPTTPTPPTTPPPPTTTPPTTPPPPTTPPTTTTPPTTPPPPTTTPPTTTTPPTTPPTTTTPTTTTPPTTTPPTTTTPTTPPPTTTTTTTPPTTTPPPTTTPTTPTPTTTPTTTTPPTTTPPPTTTPPTTPTPTTTPTTTTPPTTTPPPTTTPPTTPTPTTTPTPTTPPTTTPPPTTTPPTTPTPTTTPTPTTPPTTTPPPTTTPTTTTPPTTTPPPTTPPTTTTPPTTTPTPTTPTTTPPPTTPPTTTTPPPTTTPPPTTPTTTTPPTTPPPTTTPTTTPPPTTPPTTTTPPTTPPPPTTPTTTTPPTTPPTPTTPPPTTPPPPTTPPTTTTPPTTPPTPTTPPPPTTPPPPTTPPTTTTPPTTPPTPTTPPPPTTPPPPTTPPTPTTPPPTTPPPPTTPPPTTTPPPTTPPTPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPTTPPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPTTPPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPTPPTTPPPPTTPPPPTTPPPPTTPPTTTTPPTTPPPPTTPPPPTTPPPPTTPPTTTTPPTTPPPPTTPPPTTTTPPTTPPPTTTPTTPPPPTTPPPTTTTPTTPPPTTTPTTTTPPTTPPPPTTTPTTPTPTTTPPTTTTPPTTPPPPTTTPPTTPTPTTTPTTTTPPTTPPPPTTTPPTTPTPTTTPTTTTPPTTPPPPTTTPPTTPTPPTTTPPTTTPPPTTTTPPTTTPTTTTPPTTTPPTTTPPTTTTPPTTTPTPTTPPTTTPPTTTPPTTTTPPTTTPPPTTPTTTTPTTTPPTTTTPTTTPPPTTPTTTTPTTTPPPTTTPPTTTTPPTTPPTTTTPTTTPPPTTTPPTTTTPPTTPPTPTTPPPTTTPPPPTTPPTPTTPPPTTPPPPTTPPPTTTPPPPTTPPTPTTPPPTTPPPPTTPPTTTTPPPTTPPTPTTPPPTTPPPPTTPPPTTTPPPTTPPTPTTPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPPTTPPTTPPPPTTPPPTTTTPPTTPPPPTTPPPTTTPPPTTPPPPTTTPTTPPPPTTPPPTTTPPPTTPPPPTTTPPTTPTPPTTPPPTTTPPPTTPPPPTTTPPTTPTPPTTPPPPTTPPPPTTPTPPTTTPTTTTPPTTPPPPTTTPPTTPTPPTTTPTTTTPPTTTPPPTTTPPTTPTPPTTTPTTTTPPTTTPPPTTTPTTTTPPTTTPPTTTPPTTTTPPTTTPTTTTPTTTPPTTTPPTTTTPPTTTPPTTTPPTTTTPTTTPPTTTTPPPTTTPPTTTPPTTTTPTTTPPPTTTPPTTTPPTTTPPTPTTPPTTTPPPPTTPPPTTTTPTTTPPTPTTPPTTTPPPPTTPPTTTTPTTTPPTPTTPPTTTPPPPTTPPTTTTPTTTPPTPTTPPTTPPPPTTPPTTTTPTTTPPPPTTPPPTTTPPPTTPPPPTTPPTTTTPPPTTPPPTTTPPPTTPPPPTTPPTTTTPPPTTPPPPTTPPPPTTPPPPTTPPTPTTPPPTTPPPPTTPPPTTTPPPTTPPTPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPTTPPPPTTPPPTTPPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPTTPPPPTTPPPTTTTPPTTPPPPTTPPPTTPTPPTTPPPTTTTPPTTPPPPTTPPPTTPTPPTTPPTTTTPPTTPPPPTTPPPTTPTPPTTPPPTTTPTTPPPPTTPPTTTTPPTTTPPTTTPPTTTTPPTTPPTTTTPTTTPPTTTPPPTTTTPPTTPPPTTTPPTTTTPTTTPPPTTTPTTPPPTTTPPTTTTPTTTPPPTTTPPTTPTPTTTPPTPTTPPTTTPPPTTTPPTTPTPTTTPPTPTTPPTTTPPPTTTPPTTTTPTTTPPTPTTPPTTTPPPTTTPTTTTPPTTTPPPPTTPPTTTTPPTTTPPTPTTPPTTTPPPPTTPPPTTTPPTTTPPPPTTPTTTTPPPTTPPPTTTPPTTTPPPPTTPPTTTTPPPTTPPPPTTPTTTPPPPTTPPTPTTPPPPTTPPPPTTPPTTTTPPPTTPPTPTTPPPPTTPPPPTTPPTTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPTPPTTPPPTTTPPPTTPPPPTTPPPTTPTPPTTPPPPTTPPPPTTPPPPTTPPTTTTPPTTPPPPTTPPPPTTPPPPTTPPTTTTPPTTPPPPTTTPPTTTTPPTTPPTTTTPTTTPPPTTTPPTTTTPTTPPPTTTPTTTTPPTTTPPPTTTPTTPTPTTTPPTTTTPPTTTPPPTTTPPTTPTPTTTPPTTTTPPTTTPPPTTTPPTTPTPTTTPPTTTTPPPPTTTPPPTTTPPTTTTPPTTTPPPTTTPPPTTTTPPTTTPTPTTPPTTTPPPPTTPPTTTTPPTTTPTPTTPPTTTPPPPTTPPTTTTPPPTTTPPPTTPTTTTPPPTTPPPTTTPTTTPPPTTPPTTTTPPPTTPPPPTTPTTTTPPTTPPTPTTPPPPTTPPPPTTPPTTTTPPTTPPPPTTPPPPTTPPPPTTPPTPTTPPPTTPPPPTTPPPPTTPPPPTTPPTPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPTTPPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPPTTPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPTPPTTPPPPTTPPPPTTPPPPTTPPPTTTTPPTTPPPPTTPPPPTTPTPPTTPPTTTTPPTTPPPPTTPPPPTTPTPPTTPPTTTTPTTPPPPTTPPPTTTTPPTTPPPTTTPTTTPPPTTPPPTTTTPTTPPPTTTPPTTTPPPTTPPPPTTTPTTPTPTTTPPTTTTPPTTPPPPTTTPPTTPTPTTTPPPTTTPPPTTPPPPTTTPPTTTTPPTTTPPTTTPPTTPTPPTTTPTPTTPPTTTPPTTTPPTTTTPPTTTPTPTTPPTTTPPPTTTPPTTTTPPTTTPTPTTPPTTTPPPTTTPPTTTTPTTTPPPTTPTTTTPPTTTPPPTTTPTTTTPPTTPPTTTTPPTTTPPPTTTPPTTTTPPTTPPPPTTPPTTTPPPPTTPPTPTTPPPTTPPPPTTPPTTTTPPPTTPPTPTTPPPTTPPPPTTPPTTTTPPPTTPPTPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPTPPTTPPPTTTPPPTTPPPPTTPPPTTPTPPTTPPPPTTPPTTPPPPTTPPTTTTPPTTPPPPTTTPPTTTPPPTTPPTTTTPPTTPPPPTTTPPTTTPPPTTPPPTTTPPTTTTPPTTTPPPTTTPPTTPPPTTTPTTTTPPTTTPPPTTTPPTTPTPTTTPTTTTPTTTPPPTTTPPTTPTPTTTPTTTTPPTTTPPPTTTPPTTTTPTTTPTPTTPPTTTPPPTTTPTTTTPPTTTPPPTTPPTTTTPPTTTPTTTTPTTTPPPTTPPTTTTPPPTTTPPTTTPTTTTPPTTPPPTTTPPTTTPPPTTPPTTTTPPTTPPPTTTPTTTTPPTTPPTPTTPPPTTPPPPTTPPTTTTPPTTPPTPTTPPPTTPPPPTTPPTTTTPPTTPPTPTTPPPPTTPPPPTTPPTTTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPTTPPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPPTTPPPPTTPPPTTPTPPTTPPPPTTPPPPTTPPPPTTPPTTTTPPTTPPPPTTPPPTTPPPPTTPPTTTTPPTTPPPPTTPPPTTTTPPTTPPPTTTPTTTPPPTTPPPTTTTPTTPPPTTTPPTTTTPPTTPPPPTTTPPTTPTPTTTPTTTTPPTTPPPPTTTPPTTPTPTTTPTTTTPPTTPPPPTTTPPTTPTPTTTPPTTTPPPTTTTPPTTTPTTTTPPTTTPPTTTPPTTTTPPTTTPTTTTPPTTTPPTTTPPTTTTPPTTTPPPTTPTTTTPTTTPPTTTTPPTTTPPPTTPPTTTTPPTTTPPPTTTPPTTTTPPTTPPTTTTPPTTTPPPTTTPTTTTPPTTPPTPTTPPPPTTPPPPTTPPTTTTPPTTPPPPTTPPPPTTPPPPTTPPTPTTPPPTTPPPPTTPPPTTTPPPTTPPTPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPPTTPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPPTTPPPTTTPPPTTPPPPTTPPPPTTPPPPTTPPPTTTTPPTTPPPPTTPPPPTTPT";
-
   // src/core/eclipses.js
-  var GREG_JD = 2299161;
-  function yearOf(jd) {
-    const a = Math.round(jd) + 32044;
-    const b = Math.floor((4 * a + 3) / 146097);
-    const c = a - Math.floor(146097 * b / 4);
-    const d = Math.floor((4 * c + 3) / 1461);
-    const e = c - Math.floor(1461 * d / 4);
-    const m = Math.floor((5 * e + 2) / 153);
-    return 100 * b + d - 4800 + Math.floor(m / 10);
-  }
-  var gjDiff = (y) => Math.floor(y / 100) - Math.floor(y / 400) - 2;
-  function decode(base, deltas, types, correctCalendar = true) {
+  function decode(base, deltas, types) {
     const gaps = deltas.split(",");
     const J = new Array(gaps.length + 1);
     const T = new Array(gaps.length + 1);
@@ -4716,53 +4666,17 @@ pre.blob {
       J[i + 1] = jd;
       T[i + 1] = types[i + 1];
     }
-    // The shipped table was encoded from Julian labels read as Gregorian, so its
-    // pre-reform rows are lifted onto the Gregorian axis here. The canon table is
-    // already there; correcting it again would move every ancient row a second time.
-    if (correctCalendar) {
-      for (let i = 0; i < J.length; i++) {
-        if (J[i] < GREG_JD) J[i] += gjDiff(yearOf(J[i]));
-      }
-    }
     return { J, T };
   }
-  // Two tables, and why both are kept.
-  //
-  // `desktop` is what the original program shipped, lifted onto the Gregorian
-  // axis. It still carries the errors the calendar fix cannot reach: a TD clock
-  // read as UT, a UT instant re-expressed as a New York calendar day, and a
-  // two-digit-year bug that fabricates about half of 1969-2068. Eclipses here
-  // are a chart overlay, never a scoring input, so this decides what is drawn.
-  //
-  // `canon` is the same eclipses rebuilt from the NASA canon with all of that
-  // corrected, checked against NASA's own published UT dates: 7686 of 7686
-  // umbral lunar days match, none missing, none invented. The eclipse of Thales
-  // (585 BC) and Henry I's (1133) are in it and absent from `desktop`.
-  //
-  // The default stays `desktop` so nothing anyone has saved changes underneath
-  // them. The choice is an app preference, beside theme, not a per-event one.
-  var ECLIPSE_SOURCES = {
-    desktop: { solar: [ECL_S_BASE, ECL_S_D, ECL_S_T, true], lunar: [ECL_L_BASE, ECL_L_D, ECL_L_T, true] },
-    canon: { solar: [CANON_S_BASE, CANON_S_D, CANON_S_T, false], lunar: [CANON_L_BASE, CANON_L_D, CANON_L_T, false] }
-  };
-  var _eclipseSource = "desktop";
-  var _eclipseCache = { desktop: {}, canon: {} };
-  function eclipseSource() {
-    return _eclipseSource;
-  }
-  function setEclipseSource(name) {
-    if (!ECLIPSE_SOURCES[name]) throw new Error(`unknown eclipse source "${name}"`);
-    _eclipseSource = name;
-  }
+  var _solar = null;
+  var _lunar = null;
   function solarTable() {
-    const c = _eclipseCache[_eclipseSource];
-    if (!c.solar) c.solar = decode(...ECLIPSE_SOURCES[_eclipseSource].solar);
-    return c.solar;
+    if (!_solar) _solar = decode(ECL_S_BASE, ECL_S_D, ECL_S_T);
+    return _solar;
   }
   function lunarTable() {
-    const c = _eclipseCache[_eclipseSource];
-    if (!c.lunar) c.lunar = decode(...ECLIPSE_SOURCES[_eclipseSource].lunar);
-    return c.lunar;
+    if (!_lunar) _lunar = decode(ECL_L_BASE, ECL_L_D, ECL_L_T);
+    return _lunar;
   }
   function coverage() {
     const s = solarTable();
@@ -5144,7 +5058,7 @@ pre.blob {
       render();
       viewChanged();
     });
-    canvas.addEventListener("pointermove", (e) => {
+    canvas.addEventListener("mousemove", (e) => {
       if (panning) {
         const plotW = (canvas.clientWidth || 800) - PAD.left - PAD.right;
         const perPx = (panning.max - panning.min) / plotW;
@@ -5221,7 +5135,7 @@ pre.blob {
   function chartLegend() {
     const swatch = (colour, label) => el("span", {}, [el("i", { style: `background:${colour}` }), label]);
     return el("div.legend", {}, [
-      swatch("var(--hits-low)", "1\u20132 hits"),
+      swatch("var(--hits-low)", "1–2 hits"),
       swatch("var(--hits-3)", "3"),
       swatch("var(--hits-4)", "4"),
       swatch("var(--hits-5plus)", "5+")
@@ -5429,7 +5343,7 @@ pre.blob {
         parts.push(bytes);
         length += bytes.length;
       };
-      push(enc.encode("%PDF-1.4\n%\xE2\xE3\xCF\xD3\n"));
+      push(enc.encode("%PDF-1.4\n%âãÏÓ\n"));
       for (let i = 1; i < this.objects.length; i++) {
         offsets[i] = length;
         const body = this.objects[i];
@@ -5583,7 +5497,7 @@ stream
         for (let i = 0; i < heads.length; i++) {
           const room = Math.floor(widths[i] / 4.6);
           const cell = String(row2[i] ?? "");
-          const text = cell.length > room ? `${cell.slice(0, Math.max(1, room - 3))}...` : cell;
+          const text = cell.length > room ? `${cell.slice(0, Math.max(1, room - 1))}…` : cell;
           page += `BT /F1 9 Tf 1 0 0 1 ${x} ${y} Tm (${pdfText(text)}) Tj ET
 `;
           x += widths[i];
@@ -5680,7 +5594,7 @@ stream
         status,
         el("button.btn.icon.sm.danger", {
           type: "button",
-          text: "\u2715",
+          text: "✕",
           title: `Delete operation ${i + 1}`,
           onclick: () => {
             if (ev.operations.length <= 1) {
@@ -5696,7 +5610,7 @@ stream
     replace(host, [
       section("The operation table", [
         el("p.note", {
-          text: "Every operation starts X1+ or X2+ \u2014 which control the offset is added to \u2014 followed by arithmetic on Y. Weight feeds the score verbatim: at or above 1 the operation is Alpha, below it Beta. Ordinal order is load-bearing; inserting a row renumbers everything after it."
+          text: "Every operation starts X1+ or X2+ — which control the offset is added to — followed by arithmetic on Y. Weight feeds the score verbatim: at or above 1 the operation is Alpha, below it Beta. Ordinal order is load-bearing; inserting a row renumbers everything after it."
         }),
         el("div.rowlist.full", {}, rows),
         el("div.btnrow", {}, [
@@ -5731,11 +5645,11 @@ stream
       ]),
       section("Scoring system", [
         el("p.note", {
-          text: "v8 multiplies: the strongest resonance match multiplies the base score instead of adding to it, and is withheld from the points sum. v7 simply adds everything. The original could only ever reach v8 \u2014 its importer coerced every other value \u2014 but files carrying v7 exist."
+          text: "v8 multiplies: the strongest resonance match multiplies the base score instead of adding to it, and is withheld from the points sum. v7 simply adds everything. The original could only ever reach v8 — its importer coerced every other value — but files carrying v7 exist."
         }),
         el("div.segmented", {}, [
-          [SCORING_SYSTEM.GTE_V8, "v8 \xB7 multiplying"],
-          [SCORING_SYSTEM.LTE_V7, "v7 \xB7 additive"]
+          [SCORING_SYSTEM.GTE_V8, "v8 · multiplying"],
+          [SCORING_SYSTEM.LTE_V7, "v7 · additive"]
         ].map(
           ([id, label]) => el("button", {
             type: "button",
@@ -5753,7 +5667,7 @@ stream
         el("div.doc", {}, [
           el("dl", {}, Object.entries(getReckoning("ophis").constants).flatMap(([k, v]) => [
             el("dt", { text: k }),
-            el("dd", { text: `${v}  \u2014  ${getReckoning("ophis").constantNotes[k] ?? ""}` })
+            el("dd", { text: `${v}  —  ${getReckoning("ophis").constantNotes[k] ?? ""}` })
           ])),
           el("dl", { style: "margin-top:16px" }, Object.keys(getReckoning("ophis").functions).flatMap((k) => [
             el("dt", { text: `${k}()` }),
@@ -5761,7 +5675,7 @@ stream
           ])),
           el("p.note", {
             style: "margin-top:14px",
-            text: "x and \xD7 are multiplication, which is why no name may contain a lowercase x. oph_exp is listed because the original declared it, but it can never be called: the name lexes as oph_e \xD7 p. The original had the same hole from the other direction."
+            text: "x and × are multiplication, which is why no name may contain a lowercase x. oph_exp is listed because the original declared it, but it can never be called: the name lexes as oph_e × p. The original had the same hole from the other direction."
           })
         ])
       ])
@@ -5772,19 +5686,20 @@ stream
     const start = new Date(clampDayStart(ev.day_scope_start_time_in_millis));
     const hhmm = `${String(start.getUTCHours()).padStart(2, "0")}:${String(start.getUTCMinutes()).padStart(2, "0")}`;
     replace(host, [
-      section("S1 \xB7 Misc. notes", [
+      section("S1 · Misc. notes", [
         el("p.note", { text: "Free text. Notes never affect results, so editing them does not trigger a recalculation." }),
         el("textarea", {
+          value: ev.notes,
           "aria-label": "Notes",
           oninput: (e) => {
             ev.notes = e.target.value;
             markDirty();
           }
-        }, [ev.notes])
+        })
       ]),
-      section("S2 \xB7 Day scope event start time", [
+      section("S2 · Day scope event start time", [
         el("p.note", {
-          text: "The hour at which a day is considered to begin, in Days scope. The picker runs at 0,0 \u2014 UTC \u2014 deliberately: switching it to browser-local would silently break the round trip, because the saved value is an offset in milliseconds and carries no timezone."
+          text: "The hour at which a day is considered to begin, in Days scope. The picker runs at 0,0 — UTC — deliberately: switching it to browser-local would silently break the round trip, because the saved value is an offset in milliseconds and carries no timezone."
         }),
         el("div.field", { style: "max-width:180px" }, [
           el("label", { text: "Starts at" }),
@@ -5924,7 +5839,7 @@ stream
     const area = el("textarea", {
       "aria-label": "Pasted document",
       style: "min-height:220px;font-family:var(--font-mono);font-size:12px",
-      placeholder: '{ "app_version": "\u2026", "iso_events": [ \u2026 ] }'
+      placeholder: '{ "app_version": "…", "iso_events": [ … ] }'
     });
     const errors = el("div", {});
     replace(host, [
@@ -5962,7 +5877,7 @@ stream
               }
               adoptDocument(parsed.document);
               for (const w of parsed.warnings) log("import", w);
-              toast(`Loaded ${parsed.document.iso_events.length} event(s)` + (parsed.warnings.length ? ` \xB7 ${parsed.warnings.length} warning(s) in the log` : ""));
+              toast(`Loaded ${parsed.document.iso_events.length} event(s)` + (parsed.warnings.length ? ` · ${parsed.warnings.length} warning(s) in the log` : ""));
             }
           }),
           el("button.btn", { type: "button", text: "Clear", onclick: () => {
@@ -6035,7 +5950,6 @@ stream
               download(new Blob([pre.textContent], { type: "application/json" }), "Export.oph");
               state.saved = true;
               toast("Wrote Export.oph");
-              notify();
             }
           })
         ])
@@ -6056,7 +5970,7 @@ stream
         el("p.note", {
           text: "All three formats carry the same eight columns and the same rows: filters are honoured, and the order is always by date rather than by whichever column you last sorted on."
         }),
-        !ready ? el("p.note", { style: "color:var(--warn)", text: "Nothing to export yet \u2014 cast the event first." }) : null,
+        !ready ? el("p.note", { style: "color:var(--warn)", text: "Nothing to export yet — cast the event first." }) : null,
         el("div.rowlist.tall", {}, [
           btn("CSV", "RFC-4180 quoted. Opens anywhere.", () => {
             download(new Blob([toCSV(ev, r)], { type: "text/csv" }), `${base}.csv`);
@@ -6099,7 +6013,7 @@ stream
       )) : el("p.note", { style: "color:var(--faint)", text: "Nothing logged yet." })
     ]);
     if (!r) {
-      replace(host, [el("p.note", { text: "Cast the event first \u2014 there is nothing to audit yet." }), logFeed]);
+      replace(host, [el("p.note", { text: "Cast the event first — there is nothing to audit yet." }), logFeed]);
       return;
     }
     const target = r.processed_z_dates.find((z) => z.key === state.auditKey) ?? r.processed_z_dates.slice().sort((a, b) => b.score - a.score)[0];
@@ -6107,7 +6021,7 @@ stream
       el("p.note", { text: "Every unordered pair of enabled controls, in the order the engine emits them." }),
       el("div.tablewrap", {}, [
         el("table", {}, [
-          el("thead", {}, [el("tr", {}, ["", "X\u2081", "X\u2082", "Y", "Results"].map((h) => el("th", { scope: "col", text: h })))]),
+          el("thead", {}, [el("tr", {}, ["", "X₁", "X₂", "Y", "Results"].map((h) => el("th", { scope: "col", text: h })))]),
           el("tbody", {}, r.y_structs.map(
             (ys) => el("tr", {}, [
               el("td.zlabel", { text: `y${ys.y_ordinal}` }),
@@ -6120,7 +6034,7 @@ stream
         ])
       ])
     ]);
-    const derivation = target ? section(`Score derivation for Z${target.z_ordinal + 1} \xB7 ${fmtDate(target.zStart)}`, [
+    const derivation = target ? section(`Score derivation for Z${target.z_ordinal + 1} · ${fmtDate(target.zStart)}`, [
       el("div.doc", {}, [
         el("dl", {}, [
           el("dt", { text: "operations" }),
@@ -6129,11 +6043,11 @@ stream
           }),
           el("dt", { text: "resonance" }),
           el("dd", {
-            text: target.resonance_matches.length ? target.resonance_matches.map((m) => `${m.label} (\xD7${m.multiplier}, ${m.points} pt)`).join("   ") : "none"
+            text: target.resonance_matches.length ? target.resonance_matches.map((m) => `${m.label} (×${m.multiplier}, ${m.points} pt)`).join("   ") : "none"
           }),
           el("dt", { text: "multiplier M" }),
           el("dd", {
-            text: `max(${target.resonance_matches.map((m) => m.multiplier).join(", ") || "\u2014"}) = ${target.score_multiplier}`
+            text: `max(${target.resonance_matches.map((m) => m.multiplier).join(", ") || "—"}) = ${target.score_multiplier}`
           }),
           el("dt", { text: "subscore" }),
           el("dd", {
@@ -6142,7 +6056,7 @@ stream
           el("dt", { text: "base" }),
           el("dd", { text: `${target.operation_score} + ${target.resonance_subscore} = ${round2(target.base_score_pre_multiply)}` }),
           el("dt", { text: "score" }),
-          el("dd", { text: `round2(${round2(target.base_score_pre_multiply)} \xD7 ${target.score_multiplier}) = ${target.score}` }),
+          el("dd", { text: `round2(${round2(target.base_score_pre_multiply)} × ${target.score_multiplier}) = ${target.score}` }),
           el("dt", { text: "hits" }),
           el("dd", { text: `${target.operation_hit_count} operations + ${target.resonance_matches.length} resonance = ${target.hit_count}` })
         ])
@@ -6175,9 +6089,9 @@ stream
       r.diagnostics.length ? el("div.doc", {}, [
         el("dl", {}, r.diagnostics.flatMap((d) => [
           el("dt", { text: d.kind }),
-          el("dd", { text: `${d.detail}${d.count > 1 ? `  (\xD7${d.count})` : ""}` })
+          el("dd", { text: `${d.detail}${d.count > 1 ? `  (×${d.count})` : ""}` })
         ]))
-      ]) : el("p.note", { style: "color:var(--green)", text: "Clean \u2014 nothing was clamped, coerced or dropped." })
+      ]) : el("p.note", { style: "color:var(--green)", text: "Clean — nothing was clamped, coerced or dropped." })
     ]);
     replace(host, [
       el("p.note", {
@@ -6207,43 +6121,36 @@ stream
         }),
         el("h2", { text: "How a score is built" }),
         el("p", {
-          text: "Each operation that reaches a date contributes its own weight in points. Each MSRF number the date matches contributes its tier points \u2014 except the strongest, which instead multiplies the total. The multiplier is a maximum, never a product: ten Important matches still multiply once."
+          text: "Each operation that reaches a date contributes its own weight in points. Each MSRF number the date matches contributes its tier points — except the strongest, which instead multiplies the total. The multiplier is a maximum, never a product: ten Important matches still multiply once."
         }),
         el("h2", { text: "Protocol Prime" }),
         el("p", {
-          text: "The author\u2019s flow chart takes three controls, not two: the two historical dates, and the date the projection is being conducted on. That third control produces two more spans and triples the projections \u2014 fourteen operations across three spans give the forty-two future dates the chart describes. The original never mentioned it; here, the X-Dates panel has a one-click \u2609 Today button for it."
+          text: "The author’s flow chart takes three controls, not two: the two historical dates, and the date the projection is being conducted on. That third control produces two more spans and triples the projections — fourteen operations across three spans give the forty-two future dates the chart describes. The original never mentioned it; here, the X-Dates panel has a one-click ☉ Today button for it."
         }),
         el("h2", { text: "What is deliberately different" }),
         el("p", {
-          text: 'Equations are parsed and walked as a syntax tree rather than handed to the JavaScript compiler, so a crafted file cannot run code. Exports go through the browser\u2019s own save dialog rather than writing to a path the file chose. There is no sign-in, because a local offline instrument has nobody to authenticate to. "Today" is read from the clock rather than baked in.'
+          text: 'Equations are parsed and walked as a syntax tree rather than handed to the JavaScript compiler, so a crafted file cannot run code. Exports go through the browser’s own save dialog rather than writing to a path the file chose. There is no sign-in, because a local offline instrument has nobody to authenticate to. "Today" is read from the clock rather than baked in.'
         }),
         el("h2", { text: "Security" }),
-        el("p", { text: "The engine, the map tiles and the eclipse tables all run locally, and nothing you enter leaves the page. The only outside request is for the typefaces, and without them the page falls back to system fonts." })
+        el("p", { text: "Zero external resources. Everything loads locally, and nothing leaves the page." })
       ]),
-      tierList("MSRF \xB7 Normal", MSRF_FILTER__NORMAL, "normal"),
-      tierList("MSRF \xB7 Important", MSRF_FILTER__IMPORTANT, "important"),
-      tierList("MSRF \xB7 Vortex", MSRF_FILTER__VORTEX, "vortex"),
+      tierList("MSRF · Normal", MSRF_FILTER__NORMAL, "normal"),
+      tierList("MSRF · Important", MSRF_FILTER__IMPORTANT, "important"),
+      tierList("MSRF · Vortex", MSRF_FILTER__VORTEX, "vortex"),
       el("div.doc", { style: "margin-top:20px" }, [
         el("h2", { text: "Provenance" }),
         el("p", {
-          text: "A ground-up rebuild of Ophis v12, reverse-engineered with the owner\u2019s permission and verified against the original: the operation outputs, the resonance classification, the scoring arithmetic and a complete end-to-end cast are pinned by the test suite."
-        }),
-        el("h2", { text: "Two eclipse tables" }),
-        el("p", {
-          text: "The eclipse row on the chart can read from two tables. The original is the one the desktop program shipped: it was built by reading Julian-calendar dates as Gregorian, a dynamical-time clock as UT, and each instant as a New York calendar day, and a two-digit-year bug in its source invents roughly half of the eclipses it lists between 1969 and 2068. It is kept, and kept as the default, because it is what the original does."
-        }),
-        el("p", {
-          text: "The NASA canon table is the same catalogue rebuilt with the calendar, the time scale and the year parse handled correctly, then checked against NASA\u2019s own published dates: every one of its 7,686 umbral lunar days matches, none are missing and none are invented. The eclipse of Thales in 585 BC and Henry I\u2019s in 1133 are in it; the original cannot see either. Switch under Chart Config. Eclipses are drawn, never scored, so the choice changes the chart and nothing else."
+          text: "A ground-up rebuild of Ophis v12, reverse-engineered with the owner’s permission and verified against the original: the operation outputs, the resonance classification, the scoring arithmetic and a complete end-to-end cast are pinned by the test suite."
         }),
         el("h2", { text: "Further reading" }),
         el("div.btnrow", {}, [
-          el("a.btn", { href: "https://bradleyhomelinuxnet-prog.github.io/NatorionCipherPredictiveEngine/Ophis_v9_Explained.html", text: "Field Guide" }),
-          el("a.btn", { href: "https://bradleyhomelinuxnet-prog.github.io/NatorionCipherPredictiveEngine/Ophis_v12_ReverseEngineering_Report.html", text: "v12 Report" }),
-          el("a.btn", { href: "https://bradleyhomelinuxnet-prog.github.io/NatorionCipherPredictiveEngine/PSYFR1.html", text: "PSYFR" })
+          el("a.btn", { href: "field-guide.html", text: "Field Guide" }),
+          el("a.btn", { href: "whitepaper.html", text: "White Paper" }),
+          el("a.btn", { href: "docs/html/index.html", text: "All documentation" })
         ]),
         el("p", {
           style: "margin-top:12px",
-          text: "The Field Guide is the fastest way to learn what the numbers mean. The v12 Report covers how the original was reverse-engineered and hardened."
+          text: "The Field Guide is a ten-minute tour and the fastest way to learn what the numbers mean. It also explains Protocol Prime — the reason the X-Dates panel carries a ☉ Today button."
         })
       ])
     ]);
@@ -6260,7 +6167,6 @@ stream
   }
   function main() {
     loadOptions();
-    setEclipseSource(state.options.eclipse_table === "canon" ? "canon" : "desktop");
     const paintShell = initShell();
     const chart = createChart($("timeline"));
     $("chartLegend").append(chartLegend());
@@ -6319,12 +6225,7 @@ stream
         render();
       }
     });
-    window.ophis = {
-      state,
-      goto,
-      recalculate,
-      eclipses: { near: eclipseNear, source: eclipseSource, set: setEclipseSource, coverage }
-    };
+    window.ophis = { state, goto, recalculate };
   }
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", main, { once: true });
@@ -6332,7 +6233,6 @@ stream
     main();
   }
 })();
-
 </script>
 </body>
 </html>

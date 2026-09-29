@@ -19,6 +19,7 @@ const PAGES = [
   'field-guide.html',
   'whitepaper.html',
   'manual.html',
+  'ophis-single.html',
   'chronicon.html',
   'docs/html/index.html',
   'docs/html/HANDOFF.html',
