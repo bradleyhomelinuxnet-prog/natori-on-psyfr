@@ -3248,15 +3248,18 @@ pre.blob {
     });
   }
   function repairAnchorOrder(doc) {
+    let changed = false;
     for (const ev of doc.iso_events) {
       if (!Array.isArray(ev.x_dates) || ev.x_dates.length < 2) continue;
       if (!validateXDateSpread(ev).length) continue;
       const sorted = [...ev.x_dates].sort((a, b) => toInstant(a, ev) - toInstant(b, ev));
       if (sorted.some((x, i) => x !== ev.x_dates[i])) {
         ev.x_dates = sorted;
+        changed = true;
         log("restore", `Put ${ev.name}'s anchors back in date order so it can cast again.`);
       }
     }
+    return changed;
   }
   function restoreDocument() {
     const blob = readJSON(KEY.document) ?? readJSON(KEY.legacyDocument);
@@ -3264,12 +3267,13 @@ pre.blob {
     const { document: doc, warnings } = readDocument(blob, VALIDATION.LOOSE);
     if (!doc) return false;
     for (const w of warnings) log("restore", w);
-    repairAnchorOrder(doc);
+    const repaired = repairAnchorOrder(doc);
     state.document = doc;
     state.currentEventIndex = Math.min(
       Number(state.options.current_iso_event_index) || 0,
       state.document.iso_events.length - 1
     );
+    if (repaired) persistDocument();
     return true;
   }
   function adoptDocument(doc) {

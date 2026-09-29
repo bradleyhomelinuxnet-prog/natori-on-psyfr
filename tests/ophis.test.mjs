@@ -986,7 +986,7 @@ test('restore puts an uncastable event back in date order', () => {
   ev.x_dates.push(makeXDate(2026, 9, 29));       // today, appended — the stuck state
   assert.deepEqual(validateXDateSpread(ev), ['X6 must be greater than X5']);
 
-  repairAnchorOrder({ iso_events: [ev] });
+  assert.equal(repairAnchorOrder({ iso_events: [ev] }), true, 'reports that it moved something');
 
   assert.deepEqual(validateXDateSpread(ev), [], 'it can cast again');
   assert.deepEqual(
@@ -1004,7 +1004,9 @@ test('restore does NOT re-order an event that already casts', () => {
   const before = ev.x_dates.map((x) => `${x.y}-${x.m}-${x.d}`);
   const rowsBefore = runOphis(ev, { now: Date.UTC(2026, 8, 29) }).processed_z_dates.length;
 
-  repairAnchorOrder({ iso_events: [ev] });
+  // False is what keeps restore from writing back — a working document must
+  // not be re-persisted just because it was opened.
+  assert.equal(repairAnchorOrder({ iso_events: [ev] }), false, 'reports no change');
 
   assert.deepEqual(ev.x_dates.map((x) => `${x.y}-${x.m}-${x.d}`), before, 'untouched');
   assert.equal(runOphis(ev, { now: Date.UTC(2026, 8, 29) }).processed_z_dates.length, rowsBefore);
