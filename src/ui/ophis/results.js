@@ -241,7 +241,16 @@ export function renderResults(host) {
       );
     }
 
-    const tr = el('tr', { data: { key: z.key, highlight: String(state.highlightKey === z.key) } }, cells);
+    // `.hit` marks the row as the control it already was. The header has always
+    // said "click a row to audit it" and the row said nothing back: no pointer,
+    // no focus ring, and no way to reach it from the keyboard at all. The
+    // behaviour was there; the affordance was not, which reads as broken.
+    const tr = el('tr.hit', {
+      data: { key: z.key, highlight: String(state.highlightKey === z.key) },
+      tabindex: '0',
+      role: 'button',
+      'aria-label': `Audit ${z.key}`,
+    }, cells);
 
     // Cross-highlight with the chart, both ways.
     tr.addEventListener('mouseenter', () => {
@@ -252,9 +261,17 @@ export function renderResults(host) {
       state.highlightKey = null;
       document.dispatchEvent(new CustomEvent('ophis:highlight', { detail: null }));
     });
-    tr.addEventListener('click', () => {
+    const audit = () => {
       state.auditKey = z.key;
       goto('audit');
+    };
+    tr.addEventListener('click', audit);
+    // Enter and Space, so the row is operable without a mouse.
+    tr.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        audit();
+      }
     });
 
     return tr;
