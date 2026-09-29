@@ -9,7 +9,8 @@
  * lets the whole pipeline run headless under node in the test suite.
  */
 
-import { runOphis } from '../core/ophis/run.js';
+import { runOphis, validateXDateSpread } from '../core/ophis/run.js';
+import { toInstant } from '../core/ophis/calendar.js';
 import { makeIsoEvent, makeXDate } from './iso-event.js';
 import { APP_VERSION, SCHEMA_VERSION, readDocument, VALIDATION } from '../io/oph.js';
 
@@ -273,6 +274,35 @@ export function persistDocument() {
 }
 
 /**
+ * Put a restored event's anchors back in date order — but ONLY if it cannot be
+ * cast as it stands.
+ *
+ * Anchor INDEX order is load-bearing: `X1+` binds to the lower-indexed anchor,
+ * not the earlier one, so re-ordering a working document would silently change
+ * its results. This therefore never touches a document that casts. It repairs
+ * only one whose enabled anchors are out of order, which produces zero
+ * projections and a dead end — there are no results to change, so sorting can
+ * only turn nothing into something.
+ *
+ * This exists because a saved document outlives the bug that made it. Appending
+ * an out-of-order anchor was possible until it was fixed, and every browser
+ * that did it kept an event that could never cast again. Asking people to open
+ * a console and clear their storage is not a fix; this is.
+ */
+export function repairAnchorOrder(doc) {
+  for (const ev of doc.iso_events) {
+    if (!Array.isArray(ev.x_dates) || ev.x_dates.length < 2) continue;
+    if (!validateXDateSpread(ev).length) continue;
+
+    const sorted = [...ev.x_dates].sort((a, b) => toInstant(a, ev) - toInstant(b, ev));
+    if (sorted.some((x, i) => x !== ev.x_dates[i])) {
+      ev.x_dates = sorted;
+      log('restore', `Put ${ev.name}'s anchors back in date order so it can cast again.`);
+    }
+  }
+}
+
+/**
  * Restore the working document, accepting the legacy key on first read.
  *
  * Everything read here goes through the `.oph` normaliser, including our own
@@ -292,6 +322,7 @@ export function restoreDocument() {
   if (!doc) return false;
 
   for (const w of warnings) log('restore', w);
+  repairAnchorOrder(doc);
 
   state.document = doc;
   state.currentEventIndex = Math.min(

@@ -96,7 +96,7 @@
 <p>The test suite pins the engine against values read out of the original program, not out of this one. A failing test means the rebuild has drifted — it does <strong>not</strong> mean the fixture needs updating.</p>
 <p>If you are changing the maths deliberately, change the fixture <strong>and say so in the commit message</strong>. A silently updated parity fixture makes the entire suite worthless, because nobody can then tell which numbers were ever checked.</p>
 <p>One labelled exception: the <code>HH:MM regression pin</code> group in <code>tests/ophis.test.mjs</code> is pinned to <em>this</em> implementation, because no original reference output for the sunset-bounded scope was recoverable. Its header says so. Everything else derives from the original or from the independent from-spec reference in <code>docs/reverse/fixtures/</code>.</p>
-<pre data-lang="bash"><code>npm test        # 131 assertions, no dependencies, ~2s</code></pre>
+<pre data-lang="bash"><code>npm test        # 134 assertions, no dependencies, ~2s</code></pre>
 <hr>
 <h2 id="3-current-state">3. Current state</h2>
 <p>Everything the original did.</p>
@@ -153,7 +153,7 @@ tools/                extraction and doc-rendering helpers</code></pre>
 <p><strong>The reference material is not in this repository.</strong> The <code>.exe</code> files, the unpacked asar, the author's PDFs and the workbook live on the owner's machine. <code>docs/reverse/</code> is the distillation of them, and it is detailed enough to rebuild from — that is what it was written for. If you need something the specs do not carry, ask the owner rather than guessing. The one exception is <code>assets/map/</code>: those tiles are the original's, copied byte for byte, because the picker cannot be rebuilt from a description of a basemap.</p>
 <hr>
 <h2 id="9-before-you-push">9. Before you push</h2>
-<pre data-lang="bash"><code>npm test                                    # 131 assertions must pass
+<pre data-lang="bash"><code>npm test                                    # 134 assertions must pass
 node tools/md-to-html.mjs docs/*.md --out-dir docs/html   # if you touched a doc
 python -m http.server 8777                  # then drive the app at localhost:8777</code></pre>
 <p>CI additionally enforces two properties. Both are load-bearing and neither has an exception:</p>

@@ -24,6 +24,7 @@ import { runOphis, validateXDateSpread } from '../src/core/ophis/run.js';
 import {
   makeIsoEvent, makeXDate, parseXDate, insertXDateInOrder,
 } from '../src/state/iso-event.js';
+import { repairAnchorOrder } from '../src/state/ophis-store.js';
 import { packOperations, OPHIS_PACKS } from '../src/data/packs-ophis.js';
 import { compileOperation } from '../src/core/equation/index.js';
 import { SORT_TYPE, EVENT_SCOPE } from '../src/core/ophis/constants.js';
@@ -968,4 +969,50 @@ test('a manually typed date lands in order too, not just Protocol Prime', () => 
   assert.equal(at, 2, 'between 2026-08-20 and 2027-03-09');
   assert.deepEqual(validateXDateSpread(ev), []);
   assert.ok(runOphis(ev, { now: Date.UTC(2026, 8, 29) }).processed_z_dates.length > 0);
+});
+
+/* ---------------------------------------------------------------- Group P --
+ * A saved document outlives the bug that made it.
+ *
+ * Appending an out-of-order anchor was possible until it was fixed, so every
+ * browser that did it kept an event that could never cast again — and no new
+ * build can reach into someone's localStorage to undo that. Restore repairs it
+ * instead, but ONLY when the event cannot cast as it stands: index order is
+ * load-bearing, so a working document must never be silently re-ordered.
+ * ------------------------------------------------------------------------ */
+
+test('restore puts an uncastable event back in date order', () => {
+  const ev = exampleEvent();
+  ev.x_dates.push(makeXDate(2026, 9, 29));       // today, appended — the stuck state
+  assert.deepEqual(validateXDateSpread(ev), ['X6 must be greater than X5']);
+
+  repairAnchorOrder({ iso_events: [ev] });
+
+  assert.deepEqual(validateXDateSpread(ev), [], 'it can cast again');
+  assert.deepEqual(
+    ev.x_dates.map((x) => `${x.y}-${x.m}-${x.d}`),
+    ['2026-7-4', '2026-8-20', '2026-9-29', '2027-3-9', '2027-3-16', '2027-7-17'],
+    'and today sits in date order, not on the end'
+  );
+  assert.ok(runOphis(ev, { now: Date.UTC(2026, 8, 29) }).processed_z_dates.length > 0);
+});
+
+test('restore does NOT re-order an event that already casts', () => {
+  // Index order binds X1+/X2+, so touching a working document would silently
+  // change its results. The guard is what keeps that from happening.
+  const ev = exampleEvent();
+  const before = ev.x_dates.map((x) => `${x.y}-${x.m}-${x.d}`);
+  const rowsBefore = runOphis(ev, { now: Date.UTC(2026, 8, 29) }).processed_z_dates.length;
+
+  repairAnchorOrder({ iso_events: [ev] });
+
+  assert.deepEqual(ev.x_dates.map((x) => `${x.y}-${x.m}-${x.d}`), before, 'untouched');
+  assert.equal(runOphis(ev, { now: Date.UTC(2026, 8, 29) }).processed_z_dates.length, rowsBefore);
+});
+
+test('an event with fewer than two anchors is left alone', () => {
+  const ev = makeIsoEvent(0);
+  ev.x_dates = [makeXDate(2026, 7, 4)];
+  repairAnchorOrder({ iso_events: [ev] });
+  assert.equal(ev.x_dates.length, 1);
 });
