@@ -363,9 +363,69 @@ export function renderImport(host) {
   });
   const errors = el('div', {});
 
+  /**
+   * Open a `.oph` from disk.
+   *
+   * The app wrote `.oph` files and had no way to read one back: the only route
+   * in was opening the file in a text editor and pasting it. Exporting a format
+   * you cannot open is not a format.
+   *
+   * It fills the box rather than applying the document, because this screen
+   * promises "nothing is applied until you press Load" and that promise is
+   * worth more than one saved click. The file therefore goes through exactly
+   * the same parser, the same validation and the same errors as a paste.
+   */
+  const picker = el('input', {
+    type: 'file',
+    accept: '.oph,.json,.txt,application/json,text/plain',
+    style: 'display:none',
+    'aria-label': 'Choose an .oph file',
+    onchange: async (e) => {
+      const f = e.target.files?.[0];
+      e.target.value = '';                 // so the same file can be picked twice
+      if (!f) return;
+      let text;
+      try {
+        text = await f.text();
+      } catch (err) {
+        replace(errors, [
+          el('div.banner', {}, [
+            el('div', {}, [el('b', { text: `Could not read ${f.name}.` }), el('p', { text: String(err.message || err) })]),
+          ]),
+        ]);
+        return;
+      }
+      area.value = text;
+      // A saved web page carries the .oph extension just as happily as a
+      // document does, and the JSON error for one is not obvious. Say it here,
+      // where the file name is still on screen.
+      if (/^\s*</.test(text)) {
+        replace(errors, [
+          el('div.banner', {}, [
+            el('div', {}, [
+              el('b', { text: `${f.name} is a web page, not an .oph document.` }),
+              el('p', { text: 'It starts with HTML rather than JSON — this is usually a page saved with Ctrl+S that kept the .oph name. Export the event again from the app that made it.' }),
+            ]),
+          ]),
+        ]);
+        return;
+      }
+      replace(errors, []);
+      toast(`Read ${f.name} — press Load to apply it.`);
+    },
+  });
+
   replace(host, [
-    section('Paste previously exported code', [
+    section('Open a file, or paste previously exported code', [
       el('p.note', { text: 'Accepts a full document or a bare array of events. Nothing is applied until you press Load.' }),
+      el('div.btnrow', { style: 'margin-bottom:10px' }, [
+        el('button.btn', {
+          type: 'button',
+          text: '\u2630 Open .oph file\u2026',
+          onclick: () => picker.click(),
+        }),
+        picker,
+      ]),
       area,
       errors,
       el('div.btnrow', { style: 'margin-top:12px' }, [

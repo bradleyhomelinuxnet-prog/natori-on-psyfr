@@ -5981,9 +5981,51 @@ stream
       placeholder: '{ "app_version": "\u2026", "iso_events": [ \u2026 ] }'
     });
     const errors = el("div", {});
+    // Open a .oph from disk. The app wrote .oph files and had no way to read
+    // one back -- the only route in was a text editor and a paste. It fills the
+    // box rather than applying the document, because this screen promises
+    // "nothing is applied until you press Load", so the file goes through
+    // exactly the same parser, validation and errors as a paste does.
+    const picker = el("input", {
+      type: "file",
+      accept: ".oph,.json,.txt,application/json,text/plain",
+      style: "display:none",
+      "aria-label": "Choose an .oph file",
+      onchange: async (e) => {
+        const f = e.target.files?.[0];
+        e.target.value = "";
+        if (!f) return;
+        let text;
+        try {
+          text = await f.text();
+        } catch (err) {
+          replace(errors, [el("div.banner", {}, [el("div", {}, [
+            el("b", { text: `Could not read ${f.name}.` }),
+            el("p", { text: String(err.message || err) })
+          ])])]);
+          return;
+        }
+        area.value = text;
+        // A page saved with Ctrl+S keeps the .oph name just as happily as a
+        // document does, and the JSON error for one is not obvious.
+        if (/^\s*</.test(text)) {
+          replace(errors, [el("div.banner", {}, [el("div", {}, [
+            el("b", { text: `${f.name} is a web page, not an .oph document.` }),
+            el("p", { text: "It starts with HTML rather than JSON \u2014 this is usually a page saved with Ctrl+S that kept the .oph name. Export the event again from the app that made it." })
+          ])])]);
+          return;
+        }
+        replace(errors, []);
+        toast(`Read ${f.name} \u2014 press Load to apply it.`);
+      }
+    });
     replace(host, [
-      section("Paste previously exported code", [
+      section("Open a file, or paste previously exported code", [
         el("p.note", { text: "Accepts a full document or a bare array of events. Nothing is applied until you press Load." }),
+        el("div.btnrow", { style: "margin-bottom:10px" }, [
+          el("button.btn", { type: "button", text: "\u2630 Open .oph file\u2026", onclick: () => picker.click() }),
+          picker
+        ]),
         area,
         errors,
         el("div.btnrow", { style: "margin-top:12px" }, [
