@@ -2833,6 +2833,7 @@ pre.blob {
 
   // src/io/oph.js
   var APP_VERSION = "13.0.0";
+  var BUILD_TAG = "2026-09-29 · ordered anchors + restore repair";
   var SCHEMA_VERSION = 1;
   var VALIDATION = { STRICT: "strict", LOOSE: "loose" };
   var isObj = (v) => v !== null && typeof v === "object" && !Array.isArray(v);
@@ -5933,9 +5934,53 @@ stream
       placeholder: '{ "app_version": "…", "iso_events": [ … ] }'
     });
     const errors = el("div", {});
+    const picker = el("input", {
+      type: "file",
+      accept: ".oph,.json,.txt,application/json,text/plain",
+      style: "display:none",
+      "aria-label": "Choose an .oph file",
+      onchange: async (e) => {
+        const f = e.target.files?.[0];
+        e.target.value = "";
+        if (!f) return;
+        let text;
+        try {
+          text = await f.text();
+        } catch (err) {
+          replace(errors, [
+            el("div.banner", {}, [
+              el("div", {}, [el("b", { text: `Could not read ${f.name}.` }), el("p", { text: String(err.message || err) })])
+            ])
+          ]);
+          return;
+        }
+        area.value = text;
+        if (/^\s*</.test(text)) {
+          replace(errors, [
+            el("div.banner", {}, [
+              el("div", {}, [
+                el("b", { text: `${f.name} is a web page, not an .oph document.` }),
+                el("p", { text: "It starts with HTML rather than JSON — this is usually a page saved with Ctrl+S that kept the .oph name. Export the event again from the app that made it." })
+              ])
+            ])
+          ]);
+          return;
+        }
+        replace(errors, []);
+        toast(`Read ${f.name} — press Load to apply it.`);
+      }
+    });
     replace(host, [
-      section("Paste previously exported code", [
+      section("Open a file, or paste previously exported code", [
         el("p.note", { text: "Accepts a full document or a bare array of events. Nothing is applied until you press Load." }),
+        el("div.btnrow", { style: "margin-bottom:10px" }, [
+          el("button.btn", {
+            type: "button",
+            text: "☰ Open .oph file…",
+            onclick: () => picker.click()
+          }),
+          picker
+        ]),
         area,
         errors,
         el("div.btnrow", { style: "margin-top:12px" }, [
@@ -6206,6 +6251,12 @@ stream
     ]);
     replace(host, [
       el("div.doc", {}, [
+        // First thing on the page, so confirming which build is deployed needs
+        // no developer tools and no reading of source.
+        el("p.note", {
+          style: "color:var(--faint);letter-spacing:.04em",
+          text: `Build ${APP_VERSION} · ${BUILD_TAG}`
+        }),
         el("h2", { text: "What this is" }),
         el("p", {
           text: "Ophis is a relativity-based date-projection instrument. You give it two or more dates on which similar events occurred; it measures the distance between every pair of them in axial rotations of the Earth, runs each distance through a table of operations, and projects the results forward. The filters then remove the projections that bear no arithmetic relationship to the controls."
