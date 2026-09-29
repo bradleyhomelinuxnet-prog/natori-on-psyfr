@@ -4118,8 +4118,19 @@ pre.blob {
       touch();
       toast("Added today as a control \u2014 every historical date now casts against it.");
     };
+    // "1 / 3" does not say what it counts, and for T-Dates the difference
+    // between 0 and 1 enabled is the difference between seeing everything and
+    // seeing one day.
+    const _on = list.filter((x) => x.enabled).length;
+    const _count = key === "t_dates"
+      ? (list.length === 0
+          ? "none \u00b7 showing every date"
+          : _on === 0
+            ? `${list.length} off \u00b7 showing every date`
+            : `${_on} of ${list.length} targeting`)
+      : `${_on} / ${list.length}`;
     return panel(title, {
-      count: `${list.filter((x) => x.enabled).length} / ${list.length}`,
+      count: _count,
       actions: [
         master(list, (on) => list.forEach((x) => {
           x.enabled = on;
@@ -4552,23 +4563,43 @@ pre.blob {
     if (active) th.setAttribute("aria-sort", col.sort === SORT_TYPE.DATE ? "ascending" : "descending");
     return th;
   }
+  // Say WHICH filter emptied the run, not that one probably did. "You probably
+  // have to loosen up a filter" sent a user to the Filters panel for an hour
+  // while the cause was T-Dates, which are not in that panel and are not
+  // filters in the checkbox sense -- and the old Loosen button cleared four of
+  // the eight, leaving the four date ones, so it changed nothing and looked
+  // broken.
   function emptyPanel() {
+    const ev = currentEvent();
+    const tOn = (ev.t_dates ?? []).filter((t) => t.enabled === true);
+    const filtersOn = FILTER_ROWS.filter((f) => ev[f.flag] === true);
+    const why = tOn.length
+      ? `${tOn.length} T-Date${tOn.length === 1 ? "" : "s"} (${tOn.map((t) => `${t.m}/${t.d}/${t.y}`).join(", ")}) \u2014 only projections landing on exactly those days are shown, and none do.`
+      : filtersOn.length
+        ? `${filtersOn.length} filter${filtersOn.length === 1 ? " is" : "s are"} on: ${filtersOn.map((f) => f.label).join("; ")}.`
+        : "Nothing is filtering, so the operations produced no dates in range.";
     return el("div.empty", {}, [
       el("div.mark", { text: "\u25C7" }),
       el("h3", { text: "No results" }),
-      el("p", { text: "No results. You probably have to loosen up a filter." }),
-      el("button.btn", {
-        type: "button",
-        text: "Loosen filters",
-        onclick: () => {
-          const ev = currentEvent();
-          ev.iso_event_filter_min_score = false;
-          ev.iso_event_filter_min_hit_count = false;
-          ev.iso_event_filter_msrf_match = false;
-          ev.iso_event_filter_beyond_max_days = false;
-          touch();
-        }
-      })
+      el("p", { text: why }),
+      el("div.btnrow", { style: "justify-content:center;gap:8px" }, [
+        tOn.length
+          ? el("button.btn.primary", {
+              type: "button",
+              text: "Clear T-Dates",
+              onclick: () => { currentEvent().t_dates = []; touch(); }
+            })
+          : null,
+        el("button.btn", {
+          type: "button",
+          text: "Turn off every filter",
+          onclick: () => {
+            const e = currentEvent();
+            for (const f of FILTER_ROWS) e[f.flag] = false;
+            touch();
+          }
+        })
+      ])
     ]);
   }
   function noInputPanel(errors) {

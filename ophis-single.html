@@ -4175,11 +4175,13 @@ pre.blob {
       touch();
       toast("Added today as a control — every historical date now casts against it.");
     };
+    const on = list.filter((x) => x.enabled).length;
+    const count = key === "t_dates" ? list.length === 0 ? "none · showing every date" : on === 0 ? `${list.length} off · showing every date` : `${on} of ${list.length} targeting` : `${on} / ${list.length}`;
     return panel(title, {
-      count: `${list.filter((x) => x.enabled).length} / ${list.length}`,
+      count,
       actions: [
-        master(list, (on) => list.forEach((x) => {
-          x.enabled = on;
+        master(list, (on2) => list.forEach((x) => {
+          x.enabled = on2;
         }), `Enable all ${title}`),
         el("button.btn.sm", {
           type: "button",
@@ -4627,22 +4629,33 @@ pre.blob {
     return th;
   }
   function emptyPanel() {
+    const ev = currentEvent();
+    const tOn = (ev.t_dates ?? []).filter((t) => t.enabled === true);
+    const filtersOn = FILTER_ROWS.filter((f) => ev[f.flag] === true);
+    const why = tOn.length ? `${tOn.length} T-Date${tOn.length === 1 ? "" : "s"} (${tOn.map((t) => `${t.m}/${t.d}/${t.y}`).join(", ")}) — only projections landing on exactly those days are shown, and none do.` : filtersOn.length ? `${filtersOn.length} filter${filtersOn.length === 1 ? " is" : "s are"} on: ${filtersOn.map((f) => f.label).join("; ")}.` : "Nothing is filtering, so the operations produced no dates in range.";
     return el("div.empty", {}, [
       el("div.mark", { text: "◇" }),
       el("h3", { text: "No results" }),
-      el("p", { text: "No results. You probably have to loosen up a filter." }),
-      el("button.btn", {
-        type: "button",
-        text: "Loosen filters",
-        onclick: () => {
-          const ev = currentEvent();
-          ev.iso_event_filter_min_score = false;
-          ev.iso_event_filter_min_hit_count = false;
-          ev.iso_event_filter_msrf_match = false;
-          ev.iso_event_filter_beyond_max_days = false;
-          touch();
-        }
-      })
+      el("p", { text: why }),
+      el("div.btnrow", { style: "justify-content:center;gap:8px" }, [
+        tOn.length ? el("button.btn.primary", {
+          type: "button",
+          text: "Clear T-Dates",
+          onclick: () => {
+            currentEvent().t_dates = [];
+            touch();
+          }
+        }) : null,
+        el("button.btn", {
+          type: "button",
+          text: "Turn off every filter",
+          onclick: () => {
+            const e = currentEvent();
+            for (const f of FILTER_ROWS) e[f.flag] = false;
+            touch();
+          }
+        })
+      ])
     ]);
   }
   function noInputPanel(errors) {
