@@ -20,8 +20,10 @@ import { round1, round2 } from '../src/core/ophis/numeric.js';
 import { span, utcMidnight, normaliseWindow, fmtDate, fmtDateTime } from '../src/core/ophis/calendar.js';
 import { scoreZStruct } from '../src/core/ophis/scoring.js';
 import { sortAndLabel, normaliseSortType } from '../src/core/ophis/sort.js';
-import { runOphis } from '../src/core/ophis/run.js';
-import { makeIsoEvent, makeXDate, parseXDate } from '../src/state/iso-event.js';
+import { runOphis, validateXDateSpread } from '../src/core/ophis/run.js';
+import {
+  makeIsoEvent, makeXDate, parseXDate, insertXDateInOrder,
+} from '../src/state/iso-event.js';
 import { packOperations, OPHIS_PACKS } from '../src/data/packs-ophis.js';
 import { compileOperation } from '../src/core/equation/index.js';
 import { SORT_TYPE, EVENT_SCOPE } from '../src/core/ophis/constants.js';
@@ -897,4 +899,63 @@ test("Henry I's eclipse is in BOTH tables, seven days apart — the calendar axi
     'T',
     'canon dates the same eclipse exactly gjDiff days later'
   );
+});
+
+/* ---------------------------------------------------------------- Group O --
+ * Protocol Prime must not brick the event it is used on.
+ *
+ * Adding "today" as a third control is the author's own procedure and the
+ * headline reason the X-Dates panel carries a button for it. Appending it --
+ * which is what the code did -- breaks the strictly-ascending requirement the
+ * moment any control sits in the future, and the SEEDED EXAMPLE ends in 2027.
+ * So on a fresh install the documented action turned 114 projections into an
+ * empty table reading "X6 must be greater than X5".
+ * ------------------------------------------------------------------------ */
+
+/** The five anchors seedExample() installs, which a new user sees first. */
+const WORKED_EXAMPLE = [
+  [2026, 7, 4], [2026, 8, 20], [2027, 3, 9], [2027, 3, 16], [2027, 7, 17],
+];
+
+function exampleEvent() {
+  const ev = makeIsoEvent(0);
+  ev.x_dates = WORKED_EXAMPLE.map(([y, m, d]) => makeXDate(y, m, d));
+  return ev;
+}
+
+test('appending today to the seeded example is what broke the cast', () => {
+  // The pre-fix behaviour, asserted directly so the regression stays legible.
+  const ev = exampleEvent();
+  ev.x_dates.push(makeXDate(2026, 9, 29));      // today, simply appended
+  const errors = validateXDateSpread(ev);
+  assert.deepEqual(errors, ['X6 must be greater than X5']);
+
+  const r = runOphis(ev, { now: Date.UTC(2026, 8, 29) });
+  assert.equal(r.processed_z_dates.length, 0, 'and nothing casts');
+});
+
+test('inserting today in date order keeps the seeded example castable', () => {
+  const ev = exampleEvent();
+  const before = runOphis(ev, { now: Date.UTC(2026, 8, 29) }).processed_z_dates.length;
+
+  const at = insertXDateInOrder(ev.x_dates, makeXDate(2026, 9, 29), ev);
+  assert.equal(at, 2, 'today lands between 2026-08-20 and 2027-03-09, not at the end');
+  assert.deepEqual(validateXDateSpread(ev), [], 'no ordering error');
+
+  const after = runOphis(ev, { now: Date.UTC(2026, 8, 29) }).processed_z_dates.length;
+  assert.ok(after > before, `a third control must add projections, got ${before} -> ${after}`);
+});
+
+test('a date later than every control still goes on the end', () => {
+  const ev = exampleEvent();
+  const at = insertXDateInOrder(ev.x_dates, makeXDate(2030, 1, 1), ev);
+  assert.equal(at, 5);
+  assert.deepEqual(validateXDateSpread(ev), []);
+});
+
+test('a date earlier than every control goes on the front', () => {
+  const ev = exampleEvent();
+  const at = insertXDateInOrder(ev.x_dates, makeXDate(2020, 1, 1), ev);
+  assert.equal(at, 0);
+  assert.deepEqual(validateXDateSpread(ev), []);
 });

@@ -17,7 +17,9 @@ import {
   addEvent, removeEvent, cloneEvent, now, saveOptions,
 } from '../../state/ophis-store.js';
 import { ECLIPSE_SOURCES, setEclipseSource } from '../../core/eclipses.js';
-import { makeXDate, parseXDate, CHART_OPTIONS, clampDayStart } from '../../state/iso-event.js';
+import {
+  makeXDate, parseXDate, CHART_OPTIONS, clampDayStart, insertXDateInOrder,
+} from '../../state/iso-event.js';
 import { FILTER_ROWS, FILTER_DEFAULTS } from '../../core/ophis/filters.js';
 import { EVENT_SCOPE, MILLIS_PER_DAY, LAT_LIMIT } from '../../core/ophis/constants.js';
 import { fmtDate, toInstant } from '../../core/ophis/calendar.js';
@@ -235,7 +237,8 @@ function datesPanel({ key, title, note, addLabel }) {
       toast('Today is already a control.');
       return;
     }
-    list.push(makeXDate(y, m, d));
+    // In date order, never appended — see insertXDateInOrder for why.
+    insertXDateInOrder(list, makeXDate(y, m, d), ev);
     touch();
     toast('Added today as a control — every historical date now casts against it.');
   };

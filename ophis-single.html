@@ -2788,6 +2788,15 @@ pre.blob {
     if (probe.getUTCMonth() !== m - 1 || probe.getUTCDate() !== d) return null;
     return makeXDate(y, m, d, opts);
   }
+  function insertXDateInOrder(list, xdate, ev) {
+    const at = list.findIndex((x) => toInstant(x, ev) > toInstant(xdate, ev));
+    if (at === -1) {
+      list.push(xdate);
+      return list.length - 1;
+    }
+    list.splice(at, 0, xdate);
+    return at;
+  }
   function makeIsoEvent(index = 0, overrides = {}) {
     return {
       id: uid(),
@@ -4134,7 +4143,7 @@ pre.blob {
         toast("Today is already a control.");
         return;
       }
-      list.push(makeXDate(y, m, d));
+      insertXDateInOrder(list, makeXDate(y, m, d), ev);
       touch();
       toast("Added today as a control — every historical date now casts against it.");
     };
