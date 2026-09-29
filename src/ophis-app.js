@@ -12,6 +12,7 @@ import {
   state, subscribe, loadOptions, restoreDocument, persistDocument,
   recalculate, seedExample, saveOptions,
 } from './state/ophis-store.js';
+import { setEclipseSource, isEclipseSource } from './core/eclipses.js';
 import { initShell, goto, toast } from './ui/ophis/shell.js';
 import { renderRail, renderStatus } from './ui/ophis/work.js';
 import { renderResults, renderColumnToggles } from './ui/ophis/results.js';
@@ -33,6 +34,10 @@ function safely(name, fn) {
 
 function main() {
   loadOptions();
+  // A corrupt or older stored value must not throw the boot; fall back silently
+  // to the default table, which is what that user was already being shown.
+  if (isEclipseSource(state.options.eclipse_table)) setEclipseSource(state.options.eclipse_table);
+  else state.options.eclipse_table = 'original';
 
   const paintShell = initShell();
   const chart = createChart($('timeline'));

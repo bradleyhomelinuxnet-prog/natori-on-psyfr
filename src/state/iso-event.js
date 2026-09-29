@@ -14,6 +14,7 @@
 
 import { EVENT_SCOPE, EVENT_TYPE, SCORING_SYSTEM, SORT_TYPE, MILLIS_PER_DAY, MILLIS_PER_MINUTE } from '../core/ophis/constants.js';
 import { FILTER_DEFAULTS } from '../core/ophis/filters.js';
+import { toInstant } from '../core/ophis/calendar.js';
 import { packOperations, DEFAULT_OPHIS_PACK } from '../data/packs-ophis.js';
 
 let seq = 0;
@@ -65,6 +66,30 @@ export function parseXDate(text, opts) {
  * `name` follows the original's "Event 1", "Event 2"… convention; an empty name
  * is allowed, because v12 allowed it and files in the wild carry one.
  */
+/**
+ * Add an X-Date at its place in date order, and return its index.
+ *
+ * NEVER append. Enabled anchors must be strictly ascending or the event cannot
+ * be cast at all (`validateXDateSpread`), so appending a date that is not the
+ * latest bricks the event outright. Protocol Prime hit this on a fresh install:
+ * the seeded example ends in 2027, so adding "today" appended an earlier date
+ * and turned 114 projections into "X6 must be greater than X5".
+ *
+ * This does not fight the rule that index order is load-bearing -- `X1+` binds
+ * to the lower-INDEXED anchor, not the earlier one. A castable list is already
+ * ascending, so for such a list the sorted position is the ONLY one that stays
+ * castable. There is no second choice to make.
+ */
+export function insertXDateInOrder(list, xdate, ev) {
+  const at = list.findIndex((x) => toInstant(x, ev) > toInstant(xdate, ev));
+  if (at === -1) {
+    list.push(xdate);
+    return list.length - 1;
+  }
+  list.splice(at, 0, xdate);
+  return at;
+}
+
 export function makeIsoEvent(index = 0, overrides = {}) {
   return {
     id: uid(),

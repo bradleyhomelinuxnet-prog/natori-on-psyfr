@@ -9,7 +9,8 @@
  * lets the whole pipeline run headless under node in the test suite.
  */
 
-import { runOphis } from '../core/ophis/run.js';
+import { runOphis, validateXDateSpread } from '../core/ophis/run.js';
+import { toInstant } from '../core/ophis/calendar.js';
 import { makeIsoEvent, makeXDate } from './iso-event.js';
 import { APP_VERSION, SCHEMA_VERSION, readDocument, VALIDATION } from '../io/oph.js';
 
@@ -39,6 +40,13 @@ export const DEFAULT_OPTIONS = {
   theme: 'dark',
   density: 'full',
   text_zoom: 1,
+  /**
+   * Which eclipse table the chart overlay reads. 'original' is the table the
+   * desktop program shipped and is the default; 'canon' is the NASA rebuild.
+   * An app preference, beside theme -- not a per-event field, so it is not in
+   * the `.oph` and changing it does not dirty the document.
+   */
+  eclipse_table: 'original',
 };
 
 const listeners = new Set();
@@ -266,6 +274,43 @@ export function persistDocument() {
 }
 
 /**
+ * Put a restored event's anchors back in date order — but ONLY if it cannot be
+ * cast as it stands.
+ *
+ * Anchor INDEX order is load-bearing: `X1+` binds to the lower-indexed anchor,
+ * not the earlier one, so re-ordering a working document would silently change
+ * its results. This therefore never touches a document that casts. It repairs
+ * only one whose enabled anchors are out of order, which produces zero
+ * projections and a dead end — there are no results to change, so sorting can
+ * only turn nothing into something.
+ *
+ * This exists because a saved document outlives the bug that made it. Appending
+ * an out-of-order anchor was possible until it was fixed, and every browser
+ * that did it kept an event that could never cast again. Asking people to open
+ * a console and clear their storage is not a fix; this is.
+ *
+ * Returns true if anything moved, so the caller can write the repair back.
+ * Repairing in memory alone is not enough: the bad document survives on disk
+ * and keeps breaking every other copy served from the same origin, because
+ * localStorage is shared across every path on a host.
+ */
+export function repairAnchorOrder(doc) {
+  let changed = false;
+  for (const ev of doc.iso_events) {
+    if (!Array.isArray(ev.x_dates) || ev.x_dates.length < 2) continue;
+    if (!validateXDateSpread(ev).length) continue;
+
+    const sorted = [...ev.x_dates].sort((a, b) => toInstant(a, ev) - toInstant(b, ev));
+    if (sorted.some((x, i) => x !== ev.x_dates[i])) {
+      ev.x_dates = sorted;
+      changed = true;
+      log('restore', `Put ${ev.name}'s anchors back in date order so it can cast again.`);
+    }
+  }
+  return changed;
+}
+
+/**
  * Restore the working document, accepting the legacy key on first read.
  *
  * Everything read here goes through the `.oph` normaliser, including our own
@@ -285,12 +330,17 @@ export function restoreDocument() {
   if (!doc) return false;
 
   for (const w of warnings) log('restore', w);
+  const repaired = repairAnchorOrder(doc);
 
   state.document = doc;
   state.currentEventIndex = Math.min(
     Number(state.options.current_iso_event_index) || 0,
     state.document.iso_events.length - 1
   );
+
+  // Write the repair back, or the broken document survives on disk and keeps
+  // breaking every other copy served from this origin.
+  if (repaired) persistDocument();
   return true;
 }
 
