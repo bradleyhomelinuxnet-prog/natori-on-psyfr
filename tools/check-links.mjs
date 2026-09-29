@@ -18,6 +18,7 @@ const PAGES = [
   'index.html',
   'field-guide.html',
   'whitepaper.html',
+  'manual.html',
   'chronicon.html',
   'docs/html/index.html',
   'docs/html/HANDOFF.html',

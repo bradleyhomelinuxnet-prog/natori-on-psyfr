@@ -664,3 +664,85 @@ test('HH:MM regression pin: a three-control cast at Jerusalem', () => {
     [['1817829060000', 2, 2], ['1818519780000', 1.5, 2], ['1832512080000', 1.5, 2]]
   );
 });
+
+/* ------------------------------------------------------ the manual's figures -- */
+
+/**
+ * `docs/MANUAL.md` quotes engine output at the reader as fact. Nothing pinned
+ * those numbers, and three of them had drifted: §3 claimed anchor order did not
+ * affect correctness, and §7's Protocol Prime table compared a run at one
+ * Current date against a run at another, which inverted the conclusion it drew.
+ *
+ * These pin what the manual now prints. A failure here means the document and
+ * the engine disagree — fix whichever is wrong, but do not leave them apart.
+ */
+
+test('MANUAL §3: anchors out of order yield an error and no rows at all', () => {
+  const ev = makeIsoEvent(0, {
+    x_dates: [[2019, 9, 6], [2016, 3, 14], [2022, 1, 11]].map(([y, m, d]) => makeXDate(y, m, d)),
+  });
+  const r = runOphis(ev, { now: Date.UTC(2026, 8, 2) });
+
+  assert.deepEqual(r.errors, ['X2 must be greater than X1']);
+  assert.equal(r.processed_z_dates.length, 0, 'the manual promises zero rows, not a degraded run');
+});
+
+test('MANUAL §7: Protocol Prime, both runs at the same Current date', () => {
+  const JOBS = [[2016, 3, 14], [2019, 9, 6], [2022, 1, 11]];
+  const now = Date.UTC(2026, 8, 2); // 09/02/2026, as the section states
+  const cast = (dates) =>
+    runOphis(
+      makeIsoEvent(0, { x_dates: dates.map(([y, m, d]) => makeXDate(y, m, d)) }),
+      { now }
+    );
+
+  const bare = cast(JOBS);
+  const prime = cast([...JOBS, [2026, 9, 2]]);
+
+  assert.deepEqual(
+    [bare.y_structs.length, Object.keys(bare.z_structs).length, bare.processed_z_dates.length, bare.hidden],
+    [3, 47, 6, 41]
+  );
+  assert.deepEqual(
+    [prime.y_structs.length, Object.keys(prime.z_structs).length, prime.processed_z_dates.length, prime.hidden],
+    [6, 95, 25, 70]
+  );
+
+  // The section's actual claim: a longer list with an identical head, and no
+  // resonance anywhere in either run. Sorting is by score, then hit count.
+  const head = (r) =>
+    [...r.processed_z_dates]
+      .sort((a, b) => b.score - a.score || b.hit_count - a.hit_count)
+      .slice(0, 4)
+      .map((z) => [fmtDate(z.zStart), z.score]);
+
+  assert.deepEqual(head(bare), [
+    ['09/29/2026', 1], ['01/21/2027', 1], ['02/15/2027', 1], ['11/10/2027', 1],
+  ]);
+  assert.deepEqual(head(prime), head(bare), 'more input, identical top of the list');
+
+  for (const r of [bare, prime]) {
+    assert.equal(r.processed_z_dates.filter((z) => z.resonance_matches.length).length, 0);
+  }
+});
+
+test('MANUAL §8: the job-dates run reproduces at its stated Current date', () => {
+  const ev = makeIsoEvent(0, {
+    x_dates: [[2016, 3, 14], [2019, 9, 6], [2022, 1, 11]].map(([y, m, d]) => makeXDate(y, m, d)),
+  });
+  const r = runOphis(ev, { now: Date.UTC(2022, 1, 1) }); // 02/01/2022
+
+  assert.equal(r.y_structs.length, 3);
+  assert.equal(Object.keys(r.z_structs).length, 47);
+  assert.equal(r.processed_z_dates.length, 23);
+  assert.equal(r.hidden, 24);
+
+  const top = [...r.processed_z_dates]
+    .sort((a, b) => b.score - a.score || b.hit_count - a.hit_count)
+    .slice(0, 3)
+    .map((z) => [fmtDate(z.zStart), z.score, z.hit_count, z.resonance_matches.length]);
+
+  assert.deepEqual(top, [
+    ['05/18/2024', 2, 2, 0], ['06/30/2022', 1, 1, 0], ['02/28/2023', 1, 1, 0],
+  ]);
+});

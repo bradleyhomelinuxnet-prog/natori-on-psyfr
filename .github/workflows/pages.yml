@@ -1,0 +1,65 @@
+# Publishes the site to GitHub Pages on every push to main.
+#
+# This deliberately uploads the whole checkout rather than a hand-picked list
+# of files. The previous version of this workflow staged eight named pages and
+# two named directories; by the time it was deleted, three of the pages no
+# longer existed, `natorion/` had been gone long enough that its unguarded
+# `cp -R` would have failed the job outright, and five pages added since —
+# field-guide, whitepaper, manual, chronicon, guide — were never published at
+# all. It also copied `index.html` without `src/`, so the app it published
+# could not start.
+#
+# Everything tracked here is static and already public in the repository, so
+# there is nothing to select for. Uploading the tree is both simpler and the
+# only version of this that cannot drift out of date as pages are added.
+#
+# The first run switches Pages on for the repository by itself, via
+# configure-pages `enablement`.
+name: Publish to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # `.nojekyll` is committed at the root, so Pages serves the tree as-is
+      # rather than running it through Jekyll. Fail loudly if it goes missing:
+      # without it, any path Jekyll considers special is silently dropped.
+      - name: Check the site is servable as static files
+        run: |
+          test -f .nojekyll || { echo "::error::.nojekyll is missing from the repository root"; exit 1; }
+          test -f index.html || { echo "::error::index.html is missing"; exit 1; }
+          echo "publishing $(git ls-files | wc -l) tracked files"
+
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
