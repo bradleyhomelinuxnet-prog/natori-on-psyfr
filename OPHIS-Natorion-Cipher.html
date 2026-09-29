@@ -3233,6 +3233,25 @@ pre.blob {
       global_options: state.options
     });
   }
+  // Put a restored event's anchors back in date order, but ONLY if it cannot be
+  // cast as it stands. Index order is load-bearing (X1+ binds to the
+  // lower-INDEXED anchor), so a document that casts is never touched. One that
+  // does not cast has no results to change, so sorting can only turn nothing
+  // into something. A saved document outlives the bug that made it: appending
+  // an out-of-order anchor was possible until it was fixed, and every browser
+  // that did it kept an event that could never cast again.
+  function repairAnchorOrder(doc) {
+    for (const ev of doc.iso_events) {
+      if (!Array.isArray(ev.x_dates) || ev.x_dates.length < 2) continue;
+      if (!validateXDateSpread(ev).length) continue;
+      const sorted = [...ev.x_dates].sort((a, b) => toInstant(a, ev) - toInstant(b, ev));
+      if (sorted.some((x, i) => x !== ev.x_dates[i])) {
+        ev.x_dates = sorted;
+        log("restore", `Put ${ev.name}'s anchors back in date order so it can cast again.`);
+      }
+    }
+  }
+
   /**
    * `save_blob` is the ORIGINAL program's localStorage key, read here as the
    * legacy key. localStorage is scoped to an ORIGIN, not a path, so on any host
@@ -3247,22 +3266,7 @@ pre.blob {
     const parsed = readDocument(blob, VALIDATION.LOOSE);
     if (!parsed.document) return false;
     for (const w of parsed.warnings) log("restore", w);
-    // Put a restored event's anchors back in date order, but ONLY if it cannot
-    // be cast as it stands. Index order is load-bearing (X1+ binds to the
-    // lower-INDEXED anchor), so a document that casts is never touched. One
-    // that does not cast has no results to change, so sorting can only turn
-    // nothing into something. A saved document outlives the bug that made it:
-    // appending an out-of-order anchor was possible until it was fixed, and
-    // every browser that did it kept an event that could never cast again.
-    for (const _ev of parsed.document.iso_events) {
-      if (!Array.isArray(_ev.x_dates) || _ev.x_dates.length < 2) continue;
-      if (!validateXDateSpread(_ev).length) continue;
-      const _sorted = [..._ev.x_dates].sort((a, b) => toInstant(a, _ev) - toInstant(b, _ev));
-      if (_sorted.some((x, i) => x !== _ev.x_dates[i])) {
-        _ev.x_dates = _sorted;
-        log("restore", `Put ${_ev.name}'s anchors back in date order so it can cast again.`);
-      }
-    }
+    repairAnchorOrder(parsed.document);
     state.document = parsed.document;
     state.currentEventIndex = Math.min(
       Number(state.options.current_iso_event_index) || 0,
