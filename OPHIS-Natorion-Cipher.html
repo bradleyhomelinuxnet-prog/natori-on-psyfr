@@ -2964,14 +2964,8 @@ pre.blob {
     ev.t_dates = Array.isArray(raw.t_dates) ? raw.t_dates.map((x) => readXDate(x, out)).filter(Boolean) : [];
     return ev;
   }
-  function parseDocument(text, mode = VALIDATION.LOOSE) {
+  function readDocument(raw, mode = VALIDATION.LOOSE) {
     const out = { errors: [], warnings: [] };
-    let raw;
-    try {
-      raw = JSON.parse(text);
-    } catch (e) {
-      return { document: null, errors: [`Could not parse JSON due to error: ${e.message}`], warnings: [] };
-    }
     const events = Array.isArray(raw) ? raw : raw?.iso_events;
     if (!Array.isArray(events)) {
       return { document: null, errors: ["The file contains no iso_events array."], warnings: [] };
@@ -2990,6 +2984,15 @@ pre.blob {
       errors: [],
       warnings: out.warnings
     };
+  }
+  function parseDocument(text, mode = VALIDATION.LOOSE) {
+    let raw;
+    try {
+      raw = JSON.parse(text);
+    } catch (e) {
+      return { document: null, errors: [`Could not parse JSON due to error: ${e.message}`], warnings: [] };
+    }
+    return readDocument(raw, mode);
   }
   function defaultsFor(index) {
     return makeIsoEvent(index);
@@ -3230,14 +3233,21 @@ pre.blob {
       global_options: state.options
     });
   }
+  /**
+   * `save_blob` is the ORIGINAL program's localStorage key, read here as the
+   * legacy key. localStorage is scoped to an ORIGIN, not a path, so on any host
+   * serving both programs the original writes a blob this one then reads. Its
+   * X-Dates carry `date`/`time` where these carry `y`/`m`/`d`: adopted raw,
+   * every anchor instant came out NaN and the table cast nothing, with no error
+   * shown. Everything restored goes through the normaliser.
+   */
   function restoreDocument() {
     const blob = readJSON(KEY.document) ?? readJSON(KEY.legacyDocument);
     if (!blob || !Array.isArray(blob.iso_events) || !blob.iso_events.length) return false;
-    state.document = {
-      app_version: blob.app_version ?? APP_VERSION,
-      schema: blob.schema ?? SCHEMA_VERSION,
-      iso_events: blob.iso_events
-    };
+    const parsed = readDocument(blob, VALIDATION.LOOSE);
+    if (!parsed.document) return false;
+    for (const w of parsed.warnings) log("restore", w);
+    state.document = parsed.document;
     state.currentEventIndex = Math.min(
       Number(state.options.current_iso_event_index) || 0,
       state.document.iso_events.length - 1
