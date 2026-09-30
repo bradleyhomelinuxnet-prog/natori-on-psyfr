@@ -201,3 +201,43 @@ rows**, lights up half the rows that currently match nothing, and doubles the pe
 by matching half of what it used to reject.
 
 Left as shipped. The full table is in `reverse/22` §1.2.
+
+---
+
+## 13. A second eclipse table, off by default
+
+**Original.** One eclipse table, shipped with the desktop program. It carries four defects: a TD
+clock read as UT, a UT instant re-expressed as a New York calendar day, a two-digit-year bug that
+fabricates roughly half of 1969–2068, and pre-reform rows sitting on the **Julian** axis while
+everything else in the program is Gregorian.
+
+**Now.** Both tables ship. `src/data/eclipses.data.js` is the original and remains the **default**;
+`src/data/eclipses-canon.data.js` is the same eclipses rebuilt from NASA's canon with those
+corrected — 11,898 solar records and 7,686 umbral lunar days, matched against NASA's published UT
+dates. `src/core/eclipses.js` keys them by the value persisted in `options.eclipse_table`, so the
+stored option *is* the source name, and an unrecognised one throws rather than falling through.
+
+The choice is exposed once, in Ophis's Chart Config, as an app preference beside theme — not a
+per-event field. It is not in the `.oph` and changing it does not dirty the document.
+
+**Why it stays off.** Eclipse hits are not decoration everywhere. Ophis's engine never reads the
+tables — there they are a chart overlay only — but **Chronicon's cast scores them**
+(`sc.pts += lens.solar`, `src/core/cast.js`). Switching table therefore changes Chronicon's
+numbers. That is a decision for the reader to make knowingly, so it is opt-in and labelled.
+Chronicon is a separate page with a separate entry point and never calls `setEclipseSource`, so it
+stays on the original table until someone deliberately wires it.
+
+**What was NOT adopted.** A hand-made single-file build additionally lifted the *original* table's
+pre-1582 rows onto the Gregorian axis at decode time. That is deliberately not done here. Measured
+against the shipped data it moves **46 % of all rows** (3,278 of 7,127 solar, 2,153 of 4,624 lunar)
+by up to **10 days**, and shifts `coverage().min` by two — which `tests/parity.test.mjs` pins and
+which Chronicon scores from. Correcting the shipped table is a change to the parity contract, not a
+side effect of adding a second table, and it belongs in its own change with its own evidence.
+
+The axis difference is instead *recorded*. Thales' eclipse (−584‑05‑22) is in the canon with no
+counterpart within forty days in the original. Henry I's (1133) is in **both**, seven days apart —
+exactly `floor(y/100) − floor(y/400) − 2` for that century. Both facts are pinned in
+`tests/ophis.test.mjs`, so the discrepancy cannot quietly change.
+
+> A note in that hand-made build claims Henry I's eclipse is absent from the shipped table. It is
+> not; both tables carry it. The claim was checked and corrected rather than copied.

@@ -45,3 +45,11 @@ jobs:
             exit 1
           fi
           echo "no markup sinks in src/"
+
+      # The single-file build is generated from index.html and src/. Two
+      # hand-made copies had already drifted apart and kept a fixed defect
+      # alive; this fails the build rather than letting it happen again.
+      - name: Check the single-file build is not stale
+        run: |
+          npm ci
+          npm run bundle:check

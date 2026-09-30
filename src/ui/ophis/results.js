@@ -18,6 +18,7 @@ import { state, currentEvent, touch } from '../../state/ophis-store.js';
 import { SORT_TYPE } from '../../core/ophis/constants.js';
 import { round2, intToDecimalString } from '../../core/ophis/numeric.js';
 import { fmtDate, fmtDateTime } from '../../core/ophis/calendar.js';
+import { FILTER_ROWS } from '../../core/ophis/filters.js';
 import { EVENT_SCOPE } from '../../core/ophis/constants.js';
 import { operationClass } from '../../core/ophis/scoring.js';
 import { tooltip, goto } from './shell.js';
@@ -120,23 +121,54 @@ function headerCell(col, sortType) {
   return th;
 }
 
+/**
+ * Say WHICH filter emptied the run, not that one probably did.
+ *
+ * "You probably have to loosen up a filter" sent a user to the Filters panel
+ * for an hour while the cause was three T-Dates, which are not in that panel
+ * and are not filters in the checkbox sense. And the Loosen button cleared four
+ * of the eight filters, leaving the four date ones — so clicking it changed
+ * nothing and looked broken. Both are fixed here: the message names the cause,
+ * and the button clears everything that can empty a run.
+ */
 function emptyPanel() {
+  const ev = currentEvent();
+  const tOn = (ev.t_dates ?? []).filter((t) => t.enabled === true);
+  const filtersOn = FILTER_ROWS.filter((f) => ev[f.flag] === true);
+
+  // T-Dates first: they are a whitelist, so when any is enabled they are almost
+  // always the reason nothing survived, and they are the least obvious.
+  const why = tOn.length
+    ? `${tOn.length} T-Date${tOn.length === 1 ? '' : 's'} ` +
+      `(${tOn.map((t) => `${t.m}/${t.d}/${t.y}`).join(', ')}) — ` +
+      'only projections landing on exactly those days are shown, and none do.'
+    : filtersOn.length
+      ? `${filtersOn.length} filter${filtersOn.length === 1 ? ' is' : 's are'} on: ` +
+        `${filtersOn.map((f) => f.label).join('; ')}.`
+      : 'Nothing is filtering, so the operations produced no dates in range.';
+
   return el('div.empty', {}, [
     el('div.mark', { text: '◇' }),
     el('h3', { text: 'No results' }),
-    el('p', { text: 'No results. You probably have to loosen up a filter.' }),
-    el('button.btn', {
-      type: 'button',
-      text: 'Loosen filters',
-      onclick: () => {
-        const ev = currentEvent();
-        ev.iso_event_filter_min_score = false;
-        ev.iso_event_filter_min_hit_count = false;
-        ev.iso_event_filter_msrf_match = false;
-        ev.iso_event_filter_beyond_max_days = false;
-        touch();
-      },
-    }),
+    el('p', { text: why }),
+    el('div.btnrow', { style: 'justify-content:center;gap:8px' }, [
+      tOn.length
+        ? el('button.btn.primary', {
+            type: 'button',
+            text: 'Clear T-Dates',
+            onclick: () => { currentEvent().t_dates = []; touch(); },
+          })
+        : null,
+      el('button.btn', {
+        type: 'button',
+        text: 'Turn off every filter',
+        onclick: () => {
+          const e = currentEvent();
+          for (const f of FILTER_ROWS) e[f.flag] = false;
+          touch();
+        },
+      }),
+    ]),
   ]);
 }
 
@@ -241,7 +273,16 @@ export function renderResults(host) {
       );
     }
 
-    const tr = el('tr', { data: { key: z.key, highlight: String(state.highlightKey === z.key) } }, cells);
+    // `.hit` marks the row as the control it already was. The header has always
+    // said "click a row to audit it" and the row said nothing back: no pointer,
+    // no focus ring, and no way to reach it from the keyboard at all. The
+    // behaviour was there; the affordance was not, which reads as broken.
+    const tr = el('tr.hit', {
+      data: { key: z.key, highlight: String(state.highlightKey === z.key) },
+      tabindex: '0',
+      role: 'button',
+      'aria-label': `Audit ${z.key}`,
+    }, cells);
 
     // Cross-highlight with the chart, both ways.
     tr.addEventListener('mouseenter', () => {
@@ -252,9 +293,17 @@ export function renderResults(host) {
       state.highlightKey = null;
       document.dispatchEvent(new CustomEvent('ophis:highlight', { detail: null }));
     });
-    tr.addEventListener('click', () => {
+    const audit = () => {
       state.auditKey = z.key;
       goto('audit');
+    };
+    tr.addEventListener('click', audit);
+    // Enter and Space, so the row is operable without a mouse.
+    tr.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        audit();
+      }
     });
 
     return tr;

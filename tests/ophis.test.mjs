@@ -20,15 +20,22 @@ import { round1, round2 } from '../src/core/ophis/numeric.js';
 import { span, utcMidnight, normaliseWindow, fmtDate, fmtDateTime } from '../src/core/ophis/calendar.js';
 import { scoreZStruct } from '../src/core/ophis/scoring.js';
 import { sortAndLabel, normaliseSortType } from '../src/core/ophis/sort.js';
-import { runOphis } from '../src/core/ophis/run.js';
-import { makeIsoEvent, makeXDate, parseXDate } from '../src/state/iso-event.js';
+import { runOphis, validateXDateSpread } from '../src/core/ophis/run.js';
+import {
+  makeIsoEvent, makeXDate, parseXDate, insertXDateInOrder,
+} from '../src/state/iso-event.js';
+import { repairAnchorOrder } from '../src/state/ophis-store.js';
 import { packOperations, OPHIS_PACKS } from '../src/data/packs-ophis.js';
 import { compileOperation } from '../src/core/equation/index.js';
 import { SORT_TYPE, EVENT_SCOPE } from '../src/core/ophis/constants.js';
 import {
   lunarPhase, phaseName, phaseGapDays, toJD, LUNAR_MATCH_DAYS, ECLIPSE_MATCH_DAYS,
 } from '../src/core/ophis/moon.js';
-import { eclipseNear } from '../src/core/eclipses.js';
+import {
+  eclipseNear, coverage, solarTable, lunarTable,
+  eclipseSource, setEclipseSource, isEclipseSource, ECLIPSE_SOURCES,
+} from '../src/core/eclipses.js';
+import { jdn } from '../src/core/jdn.js';
 
 /* ---------------------------------------------------------------- Group A --
  * The filter arrays, and the three structural properties the original's own
@@ -663,4 +670,351 @@ test('HH:MM regression pin: a three-control cast at Jerusalem', () => {
       .map((z) => [z.key, z.score, z.hit_count]),
     [['1817829060000', 2, 2], ['1818519780000', 1.5, 2], ['1832512080000', 1.5, 2]]
   );
+});
+
+/* ------------------------------------------------------ the manual's figures -- */
+
+/**
+ * `docs/MANUAL.md` quotes engine output at the reader as fact. Nothing pinned
+ * those numbers, and three of them had drifted: §3 claimed anchor order did not
+ * affect correctness, and §7's Protocol Prime table compared a run at one
+ * Current date against a run at another, which inverted the conclusion it drew.
+ *
+ * These pin what the manual now prints. A failure here means the document and
+ * the engine disagree — fix whichever is wrong, but do not leave them apart.
+ */
+
+test('MANUAL §3: anchors out of order yield an error and no rows at all', () => {
+  const ev = makeIsoEvent(0, {
+    x_dates: [[2019, 9, 6], [2016, 3, 14], [2022, 1, 11]].map(([y, m, d]) => makeXDate(y, m, d)),
+  });
+  const r = runOphis(ev, { now: Date.UTC(2026, 8, 2) });
+
+  assert.deepEqual(r.errors, ['X2 must be greater than X1']);
+  assert.equal(r.processed_z_dates.length, 0, 'the manual promises zero rows, not a degraded run');
+});
+
+test('MANUAL §7: Protocol Prime, both runs at the same Current date', () => {
+  const JOBS = [[2016, 3, 14], [2019, 9, 6], [2022, 1, 11]];
+  const now = Date.UTC(2026, 8, 2); // 09/02/2026, as the section states
+  const cast = (dates) =>
+    runOphis(
+      makeIsoEvent(0, { x_dates: dates.map(([y, m, d]) => makeXDate(y, m, d)) }),
+      { now }
+    );
+
+  const bare = cast(JOBS);
+  const prime = cast([...JOBS, [2026, 9, 2]]);
+
+  assert.deepEqual(
+    [bare.y_structs.length, Object.keys(bare.z_structs).length, bare.processed_z_dates.length, bare.hidden],
+    [3, 47, 6, 41]
+  );
+  assert.deepEqual(
+    [prime.y_structs.length, Object.keys(prime.z_structs).length, prime.processed_z_dates.length, prime.hidden],
+    [6, 95, 25, 70]
+  );
+
+  // The section's actual claim: a longer list with an identical head, and no
+  // resonance anywhere in either run. Sorting is by score, then hit count.
+  const head = (r) =>
+    [...r.processed_z_dates]
+      .sort((a, b) => b.score - a.score || b.hit_count - a.hit_count)
+      .slice(0, 4)
+      .map((z) => [fmtDate(z.zStart), z.score]);
+
+  assert.deepEqual(head(bare), [
+    ['09/29/2026', 1], ['01/21/2027', 1], ['02/15/2027', 1], ['11/10/2027', 1],
+  ]);
+  assert.deepEqual(head(prime), head(bare), 'more input, identical top of the list');
+
+  for (const r of [bare, prime]) {
+    assert.equal(r.processed_z_dates.filter((z) => z.resonance_matches.length).length, 0);
+  }
+});
+
+test('MANUAL §8: the job-dates run reproduces at its stated Current date', () => {
+  const ev = makeIsoEvent(0, {
+    x_dates: [[2016, 3, 14], [2019, 9, 6], [2022, 1, 11]].map(([y, m, d]) => makeXDate(y, m, d)),
+  });
+  const r = runOphis(ev, { now: Date.UTC(2022, 1, 1) }); // 02/01/2022
+
+  assert.equal(r.y_structs.length, 3);
+  assert.equal(Object.keys(r.z_structs).length, 47);
+  assert.equal(r.processed_z_dates.length, 23);
+  assert.equal(r.hidden, 24);
+
+  const top = [...r.processed_z_dates]
+    .sort((a, b) => b.score - a.score || b.hit_count - a.hit_count)
+    .slice(0, 3)
+    .map((z) => [fmtDate(z.zStart), z.score, z.hit_count, z.resonance_matches.length]);
+
+  assert.deepEqual(top, [
+    ['05/18/2024', 2, 2, 0], ['06/30/2022', 1, 1, 0], ['02/28/2023', 1, 1, 0],
+  ]);
+});
+
+/* ------------------------------------------- the shared-origin legacy blob -- */
+
+/**
+ * `save_blob` is the ORIGINAL program's localStorage key, and this one reads it
+ * as its legacy key. localStorage is scoped to an ORIGIN, not a path, and
+ * GitHub Pages serves every path of a site from one origin — with the original
+ * shipping at `ophis/`. So the original writes a blob this program then reads.
+ *
+ * Its X-Dates carry `date`/`time`; these carry `y`/`m`/`d`. Adopted raw, every
+ * anchor instant came out NaN: Y clamped to 36500, all sixteen operations
+ * non-finite, an empty table, and `errors` empty so nothing was shown. Reading
+ * it through the `.oph` normaliser is what stops that.
+ */
+test('a legacy blob in the original shape normalises instead of casting to nothing', async () => {
+  const { readDocument, VALIDATION } = await import('../src/io/oph.js');
+
+  const legacy = {
+    app_version: '12',
+    iso_events: [
+      {
+        name: 'From the original',
+        // The original's own serialised form — note `date`, not y/m/d.
+        x_dates: [
+          { date: '07/04/2026', time: '00:00', enabled: true },
+          { date: '08/20/2026', time: '00:00', enabled: true },
+        ],
+        operations: [{ equation: 'X2+oph_round(Y)', weight: 1, enabled: true }],
+      },
+    ],
+  };
+
+  const { document: doc, errors } = readDocument(legacy, VALIDATION.LOOSE);
+  assert.deepEqual(errors, [], 'the original shape is readable, not an error');
+
+  const ev = doc.iso_events[0];
+  assert.deepEqual(
+    ev.x_dates.map((x) => [x.y, x.m, x.d]),
+    [[2026, 7, 4], [2026, 8, 20]],
+    'date strings become y/m/d'
+  );
+
+  // The point of the fix: it now casts.
+  const r = runOphis(ev, { now: Date.UTC(2026, 7, 25) });
+  assert.deepEqual(r.errors, []);
+  assert.equal(r.y_structs[0].rotation_count_y, 47, 'Y is real, not clamped to the maximum');
+  assert.ok(r.processed_z_dates.length > 0, 'projections survive');
+  assert.equal(
+    r.diagnostics.filter((d) => d.kind === 'NON_FINITE_Z').length,
+    0,
+    'no operation produced a non-finite offset'
+  );
+});
+
+test('adopting that same blob raw is what produced the empty table', () => {
+  // The pre-fix behaviour, asserted directly so the regression is legible.
+  const raw = {
+    ...makeIsoEvent(0),
+    x_dates: [
+      { date: '07/04/2026', time: '00:00', enabled: true },
+      { date: '08/20/2026', time: '00:00', enabled: true },
+    ],
+  };
+  const r = runOphis(raw, { now: Date.UTC(2026, 7, 25) });
+
+  assert.equal(r.processed_z_dates.length, 0, 'nothing survives');
+  assert.deepEqual(r.errors, [], 'and nothing is reported — which is why it looked like a dead page');
+  assert.ok(r.diagnostics.some((d) => d.kind === 'NON_FINITE_Z'));
+});
+
+/* ---------------------------------------------------------------- Group N --
+ * The second eclipse table.
+ *
+ * `original` is the table the desktop program shipped and MUST remain the
+ * default: it is what every other fixture here is measured against, and what
+ * Chronicon's cast scores eclipse hits from. `canon` is opt-in. These pins
+ * exist so that stays true, and so the axis difference between the two is a
+ * recorded fact rather than a surprise.
+ * ------------------------------------------------------------------------ */
+
+/** Run `fn` with a source selected, and put the default back whatever happens. */
+function withSource(name, fn) {
+  const before = eclipseSource();
+  try {
+    setEclipseSource(name);
+    return fn();
+  } finally {
+    setEclipseSource(before);
+  }
+}
+
+test('the shipped table is the default, and it is the one the other pins use', () => {
+  assert.equal(eclipseSource(), 'original');
+  assert.deepEqual(ECLIPSE_SOURCES, ['original', 'canon']);
+  assert.deepEqual(coverage(), { min: 1721231, max: 2817079 });
+});
+
+test('an unknown eclipse source is rejected rather than silently coerced', () => {
+  // The hand-made build mapped anything not 'canon' onto the shipped table, so
+  // a typo quietly selected it. Here it throws, and the boot guards with the
+  // predicate instead of a try/catch.
+  assert.equal(isEclipseSource('original'), true);
+  assert.equal(isEclipseSource('canon'), true);
+  assert.equal(isEclipseSource('desktop'), false, 'the hand-made build\'s name is not ours');
+  assert.throws(() => setEclipseSource('desktop'), /unknown eclipse source/);
+  assert.equal(eclipseSource(), 'original', 'and the failed set changed nothing');
+});
+
+test('the canon table decodes to the record counts NASA was checked against', () => {
+  withSource('canon', () => {
+    assert.equal(solarTable().J.length, 11898, 'solar records');
+    assert.equal(lunarTable().J.length, 7686, 'umbral lunar days — the figure NASA was matched on');
+    // It reaches roughly two millennia further back than the shipped table.
+    assert.equal(coverage().min, 991085);
+  });
+});
+
+test('selecting the canon and going back leaves the shipped table untouched', () => {
+  const before = coverage();
+  const solar0 = solarTable().J[0];
+  withSource('canon', () => assert.notDeepEqual(coverage(), before));
+  assert.deepEqual(coverage(), before, 'coverage restored');
+  assert.equal(solarTable().J[0], solar0, 'and the cache did not bleed');
+});
+
+test("Thales' eclipse is in the canon and has no counterpart in the shipped table", () => {
+  // -584-05-22 on the Gregorian axis the canon is built on.
+  const jd = jdn(-584, 5, 22);
+  assert.equal(withSource('canon', () => eclipseNear(jd, 1).solar), 'T');
+  assert.equal(eclipseNear(jd, 40).solar, null, 'nothing within forty days of it');
+});
+
+test("Henry I's eclipse is in BOTH tables, seven days apart — the calendar axis", () => {
+  // A hand-made build's comment claims this one is canon-only. It is not: both
+  // carry it, and the gap is exactly the Julian/Gregorian offset for 1133,
+  // which is the shipped table's pre-reform rows sitting on the Julian axis.
+  const julian = jdn(1133, 8, 2);
+  assert.equal(eclipseNear(julian, 1).solar, 'T', 'shipped table dates it 8/2');
+  assert.equal(withSource('canon', () => eclipseNear(julian, 1).solar), null, 'canon does not');
+
+  const gjDiff = (y) => Math.floor(y / 100) - Math.floor(y / 400) - 2;
+  assert.equal(gjDiff(1133), 7);
+  assert.equal(
+    withSource('canon', () => eclipseNear(julian + gjDiff(1133), 1).solar),
+    'T',
+    'canon dates the same eclipse exactly gjDiff days later'
+  );
+});
+
+/* ---------------------------------------------------------------- Group O --
+ * Protocol Prime must not brick the event it is used on.
+ *
+ * Adding "today" as a third control is the author's own procedure and the
+ * headline reason the X-Dates panel carries a button for it. Appending it --
+ * which is what the code did -- breaks the strictly-ascending requirement the
+ * moment any control sits in the future, and the SEEDED EXAMPLE ends in 2027.
+ * So on a fresh install the documented action turned 114 projections into an
+ * empty table reading "X6 must be greater than X5".
+ * ------------------------------------------------------------------------ */
+
+/** The five anchors seedExample() installs, which a new user sees first. */
+const WORKED_EXAMPLE = [
+  [2026, 7, 4], [2026, 8, 20], [2027, 3, 9], [2027, 3, 16], [2027, 7, 17],
+];
+
+function exampleEvent() {
+  const ev = makeIsoEvent(0);
+  ev.x_dates = WORKED_EXAMPLE.map(([y, m, d]) => makeXDate(y, m, d));
+  return ev;
+}
+
+test('appending today to the seeded example is what broke the cast', () => {
+  // The pre-fix behaviour, asserted directly so the regression stays legible.
+  const ev = exampleEvent();
+  ev.x_dates.push(makeXDate(2026, 9, 29));      // today, simply appended
+  const errors = validateXDateSpread(ev);
+  assert.deepEqual(errors, ['X6 must be greater than X5']);
+
+  const r = runOphis(ev, { now: Date.UTC(2026, 8, 29) });
+  assert.equal(r.processed_z_dates.length, 0, 'and nothing casts');
+});
+
+test('inserting today in date order keeps the seeded example castable', () => {
+  const ev = exampleEvent();
+  const before = runOphis(ev, { now: Date.UTC(2026, 8, 29) }).processed_z_dates.length;
+
+  const at = insertXDateInOrder(ev.x_dates, makeXDate(2026, 9, 29), ev);
+  assert.equal(at, 2, 'today lands between 2026-08-20 and 2027-03-09, not at the end');
+  assert.deepEqual(validateXDateSpread(ev), [], 'no ordering error');
+
+  const after = runOphis(ev, { now: Date.UTC(2026, 8, 29) }).processed_z_dates.length;
+  assert.ok(after > before, `a third control must add projections, got ${before} -> ${after}`);
+});
+
+test('a date later than every control still goes on the end', () => {
+  const ev = exampleEvent();
+  const at = insertXDateInOrder(ev.x_dates, makeXDate(2030, 1, 1), ev);
+  assert.equal(at, 5);
+  assert.deepEqual(validateXDateSpread(ev), []);
+});
+
+test('a date earlier than every control goes on the front', () => {
+  const ev = exampleEvent();
+  const at = insertXDateInOrder(ev.x_dates, makeXDate(2020, 1, 1), ev);
+  assert.equal(at, 0);
+  assert.deepEqual(validateXDateSpread(ev), []);
+});
+
+test('a manually typed date lands in order too, not just Protocol Prime', () => {
+  // Both entry points share insertXDateInOrder. Typing a date that predates an
+  // existing control is the same defect wearing different clothes.
+  const ev = exampleEvent();
+  const at = insertXDateInOrder(ev.x_dates, parseXDate('12/25/2026'), ev);
+  assert.equal(at, 2, 'between 2026-08-20 and 2027-03-09');
+  assert.deepEqual(validateXDateSpread(ev), []);
+  assert.ok(runOphis(ev, { now: Date.UTC(2026, 8, 29) }).processed_z_dates.length > 0);
+});
+
+/* ---------------------------------------------------------------- Group P --
+ * A saved document outlives the bug that made it.
+ *
+ * Appending an out-of-order anchor was possible until it was fixed, so every
+ * browser that did it kept an event that could never cast again — and no new
+ * build can reach into someone's localStorage to undo that. Restore repairs it
+ * instead, but ONLY when the event cannot cast as it stands: index order is
+ * load-bearing, so a working document must never be silently re-ordered.
+ * ------------------------------------------------------------------------ */
+
+test('restore puts an uncastable event back in date order', () => {
+  const ev = exampleEvent();
+  ev.x_dates.push(makeXDate(2026, 9, 29));       // today, appended — the stuck state
+  assert.deepEqual(validateXDateSpread(ev), ['X6 must be greater than X5']);
+
+  assert.equal(repairAnchorOrder({ iso_events: [ev] }), true, 'reports that it moved something');
+
+  assert.deepEqual(validateXDateSpread(ev), [], 'it can cast again');
+  assert.deepEqual(
+    ev.x_dates.map((x) => `${x.y}-${x.m}-${x.d}`),
+    ['2026-7-4', '2026-8-20', '2026-9-29', '2027-3-9', '2027-3-16', '2027-7-17'],
+    'and today sits in date order, not on the end'
+  );
+  assert.ok(runOphis(ev, { now: Date.UTC(2026, 8, 29) }).processed_z_dates.length > 0);
+});
+
+test('restore does NOT re-order an event that already casts', () => {
+  // Index order binds X1+/X2+, so touching a working document would silently
+  // change its results. The guard is what keeps that from happening.
+  const ev = exampleEvent();
+  const before = ev.x_dates.map((x) => `${x.y}-${x.m}-${x.d}`);
+  const rowsBefore = runOphis(ev, { now: Date.UTC(2026, 8, 29) }).processed_z_dates.length;
+
+  // False is what keeps restore from writing back — a working document must
+  // not be re-persisted just because it was opened.
+  assert.equal(repairAnchorOrder({ iso_events: [ev] }), false, 'reports no change');
+
+  assert.deepEqual(ev.x_dates.map((x) => `${x.y}-${x.m}-${x.d}`), before, 'untouched');
+  assert.equal(runOphis(ev, { now: Date.UTC(2026, 8, 29) }).processed_z_dates.length, rowsBefore);
+});
+
+test('an event with fewer than two anchors is left alone', () => {
+  const ev = makeIsoEvent(0);
+  ev.x_dates = [makeXDate(2026, 7, 4)];
+  repairAnchorOrder({ iso_events: [ev] });
+  assert.equal(ev.x_dates.length, 1);
 });

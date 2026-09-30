@@ -28,6 +28,16 @@ import { FILTER_DEFAULTS } from '../core/ophis/filters.js';
 import { packOperations, DEFAULT_OPHIS_PACK } from '../data/packs-ophis.js';
 
 export const APP_VERSION = '13.0.0';
+
+/**
+ * A short stamp shown on the About screen, so "is the build I uploaded the one
+ * I meant?" is answerable by looking at the app.
+ *
+ * This exists because it was not. A deployed copy had to be checked by reading
+ * view-source for a function name, which is fragile, needs developer tools, and
+ * tells you nothing when it fails. Bump this whenever you ship a build.
+ */
+export const BUILD_TAG = '2026-09-29 · ordered anchors + restore repair';
 export const SCHEMA_VERSION = 1;
 
 /** `strict` rejects anything unrecognised; `loose` repairs and warns. */
@@ -205,19 +215,19 @@ function readIsoEvent(raw, index, out, mode) {
 }
 
 /**
- * Parse a `.oph` document.
+ * Normalise an already-parsed document object.
+ *
+ * Split out of `parseDocument` because the restore path has an object, not
+ * text, and must go through exactly the same normalisation. Adopting a stored
+ * blob raw was a real defect: the original program's X-Dates carry `date` and
+ * `time` where this one carries `y`/`m`/`d`, so a raw adopt produced anchors
+ * whose instants were NaN, a Y clamped to the maximum, and sixteen non-finite
+ * offsets — an empty table with no error shown.
  *
  * @returns {{document: object|null, errors: string[], warnings: string[]}}
  */
-export function parseDocument(text, mode = VALIDATION.LOOSE) {
+export function readDocument(raw, mode = VALIDATION.LOOSE) {
   const out = { errors: [], warnings: [] };
-
-  let raw;
-  try {
-    raw = JSON.parse(text);
-  } catch (e) {
-    return { document: null, errors: [`Could not parse JSON due to error: ${e.message}`], warnings: [] };
-  }
 
   const events = Array.isArray(raw) ? raw : raw?.iso_events;
   if (!Array.isArray(events)) {
@@ -242,6 +252,21 @@ export function parseDocument(text, mode = VALIDATION.LOOSE) {
     errors: [],
     warnings: out.warnings,
   };
+}
+
+/**
+ * Parse a `.oph` document.
+ *
+ * @returns {{document: object|null, errors: string[], warnings: string[]}}
+ */
+export function parseDocument(text, mode = VALIDATION.LOOSE) {
+  let raw;
+  try {
+    raw = JSON.parse(text);
+  } catch (e) {
+    return { document: null, errors: [`Could not parse JSON due to error: ${e.message}`], warnings: [] };
+  }
+  return readDocument(raw, mode);
 }
 
 /** Every default an event could be compared against, for the minifier. */

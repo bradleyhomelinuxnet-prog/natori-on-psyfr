@@ -871,7 +871,7 @@ together.
 ```bash
 git clone https://github.com/bradleyhomelinuxnet-prog/natori-on-psyfr
 cd natori-on-psyfr
-npm test                               # 115 assertions, no dependencies
+npm test                               # 134 assertions, no dependencies
 npm run serve                          # then open http://127.0.0.1:8777/
 ```
 

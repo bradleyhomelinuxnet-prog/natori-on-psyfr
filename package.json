@@ -14,9 +14,11 @@
     "test": "node --test tests/parity.test.mjs tests/vortex.test.mjs tests/ophis.test.mjs tests/golden.test.mjs tests/property.test.mjs tests/map.test.mjs",
     "serve": "node tools/serve.mjs",
     "test:serve": "node --test tests/serve.test.mjs",
+    "bundle": "node tools/bundle.mjs",
+    "bundle:check": "node tools/bundle.mjs --check",
     "extract-data": "node tools/extract-data.mjs",
-    "build-map-tiles": "python3 tools/build-map-tiles.py",
-    "docs": "node tools/md-to-html.mjs docs/WHITEPAPER.md --out whitepaper.html && node tools/md-to-html.mjs docs/MANUAL.md --out manual.html && node tools/md-to-html.mjs docs/HANDOFF.md docs/DEVIATIONS.md docs/MODDING.md docs/DOMAIN.md docs/VORTEX.md docs/reverse/00-BUILD-SPEC.md docs/reverse/22-author-source-documents.md README.md --out-dir docs/html && node tools/check-links.mjs"
+    "docs": "node tools/md-to-html.mjs docs/WHITEPAPER.md --out whitepaper.html && node tools/md-to-html.mjs docs/MANUAL.md --out manual.html && node tools/md-to-html.mjs docs/HANDOFF.md docs/DEPLOYING.md docs/DEVIATIONS.md docs/MODDING.md docs/DOMAIN.md docs/VORTEX.md docs/reverse/00-BUILD-SPEC.md docs/reverse/22-author-source-documents.md README.md --out-dir docs/html && node tools/check-links.mjs",
+    "build-map-tiles": "python3 tools/build-map-tiles.py"
   },
   "keywords": [
     "chronology",
@@ -32,6 +34,7 @@
   "//": "The app itself has NO dependencies \u2014 it is static ES modules. The packages below are used only by tools/ to unpack the original .exe for study, and are never loaded by the app.",
   "devDependencies": {
     "@electron/asar": "^4.3.0",
-    "7zip-bin": "^5.2.0"
+    "7zip-bin": "^5.2.0",
+    "esbuild": "^0.28.2"
   }
 }

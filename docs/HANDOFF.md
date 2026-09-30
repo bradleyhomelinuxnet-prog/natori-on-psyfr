@@ -38,7 +38,7 @@ recoverable. Its header says so. Everything else derives from the original or fr
 from-spec reference in `docs/reverse/fixtures/`.
 
 ```bash
-npm test        # 115 assertions, no dependencies, ~2s
+npm test        # 134 assertions, no dependencies, ~2s
 ```
 
 ---
@@ -212,7 +212,7 @@ rebuilt from a description of a basemap.
 ## 9. Before you push
 
 ```bash
-npm test                                    # 115 assertions must pass
+npm test                                    # 134 assertions must pass
 npm run docs                                # if you touched a doc — it also checks every link
 npm run serve                               # then drive the app at 127.0.0.1:8777
 npm run test:serve                          # only if you touched tools/serve.mjs

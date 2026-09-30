@@ -38,7 +38,7 @@ python3 -m http.server 8777       # equally fine, if you would rather
 ```
 
 ```bash
-npm test                 # 115 fixtures pinning the engine against the original
+npm test                 # 134 fixtures, no dependencies, pinning the engine against the original
 npm run test:serve       # the server above, separately — it is not part of the contract
 ```
 

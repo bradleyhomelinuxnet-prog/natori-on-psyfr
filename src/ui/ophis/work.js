@@ -14,9 +14,12 @@
 import { el, replace } from '../dom.js';
 import {
   state, currentEvent, touch, markDirty, notify, recalculate, selectEvent,
-  addEvent, removeEvent, cloneEvent, now,
+  addEvent, removeEvent, cloneEvent, now, saveOptions,
 } from '../../state/ophis-store.js';
-import { makeXDate, parseXDate, CHART_OPTIONS, clampDayStart } from '../../state/iso-event.js';
+import { ECLIPSE_SOURCES, setEclipseSource } from '../../core/eclipses.js';
+import {
+  makeXDate, parseXDate, CHART_OPTIONS, clampDayStart, insertXDateInOrder,
+} from '../../state/iso-event.js';
 import { FILTER_ROWS, FILTER_DEFAULTS } from '../../core/ophis/filters.js';
 import { EVENT_SCOPE, MILLIS_PER_DAY, LAT_LIMIT } from '../../core/ophis/constants.js';
 import { fmtDate, toInstant } from '../../core/ophis/calendar.js';
@@ -213,7 +216,10 @@ function datesPanel({ key, title, note, addLabel }) {
       toast('That is not a date that exists.');
       return;
     }
-    list.push(parsed);
+    // In date order, never appended — a date typed earlier than an existing
+    // anchor would otherwise break the strictly-ascending rule and brick the
+    // cast, exactly as Protocol Prime did. See insertXDateInOrder.
+    insertXDateInOrder(list, parsed, ev);
     touch();
   };
 
@@ -234,18 +240,35 @@ function datesPanel({ key, title, note, addLabel }) {
       toast('Today is already a control.');
       return;
     }
-    list.push(makeXDate(y, m, d));
+    // In date order, never appended — see insertXDateInOrder for why.
+    insertXDateInOrder(list, makeXDate(y, m, d), ev);
     touch();
     toast('Added today as a control — every historical date now casts against it.');
   };
 
+  // "1 / 3" does not say what it counts, and for T-Dates the difference between
+  // 0 and 1 enabled is the difference between seeing everything and seeing one
+  // day. Say which, rather than leaving it to be inferred.
+  const on = list.filter((x) => x.enabled).length;
+  const count = key === 't_dates'
+    ? (list.length === 0
+        ? 'none · showing every date'
+        : on === 0
+          ? `${list.length} off · showing every date`
+          : `${on} of ${list.length} targeting`)
+    : `${on} / ${list.length}`;
+
   return panel(title, {
-    count: `${list.filter((x) => x.enabled).length} / ${list.length}`,
+    count,
     actions: [
       master(list, (on) => list.forEach((x) => { x.enabled = on; }), `Enable all ${title}`),
       el('button.btn.sm', {
         type: 'button',
-        text: 'Reset',
+        // Not "Reset". It empties the list, and everywhere else Reset means
+        // "back to defaults" -- a user cleared their T-Dates expecting the
+        // former and got the latter. The confirmation always said "Delete
+        // all"; the button should say what the dialog says.
+        text: 'Delete all',
         disabled: list.length === 0,
         onclick: async () => {
           const ok = await confirmDialog({
@@ -398,12 +421,55 @@ function chartPanel() {
   const moons = CHART_OPTIONS.filter((o) => o.group === 'moon');
   const eclipses = CHART_OPTIONS.filter((o) => o.group === 'eclipse');
 
+  /**
+   * Which table the eclipse overlays read.
+   *
+   * An app preference, not an event field: it persists with the options and
+   * does NOT dirty the document, because nothing about the event changed. For
+   * Ophis this is purely what gets drawn -- the Ophis engine never reads the
+   * eclipse tables -- so a re-render is all that is owed.
+   */
+  const LABEL = {
+    original: 'Original \u2014 as the desktop app shipped it',
+    canon: 'NASA canon \u2014 calendar, \u0394T and year corrected',
+  };
+  const sourcePicker = el('div', { style: 'margin:10px 0 2px' }, [
+    el('div', {
+      style:
+        'font:600 9.5px/1 var(--font-body);letter-spacing:.16em;text-transform:uppercase;' +
+        'color:var(--faint);margin:10px 0 4px',
+      text: 'Eclipse table',
+    }),
+    el(
+      'select',
+      {
+        'aria-label': 'Eclipse table',
+        style: 'width:100%',
+        onchange: (e) => {
+          const name = e.target.value;
+          setEclipseSource(name);
+          state.options.eclipse_table = name;
+          saveOptions();
+          notify();
+        },
+      },
+      ECLIPSE_SOURCES.map((name) =>
+        el('option', {
+          value: name,
+          selected: state.options.eclipse_table === name,
+          text: LABEL[name],
+        })
+      )
+    ),
+  ]);
+
   return panel('Chart Config', {
     count: `${CHART_OPTIONS.filter((o) => ev[o.key]).length} on`,
     body: [
       ...base.map((o) => toggle(o, CHART_OPTIONS.indexOf(o))),
       group('Moon phases', moons),
       group('Eclipses', eclipses),
+      sourcePicker,
     ],
   });
 }
