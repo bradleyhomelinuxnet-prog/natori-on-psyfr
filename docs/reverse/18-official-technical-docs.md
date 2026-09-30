@@ -937,7 +937,7 @@ Legend: **MATCH** · **DIFFERS** · **NOT IMPL** (claim describes a capability t
 | R2 | Live at `beeradicalstuff.github.io/natori-on-psyfr` | Ref §13, README | `bradleyhomelinuxnet-prog.github.io/natori-on-psyfr` | DIFFERS (expected) |
 | R3 | `index.html` redirects into `clocks/PSYFR1.html` | Ref §13 | `index.html` **is** the app; `PSYFR1.html`/`PSYFR2.html` kept at the root as frozen references | DIFFERS (documented in `README.md`) |
 | R4 | Zip contains README.txt, the two renamed HTML files, and `docs/` | Ref §13 | N/A | N/A (and the doc's own manifest is incomplete — §1) |
-| R5 | License: Use & Share, **No Derivatives** | LICENSE.txt | `package.json` declares `"license": "MIT"`; **no LICENSE file in the repo** | **DIFFERS** (§7.11) |
+| R5 | License: Use & Share, **No Derivatives** | LICENSE.txt | `LICENSE` carries CC BY-NC-SA 4.0 and `package.json` declares `CC-BY-NC-SA-4.0` to match | DIFFERS — deliberate relicensing by the copyright holder (§7.11, `DEVIATIONS.md` 14) |
 | R6 | Framing notice must be preserved (LICENSE clause c) | LICENSE.txt | `README.md` §Note and `index.html` Method both carry it | MATCH |
 | R7 | "No internet required" except decorative fonts | README | Rewrite's CSP allows only `fonts.googleapis.com` / `fonts.gstatic.com`; `connect-src 'self'` | MATCH (tighter) |
 | R8 | Two HTML files must stay side by side | README | `index.html` ↔ `guide.html` cross-link by bare filename | MATCH |
@@ -1121,6 +1121,13 @@ constraint existed. A one-file bundled build (`tools/`) would satisfy both.
 is **no LICENSE file in the rewrite's repository at all**. The owner holds the copyright and may
 relicense — but as it stands the repo asserts MIT with nothing to back it, over a codebase whose
 only written license says the opposite. Add a LICENSE file that says whichever is intended.
+
+**Resolved.** `LICENSE` now carries **CC BY-NC-SA 4.0** and `package.json:9` declares
+`CC-BY-NC-SA-4.0` to match, so the three statements agree for the first time. The relicensing is
+the copyright holder's own and is deliberate: No Derivatives contradicted a repository that ships
+`docs/MODDING.md` to teach modification. Clause (c) survives — the Archaix framing notice is
+designated required attribution under §3(a)(1)(A) of the new licence. The reasoning, and what the
+licence does not cover, are in `docs/DEVIATIONS.md` 14.
 
 ### 7.12 Small documentation drift in the rewrite
 
