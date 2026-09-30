@@ -52,6 +52,28 @@ function readShell() {
 }
 
 /**
+ * Turn every `url(...)` a stylesheet points at into a `data:` URI.
+ *
+ * A single-file build that still reaches for `fonts/cinzel-var.woff2` is not a
+ * single file: move it anywhere and the type identity silently degrades to
+ * Georgia, which is exactly the failure that self-hosting was meant to end.
+ * Paths resolve relative to the stylesheet, the way a browser resolves them.
+ *
+ * Throwing on a missing file is deliberate. A build that quietly ships without
+ * its typefaces looks almost right, which is the hardest kind of wrong to
+ * notice — and this project has already lost a session to a build that looked
+ * fine and was not.
+ */
+function inlineFonts(css, href) {
+  const base = dirname(resolve(ROOT, href));
+  return css.replace(/url\(\s*['"]?([^'")]+\.woff2)['"]?\s*\)/g, (_, rel) => {
+    const file = resolve(base, rel);
+    if (!existsSync(file)) throw new Error(`${href} points at a font that is not there: ${rel}`);
+    return `url(data:font/woff2;base64,${readFileSync(file).toString('base64')})`;
+  });
+}
+
+/**
  * Inline the CSS in the order the shell declares it. Order is load-bearing:
  * ophis-app.css resolves tokens that ophis-tokens.css defines.
  */
@@ -59,7 +81,7 @@ function inlineStyles(html, sheets) {
   let out = html;
   const blocks = sheets.map(([, href]) => {
     const css = readFileSync(resolve(ROOT, href), 'utf8');
-    return `<style>\n${css}</style>`;
+    return `<style>\n${inlineFonts(css, href)}</style>`;
   });
   // Replace the first link with every style block, and drop the rest.
   out = out.replace(sheets[0][0], `${blocks.join('\n')}\n`);

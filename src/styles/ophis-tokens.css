@@ -31,7 +31,10 @@
   --ink:       #ece5d2;
   --prose:     #c8c1b0;
   --dim:       #8d866f;
-  --faint:     #5f5a4c;
+  /* Was #5f5a4c, which is 2.75:1 on --panel and fails WCAG AA outright. It
+     carries the panel counts and the build stamp -- the two things you squint
+     at when a deployment is misbehaving. #837c69 is the same hue at 4.55:1. */
+  --faint:     #837c69;
   --on-accent: #0a0803;
 
   /* ---------- semantic accents ---------- */
@@ -82,8 +85,8 @@
 
   --fs-h1:      clamp(30px, 4vw, 46px);
   --fs-h2:      clamp(19px, 2.2vw, 25px);
-  --fs-h3:      11px;
-  --fs-body:    15px;
+  --fs-h3:      11.5px;
+  --fs-body:    16.5px;
   --fs-ui:      13px;
   --fs-table:   12.5px;
   --fs-btn:     11px;

@@ -1,0 +1,79 @@
+/* ============================================================================
+   OPHIS · typefaces, served from this repository
+   ----------------------------------------------------------------------------
+   These were fetched from Google Fonts on every page load until 2026-09-30,
+   which contradicted the two things this instrument says about itself:
+
+     About screen  "Zero external resources. Everything loads locally, and
+                    nothing leaves the page."
+     README        "Nothing leaves the page. There is no network call."
+
+   Three requests went to Google on every load — two preconnects and a
+   stylesheet — so the claim was false, Google saw every visit, and on an
+   air-gapped machine (which the repository description calls a supported use)
+   the whole type identity silently fell back to Georgia. That fallback is what
+   an offline reader saw, and it is a large part of why the app "looked wrong"
+   in some places and fine in others.
+
+   Latin subsets only, which is what the interface uses. Cinzel and EB Garamond
+   ship as variable fonts, so one file covers every weight of each — the
+   previous stylesheet requested three Cinzel weights and received the same file
+   three times. Six files, 152 KB.
+
+   The single-file build inlines these as data: URIs; `tools/bundle.mjs` does
+   that rewrite, so the `url()` paths below stay readable here.
+
+   LICENCES — all three are SIL Open Font License 1.1, which permits
+   redistribution and bundling. Full text: https://openfontlicense.org
+     Cinzel         Natanael Gama
+     EB Garamond    Georg Duffner, Octavio Pardo
+     IBM Plex Mono  Mike Abbink, Bold Monday, for IBM
+   ========================================================================== */
+
+@font-face {
+  font-family: 'Cinzel';
+  src: url('fonts/cinzel-var.woff2') format('woff2');
+  font-weight: 400 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'EB Garamond';
+  src: url('fonts/eb-garamond-var.woff2') format('woff2');
+  font-weight: 400 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'EB Garamond';
+  src: url('fonts/eb-garamond-var-italic.woff2') format('woff2');
+  font-weight: 400 500;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'IBM Plex Mono';
+  src: url('fonts/plex-mono-400.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'IBM Plex Mono';
+  src: url('fonts/plex-mono-500.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'IBM Plex Mono';
+  src: url('fonts/plex-mono-600.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
