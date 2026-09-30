@@ -289,3 +289,26 @@ from this project's build environment, so the text in `LICENSE` was taken from t
 publishes and cross-checked word for word against a second independent copy — 2,825 words,
 identical. One difference was kept: SPDX's plain-text rendering loses the space in
 *"ShareAlike.In addition"* (§3(b)), which the second copy has correctly, so the space is restored.
+
+**The fonts' own licence, which was the loose end.** The OFL requires that the
+copyright notice *and* the permission notice accompany every copy of the font
+software. Until this change neither did: `fonts.css` named the designers and
+linked to openfontlicense.org, which is attribution and not the notice, and
+Google Fonts' subsetter strips name ID 13 — the licence description — so the
+six `.woff2` files carry a licence *URL* and no licence *text*. For an
+instrument whose claim is that it works on a machine that has never touched a
+network, a licence you can only read online is the wrong shape.
+
+`src/styles/fonts/OFL.txt` is now that notice in full, with each family's
+copyright line read out of the binary's name table rather than transcribed —
+which is how the Reserved Font Names came out right (`“Cinzel Decorative”`,
+`"Plex"`). It is reproduced as a comment in `src/styles/fonts.css`, and since
+`tools/bundle.mjs` inlines that stylesheet verbatim, it rides into
+`ophis-single.html` too. That file embeds the faces as data URIs and travels on
+its own, so it is a copy of the font software and needs the notice with it; a
+sibling text file would not follow it out of the door.
+`OPHIS-Natorion-Cipher.html` is hand-maintained and carries the same block,
+inserted by hand as that file always is.
+
+Driven on all three builds: Cinzel, EB Garamond and IBM Plex Mono all resolve,
+114 rows, zero off-origin requests, zero page errors.

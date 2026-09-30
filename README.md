@@ -202,7 +202,7 @@ relicensed here on purpose — No Derivatives contradicted a repository that is 
 and ships [`docs/MODDING.md`](docs/MODDING.md) to explain how.
 
 Three things here are **not** under that licence, and [`LICENSE`](LICENSE) says so in full: the
-three typefaces (SIL Open Font License 1.1), the *Archaix* thesis itself (Jason M. Breshears' —
+three typefaces (SIL Open Font License 1.1 — notice in [`src/styles/fonts/OFL.txt`](src/styles/fonts/OFL.txt)), the *Archaix* thesis itself (Jason M. Breshears' —
 what is licensed is this project's own expression of it), and the NASA eclipse canon the eclipse
 tables are rebuilt from. The framing notice — that this is a study instrument rendering the Archaix
 thesis, and that it studies software, not cosmology — is required attribution and must be retained.
