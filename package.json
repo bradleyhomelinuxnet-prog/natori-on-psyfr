@@ -4,7 +4,7 @@
   "description": "The Predictive Chronology Engine \u2014 Ophis predictive grammar \u00d7 Chronicon calendrics. Self-contained, air-gap friendly, built to be modified.",
   "type": "module",
   "private": true,
-  "license": "MIT",
+  "license": "CC-BY-NC-SA-4.0",
   "homepage": "https://bradleyhomelinuxnet-prog.github.io/natori-on-psyfr/",
   "repository": {
     "type": "git",

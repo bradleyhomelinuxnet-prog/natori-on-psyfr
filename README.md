@@ -185,3 +185,24 @@ engine beyond the equation grammar, and none is linked from inside it.
 
 They are the owner's own additions and are kept because they work.
 `PSYFR1.html` and `PSYFR2.html` are its preserved single-file originals.
+
+---
+
+## Licence
+
+**CC BY-NC-SA 4.0** — Creative Commons Attribution-NonCommercial-ShareAlike.
+Use it, study it, take it apart, pass it on. Credit the source, don't sell it, and keep
+adaptations under the same terms. Full text and the scope notes are in [`LICENSE`](LICENSE).
+
+This is a study instrument, not a product.
+
+The original shipped under *Use & Share, No Derivatives*, which withheld modification, ports and
+forks. The copyright in it is held by the same person who commissioned this rebuild, so it is
+relicensed here on purpose — No Derivatives contradicted a repository that is built to be modified
+and ships [`docs/MODDING.md`](docs/MODDING.md) to explain how.
+
+Three things here are **not** under that licence, and [`LICENSE`](LICENSE) says so in full: the
+three typefaces (SIL Open Font License 1.1), the *Archaix* thesis itself (Jason M. Breshears' —
+what is licensed is this project's own expression of it), and the NASA eclipse canon the eclipse
+tables are rebuilt from. The framing notice — that this is a study instrument rendering the Archaix
+thesis, and that it studies software, not cosmology — is required attribution and must be retained.

@@ -241,3 +241,51 @@ exactly `floor(y/100) − floor(y/400) − 2` for that century. Both facts are p
 
 > A note in that hand-made build claims Henry I's eclipse is absent from the shipped table. It is
 > not; both tables carry it. The claim was checked and corrected rather than copied.
+
+---
+
+## 14. Relicensed
+
+**Original.** `NatorionOracle-v1.0/LICENSE.txt`, headed *LICENSE — Use & Share, No Derivatives
+(v1.0)*. It granted use and verbatim sharing, and withheld — absent prior written permission —
+modification, derivative works, translations, adaptations, ports, forks, and any new work
+incorporating part of its code, text or data. Clause (c) required that the ARCHAIX-thesis framing
+notice never be removed. Copyright asserted as *Copyright (c) 2026 BeeRadicalStuff. All rights
+reserved.*
+
+**Before this change.** `package.json` declared `"license": "MIT"` and there was **no licence file
+in the repository at all**. Three statements, no two of which agreed: a manifest claiming a
+permissive licence, an upstream licence saying the opposite, and an absent file leaving the default
+position — all rights reserved. Recorded as a defect in
+[`docs/reverse/18-official-technical-docs.md`](reverse/18-official-technical-docs.md) §7.11 and row
+R5, and left open there pending a decision.
+
+**Now.** `LICENSE` carries **CC BY-NC-SA 4.0** and `package.json` declares `CC-BY-NC-SA-4.0` to
+match. The copyright in the original is held by the same person who commissioned this rebuild, so
+relicensing is theirs to do; this is a deliberate exercise of that right, not an oversight.
+
+**Why not No Derivatives.** It contradicted what this repository is. `docs/MODDING.md` exists to
+teach modification, `package.json` describes the work as *"built to be modified"*, and the operation
+table is designed to be extended. A licence forbidding the thing the documentation teaches is one
+nobody can follow. ShareAlike keeps the part of the original intent that mattered — adaptations stay
+open on the same terms — and drops the part that did not.
+
+**Why NonCommercial.** This is a study instrument, not a product. It projects dates from arithmetic
+on dates the reader supplies; it does not know the future. NC is the licence saying so.
+
+**What was carried forward verbatim.** Clause (c). The framing notice — that this is a study
+instrument rendering the Archaix thesis of Jason M. Breshears, and that it studies software, not
+cosmology — is designated required attribution under §3(a)(1)(A) of the new licence, so the
+obligation survives the relicensing rather than lapsing with it.
+
+**What the licence does not cover**, and says so: the three typefaces (SIL Open Font License 1.1 —
+Cinzel, EB Garamond, IBM Plex Mono), the *Archaix* thesis itself (Breshears'; what is licensed is
+this project's own expression of it), and NASA's eclipse canon that
+`src/data/eclipses-canon.data.js` is rebuilt from. The map tiles under `assets/map/` **are**
+covered: they are the original's own, under the same copyright as the rest.
+
+**The legal text.** The canonical sources at `creativecommons.org` and `spdx.org` are unreachable
+from this project's build environment, so the text in `LICENSE` was taken from the copy SPDX
+publishes and cross-checked word for word against a second independent copy — 2,825 words,
+identical. One difference was kept: SPDX's plain-text rendering loses the space in
+*"ShareAlike.In addition"* (§3(b)), which the second copy has correctly, so the space is restored.
