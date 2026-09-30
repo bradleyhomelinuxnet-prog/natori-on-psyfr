@@ -8,6 +8,7 @@
 import { el, replace } from '../dom.js';
 import {
   state, currentEvent, touch, markDirty, recalculate, adoptDocument, log,
+  clearStoredState, storedKeysInUse, DOCUMENT_KEYS,
 } from '../../state/ophis-store.js';
 import { compileOperation, validateOperation, getReckoning } from '../../core/equation/index.js';
 import { OPHIS_PACKS, packOperations, newOperation } from '../../data/packs-ophis.js';
@@ -814,5 +815,97 @@ export function renderAbout(host) {
           'It also explains Protocol Prime — the reason the X-Dates panel carries a ☉ Today button.',
       }),
     ]),
+
+    // The instrument can be argued into a state that shows nothing -- T-Dates
+    // whitelisting a day nothing lands on, filters cutting everything, anchors
+    // sitting in the past -- and until this existed the only way out was the
+    // browser's developer tools. Every "it works here but not there" report
+    // against this app has come back to saved state, so the way out belongs in
+    // the app, next to the build stamp that identifies which copy you are on.
+    el('div.doc', { style: 'margin-top:20px' }, [
+      el('h2', { text: 'Stored data' }),
+      el('p', {
+        text:
+          'Your Iso-Events, anchors, operations, filters and preferences are saved in this ' +
+          'browser under this site’s address — not inside the page. Browser storage belongs to ' +
+          'a whole address, not to a folder or a filename, so every copy of this app served ' +
+          'from this address reads and writes one saved document. Two copies in the same folder ' +
+          'share it. A preview address and a live address do not.',
+      }),
+      el('p', {
+        text:
+          'That is worth knowing, because the saved document decides what you see. When this ' +
+          'copy behaves differently from the same file somewhere else, the file is rarely the ' +
+          'difference — the saved document is.',
+      }),
+      el('p.note', { text: storedSummary() }),
+      el('div.btnrow', {}, [
+        el('button.btn.danger', {
+          type: 'button',
+          text: 'Clear saved data',
+          onclick: async () => {
+            const ok = await confirmDialog({
+              title: 'Clear everything saved under this address?',
+              body: [
+                'Every Iso-Event, anchor, operation, filter and preference saved in this browser ' +
+                'for this address is removed, and the page reloads to the seeded example.',
+                'Exported .oph files on your disk are untouched. Anything never exported is gone, ' +
+                'and this cannot be undone.',
+              ],
+              cancel: 'NO, keep my data',
+              confirm: 'YES, clear it',
+              danger: true,
+            });
+            if (!ok) return;
+
+            const removed = clearStoredState();
+            // A guard rather than a path anyone reaches today: initChrome()
+            // saves the options on every startup, so a booted app always has at
+            // least one key. Blocking site data would empty this, but an
+            // unguarded read in loadOptions() means the app never boots that
+            // far -- see docs/DEPLOYING.md. Kept because reloading on a clear
+            // that removed nothing would claim work it did not do.
+            if (removed.length === 0) {
+              toast('Nothing was stored under this address.');
+              return;
+            }
+            // Not reload(): the router reads location.hash, so reloading from
+            // #about lands back on About and the recovered instrument is never
+            // seen. Dropping the hash falls through to start_screen, so the
+            // working surface comes up casting the seeded example. replace()
+            // rather than assign() keeps the cleared state out of history.
+            location.replace(location.pathname + location.search);
+          },
+        }),
+      ]),
+      el('p.note', {
+        text:
+          'Export anything worth keeping first: Results → Export, or ☰ → Save .oph. Clearing ' +
+          'affects this address only, and no other site.',
+      }),
+    ]),
   ]);
+}
+
+/**
+ * What the About screen says is currently saved.
+ *
+ * It leads with whether a document is stored, because that is the one thing
+ * that changes what you see. Preferences are counted but kept subordinate: the
+ * app rewrites theme and zoom on every startup, so a summary that treated them
+ * as "saved data" would read as a failed clear moments after a successful one.
+ */
+function storedSummary() {
+  const inUse = storedKeysInUse();
+  const docs = inUse.filter((k) => DOCUMENT_KEYS.includes(k));
+  const prefs = inUse.length - docs.length;
+  const prefTail = prefs === 0
+    ? ''
+    : ` ${prefs} preference${prefs === 1 ? '' : 's'} (theme, zoom, column choices) ${prefs === 1 ? 'is' : 'are'} also stored.`;
+
+  if (docs.length === 0) {
+    return `No saved document under this address — the app is showing the seeded example.${prefTail}`;
+  }
+  return `A saved document is stored under this address (${docs.join(', ')}), and it is what ` +
+    `you are seeing rather than the seeded example.${prefTail}`;
 }

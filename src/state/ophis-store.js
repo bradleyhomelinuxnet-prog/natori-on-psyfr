@@ -236,13 +236,91 @@ const readJSON = (key) => {
   }
 };
 
+/**
+ * Set once the origin's storage has been cleared, and never unset.
+ *
+ * `beforeunload` persists the document and the options, so a clear followed by
+ * the reload that makes it visible would write back exactly what was just
+ * removed — a reset button that resets nothing, which is the failure it exists
+ * to end. Guarding the single write path disarms every writer at once rather
+ * than the one that happens to be remembered.
+ */
+let forgotten = false;
+
 const writeJSON = (key, value) => {
+  if (forgotten) return;
   try {
     localStorage.setItem(key, JSON.stringify(value));
   } catch {
     /* a private window, or a full quota. Not worth failing a render over. */
   }
 };
+
+/**
+ * Every key this app has written on this origin, including the ones only
+ * earlier builds wrote.
+ *
+ * localStorage is scoped to an ORIGIN, not a path. Two copies of the app in one
+ * folder, or a preview host and a live host, share one bucket — so a document
+ * saved by any copy decides how every other copy on that host behaves. A clear
+ * that misses a key leaves behind the one that comes back.
+ */
+export const STORED_KEYS = [
+  KEY.document,
+  KEY.legacyDocument,
+  KEY.options,
+  KEY.theme,
+  KEY.zoom,
+  KEY.density,
+  // The earlier single-file build's names, still read by loadOptions().
+  'ophion-theme',
+  'ophion-zoom',
+  'ophion-mode',
+];
+
+/**
+ * The keys that hold a document, as opposed to a preference.
+ *
+ * Worth separating because only these change what the instrument shows. Theme
+ * and zoom cannot empty a results table; a saved document can, and does. When
+ * two hosts serving one file disagree, "is a document stored here" is the
+ * question, so the About screen answers that one first.
+ */
+export const DOCUMENT_KEYS = [KEY.document, KEY.legacyDocument];
+
+/** Which of those keys currently hold something on this origin. */
+export function storedKeysInUse() {
+  return STORED_KEYS.filter((key) => {
+    try {
+      return localStorage.getItem(key) !== null;
+    } catch {
+      return false;
+    }
+  });
+}
+
+/**
+ * Forget everything saved on this origin, and report what was actually there.
+ *
+ * Returns the keys that held something, so a caller can say what it removed
+ * instead of announcing a reset that found nothing to do. Writes are disabled
+ * from here on: the caller is expected to reload, and anything written between
+ * now and then is data the user asked to be rid of.
+ */
+export function clearStoredState() {
+  const removed = [];
+  for (const key of STORED_KEYS) {
+    try {
+      if (localStorage.getItem(key) === null) continue;
+      localStorage.removeItem(key);
+      removed.push(key);
+    } catch {
+      /* storage unavailable — there is nothing stored to remove. */
+    }
+  }
+  forgotten = true;
+  return removed;
+}
 
 export function loadOptions() {
   const stored = readJSON(KEY.options);

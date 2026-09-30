@@ -73,6 +73,35 @@ anchor order it cannot cast, then writes the repair back. A bad document
 outlives the build that created it, and no upload can reach into a browser to
 fix one — the app has to.
 
+Repair only covers anchor order, though. A document can still be saved into a
+state that shows nothing and is perfectly valid — T-Dates whitelisting a day no
+projection lands on, filters cutting every row, anchors all in the past. For
+those, **About → Clear saved data** is the way out, and it is the first thing to
+try when one host disagrees with another serving the identical file.
+
+That panel is also the diagnostic. It says whether a *document* is stored under
+this address, separately from preferences, because only the document changes
+what you see. "No saved document under this address" on the host that works and
+"a saved document is stored" on the host that does not is the whole answer, and
+it takes one click on each to read.
+
+Clearing names every key the app has ever written, including the earlier
+build's `ophion-*` names. `tests/store.test.mjs` holds the two lists together,
+so a key added without being cleared fails there rather than on a deployed
+page. It also pins the one that is easy to miss: `beforeunload` persists the
+document, so the reload that makes a clear visible would write back exactly
+what was removed if writes were not disabled first.
+
+### Known limitation
+
+In a browser with site data blocked outright, the app does not start: three
+legacy reads in `loadOptions()` and two in `src/ui/chrome.js` call
+`localStorage` outside a `try`, and the `SecurityError` takes the page down
+before anything renders. Measured, not inferred — a blank page with
+`SecurityError: The operation is insecure.` in the console. Pre-dates the Clear
+control and is not fixed by it; storage-disabled is a different bug from
+storage-full-of-junk.
+
 ## Checklist
 
 1. `npm test`, `npm run bundle`, `npm run docs` all clean.
@@ -82,3 +111,5 @@ fix one — the app has to.
 5. Open About; confirm the stamp. If it is old, try `?v=2` before re-uploading.
 6. Keep exactly one copy of the app per folder. A second copy is the divergence
    trap the generator exists to prevent.
+7. If the uploaded copy behaves differently from one that works, open About on
+   both and compare what each says is stored before suspecting the file.

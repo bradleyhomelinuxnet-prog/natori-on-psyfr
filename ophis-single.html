@@ -2844,7 +2844,7 @@ pre.blob {
 
   // src/io/oph.js
   var APP_VERSION = "13.0.0";
-  var BUILD_TAG = "2026-09-29 · ordered anchors + restore repair";
+  var BUILD_TAG = "2026-09-30 · clear saved data";
   var SCHEMA_VERSION = 1;
   var VALIDATION = { STRICT: "strict", LOOSE: "loose" };
   var isObj = (v) => v !== null && typeof v === "object" && !Array.isArray(v);
@@ -3231,12 +3231,49 @@ pre.blob {
       return null;
     }
   };
+  var forgotten = false;
   var writeJSON = (key, value) => {
+    if (forgotten) return;
     try {
       localStorage.setItem(key, JSON.stringify(value));
     } catch {
     }
   };
+  var STORED_KEYS = [
+    KEY.document,
+    KEY.legacyDocument,
+    KEY.options,
+    KEY.theme,
+    KEY.zoom,
+    KEY.density,
+    // The earlier single-file build's names, still read by loadOptions().
+    "ophion-theme",
+    "ophion-zoom",
+    "ophion-mode"
+  ];
+  var DOCUMENT_KEYS = [KEY.document, KEY.legacyDocument];
+  function storedKeysInUse() {
+    return STORED_KEYS.filter((key) => {
+      try {
+        return localStorage.getItem(key) !== null;
+      } catch {
+        return false;
+      }
+    });
+  }
+  function clearStoredState() {
+    const removed = [];
+    for (const key of STORED_KEYS) {
+      try {
+        if (localStorage.getItem(key) === null) continue;
+        localStorage.removeItem(key);
+        removed.push(key);
+      } catch {
+      }
+    }
+    forgotten = true;
+    return removed;
+  }
   function loadOptions() {
     const stored = readJSON(KEY.options);
     if (stored) Object.assign(state.options, DEFAULT_OPTIONS, stored);
@@ -6334,8 +6371,62 @@ stream
           style: "margin-top:12px",
           text: "The Field Guide is a ten-minute tour and the fastest way to learn what the numbers mean. It also explains Protocol Prime — the reason the X-Dates panel carries a ☉ Today button."
         })
+      ]),
+      // The instrument can be argued into a state that shows nothing -- T-Dates
+      // whitelisting a day nothing lands on, filters cutting everything, anchors
+      // sitting in the past -- and until this existed the only way out was the
+      // browser's developer tools. Every "it works here but not there" report
+      // against this app has come back to saved state, so the way out belongs in
+      // the app, next to the build stamp that identifies which copy you are on.
+      el("div.doc", { style: "margin-top:20px" }, [
+        el("h2", { text: "Stored data" }),
+        el("p", {
+          text: "Your Iso-Events, anchors, operations, filters and preferences are saved in this browser under this site’s address — not inside the page. Browser storage belongs to a whole address, not to a folder or a filename, so every copy of this app served from this address reads and writes one saved document. Two copies in the same folder share it. A preview address and a live address do not."
+        }),
+        el("p", {
+          text: "That is worth knowing, because the saved document decides what you see. When this copy behaves differently from the same file somewhere else, the file is rarely the difference — the saved document is."
+        }),
+        el("p.note", { text: storedSummary() }),
+        el("div.btnrow", {}, [
+          el("button.btn.danger", {
+            type: "button",
+            text: "Clear saved data",
+            onclick: async () => {
+              const ok = await confirmDialog({
+                title: "Clear everything saved under this address?",
+                body: [
+                  "Every Iso-Event, anchor, operation, filter and preference saved in this browser for this address is removed, and the page reloads to the seeded example.",
+                  "Exported .oph files on your disk are untouched. Anything never exported is gone, and this cannot be undone."
+                ],
+                cancel: "NO, keep my data",
+                confirm: "YES, clear it",
+                danger: true
+              });
+              if (!ok) return;
+              const removed = clearStoredState();
+              if (removed.length === 0) {
+                toast("Nothing was stored under this address.");
+                return;
+              }
+              location.replace(location.pathname + location.search);
+            }
+          })
+        ]),
+        el("p.note", {
+          text: "Export anything worth keeping first: Results → Export, or ☰ → Save .oph. Clearing affects this address only, and no other site."
+        })
       ])
     ]);
+  }
+  function storedSummary() {
+    const inUse = storedKeysInUse();
+    const docs = inUse.filter((k) => DOCUMENT_KEYS.includes(k));
+    const prefs = inUse.length - docs.length;
+    const prefTail = prefs === 0 ? "" : ` ${prefs} preference${prefs === 1 ? "" : "s"} (theme, zoom, column choices) ${prefs === 1 ? "is" : "are"} also stored.`;
+    if (docs.length === 0) {
+      return `No saved document under this address — the app is showing the seeded example.${prefTail}`;
+    }
+    return `A saved document is stored under this address (${docs.join(", ")}), and it is what you are seeing rather than the seeded example.${prefTail}`;
   }
 
   // src/ophis-app.js

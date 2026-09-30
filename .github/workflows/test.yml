@@ -28,6 +28,12 @@ jobs:
       - name: Check the development server
         run: npm run test:serve
 
+      # Same reasoning: browser storage was never part of the original, but a
+      # Clear saved data button that leaves a key behind reinstates the stuck
+      # document it exists to remove.
+      - name: Check the stored state and the clear
+        run: npm run test:store
+
       - name: Check nothing reaches for eval
         run: |
           if grep -rnE '\bnew Function\b|\beval\(' src/ --include='*.js' \
