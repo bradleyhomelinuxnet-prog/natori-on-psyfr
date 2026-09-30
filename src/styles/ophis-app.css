@@ -115,6 +115,18 @@ a { color: var(--cyan); text-underline-offset: 2px; }
   white-space: nowrap;
   transition: color var(--dur) var(--ease), background var(--dur) var(--ease);
 }
+/* The rule between the places and the operations. */
+.navrule {
+  flex: 0 0 auto;
+  align-self: center;
+  width: 1px;
+  height: 18px;
+  margin: 0 var(--sp-2);
+  background: var(--line-flat);
+}
+/* Doing something to the document is secondary to being somewhere in it. */
+.screens button[data-kind='data'] { color: var(--faint); font-weight: 500; }
+.screens button[data-kind='data']:hover { color: var(--ink); }
 .screens button:hover { color: var(--ink); background: var(--panel); }
 .screens button[aria-current='page'] {
   color: var(--gold-2);
@@ -205,11 +217,23 @@ a { color: var(--cyan); text-underline-offset: 2px; }
 
 /* ---------------------------------------------------------------- panels -- */
 
+/* ---------------------------------------------------------------- surfaces --
+   Three roles, three treatments. Everything on the working surface used to be
+   one rectangle -- same fill, same gold hairline, same radius, same glow -- so
+   the rail of inputs, the readout and the chart all claimed equal weight and
+   the eye had nowhere to land.
+
+   Gold had the same problem. It marked the nav's active tab, every button,
+   every panel edge, the arcs, the pills and the checkboxes, which is six jobs
+   and therefore none: an accent that outlines everything cannot also mean
+   "this one". Borders are neutral from here. Gold now means live or chosen --
+   the current screen, the primary action, an enabled control -- and the chart
+   keeps its own hit-count ramp, which encodes data rather than emphasis.     */
+
 .panel {
   background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: var(--r-3);
-  box-shadow: var(--glow);
+  border: 1px solid var(--line-flat);
+  border-radius: var(--r-2);
   overflow: hidden;
 }
 
@@ -218,8 +242,8 @@ a { color: var(--cyan); text-underline-offset: 2px; }
   align-items: center;
   gap: var(--sp-2);
   padding: var(--sp-3) var(--sp-4);
-  border-bottom: 1px solid var(--line);
-  background: linear-gradient(180deg, var(--panel-2), transparent);
+  border-bottom: 1px solid var(--line-flat);
+  background: transparent;
 }
 /* The mono, not the serif. EB Garamond has a small x-height and delicate
    strokes; uppercased, tracked to 0.18em and set at 11.5px it turns to mush,
@@ -598,20 +622,27 @@ td.zlabel {
 
 /* ------------------------------------------------------------ status bar -- */
 
+/* The readout is the one thing worth looking at before anything else, so it
+   is the only surface that carries the gold hairline and sits raised. */
 .statusbar {
   display: flex;
   align-items: center;
-  gap: var(--sp-3);
+  gap: var(--sp-5);
   flex-wrap: wrap;
-  padding: var(--sp-3) var(--sp-4);
-  background: var(--panel);
-  border: 1px solid var(--line);
+  padding: var(--sp-4) var(--sp-5);
+  background: linear-gradient(180deg, var(--raised), var(--panel));
+  border: 1px solid var(--line-2);
   border-radius: var(--r-3);
+  box-shadow: var(--glow);
   font-size: var(--fs-ui);
 }
 .statusbar .grow { flex: 1 1 auto; }
 .statusbar .stat { display: flex; align-items: baseline; gap: 6px; }
-.statusbar .stat b { font: 600 15px/1 var(--font-mono); color: var(--ink); }
+.statusbar .stat b {
+  font: 500 22px/1 var(--font-mono);
+  color: var(--gold-2);
+  font-variant-numeric: tabular-nums;
+}
 .statusbar .stat span {
   font-size: var(--fs-label);
   letter-spacing: var(--ls-label);
@@ -656,14 +687,16 @@ td.zlabel {
 
 /* ----------------------------------------------------------------- chart -- */
 
-.chartpanel { position: relative; }
-.chartpanel canvas { display: block; width: 100%; height: 340px; }
+/* Recessed, not boxed. The arcs are the signature image of this instrument and
+   they were sitting in the same card as a list of date inputs. */
+.chartpanel { position: relative; background: var(--well); }
+.chartpanel canvas { display: block; width: 100%; height: 420px; }
 .chartbar {
   display: flex;
   align-items: center;
   gap: var(--sp-2);
   padding: var(--sp-2) var(--sp-3);
-  border-top: 1px solid var(--line);
+  border-top: 1px solid var(--line-flat);
   font-size: 11px;
   color: var(--dim);
 }
@@ -839,17 +872,28 @@ pre.blob {
   .rail { position: static; max-height: none; }
 }
 
+/* The nav needs 732px of its own. Beside a 265px brand and a 439px chrome
+   cluster that is 1436px before any gutters, so on anything narrower the tail
+   of the nav was quietly cut off: About went first, then Audit, then Z-Dates.
+   About is where the build stamp and Clear saved data live -- the screen you
+   want most on the day something looks wrong -- and at 1280px, which is most
+   laptops, it could not be reached at all.
+
+   Shaving pixels off the brand bought one breakpoint and lost the next, so the
+   nav takes its own full-width row instead, well before it runs out of room.
+   Measured at 1152, 1280, 1366 and 1440: nothing cut at any of them. */
+@media (max-width: 1500px) {
+  .topbar { flex-wrap: wrap; min-height: auto; padding-block: var(--sp-2); }
+  .screens { order: 3; width: 100%; }
+}
+
 @media (max-width: 880px) {
   :root { --gutter: 12px; }
-  .topbar { flex-wrap: wrap; min-height: auto; padding-block: var(--sp-2); }
 
-  /* Eight destinations do not fit a phone, and letting them overflow pushed
-     the whole page sideways -- the saved badge sat off the right edge, where
-     the one thing it exists to tell you could not be read. The row scrolls on
-     its own instead of taking the document with it. */
+  /* Narrow enough that even a full row will not hold nine items. Scroll the row
+     on its own rather than letting it take the document sideways, which is what
+     put the saved badge off the right edge. */
   .screens {
-    order: 3;
-    width: 100%;
     overflow-x: auto;
     overscroll-behavior-x: contain;
     scrollbar-width: none;

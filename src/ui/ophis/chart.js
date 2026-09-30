@@ -220,11 +220,20 @@ export function createChart(canvas) {
       const x1 = scaleX(d.op.z_start);
       return { ...d, x0, x1, lift: 1 };
     });
-    // A half ellipse is naturally as tall as it is wide; scale the whole family
-    // down together so the widest one just fits, and short arcs stay legible
-    // instead of collapsing onto the axis.
+    // A half ellipse is naturally as tall as it is wide, and scaling the family
+    // linearly so the widest just fits is what emptied the upper half of this
+    // panel: projections cluster near the controls, so nearly every arc is
+    // narrow, and a narrow arc drawn to scale is a scratch on the axis. The
+    // comment here used to claim short arcs "stay legible instead of collapsing
+    // onto the axis"; they collapsed anyway, because the widest arc set the
+    // scale for all of them.
+    //
+    // Height now follows the SQUARE ROOT of reach. Still monotonic, so a longer
+    // jump is still a taller arc and the picture means what it did; the widest
+    // still just fits. What changes is that a quarter-width arc gets half the
+    // height rather than a quarter of it, which is the same compressive scale a
+    // bubble chart uses for area. The panel fills.
     const maxRx = Math.max(...raw.map((a) => Math.abs(a.x1 - a.x0) / 2), 1);
-    const heightScale = Math.min(1, plotH / maxRx);
     arcs = fanOut(raw);
 
     // Draw the strongest arcs last so they land on top of the crowd.
@@ -241,8 +250,8 @@ export function createChart(canvas) {
     for (const a of arcs) {
       const rx = Math.abs(a.x1 - a.x0) / 2;
       const cx = (a.x0 + a.x1) / 2;
-      // Height is proportional to reach, then lifted so nested arcs separate.
-      const ry = Math.min(plotH, rx * heightScale * a.lift);
+      // Height follows sqrt(reach), then lifted so nested arcs separate.
+      const ry = Math.min(plotH, plotH * Math.sqrt(rx / maxRx) * a.lift);
       a.geom = { cx, rx, ry };
 
       const highlighted = state.highlightKey === a.z.key || hovered === a;

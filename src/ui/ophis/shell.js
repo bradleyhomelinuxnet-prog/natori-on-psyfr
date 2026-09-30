@@ -11,23 +11,23 @@ import { $, el } from '../dom.js';
 import { state, set, log, saveOptions, notify, setDirtyHook } from '../../state/ophis-store.js';
 
 export const SCREENS = [
-  { id: 'work', label: 'Work', title: 'The working surface',
+  { id: 'work', label: 'Work', kind: 'place', title: 'The working surface',
     lede: 'Seed the controls, cast them through the operation table, and read which projections survive.' },
-  { id: 'operations', label: 'Operations', title: 'The operation table',
+  { id: 'operations', label: 'Operations', kind: 'place', title: 'The operation table',
     lede: 'Sixteen equations, each a pure function of Y. Weight decides Alpha from Beta, and feeds the score directly.' },
-  { id: 'settings', label: 'Settings', title: 'Event settings',
+  { id: 'settings', label: 'Settings', kind: 'place', title: 'Event settings',
     lede: 'Notes, and the hour a day is considered to begin.' },
-  { id: 'swap', label: 'Transfer', title: 'Event data transfer',
+  { id: 'swap', label: 'Transfer', kind: 'data', title: 'Event data transfer',
     lede: 'Apply the settings of one Iso-Event to one or more others.' },
-  { id: 'import', label: 'Import', title: 'Import events',
+  { id: 'import', label: 'Import', kind: 'data', title: 'Import events',
     lede: 'Paste a previously exported document.' },
-  { id: 'export', label: 'Export', title: 'Export events',
+  { id: 'export', label: 'Export', kind: 'data', title: 'Export events',
     lede: 'The document as text — copy it, or write it to a file.' },
-  { id: 'zexport', label: 'Z-Dates', title: 'Export Z-Dates',
+  { id: 'zexport', label: 'Z-Dates', kind: 'data', title: 'Export Z-Dates',
     lede: 'The results as CSV, XLSX or PDF.' },
-  { id: 'audit', label: 'Audit', title: 'Audit',
+  { id: 'audit', label: 'Audit', kind: 'place', title: 'Audit',
     lede: 'How a projection was derived, one arithmetic step at a time — and everything the engine wanted to tell you.' },
-  { id: 'about', label: 'About', title: 'About',
+  { id: 'about', label: 'About', kind: 'place', title: 'About',
     lede: 'What the numbers mean, where they came from, and what is deliberately different.' },
 ];
 
@@ -48,12 +48,20 @@ export function goto(id, { push = true } = {}) {
 
 function initRouting() {
   const nav = $('screenNav');
+  // Eight items of identical weight asked the reader to work out, every time,
+  // which of them were rooms and which were doors. Work, Operations, Settings,
+  // Audit and About are places you go; Transfer, Import, Export and Z-Dates are
+  // things you do to a document. Grouping them is free and the order already
+  // happened to be right, so the rule only needs to be drawn once.
+  let previousKind = null;
   for (const s of SCREENS) {
+    if (previousKind && s.kind !== previousKind) nav.append(el('span.navrule', { 'aria-hidden': 'true' }));
+    previousKind = s.kind;
     nav.append(
       el('button', {
         type: 'button',
         text: s.label,
-        data: { screen: s.id },
+        data: { screen: s.id, kind: s.kind },
         onclick: () => goto(s.id),
       })
     );
