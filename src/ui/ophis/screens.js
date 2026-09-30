@@ -11,7 +11,7 @@ import {
   clearStoredState, storedKeysInUse, DOCUMENT_KEYS,
 } from '../../state/ophis-store.js';
 import { compileOperation, validateOperation, getReckoning } from '../../core/equation/index.js';
-import { OPHIS_PACKS, packOperations, newOperation } from '../../data/packs-ophis.js';
+import { OPHIS_PACKS, packOperations, mergeOperations, newOperation } from '../../data/packs-ophis.js';
 import {
   SCORING_SYSTEM, SAMPLE_Y_VALUE_FOR_VALIDATION, EVENT_SCOPE,
 } from '../../core/ophis/constants.js';
@@ -128,17 +128,47 @@ export function renderOperations(host) {
           type: 'button', text: '+ Operation',
           onclick: () => { ev.operations.push(newOperation()); touch(); },
         }),
+        // An additive pack appends; every other one replaces. Loading a pack used
+        // to be the only thing these buttons could do, so reaching the Extras
+        // meant throwing away the sixteen you were running -- which reads as the
+        // app losing your table, because the dialog said "replaces" and the
+        // button said "Extras".
         ...Object.values(OPHIS_PACKS).map((pack) =>
           el('button.btn', {
             type: 'button',
-            text: pack.label,
+            text: pack.additive ? `+ ${pack.label}` : pack.label,
             title: pack.note,
             onclick: async () => {
+              if (pack.additive) {
+                const { operations, added, skipped } = mergeOperations(ev.operations, pack.id);
+                if (added === 0) {
+                  toast(`Every one of these is already in your table.`);
+                  return;
+                }
+                const ok = await confirmDialog({
+                  title: `Add ${added} operation${added === 1 ? '' : 's'} to your table?`,
+                  body: [
+                    pack.note,
+                    `Your ${ev.operations.length} stay exactly as they are, ordinals included. ` +
+                    `The new rows go on the end, switched off, so nothing you cast changes until ` +
+                    `you tick them.` +
+                    (skipped ? ` ${skipped} skipped — already present.` : ''),
+                  ],
+                  cancel: 'NO, leave it',
+                  confirm: `YES, add ${added}`,
+                });
+                if (!ok) return;
+                ev.operations = operations;
+                touch();
+                toast(`${added} added, switched off. Tick the ones you want.`);
+                return;
+              }
+
               const ok = await confirmDialog({
                 title: `Load ${pack.label}?`,
-                body: [pack.note, 'This replaces the current operation table.'],
+                body: [pack.note, 'This REPLACES the current operation table. Anything you have added or edited goes with it.'],
                 cancel: 'NO, keep mine',
-                confirm: 'YES, load it',
+                confirm: 'YES, replace it',
               });
               if (!ok) return;
               ev.operations = packOperations(pack.id);

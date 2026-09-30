@@ -102,6 +102,12 @@ export const OPHIS_PACKS = {
     id: 'ophis-xtras',
     label: 'Extras · 10 operations',
     note: 'Hand-written variants that never shipped. Ship disabled; enable to experiment.',
+    // The only pack that ADDS rather than replaces. v7 and v8-v9 are both strict
+    // subsets of v10+ -- they are earlier versions of one table, so merging them
+    // could only produce duplicates. These ten share no equation with any of the
+    // three, so appending them is the only thing that makes sense, and it is the
+    // only route to running all 26 at once.
+    additive: true,
     operations: XTRAS.map(row('ophis-xtras')).map((o) => ({ ...o, enabled: false })),
   },
 };
@@ -112,6 +118,38 @@ export const DEFAULT_OPHIS_PACK = 'ophis-gte-v10';
 export function packOperations(packId = DEFAULT_OPHIS_PACK) {
   const pack = OPHIS_PACKS[packId];
   return pack ? pack.operations.map((o) => ({ ...o })) : null;
+}
+
+/**
+ * Append a pack's operations to a table, skipping any equation already in it.
+ *
+ * Ordinals are load-bearing -- X1+ binds to the lower-INDEXED anchor -- so the
+ * existing rows keep theirs untouched and the new ones continue from the highest
+ * in use. Appending can therefore never renumber a row the user already has, and
+ * a document that cast before casts the same afterwards.
+ *
+ * Returns the merged table and how many were skipped, so a caller can tell the
+ * difference between "added ten" and "you already have these", which otherwise
+ * both look like a button that did nothing.
+ */
+export function mergeOperations(existing, packId) {
+  const incoming = packOperations(packId);
+  if (!incoming) return { operations: existing, added: 0, skipped: 0 };
+
+  const have = new Set(existing.map((o) => o.equation));
+  let next = existing.reduce((m, o) => Math.max(m, Number(o.ordinal) || 0), -1) + 1;
+
+  const added = [];
+  for (const op of incoming) {
+    if (have.has(op.equation)) continue;
+    have.add(op.equation);
+    added.push({ ...op, ordinal: next++ });
+  }
+  return {
+    operations: [...existing, ...added],
+    added: added.length,
+    skipped: incoming.length - added.length,
+  };
 }
 
 /** What the "add operation" button seeds. */
