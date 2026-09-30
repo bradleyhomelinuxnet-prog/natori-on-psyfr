@@ -77,6 +77,7 @@
     <a class="l2" href="#the-two-traps">The two traps</a>
     <a class="l3" href="#1-a-stale-page-is-usually-the-cdn-not-your-upload">1. A stale page is usually the CDN, not your upload</a>
     <a class="l3" href="#2-localstorage-is-scoped-to-an-origin-not-a-path">2. localStorage is scoped to an ORIGIN, not a path</a>
+    <a class="l3" href="#known-limitation">Known limitation</a>
     <a class="l2" href="#checklist">Checklist</a>
   </nav>
   <article>
@@ -103,8 +104,13 @@
 <p>Every path on a host shares one store. Consequences that have all bitten:</p>
 <ul><li>Two copies of the app in one folder share a document. Fixing one file does not fix what the other wrote.</li><li>A preview host (<code>*-preview.w3spaces.com</code>) is a <em>different</em> origin, so it has its own clean store. "Works in preview, not live" is usually this, not the file.</li><li>The original program's <code>save_blob</code> key is read as a legacy document. On a host serving both, the original writes a blob this app then reads.</li></ul>
 <p>This is why <code>restoreDocument</code> normalises everything it reads and repairs an anchor order it cannot cast, then writes the repair back. A bad document outlives the build that created it, and no upload can reach into a browser to fix one — the app has to.</p>
+<p>Repair only covers anchor order, though. A document can still be saved into a state that shows nothing and is perfectly valid — T-Dates whitelisting a day no projection lands on, filters cutting every row, anchors all in the past. For those, <strong>About → Clear saved data</strong> is the way out, and it is the first thing to try when one host disagrees with another serving the identical file.</p>
+<p>That panel is also the diagnostic. It says whether a <em>document</em> is stored under this address, separately from preferences, because only the document changes what you see. "No saved document under this address" on the host that works and "a saved document is stored" on the host that does not is the whole answer, and it takes one click on each to read.</p>
+<p>Clearing names every key the app has ever written, including the earlier build's <code>ophion-*</code> names. <code>tests/store.test.mjs</code> holds the two lists together, so a key added without being cleared fails there rather than on a deployed page. It also pins the one that is easy to miss: <code>beforeunload</code> persists the document, so the reload that makes a clear visible would write back exactly what was removed if writes were not disabled first.</p>
+<h3 id="known-limitation">Known limitation</h3>
+<p>In a browser with site data blocked outright, the app does not start: three legacy reads in <code>loadOptions()</code> and two in <code>src/ui/chrome.js</code> call <code>localStorage</code> outside a <code>try</code>, and the <code>SecurityError</code> takes the page down before anything renders. Measured, not inferred — a blank page with <code>SecurityError: The operation is insecure.</code> in the console. Pre-dates the Clear control and is not fixed by it; storage-disabled is a different bug from storage-full-of-junk.</p>
 <h2 id="checklist">Checklist</h2>
-<ol><li><code>npm test</code>, <code>npm run bundle</code>, <code>npm run docs</code> all clean.</li><li>Bump <code>BUILD_TAG</code> in <code>src/io/oph.js</code>.</li><li>Merge to <code>main</code> — Pages updates itself.</li><li>Upload the single-file build to w3spaces.</li><li>Open About; confirm the stamp. If it is old, try <code>?v=2</code> before re-uploading.</li><li>Keep exactly one copy of the app per folder. A second copy is the divergence trap the generator exists to prevent.</li></ol>
+<ol><li><code>npm test</code>, <code>npm run bundle</code>, <code>npm run docs</code> all clean.</li><li>Bump <code>BUILD_TAG</code> in <code>src/io/oph.js</code>.</li><li>Merge to <code>main</code> — Pages updates itself.</li><li>Upload the single-file build to w3spaces.</li><li>Open About; confirm the stamp. If it is old, try <code>?v=2</code> before re-uploading.</li><li>Keep exactly one copy of the app per folder. A second copy is the divergence trap the generator exists to prevent.</li><li>If the uploaded copy behaves differently from one that works, open About on both and compare what each says is stored before suspecting the file.</li></ol>
   </article>
 </div>
 
