@@ -221,8 +221,13 @@ a { color: var(--cyan); text-underline-offset: 2px; }
   border-bottom: 1px solid var(--line);
   background: linear-gradient(180deg, var(--panel-2), transparent);
 }
+/* The mono, not the serif. EB Garamond has a small x-height and delicate
+   strokes; uppercased, tracked to 0.18em and set at 11.5px it turns to mush,
+   which is what ISO-EVENTS, X-DATES and TIMELINE looked like. IBM Plex Mono is
+   drawn for exactly this job and holds its shape at the size. Cinzel and
+   Garamond keep the headings and the prose, where they are handsome. */
 .panel > header h3 {
-  font: 700 var(--fs-h3)/1 var(--font-body);
+  font: 500 var(--fs-h3)/1 var(--font-mono);
   letter-spacing: var(--ls-h3);
   text-transform: uppercase;
   color: var(--gold);
@@ -238,11 +243,14 @@ a { color: var(--cyan); text-underline-offset: 2px; }
 }
 .panel > header .spacer { margin-left: auto; display: flex; gap: 4px; align-items: center; }
 .panel .body { padding: var(--sp-3) var(--sp-4) var(--sp-4); }
+/* These carry the explanations a first-time reader needs -- what an Iso-Event
+   is, why two X-Dates are the minimum -- and they were the least readable text
+   on the surface: 12px Garamond at 5.2:1. Prose at 13.5px is 10.6:1. */
 .panel .note {
-  font-size: 12px;
-  color: var(--dim);
+  font-size: 13.5px;
+  color: var(--prose);
   margin: 0 0 var(--sp-3);
-  line-height: 1.5;
+  line-height: 1.55;
 }
 
 /* A scrollable list that shows roughly two rows before it scrolls, as the
@@ -834,7 +842,24 @@ pre.blob {
 @media (max-width: 880px) {
   :root { --gutter: 12px; }
   .topbar { flex-wrap: wrap; min-height: auto; padding-block: var(--sp-2); }
-  .screens { order: 3; width: 100%; }
+
+  /* Eight destinations do not fit a phone, and letting them overflow pushed
+     the whole page sideways -- the saved badge sat off the right edge, where
+     the one thing it exists to tell you could not be read. The row scrolls on
+     its own instead of taking the document with it. */
+  .screens {
+    order: 3;
+    width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+  .screens::-webkit-scrollbar { display: none; }
+  .screens button { flex: 0 0 auto; }
+
+  /* Wrap rather than clip, so the badge stays on screen. */
+  .chrome { flex-wrap: wrap; row-gap: var(--sp-2); }
+
   .chartpanel canvas { height: 260px; }
 }
 

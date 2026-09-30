@@ -10,14 +10,15 @@
   No 'unsafe-eval': the equation engine is a real tokeniser and parser, not
   new Function(). See docs/DEVIATIONS.md.
 -->
+<!-- No host but this one, for anything. The typefaces live in src/styles/fonts/
+     and are served from here, so this policy needs no exception and the page
+     makes no request off the origin. -->
 <meta http-equiv="Content-Security-Policy"
-      content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self'; img-src 'self' data:; connect-src 'self'">
+      content="default-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; script-src 'self'; img-src 'self' data:; connect-src 'self'">
 
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
+<link rel="stylesheet" href="src/styles/fonts.css">
 <link rel="stylesheet" href="src/styles/ophis-tokens.css">
 <link rel="stylesheet" href="src/styles/ophis-app.css">
 </head>
