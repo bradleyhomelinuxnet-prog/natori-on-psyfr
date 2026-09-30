@@ -34,6 +34,12 @@ jobs:
       - name: Check the stored state and the clear
         run: npm run test:store
 
+      # The operation packs. Merging rests on Extras staying disjoint from the
+      # shipped table, and on appending never renumbering a row the user has --
+      # ordinals decide which anchor an X1+ operation binds to.
+      - name: Check the operation packs and the merge
+        run: npm run test:packs
+
       - name: Check nothing reaches for eval
         run: |
           if grep -rnE '\bnew Function\b|\beval\(' src/ --include='*.js' \

@@ -15,6 +15,7 @@
     "serve": "node tools/serve.mjs",
     "test:serve": "node --test tests/serve.test.mjs",
     "test:store": "node --test tests/store.test.mjs",
+    "test:packs": "node --test tests/packs.test.mjs",
     "bundle": "node tools/bundle.mjs",
     "bundle:check": "node tools/bundle.mjs --check",
     "extract-data": "node tools/extract-data.mjs",

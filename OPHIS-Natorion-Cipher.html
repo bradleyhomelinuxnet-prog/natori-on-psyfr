@@ -2795,6 +2795,10 @@ pre.blob {
       id: "ophis-xtras",
       label: "Extras \xB7 10 operations",
       note: "Hand-written variants that never shipped. Ship disabled; enable to experiment.",
+      // The only pack that ADDS rather than replaces: v7 and v8-v9 are strict
+      // subsets of v10+, so merging them could only duplicate. These ten share
+      // no equation with any of the three.
+      additive: true,
       operations: XTRAS.map(row("ophis-xtras")).map((o) => ({ ...o, enabled: false }))
     }
   };
@@ -2802,6 +2806,25 @@ pre.blob {
   function packOperations(packId = DEFAULT_OPHIS_PACK) {
     const pack = OPHIS_PACKS[packId];
     return pack ? pack.operations.map((o) => ({ ...o })) : null;
+  }
+  function mergeOperations(existing, packId) {
+    const incoming = packOperations(packId);
+    if (!incoming) return { operations: existing, added: 0, skipped: 0 };
+    const have = new Set(existing.map((o) => o.equation));
+    // Ordinals are load-bearing -- X1+ binds to the lower-INDEXED anchor -- so
+    // existing rows keep theirs and new ones continue from the highest in use.
+    let next = existing.reduce((m, o) => Math.max(m, Number(o.ordinal) || 0), -1) + 1;
+    const added = [];
+    for (const op of incoming) {
+      if (have.has(op.equation)) continue;
+      have.add(op.equation);
+      added.push({ ...op, ordinal: next++ });
+    }
+    return {
+      operations: [...existing, ...added],
+      added: added.length,
+      skipped: incoming.length - added.length
+    };
   }
   var newOperation = () => ({ equation: "X1+Y", weight: 0.5, enabled: true, packId: null });
 
@@ -5917,17 +5940,41 @@ stream
               touch();
             }
           }),
+          // An additive pack appends; every other one replaces. Loading was the
+          // only thing these could do, so reaching the Extras meant throwing
+          // away the sixteen you were running.
           ...Object.values(OPHIS_PACKS).map(
             (pack) => el("button.btn", {
               type: "button",
-              text: pack.label,
+              text: pack.additive ? `+ ${pack.label}` : pack.label,
               title: pack.note,
               onclick: async () => {
+                if (pack.additive) {
+                  const { operations, added, skipped } = mergeOperations(ev.operations, pack.id);
+                  if (added === 0) {
+                    toast("Every one of these is already in your table.");
+                    return;
+                  }
+                  const ok2 = await confirmDialog({
+                    title: `Add ${added} operation${added === 1 ? "" : "s"} to your table?`,
+                    body: [
+                      pack.note,
+                      `Your ${ev.operations.length} stay exactly as they are, ordinals included. The new rows go on the end, switched off, so nothing you cast changes until you tick them.` + (skipped ? ` ${skipped} skipped \u2014 already present.` : "")
+                    ],
+                    cancel: "NO, leave it",
+                    confirm: `YES, add ${added}`
+                  });
+                  if (!ok2) return;
+                  ev.operations = operations;
+                  touch();
+                  toast(`${added} added, switched off. Tick the ones you want.`);
+                  return;
+                }
                 const ok = await confirmDialog({
                   title: `Load ${pack.label}?`,
-                  body: [pack.note, "This replaces the current operation table."],
+                  body: [pack.note, "This REPLACES the current operation table. Anything you have added or edited goes with it."],
                   cancel: "NO, keep mine",
-                  confirm: "YES, load it"
+                  confirm: "YES, replace it"
                 });
                 if (!ok) return;
                 ev.operations = packOperations(pack.id);
