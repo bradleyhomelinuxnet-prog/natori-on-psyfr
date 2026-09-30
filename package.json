@@ -12,7 +12,8 @@
   },
   "scripts": {
     "test": "node --test tests/parity.test.mjs tests/vortex.test.mjs tests/ophis.test.mjs tests/golden.test.mjs tests/property.test.mjs tests/map.test.mjs",
-    "serve": "python -m http.server 8777",
+    "serve": "node tools/serve.mjs",
+    "test:serve": "node --test tests/serve.test.mjs",
     "bundle": "node tools/bundle.mjs",
     "bundle:check": "node tools/bundle.mjs --check",
     "extract-data": "node tools/extract-data.mjs",
