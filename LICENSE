@@ -58,7 +58,11 @@ and this licence does not purport to grant rights in them.
      EB Garamond    Georg Duffner, Octavio Pardo
      IBM Plex Mono  Mike Abbink, Bold Monday, for IBM
 
-   Full text: https://openfontlicense.org
+   The copyright notice and the licence text both travel with them, as the
+   OFL requires: `src/styles/fonts/OFL.txt` in this tree, and reproduced as a
+   comment in `src/styles/fonts.css` so that it is also inside
+   `ophis-single.html`, which embeds the faces as data URIs and leaves here on
+   its own. A FAQ accompanies the licence at https://openfontlicense.org
 
 2. THE ARCHAIX THESIS. The ideas this instrument renders — the 138 lattice,
    the Phoenix and Nemesis cycles, the palindromic mirror — are the
