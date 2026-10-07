@@ -1,5 +1,7 @@
 # OPHIS · Pattern-Recognition Event Prediction
 
+[![tests](https://github.com/bradleyhomelinuxnet-prog/natori-on-psyfr/actions/workflows/test.yml/badge.svg)](https://github.com/bradleyhomelinuxnet-prog/natori-on-psyfr/actions/workflows/test.yml) [![Live site](https://img.shields.io/badge/live-site-d8a943)](https://bradleyhomelinuxnet-prog.github.io/natori-on-psyfr/) [![license: CC BY-NC-SA 4.0](https://img.shields.io/badge/license-CC%20BY--NC--SA%204.0-3d6fb4)](https://github.com/bradleyhomelinuxnet-prog/natori-on-psyfr/blob/main/LICENSE) ![No dependencies](https://img.shields.io/badge/dependencies-none-7faa5a) ![Works offline](https://img.shields.io/badge/works-offline-54b8c9)
+
 A ground-up rebuild of **Ophis v12** — Jason M. Breshears' date-projection instrument — reverse
 engineered from the shipped Windows application with the owner's permission, and verified
 bit-exact against it.
