@@ -2,6 +2,7 @@
 <html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8">
+<base target="_blank">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Rebuilding a Closed Prediction Engine Without Breaking It</title>
 <meta http-equiv="Content-Security-Policy"
@@ -71,46 +72,46 @@
 
 <div class="paper">
   <nav aria-label="Contents">
-    <a class="l3" href="#a-white-box-study-of-ophis-v12-psyfr-and-a-verified-reimplementation">A white-box study of Ophis v12 / PSYFR, and a verified reimplementation</a>
-    <a class="l2" href="#abstract">Abstract</a>
-    <a class="l2" href="#1-scope-and-authorization">1. Scope and authorization</a>
-    <a class="l2" href="#2-the-system-under-study">2. The system under study</a>
-    <a class="l3" href="#2-1-what-it-computes">2.1 What it computes</a>
-    <a class="l3" href="#2-2-what-was-found-in-the-box">2.2 What was found in the box</a>
-    <a class="l2" href="#3-method">3. Method</a>
-    <a class="l3" href="#3-1-static-unpacking">3.1 Static unpacking</a>
-    <a class="l3" href="#3-2-the-original-as-a-live-oracle">3.2 The original as a live oracle</a>
-    <a class="l3" href="#3-3-parallel-specification">3.3 Parallel specification</a>
-    <a class="l2" href="#4-findings-the-documented-model">4. Findings: the documented model</a>
-    <a class="l3" href="#4-1-msrf-is-not-a-list-of-numbers">4.1 MSRF is not a list of numbers</a>
-    <a class="l3" href="#4-2-the-system-has-a-name-and-a-shape">4.2 The system has a name and a shape</a>
-    <a class="l3" href="#4-3-the-vortex-numbers-decoded">4.3 The vortex numbers decoded</a>
-    <a class="l3" href="#4-4-what-was-deliberately-withheld">4.4 What was deliberately withheld</a>
-    <a class="l3" href="#4-5-the-author-s-design-documents-as-a-second-oracle">4.5 The author's design documents as a second oracle</a>
-    <a class="l2" href="#5-findings-security">5. Findings: security</a>
-    <a class="l3" href="#5-1-the-validator-inspected-a-different-string-than-the-compiler-ran">5.1 The validator inspected a different string than the compiler ran</a>
-    <a class="l3" href="#5-2-an-unvalidated-file-write-behind-a-privileged-bridge">5.2 An unvalidated file write behind a privileged bridge</a>
-    <a class="l3" href="#5-3-renderer-code-assembled-by-string-concatenation">5.3 Renderer code assembled by string concatenation</a>
-    <a class="l3" href="#5-4-authentication-as-decoration">5.4 Authentication as decoration</a>
-    <a class="l3" href="#5-5-correctness-defects-with-security-shaped-consequences">5.5 Correctness defects with security-shaped consequences</a>
-    <a class="l2" href="#6-the-rebuild">6. The rebuild</a>
-    <a class="l3" href="#6-1-objective">6.1 Objective</a>
-    <a class="l3" href="#6-2-structure">6.2 Structure</a>
-    <a class="l3" href="#6-3-the-design-constraint-that-shaped-everything">6.3 The design constraint that shaped everything</a>
-    <a class="l3" href="#6-4-replacing-dynamic-compilation">6.4 Replacing dynamic compilation</a>
-    <a class="l3" href="#6-5-quirks-preserved-on-purpose">6.5 Quirks preserved on purpose</a>
-    <a class="l2" href="#7-verification">7. Verification</a>
-    <a class="l3" href="#7-1-the-risk-being-managed">7.1 The risk being managed</a>
-    <a class="l3" href="#7-2-differential-testing-against-a-live-instance">7.2 Differential testing against a live instance</a>
-    <a class="l3" href="#7-3-layered-fixtures">7.3 Layered fixtures</a>
-    <a class="l3" href="#7-4-independent-conformance">7.4 Independent conformance</a>
-    <a class="l3" href="#7-5-adversarial-review-of-the-rewrite">7.5 Adversarial review of the rewrite</a>
-    <a class="l2" href="#8-results">8. Results</a>
-    <a class="l2" href="#9-limitations">9. Limitations</a>
-    <a class="l2" href="#10-conclusions">10. Conclusions</a>
-    <a class="l2" href="#appendix-a-the-golden-cast">Appendix A — The golden cast</a>
-    <a class="l3" href="#the-desktop-cast">The desktop cast</a>
-    <a class="l2" href="#appendix-b-reproducing-the-verification">Appendix B — Reproducing the verification</a>
+    <a target="_self" class="l3" href="#a-white-box-study-of-ophis-v12-psyfr-and-a-verified-reimplementation">A white-box study of Ophis v12 / PSYFR, and a verified reimplementation</a>
+    <a target="_self" class="l2" href="#abstract">Abstract</a>
+    <a target="_self" class="l2" href="#1-scope-and-authorization">1. Scope and authorization</a>
+    <a target="_self" class="l2" href="#2-the-system-under-study">2. The system under study</a>
+    <a target="_self" class="l3" href="#2-1-what-it-computes">2.1 What it computes</a>
+    <a target="_self" class="l3" href="#2-2-what-was-found-in-the-box">2.2 What was found in the box</a>
+    <a target="_self" class="l2" href="#3-method">3. Method</a>
+    <a target="_self" class="l3" href="#3-1-static-unpacking">3.1 Static unpacking</a>
+    <a target="_self" class="l3" href="#3-2-the-original-as-a-live-oracle">3.2 The original as a live oracle</a>
+    <a target="_self" class="l3" href="#3-3-parallel-specification">3.3 Parallel specification</a>
+    <a target="_self" class="l2" href="#4-findings-the-documented-model">4. Findings: the documented model</a>
+    <a target="_self" class="l3" href="#4-1-msrf-is-not-a-list-of-numbers">4.1 MSRF is not a list of numbers</a>
+    <a target="_self" class="l3" href="#4-2-the-system-has-a-name-and-a-shape">4.2 The system has a name and a shape</a>
+    <a target="_self" class="l3" href="#4-3-the-vortex-numbers-decoded">4.3 The vortex numbers decoded</a>
+    <a target="_self" class="l3" href="#4-4-what-was-deliberately-withheld">4.4 What was deliberately withheld</a>
+    <a target="_self" class="l3" href="#4-5-the-author-s-design-documents-as-a-second-oracle">4.5 The author's design documents as a second oracle</a>
+    <a target="_self" class="l2" href="#5-findings-security">5. Findings: security</a>
+    <a target="_self" class="l3" href="#5-1-the-validator-inspected-a-different-string-than-the-compiler-ran">5.1 The validator inspected a different string than the compiler ran</a>
+    <a target="_self" class="l3" href="#5-2-an-unvalidated-file-write-behind-a-privileged-bridge">5.2 An unvalidated file write behind a privileged bridge</a>
+    <a target="_self" class="l3" href="#5-3-renderer-code-assembled-by-string-concatenation">5.3 Renderer code assembled by string concatenation</a>
+    <a target="_self" class="l3" href="#5-4-authentication-as-decoration">5.4 Authentication as decoration</a>
+    <a target="_self" class="l3" href="#5-5-correctness-defects-with-security-shaped-consequences">5.5 Correctness defects with security-shaped consequences</a>
+    <a target="_self" class="l2" href="#6-the-rebuild">6. The rebuild</a>
+    <a target="_self" class="l3" href="#6-1-objective">6.1 Objective</a>
+    <a target="_self" class="l3" href="#6-2-structure">6.2 Structure</a>
+    <a target="_self" class="l3" href="#6-3-the-design-constraint-that-shaped-everything">6.3 The design constraint that shaped everything</a>
+    <a target="_self" class="l3" href="#6-4-replacing-dynamic-compilation">6.4 Replacing dynamic compilation</a>
+    <a target="_self" class="l3" href="#6-5-quirks-preserved-on-purpose">6.5 Quirks preserved on purpose</a>
+    <a target="_self" class="l2" href="#7-verification">7. Verification</a>
+    <a target="_self" class="l3" href="#7-1-the-risk-being-managed">7.1 The risk being managed</a>
+    <a target="_self" class="l3" href="#7-2-differential-testing-against-a-live-instance">7.2 Differential testing against a live instance</a>
+    <a target="_self" class="l3" href="#7-3-layered-fixtures">7.3 Layered fixtures</a>
+    <a target="_self" class="l3" href="#7-4-independent-conformance">7.4 Independent conformance</a>
+    <a target="_self" class="l3" href="#7-5-adversarial-review-of-the-rewrite">7.5 Adversarial review of the rewrite</a>
+    <a target="_self" class="l2" href="#8-results">8. Results</a>
+    <a target="_self" class="l2" href="#9-limitations">9. Limitations</a>
+    <a target="_self" class="l2" href="#10-conclusions">10. Conclusions</a>
+    <a target="_self" class="l2" href="#appendix-a-the-golden-cast">Appendix A — The golden cast</a>
+    <a target="_self" class="l3" href="#the-desktop-cast">The desktop cast</a>
+    <a target="_self" class="l2" href="#appendix-b-reproducing-the-verification">Appendix B — Reproducing the verification</a>
   </nav>
   <article>
 <h1 id="rebuilding-a-closed-prediction-engine-without-breaking-it">Rebuilding a Closed Prediction Engine Without Breaking It</h1>
