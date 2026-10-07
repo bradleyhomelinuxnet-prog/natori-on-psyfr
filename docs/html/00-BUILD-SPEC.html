@@ -2,6 +2,7 @@
 <html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8">
+<base target="_blank">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>00 — BUILD SPEC (AUTHORITATIVE)</title>
 <meta http-equiv="Content-Security-Policy"
@@ -71,85 +72,85 @@
 
 <div class="paper">
   <nav aria-label="Contents">
-    <a class="l2" href="#0-read-this-first">0. READ THIS FIRST</a>
-    <a class="l3" href="#0-1-there-are-two-engines-and-the-rewrite-fuses-them">0.1 There are TWO engines, and the rewrite fuses them</a>
-    <a class="l3" href="#0-2-reconciliations-where-the-specs-disagreed-and-the-ruling">0.2 Reconciliations — where the specs disagreed, and the ruling</a>
-    <a class="l3" href="#0-3-non-negotiable-parity-invariants">0.3 Non-negotiable parity invariants</a>
-    <a class="l2" href="#1-what-the-app-does">1. WHAT THE APP DOES</a>
-    <a class="l2" href="#2-domain-glossary">2. DOMAIN GLOSSARY</a>
-    <a class="l3" href="#2-1-ophis-engine">2.1 Ophis engine</a>
-    <a class="l3" href="#2-2-chronicon-archaix-reckoning">2.2 Chronicon / Archaix reckoning</a>
-    <a class="l2" href="#3-the-canonical-algorithm">3. THE CANONICAL ALGORITHM</a>
-    <a class="l3" href="#3-1-constants">3.1 Constants</a>
-    <a class="l3" href="#3-2-numeric-primitives">3.2 Numeric primitives</a>
-    <a class="l3" href="#3-3-the-oph-function-registry">3.3 The `oph_*` function registry</a>
-    <a class="l3" href="#3-4-the-equation-grammar">3.4 The equation grammar</a>
-    <a class="l3" href="#3-5-the-default-operation-table-ophis-reckoning-v10-v12-16-operations">3.5 The default operation table (`ophis` reckoning, v10/v12 — 16 operations)</a>
-    <a class="l3" href="#3-6-the-default-operation-packs-chronicon-reckoning">3.6 The default operation packs (`chronicon` reckoning)</a>
-    <a class="l3" href="#3-7-the-projection-pipeline-runophis-isoevent-ctx">3.7 The projection pipeline — `runOphis(isoEvent, ctx)`</a>
-    <a class="l3" href="#3-8-computing-y">3.8 Computing Y</a>
-    <a class="l3" href="#3-9-calendars-anchor-instant-and-z-instant-window">3.9 Calendars — anchor → instant, and Z-instant → window</a>
-    <a class="l3" href="#3-10-convergence-chronicon-reckoning">3.10 Convergence (`chronicon` reckoning)</a>
-    <a class="l3" href="#3-11-resonance-and-scoring">3.11 Resonance and scoring</a>
-    <a class="l3" href="#3-12-filtering">3.12 Filtering</a>
-    <a class="l3" href="#3-13-sorting">3.13 Sorting</a>
-    <a class="l3" href="#3-14-reference-pseudocode-whole-pipeline">3.14 Reference pseudocode (whole pipeline)</a>
-    <a class="l3" href="#3-15-error-strings-verbatim-the-ui-depends-on-these">3.15 Error strings (verbatim — the UI depends on these)</a>
-    <a class="l2" href="#4-data-model">4. DATA MODEL</a>
-    <a class="l3" href="#4-1-the-document">4.1 The document</a>
-    <a class="l3" href="#4-2-isoevent">4.2 IsoEvent</a>
-    <a class="l3" href="#4-3-xdate-identical-shape-for-t-dates">4.3 XDate (identical shape for T-Dates)</a>
-    <a class="l3" href="#4-4-operation">4.4 Operation</a>
-    <a class="l3" href="#4-5-serialized-field-descriptors-how-the-filter-chart-keys-are-derived">4.5 Serialized-field descriptors (how the filter / chart keys are derived)</a>
-    <a class="l3" href="#4-6-engine-result-shapes">4.6 Engine result shapes</a>
-    <a class="l3" href="#4-7-globaloptions-localstorage-only-never-in-a-oph">4.7 GlobalOptions (localStorage only — never in a `.oph`)</a>
-    <a class="l3" href="#4-8-load-save-contract">4.8 Load / save contract</a>
-    <a class="l2" href="#5-module-architecture">5. MODULE ARCHITECTURE</a>
-    <a class="l3" href="#5-1-principles">5.1 Principles</a>
-    <a class="l3" href="#5-2-file-tree">5.2 File tree</a>
-    <a class="l3" href="#5-3-dependency-direction">5.3 Dependency direction</a>
-    <a class="l3" href="#5-4-moddability-contract-what-adding-x-costs">5.4 Moddability contract — what "adding X" costs</a>
-    <a class="l3" href="#5-5-registry-shape">5.5 Registry shape</a>
-    <a class="l3" href="#5-6-recalculation-policy-replaces-v12-s-refreshxdates">5.6 Recalculation policy (replaces v12's `refreshXDates`)</a>
-    <a class="l2" href="#6-ui-specification">6. UI SPECIFICATION</a>
-    <a class="l3" href="#6-1-shell">6.1 Shell</a>
-    <a class="l3" href="#6-2-screen-inventory">6.2 Screen inventory</a>
-    <a class="l3" href="#6-3-screen-work-the-working-surface">6.3 `SCREEN__WORK` — the working surface</a>
-    <a class="l3" href="#6-4-the-results-table">6.4 The results table</a>
-    <a class="l3" href="#6-5-the-timeline-chart">6.5 The timeline chart</a>
-    <a class="l3" href="#6-6-screen-oracle-chronicon">6.6 `SCREEN__ORACLE` (chronicon)</a>
-    <a class="l3" href="#6-7-screen-convergence">6.7 `SCREEN__CONVERGENCE`</a>
-    <a class="l3" href="#6-8-screen-wheels">6.8 `SCREEN__WHEELS`</a>
-    <a class="l3" href="#6-9-screen-audit-new-replaces-the-dead-debug-screen">6.9 `SCREEN__AUDIT` (new — replaces the dead Debug screen)</a>
-    <a class="l3" href="#6-10-remaining-screens">6.10 Remaining screens</a>
-    <a class="l3" href="#6-11-formatting-rules">6.11 Formatting rules</a>
-    <a class="l3" href="#6-12-copy-deck-verbatim-strings-the-ui-depends-on">6.12 Copy deck (verbatim strings the UI depends on)</a>
-    <a class="l3" href="#6-13-accessibility-and-interaction-rules">6.13 Accessibility and interaction rules</a>
-    <a class="l2" href="#7-design-system">7. DESIGN SYSTEM</a>
-    <a class="l3" href="#7-1-ready-to-paste-token-block">7.1 Ready-to-paste token block</a>
-    <a class="l3" href="#7-2-component-rules">7.2 Component rules</a>
-    <a class="l3" href="#7-3-easter-eggs-to-preserve">7.3 Easter eggs to preserve</a>
-    <a class="l3" href="#7-4-assets">7.4 Assets</a>
-    <a class="l2" href="#8-parity-test-plan">8. PARITY TEST PLAN</a>
-    <a class="l3" href="#8-1-group-a-numeric-primitives">8.1 Group A — numeric primitives</a>
-    <a class="l3" href="#8-2-group-b-y-computation-executed">8.2 Group B — Y computation (executed)</a>
-    <a class="l3" href="#8-3-group-c-each-operation-s-z-output-for-a-known-y">8.3 Group C — each operation's Z output for a known Y</a>
-    <a class="l3" href="#8-4-group-d-oph-flip-executed">8.4 Group D — `oph_flip` (executed)</a>
-    <a class="l3" href="#8-5-group-e-msrf-classification-executed">8.5 Group E — MSRF classification (executed)</a>
-    <a class="l3" href="#8-6-group-f-scoring">8.6 Group F — scoring</a>
-    <a class="l3" href="#8-7-group-g-data-self-checks-the-shipped-v12-startup-tests-promoted-to-ci">8.7 Group G — data self-checks (the shipped v12 startup tests, promoted to CI)</a>
-    <a class="l3" href="#8-8-group-h-end-to-end-test-bradley-oph">8.8 Group H — end-to-end, `test-bradley.oph`</a>
-    <a class="l3" href="#8-9-group-i-end-to-end-chronicon-reckoning">8.9 Group I — end-to-end, chronicon reckoning</a>
-    <a class="l3" href="#8-10-group-j-persistence-round-trips">8.10 Group J — persistence round-trips</a>
-    <a class="l3" href="#8-11-group-k-filters-and-sorts">8.11 Group K — filters and sorts</a>
-    <a class="l3" href="#8-12-test-tiers">8.12 Test tiers</a>
-    <a class="l2" href="#9-deliberate-deviations">9. DELIBERATE DEVIATIONS</a>
-    <a class="l3" href="#9-1-security">9.1 Security</a>
-    <a class="l3" href="#9-2-correctness">9.2 Correctness</a>
-    <a class="l3" href="#9-3-platform">9.3 Platform</a>
-    <a class="l2" href="#10-open-questions-for-the-owner">10. OPEN QUESTIONS FOR THE OWNER</a>
-    <a class="l2" href="#appendix-a-implementation-order">APPENDIX A — IMPLEMENTATION ORDER</a>
-    <a class="l2" href="#appendix-b-source-map">APPENDIX B — SOURCE MAP</a>
+    <a target="_self" class="l2" href="#0-read-this-first">0. READ THIS FIRST</a>
+    <a target="_self" class="l3" href="#0-1-there-are-two-engines-and-the-rewrite-fuses-them">0.1 There are TWO engines, and the rewrite fuses them</a>
+    <a target="_self" class="l3" href="#0-2-reconciliations-where-the-specs-disagreed-and-the-ruling">0.2 Reconciliations — where the specs disagreed, and the ruling</a>
+    <a target="_self" class="l3" href="#0-3-non-negotiable-parity-invariants">0.3 Non-negotiable parity invariants</a>
+    <a target="_self" class="l2" href="#1-what-the-app-does">1. WHAT THE APP DOES</a>
+    <a target="_self" class="l2" href="#2-domain-glossary">2. DOMAIN GLOSSARY</a>
+    <a target="_self" class="l3" href="#2-1-ophis-engine">2.1 Ophis engine</a>
+    <a target="_self" class="l3" href="#2-2-chronicon-archaix-reckoning">2.2 Chronicon / Archaix reckoning</a>
+    <a target="_self" class="l2" href="#3-the-canonical-algorithm">3. THE CANONICAL ALGORITHM</a>
+    <a target="_self" class="l3" href="#3-1-constants">3.1 Constants</a>
+    <a target="_self" class="l3" href="#3-2-numeric-primitives">3.2 Numeric primitives</a>
+    <a target="_self" class="l3" href="#3-3-the-oph-function-registry">3.3 The `oph_*` function registry</a>
+    <a target="_self" class="l3" href="#3-4-the-equation-grammar">3.4 The equation grammar</a>
+    <a target="_self" class="l3" href="#3-5-the-default-operation-table-ophis-reckoning-v10-v12-16-operations">3.5 The default operation table (`ophis` reckoning, v10/v12 — 16 operations)</a>
+    <a target="_self" class="l3" href="#3-6-the-default-operation-packs-chronicon-reckoning">3.6 The default operation packs (`chronicon` reckoning)</a>
+    <a target="_self" class="l3" href="#3-7-the-projection-pipeline-runophis-isoevent-ctx">3.7 The projection pipeline — `runOphis(isoEvent, ctx)`</a>
+    <a target="_self" class="l3" href="#3-8-computing-y">3.8 Computing Y</a>
+    <a target="_self" class="l3" href="#3-9-calendars-anchor-instant-and-z-instant-window">3.9 Calendars — anchor → instant, and Z-instant → window</a>
+    <a target="_self" class="l3" href="#3-10-convergence-chronicon-reckoning">3.10 Convergence (`chronicon` reckoning)</a>
+    <a target="_self" class="l3" href="#3-11-resonance-and-scoring">3.11 Resonance and scoring</a>
+    <a target="_self" class="l3" href="#3-12-filtering">3.12 Filtering</a>
+    <a target="_self" class="l3" href="#3-13-sorting">3.13 Sorting</a>
+    <a target="_self" class="l3" href="#3-14-reference-pseudocode-whole-pipeline">3.14 Reference pseudocode (whole pipeline)</a>
+    <a target="_self" class="l3" href="#3-15-error-strings-verbatim-the-ui-depends-on-these">3.15 Error strings (verbatim — the UI depends on these)</a>
+    <a target="_self" class="l2" href="#4-data-model">4. DATA MODEL</a>
+    <a target="_self" class="l3" href="#4-1-the-document">4.1 The document</a>
+    <a target="_self" class="l3" href="#4-2-isoevent">4.2 IsoEvent</a>
+    <a target="_self" class="l3" href="#4-3-xdate-identical-shape-for-t-dates">4.3 XDate (identical shape for T-Dates)</a>
+    <a target="_self" class="l3" href="#4-4-operation">4.4 Operation</a>
+    <a target="_self" class="l3" href="#4-5-serialized-field-descriptors-how-the-filter-chart-keys-are-derived">4.5 Serialized-field descriptors (how the filter / chart keys are derived)</a>
+    <a target="_self" class="l3" href="#4-6-engine-result-shapes">4.6 Engine result shapes</a>
+    <a target="_self" class="l3" href="#4-7-globaloptions-localstorage-only-never-in-a-oph">4.7 GlobalOptions (localStorage only — never in a `.oph`)</a>
+    <a target="_self" class="l3" href="#4-8-load-save-contract">4.8 Load / save contract</a>
+    <a target="_self" class="l2" href="#5-module-architecture">5. MODULE ARCHITECTURE</a>
+    <a target="_self" class="l3" href="#5-1-principles">5.1 Principles</a>
+    <a target="_self" class="l3" href="#5-2-file-tree">5.2 File tree</a>
+    <a target="_self" class="l3" href="#5-3-dependency-direction">5.3 Dependency direction</a>
+    <a target="_self" class="l3" href="#5-4-moddability-contract-what-adding-x-costs">5.4 Moddability contract — what "adding X" costs</a>
+    <a target="_self" class="l3" href="#5-5-registry-shape">5.5 Registry shape</a>
+    <a target="_self" class="l3" href="#5-6-recalculation-policy-replaces-v12-s-refreshxdates">5.6 Recalculation policy (replaces v12's `refreshXDates`)</a>
+    <a target="_self" class="l2" href="#6-ui-specification">6. UI SPECIFICATION</a>
+    <a target="_self" class="l3" href="#6-1-shell">6.1 Shell</a>
+    <a target="_self" class="l3" href="#6-2-screen-inventory">6.2 Screen inventory</a>
+    <a target="_self" class="l3" href="#6-3-screen-work-the-working-surface">6.3 `SCREEN__WORK` — the working surface</a>
+    <a target="_self" class="l3" href="#6-4-the-results-table">6.4 The results table</a>
+    <a target="_self" class="l3" href="#6-5-the-timeline-chart">6.5 The timeline chart</a>
+    <a target="_self" class="l3" href="#6-6-screen-oracle-chronicon">6.6 `SCREEN__ORACLE` (chronicon)</a>
+    <a target="_self" class="l3" href="#6-7-screen-convergence">6.7 `SCREEN__CONVERGENCE`</a>
+    <a target="_self" class="l3" href="#6-8-screen-wheels">6.8 `SCREEN__WHEELS`</a>
+    <a target="_self" class="l3" href="#6-9-screen-audit-new-replaces-the-dead-debug-screen">6.9 `SCREEN__AUDIT` (new — replaces the dead Debug screen)</a>
+    <a target="_self" class="l3" href="#6-10-remaining-screens">6.10 Remaining screens</a>
+    <a target="_self" class="l3" href="#6-11-formatting-rules">6.11 Formatting rules</a>
+    <a target="_self" class="l3" href="#6-12-copy-deck-verbatim-strings-the-ui-depends-on">6.12 Copy deck (verbatim strings the UI depends on)</a>
+    <a target="_self" class="l3" href="#6-13-accessibility-and-interaction-rules">6.13 Accessibility and interaction rules</a>
+    <a target="_self" class="l2" href="#7-design-system">7. DESIGN SYSTEM</a>
+    <a target="_self" class="l3" href="#7-1-ready-to-paste-token-block">7.1 Ready-to-paste token block</a>
+    <a target="_self" class="l3" href="#7-2-component-rules">7.2 Component rules</a>
+    <a target="_self" class="l3" href="#7-3-easter-eggs-to-preserve">7.3 Easter eggs to preserve</a>
+    <a target="_self" class="l3" href="#7-4-assets">7.4 Assets</a>
+    <a target="_self" class="l2" href="#8-parity-test-plan">8. PARITY TEST PLAN</a>
+    <a target="_self" class="l3" href="#8-1-group-a-numeric-primitives">8.1 Group A — numeric primitives</a>
+    <a target="_self" class="l3" href="#8-2-group-b-y-computation-executed">8.2 Group B — Y computation (executed)</a>
+    <a target="_self" class="l3" href="#8-3-group-c-each-operation-s-z-output-for-a-known-y">8.3 Group C — each operation's Z output for a known Y</a>
+    <a target="_self" class="l3" href="#8-4-group-d-oph-flip-executed">8.4 Group D — `oph_flip` (executed)</a>
+    <a target="_self" class="l3" href="#8-5-group-e-msrf-classification-executed">8.5 Group E — MSRF classification (executed)</a>
+    <a target="_self" class="l3" href="#8-6-group-f-scoring">8.6 Group F — scoring</a>
+    <a target="_self" class="l3" href="#8-7-group-g-data-self-checks-the-shipped-v12-startup-tests-promoted-to-ci">8.7 Group G — data self-checks (the shipped v12 startup tests, promoted to CI)</a>
+    <a target="_self" class="l3" href="#8-8-group-h-end-to-end-test-bradley-oph">8.8 Group H — end-to-end, `test-bradley.oph`</a>
+    <a target="_self" class="l3" href="#8-9-group-i-end-to-end-chronicon-reckoning">8.9 Group I — end-to-end, chronicon reckoning</a>
+    <a target="_self" class="l3" href="#8-10-group-j-persistence-round-trips">8.10 Group J — persistence round-trips</a>
+    <a target="_self" class="l3" href="#8-11-group-k-filters-and-sorts">8.11 Group K — filters and sorts</a>
+    <a target="_self" class="l3" href="#8-12-test-tiers">8.12 Test tiers</a>
+    <a target="_self" class="l2" href="#9-deliberate-deviations">9. DELIBERATE DEVIATIONS</a>
+    <a target="_self" class="l3" href="#9-1-security">9.1 Security</a>
+    <a target="_self" class="l3" href="#9-2-correctness">9.2 Correctness</a>
+    <a target="_self" class="l3" href="#9-3-platform">9.3 Platform</a>
+    <a target="_self" class="l2" href="#10-open-questions-for-the-owner">10. OPEN QUESTIONS FOR THE OWNER</a>
+    <a target="_self" class="l2" href="#appendix-a-implementation-order">APPENDIX A — IMPLEMENTATION ORDER</a>
+    <a target="_self" class="l2" href="#appendix-b-source-map">APPENDIX B — SOURCE MAP</a>
   </nav>
   <article>
 <h1 id="00-build-spec-authoritative">00 — BUILD SPEC (AUTHORITATIVE)</h1>

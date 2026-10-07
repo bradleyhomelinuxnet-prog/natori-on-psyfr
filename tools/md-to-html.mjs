@@ -15,7 +15,7 @@
  */
 
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
-import { basename, join, dirname, relative } from 'node:path';
+import { basename, join, dirname, relative, sep } from 'node:path';
 
 const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
@@ -45,7 +45,7 @@ function inline(text) {
   });
 
   s = esc(s)
-    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, label, href) => `<a href="${href}">${label}</a>`)
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, label, href) => `<a${href.startsWith('#') ? ' target="_self"' : ''} href="${href}">${label}</a>`)
     .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
     .replace(/(^|[\s(])\*([^*\n]+)\*(?=[\s.,;:)]|$)/g, '$1<em>$2</em>')
     .replace(/(^|[\s(])_([^_\n]+)_(?=[\s.,;:)]|$)/g, '$1<em>$2</em>');
@@ -90,7 +90,8 @@ function rebaseLinks(body, sourceDir, pageDir) {
     const [path, fragment = ''] = href.split(/(?=#)/);
     const repoPath = join(sourceDir, path);
     const target = PUBLISHED.get(basename(repoPath)) ?? repoPath;
-    return `href="${relative(pageDir, target) || '.'}${fragment}"`;
+    // URLs use '/', so a run on Windows writes the same links as one anywhere else.
+    return `href="${relative(pageDir, target).split(sep).join('/') || '.'}${fragment}"`;
   });
 }
 
@@ -222,12 +223,13 @@ function render(md) {
 }
 
 function page({ title, body, toc, prefix }) {
-  const nav = toc.map((t) => `    <a class="l${t.level}" href="#${t.id}">${esc(t.text)}</a>`).join('\n');
+  const nav = toc.map((t) => `    <a target="_self" class="l${t.level}" href="#${t.id}">${esc(t.text)}</a>`).join('\n');
 
   return `<!doctype html>
 <html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8">
+<base target="_blank">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>${esc(title)}</title>
 <meta http-equiv="Content-Security-Policy"
