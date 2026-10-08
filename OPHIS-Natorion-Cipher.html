@@ -147,10 +147,15 @@
   --op-alpha:       var(--gold);
   --op-beta:        var(--cyan);
   --msrf-normal:    var(--green);
-  --msrf-important: var(--red);
+  /* The pill sets 10px text on a 12% tint of its own colour, where --red
+     reaches only 4.3:1. This lighter red reaches 5.4:1. Light uses --red. */
+  --msrf-important: #ef6a56;
   --msrf-vortex:    var(--violet);
   --ok:             var(--green);
   --danger:         var(--red);
+  /* The screen eyebrow sits on --bg, where the light theme's gold is 4.2:1.
+     Light darkens it to 5.3:1. */
+  --eyebrow-ink:    var(--gold);
 
   /* ---------- chart hit-count ramp ----------
      Fixed across themes: these encode data, not decoration, and a reader
@@ -265,6 +270,9 @@
   --moon:      #3f5f77;
   --warn:      #96550b;
 
+  --msrf-important: var(--red);
+  --eyebrow-ink:    #765410;
+
   --hits-low:   #4a463d;
   --chart-axis: rgba(44, 35, 23, 0.7);
   --chart-grid: rgba(44, 35, 23, 0.09);
@@ -291,6 +299,7 @@
     --on-accent: #fffdf6;
     --gold: #8a6210; --gold-2: #6d4a0d; --red: #b32a1a; --cyan: #17606f;
     --green: #416a27; --violet: #5c3d8e; --moon: #3f5f77; --warn: #96550b;
+    --msrf-important: var(--red); --eyebrow-ink: #765410;
     --hits-low: #4a463d;
     --chart-axis: rgba(44, 35, 23, 0.7); --chart-grid: rgba(44, 35, 23, 0.09);
     --map-tint: none; --map-sea: #cfe0ee;
@@ -314,7 +323,13 @@ html {
   /* The A- / A / A+ control moves --zoom; everything sized in rem follows. */
   font-size: calc(16px * var(--zoom));
   -webkit-text-size-adjust: 100%;
+  /* The script measures the sticky top bar (--topbar-cover), so a control
+     reached by keyboard lands below it. */
+  scroll-padding-top: var(--topbar-cover, 0px);
 }
+/* The bar's own controls are on screen already: focusing one must not
+   scroll the page. */
+html:has(.topbar:focus-within) { scroll-padding-top: 0; }
 
 body {
   margin: 0;
@@ -480,7 +495,7 @@ a { color: var(--cyan); text-underline-offset: 2px; }
   font: 600 var(--fs-eyebrow)/1 var(--font-body);
   letter-spacing: var(--ls-eyebrow);
   text-transform: uppercase;
-  color: var(--gold);
+  color: var(--eyebrow-ink);
   margin-bottom: var(--sp-2);
 }
 .screen-head h1 {
@@ -546,7 +561,7 @@ a { color: var(--cyan); text-underline-offset: 2px; }
 .panel > header .count {
   font-family: var(--font-mono);
   font-size: 10px;
-  color: var(--faint);
+  color: var(--dim);
   letter-spacing: 0;
 }
 .panel > header .spacer { margin-left: auto; display: flex; gap: 4px; align-items: center; }
@@ -584,7 +599,10 @@ a { color: var(--cyan); text-underline-offset: 2px; }
   transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease);
 }
 .row:hover { border-color: var(--line-2); }
-.row[data-off='true'] { opacity: var(--opacity-disabled); }
+.row[data-off='true']:not(.check) { opacity: var(--opacity-disabled); }
+/* A filter that is off is still a live checkbox, so its row is not faded:
+   its text turns quiet instead (5.0:1 dark, 5.8:1 light). */
+.check.row[data-off='true'] > span { color: var(--dim); }
 .row[data-current='true'] {
   border-color: var(--gold);
   background: color-mix(in srgb, var(--gold) 8%, var(--panel-2));
@@ -597,6 +615,9 @@ a { color: var(--cyan); text-underline-offset: 2px; }
 }
 .row .grow { flex: 1 1 auto; min-width: 0; }
 .row .sub { font-size: 11px; color: var(--dim); }
+/* On the gold tint of the current row --dim is 4.4:1 in the dark theme; a
+   tenth of ink lifts it to 4.9:1 (5.8:1 light). */
+.row[data-current='true'] .sub { color: color-mix(in srgb, var(--dim) 90%, var(--ink)); }
 
 .rowerr { color: var(--red); font-size: 11px; min-height: 14px; margin-top: 2px; }
 
@@ -819,7 +840,7 @@ td.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; text
 td.zlabel {
   font-family: var(--font-mono);
   font-size: 11px;
-  color: var(--faint);
+  color: var(--dim);
   white-space: nowrap;
 }
 .hidden-col { visibility: hidden; }
@@ -1130,7 +1151,7 @@ pre.blob {
   font-size: 11px;
   border-bottom: 1px solid var(--line-flat);
 }
-.logline time { color: var(--faint); flex: 0 0 66px; }
+.logline time { color: var(--dim); flex: 0 0 66px; }
 .logline .kind { flex: 0 0 84px; color: var(--gold); text-transform: uppercase; font-size: 9.5px; letter-spacing: 0.1em; }
 .logline p { margin: 0; color: var(--prose); }
 
@@ -3623,6 +3644,20 @@ pre.blob {
     };
     paint();
   }
+  // The sticky top bar covers the top of the page, and it grows as it wraps on
+  // a narrow screen. Measure how much it covers; the stylesheet turns that into
+  // scroll padding, so a control reached by keyboard lands below the bar
+  // rather than underneath.
+  function keepClearOfTopbar() {
+    const bar = document.querySelector(".topbar");
+    if (!bar) return;
+    const measure = () => {
+      document.documentElement.style.setProperty("--topbar-cover", `${bar.offsetHeight + 8}px`);
+    };
+    measure();
+    if (window.ResizeObserver) new ResizeObserver(measure).observe(bar);
+    addEventListener("resize", measure);
+  }
   var TOAST_MS = 2900;
   function toast(message, kind = "info") {
     log(kind, message);
@@ -3712,6 +3747,7 @@ pre.blob {
   }
   function initShell() {
     initChrome();
+    keepClearOfTopbar();
     initRouting();
     const badge = $("savedBadge");
     setDirtyHook(() => {
@@ -4287,9 +4323,9 @@ pre.blob {
       );
       return el("div.row", { data: { off: String(!x.enabled) } }, children);
     });
-    const yInput = el("input", { type: "number", min: "1", max: "9999", value: String((/* @__PURE__ */ new Date()).getUTCFullYear()) });
-    const mInput = el("input", { type: "number", min: "1", max: "12", value: "1" });
-    const dInput = el("input", { type: "number", min: "1", max: "31", value: "1" });
+    const yInput = el("input", { type: "number", id: `${key}-year`, min: "1", max: "9999", value: String((/* @__PURE__ */ new Date()).getUTCFullYear()) });
+    const mInput = el("input", { type: "number", id: `${key}-month`, min: "1", max: "12", value: "1" });
+    const dInput = el("input", { type: "number", id: `${key}-day`, min: "1", max: "31", value: "1" });
     const add = () => {
       const parsed = parseXDate(`${mInput.value}/${dInput.value}/${yInput.value}`);
       if (!parsed) {
@@ -4352,11 +4388,11 @@ pre.blob {
       ],
       body: [
         el("p.note", { text: note }),
-        list.length ? el("div.rowlist", {}, rows) : el("p.note", { style: "color:var(--faint)", text: "Nothing here yet." }),
+        list.length ? el("div.rowlist", {}, rows) : el("p.note", { text: "Nothing here yet." }),
         el("div.formrow", {}, [
-          el("div.field.narrow", {}, [el("label", { text: "Mon" }), mInput]),
-          el("div.field.narrow", {}, [el("label", { text: "Day" }), dInput]),
-          el("div.field", {}, [el("label", { text: "Year" }), yInput]),
+          el("div.field.narrow", {}, [el("label", { for: mInput.id, text: "Mon" }), mInput]),
+          el("div.field.narrow", {}, [el("label", { for: dInput.id, text: "Day" }), dInput]),
+          el("div.field", {}, [el("label", { for: yInput.id, text: "Year" }), yInput]),
           el("button.btn.primary", { type: "button", text: addLabel, onclick: add })
         ]),
         key === "x_dates" ? el("div.formrow", { style: "margin-top:6px" }, [
@@ -4447,7 +4483,7 @@ pre.blob {
     };
     const group = (name, opts, offset) => el("div", {}, [
       el("div", {
-        style: "font:600 9.5px/1 var(--font-body);letter-spacing:.16em;text-transform:uppercase;color:var(--faint);margin:10px 0 4px",
+        style: "font:600 9.5px/1 var(--font-body);letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin:10px 0 4px",
         text: name
       }),
       ...opts.map((o) => toggle(o, CHART_OPTIONS.indexOf(o)))
@@ -4462,7 +4498,7 @@ pre.blob {
         group("Moon phases", moons),
         group("Eclipses", eclipses),
         el("div", {}, [
-          el("div", { style: "font:600 9.5px/1 var(--font-body);letter-spacing:.16em;text-transform:uppercase;color:var(--faint);margin:10px 0 4px", text: "Eclipse table" }),
+          el("div", { style: "font:600 9.5px/1 var(--font-body);letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin:10px 0 4px", text: "Eclipse table" }),
           el("select", {
             "aria-label": "Eclipse table",
             style: "width:100%;margin:2px 0 4px",
@@ -4503,9 +4539,10 @@ pre.blob {
     return el("div", { style: "margin-top:12px" }, [
       el("div.formrow", {}, [
         el("div.field", {}, [
-          el("label", { text: "Latitude" }),
+          el("label", { for: "location-lat", text: "Latitude" }),
           el("input", {
             type: "number",
+            id: "location-lat",
             step: "0.1",
             min: "-65",
             max: "65",
@@ -4514,9 +4551,10 @@ pre.blob {
           })
         ]),
         el("div.field", {}, [
-          el("label", { text: "Longitude" }),
+          el("label", { for: "location-long", text: "Longitude" }),
           el("input", {
             type: "number",
+            id: "location-long",
             step: "0.1",
             min: "-180",
             max: "180",
@@ -4574,9 +4612,10 @@ pre.blob {
           ])
         ]),
         hhmm ? locationFields(ev) : el("div.field", { style: "margin-top:12px" }, [
-          el("label", { text: "Day begins at" }),
+          el("label", { for: "scope-day-start", text: "Day begins at" }),
           el("input", {
             type: "time",
+            id: "scope-day-start",
             value: hhmmStr,
             onchange: (e) => {
               const [h, m] = String(e.target.value || "00:00").split(":").map(Number);
@@ -4802,7 +4841,6 @@ pre.blob {
       el("h3", { text: "Nothing to cast yet" }),
       el("p", { text: errors[0] ?? "At least 2 X-Dates are required." }),
       el("p", {
-        style: "color:var(--faint)",
         text: "Every pair of anchors gives one Y, and every operation turns that Y into a projection. Two anchors give one pair; three give three."
       })
     ]);
@@ -4865,7 +4903,7 @@ pre.blob {
           ])
         ]),
         el("td", { class: opts.hide_msrf_col ? "hidden-col" : "" }, [
-          z.resonance_matches.length ? el("div.pills", {}, z.resonance_matches.map((m) => msrfPill(m, z))) : el("span", { style: "color:var(--faint)", text: "\u2014" })
+          z.resonance_matches.length ? el("div.pills", {}, z.resonance_matches.map((m) => msrfPill(m, z))) : el("span", { style: "color:var(--dim)", text: "\u2014" })
         ])
       ];
       if (!opts.hide_operations_col_completely) {
@@ -5181,7 +5219,7 @@ pre.blob {
       if (!ev[CHART_OPTIONS[0].key]) return;
       const data = build();
       if (!data) {
-        ctx.fillStyle = cssVar("--faint", "#5f5a4c");
+        ctx.fillStyle = cssVar("--dim", "#8d866f");
         ctx.font = `12px ${cssVar("--font-body", "serif")}`;
         ctx.textAlign = "center";
         ctx.fillText("Nothing to plot yet.", cssW / 2, cssH / 2);
@@ -6107,9 +6145,10 @@ stream
           text: "The hour at which a day is considered to begin, in Days scope. The picker runs at 0,0 \u2014 UTC \u2014 deliberately: switching it to browser-local would silently break the round trip, because the saved value is an offset in milliseconds and carries no timezone."
         }),
         el("div.field", { style: "max-width:180px" }, [
-          el("label", { text: "Starts at" }),
+          el("label", { for: "settings-day-start", text: "Starts at" }),
           el("input", {
             type: "time",
+            id: "settings-day-start",
             value: hhmm,
             disabled: ev.scope !== EVENT_SCOPE.DAYS,
             onchange: (e) => {
@@ -6458,7 +6497,7 @@ stream
           el("span.kind", { text: a.kind }),
           el("p", { text: a.message })
         ])
-      )) : el("p.note", { style: "color:var(--faint)", text: "Nothing logged yet." })
+      )) : el("p.note", { text: "Nothing logged yet." })
     ]);
     if (!r) {
       replace(host, [el("p.note", { text: "Cast the event first \u2014 there is nothing to audit yet." }), logFeed]);
