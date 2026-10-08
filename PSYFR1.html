@@ -928,7 +928,7 @@ function renderConvergence(){
   lastConv.slice(0,200).forEach(c=>{
     const tr=document.createElement('tr');tr.className='zr'+(selZ===c.centerJD?' sel':'');
     const tagHtml=c.tags.map(t=>`<span class="rt ${t[1]}">${t[0]}</span>`).join('');
-    const opsHtml=c.ops.map(o=>`<span class="opchip">${o}</span>`).join('');
+    const opsHtml=c.ops.map(o=>`<span class="opchip">${escH(o)}</span>`).join('');
     const spanTxt=c.spanDays===0?'exact day':('±'+Math.ceil(c.spanDays/2)+'d span');
     tr.innerHTML=`<td><span class="convstrength"><b>${c.nOps}</b><span class="cbar"><i style="width:${c.nOps/maxOps*100}%"></i></span></span><div class="cpairs">${c.nPairs} pair${c.nPairs>1?'s':''}</div></td>
       <td class="dt">${fmtYear(c.ay)} <span style="color:var(--dim)">${String(c.m).padStart(2,'0')}/${String(c.d).padStart(2,'0')}</span><div class="cspan">${spanTxt}</div></td>
@@ -944,6 +944,7 @@ function renderConvergence(){
 let anchors=[], ops=[], lastResults=[], resFilter='all', sortKey='score', sortDir=-1, selZ=null;
 let curSystem=SCORING.V8, aEra='ad', dEra='ad';
 const $=id=>document.getElementById(id);
+const escH=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));  // text from the page or a loaded file, before it meets innerHTML
 function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),1900);}
 
 /* ---- anchors ---- */
@@ -958,7 +959,7 @@ function renderAnchors(){
   anchors.forEach((a,i)=>{
     const row=document.createElement('div');row.className='arow'+(a.enabled?'':' off');
     row.innerHTML=`<div class="ord">${i+1}</div>
-      <div class="lbl">${a.label} <small>${fmtYear(a.ay)} · ${String(a.m).padStart(2,'0')}/${String(a.d).padStart(2,'0')} · <span class="mono">JD ${a.jd.toLocaleString()}</span> · AM ${am(a.ay)}</small></div>
+      <div class="lbl">${escH(a.label)} <small>${fmtYear(a.ay)} · ${String(a.m).padStart(2,'0')}/${String(a.d).padStart(2,'0')} · <span class="mono">JD ${a.jd.toLocaleString()}</span> · AM ${am(a.ay)}</small></div>
       <div class="ctrls"><button type="button" class="chk ${a.enabled?'on':''}" aria-pressed="${a.enabled}" aria-label="Enable or disable this anchor">${a.enabled?'✓':''}</button><button class="xbtn" type="button" aria-label="Remove this anchor" title="remove">✕</button></div>`;
     row.querySelector('.chk').onclick=()=>{a.enabled=!a.enabled;renderAnchors();};
     row.querySelector('.xbtn').onclick=()=>{anchors.splice(i,1);renderAnchors();};
@@ -979,7 +980,7 @@ function renderOps(){
   const host=$('opList');host.innerHTML='';
   ops.forEach((o,i)=>{
     const row=document.createElement('div');row.className='arow'+(o.enabled?'':' off');
-    row.innerHTML=`<div class="ord">${i+1}</div><div class="lbl"><span class="mono">${o.eq}</span></div>
+    row.innerHTML=`<div class="ord">${i+1}</div><div class="lbl"><span class="mono">${escH(o.eq)}</span></div>
       <div class="ctrls"><button type="button" class="chk ${o.enabled?'on':''}" aria-pressed="${o.enabled}" aria-label="Enable or disable this operation">${o.enabled?'✓':''}</button><button class="xbtn" type="button" aria-label="Remove this operation">✕</button></div>`;
     row.querySelector('.chk').onclick=()=>{o.enabled=!o.enabled;renderOps();};
     row.querySelector('.xbtn').onclick=()=>{ops.splice(i,1);renderOps();};
@@ -1052,7 +1053,7 @@ function renderResults(){
       <td class="dt">${fmtYear(r.ay)} <span style="color:var(--dim)">${String(r.m).padStart(2,'0')}/${String(r.d).padStart(2,'0')}</span></td>
       <td>${r.am}${isPalindrome(r.am)?' <span class="pal">⮌</span>':''}</td>
       <td>${r.lc>0?(String(r.lc).includes('138')?String(r.lc).replace('138','<span style="color:var(--red)">138</span>'):r.lc):'—'}</td>
-      <td style="color:var(--cyan)">${r.op}</td>
+      <td style="color:var(--cyan)">${escH(r.op)}</td>
       <td>${r.Y.toLocaleString()}</td>
       <td><div class="restags">${tagHtml||'<span style="color:var(--dim)">—</span>'}</div></td>`;
     tr.onclick=()=>{selZ=r.zjd;setDialFromAstro(r.ay,r.m,r.d);renderResults();$('wheels').scrollIntoView({behavior:'smooth',block:'start'});};
