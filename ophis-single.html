@@ -3111,7 +3111,7 @@ pre.blob {
 
   // src/io/oph.js
   var APP_VERSION = "13.0.0";
-  var BUILD_TAG = "2026-10-18 · mirrors pack";
+  var BUILD_TAG = "2026-10-18 · save for v12";
   var SCHEMA_VERSION = 1;
   var VALIDATION = { STRICT: "strict", LOOSE: "loose" };
   var isObj = (v) => v !== null && typeof v === "object" && !Array.isArray(v);
@@ -3341,6 +3341,71 @@ pre.blob {
       iso_events: doc.iso_events.map((ev, i) => minify ? minifyEvent(ev, i) : fullEvent(ev))
     };
     return JSON.stringify(body, null, prettify ? 2 : void 0);
+  }
+  var V12_APP_VERSION = "12";
+  var V12_CHART_ORDER = [
+    "chart_option__show_chart",
+    "chart_option__show_dates",
+    "chart_option__show_new_moons",
+    "chart_option__show_first_quarter_moons",
+    "chart_option__show_full_moons",
+    "chart_option__show_third_quarter_moons",
+    "chart_option__show_waxing_crescent_moons",
+    "chart_option__show_waning_crescent_moons",
+    "chart_option__show_waxing_gibbous_moons",
+    "chart_option__show_waning_gibbous_moons",
+    "chart_option__full_solar_eclipses",
+    "chart_option__partial_solar_eclipses",
+    "chart_option__full_lunar_eclipses",
+    "chart_option__partial_lunar_eclipses"
+  ];
+  var V12_SORT_TYPES = [SORT_TYPE.SCORE, SORT_TYPE.DATE, SORT_TYPE.MSRF, SORT_TYPE.HIT_COUNT, SORT_TYPE.OPERATIONS];
+  var V12_EVENT_TYPES = [EVENT_TYPE.PERSONAL, EVENT_TYPE.MARKETS];
+  var pad = (n, w) => String(n).padStart(w, "0");
+  var v12Date = (x) => ({
+    date: `${pad(x.m, 2)}/${pad(x.d, 2)}/${pad(x.y, 4)}`,
+    time: x.time || "00:00",
+    enabled: x.enabled !== false
+  });
+  function v12Event(ev, index, notes) {
+    const label = ev.name || `Event ${index + 1}`;
+    let sort = ev.z_date_sort_type;
+    if (!V12_SORT_TYPES.includes(sort)) {
+      notes.push(`${label}: v12 has no "${sort}" sort, so the file asks for the date sort instead`);
+      sort = SORT_TYPE.DATE;
+    }
+    let type = ev.type;
+    if (!V12_EVENT_TYPES.includes(type)) {
+      notes.push(`${label}: v12 has no "${type}" event type, so the file says personal (the type changes no result)`);
+      type = EVENT_TYPE.PERSONAL;
+    }
+    const out = {
+      name: ev.name,
+      notes: ev.notes,
+      x_dates: ev.x_dates.map(v12Date),
+      t_dates: ev.t_dates.map(v12Date),
+      lat: ev.lat,
+      long: ev.long,
+      location_enabled: ev.location_enabled,
+      scope: ev.scope,
+      type,
+      operations: ev.operations.map((o) => ({ equation: o.equation, weight: o.weight, enabled: o.enabled })),
+      scoring_system: ev.scoring_system
+    };
+    for (const key of Object.keys(FILTER_DEFAULTS)) out[key] = ev[key];
+    for (const key of V12_CHART_ORDER) out[key] = ev[key];
+    for (const key of ["chart_x_min", "chart_x_max", "chart_y_min", "chart_y_max"]) out[key] = ev[key];
+    out.z_date_sort_type = sort;
+    out.day_scope_start_time_in_millis = ev.day_scope_start_time_in_millis;
+    return out;
+  }
+  function serialiseDocumentV12(doc, { prettify = true } = {}) {
+    const notes = [];
+    const body = {
+      app_version: V12_APP_VERSION,
+      iso_events: doc.iso_events.map((ev, i) => v12Event(ev, i, notes))
+    };
+    return { text: JSON.stringify(body, null, prettify ? 2 : void 0), notes };
   }
   function safeFilename(name, fallback = "export") {
     let s = String(name ?? "").replaceAll(" ", "_").replace(/[^A-Za-z0-9_.-]/g, "_").replace(/^[. ]+|[. ]+$/g, "").slice(0, 255);
@@ -3848,14 +3913,14 @@ pre.blob {
         for (const [k, v] of rows()) dl.append(el("dt", { text: k }), el("dd", { text: v }));
         tip.replaceChildren(dl);
         tip.dataset.show = "true";
-        const pad = 12;
+        const pad2 = 12;
         const r = tip.getBoundingClientRect();
-        let x = e.clientX + pad;
-        let y = e.clientY + pad;
-        if (x + r.width > innerWidth - pad) x = e.clientX - r.width - pad;
-        if (y + r.height > innerHeight - pad) y = e.clientY - r.height - pad;
-        tip.style.left = `${Math.max(pad, x)}px`;
-        tip.style.top = `${Math.max(pad, y)}px`;
+        let x = e.clientX + pad2;
+        let y = e.clientY + pad2;
+        if (x + r.width > innerWidth - pad2) x = e.clientX - r.width - pad2;
+        if (y + r.height > innerHeight - pad2) y = e.clientY - r.height - pad2;
+        tip.style.left = `${Math.max(pad2, x)}px`;
+        tip.style.top = `${Math.max(pad2, y)}px`;
       }, TIP_DELAY);
     };
     const hide = () => {
@@ -6468,8 +6533,32 @@ stream
               state.saved = true;
               toast("Wrote Export.oph");
             }
+          }),
+          el("button.btn", {
+            type: "button",
+            text: "Save for Ophis v12",
+            title: "A file the original Ophis v12 desktop app can open: dates as MM/DD/YYYY, app_version 12",
+            onclick: async () => {
+              const { text, notes } = serialiseDocumentV12(state.document, { prettify: opts.prettify_oph_files });
+              if (notes.length) {
+                const ok = await confirmDialog({
+                  title: "Some settings have no v12 equivalent",
+                  body: [...notes, "Everything else, including every operation and X-Date, carries over unchanged."],
+                  cancel: "NO, cancel",
+                  confirm: "YES, save anyway"
+                });
+                if (!ok) return;
+              }
+              download(new Blob([text], { type: "application/json" }), "Export-v12.oph");
+              if (!notes.length) state.saved = true;
+              toast("Wrote Export-v12.oph");
+            }
           })
-        ])
+        ]),
+        el("p.note", {
+          style: "margin-top:12px",
+          text: "Export file writes this app’s own format. The original Ophis v12 desktop app cannot read its dates and opens such a file with no X-Dates, so use Save for Ophis v12 for anything going there."
+        })
       ])
     ]);
   }
