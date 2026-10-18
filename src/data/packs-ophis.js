@@ -57,6 +57,25 @@ const XTRAS = [
   ['X2+Yx0.360', 0.5, '360 / 1000'],
 ];
 
+/**
+ * The holes in the sixteen. The shipped table runs most of its forms on both
+ * anchors, but some only ever appear as X2+ (or only as a whole-Y multiple), so
+ * these ten complete the X1/X2 grid with the same named constants. Weight 0.5
+ * across the board: unvalidated, like the Extras, whatever the counterpart weighs.
+ */
+const MIRRORS = [
+  ['X1+oph_round(Y)', 0.5, 'Isometric Date on X1 — mirrors #1'],
+  ['X1+oph_flip(oph_round(Y))', 0.5, 'Holo-date on X1 — mirrors #2'],
+  ['X1+Y/OPH_CRV', 0.5, 'mirrors #3'],
+  ['X1+Y/OPH_PHI', 0.5, 'mirrors #5'],
+  ['X1+(Y/2.0)xOPH_PHI', 0.5, 'mirrors #6'],
+  ['X1+YxOPH_PHI', 0.5, 'mirrors #9'],
+  ['X1+(Y/2.0)xOPH_HEP', 0.5, 'half hepta-cycle, X1 — mirrors #15 as #4 does #10'],
+  ['X2+(Y/2.0)xOPH_HEP', 0.5, 'half hepta-cycle, X2 — mirrors #16'],
+  ['X1+Y/OPH_PI', 0.5, 'division by π, which the sixteen never do'],
+  ['X2+Y/OPH_PI', 0.5, 'division by π, X2'],
+];
+
 export const OPHIS_PACKS = {
   'ophis-gte-v10': {
     id: 'ophis-gte-v10',
@@ -109,6 +128,16 @@ export const OPHIS_PACKS = {
     // only route to running all 26 at once.
     additive: true,
     operations: XTRAS.map(row('ophis-xtras')).map((o) => ({ ...o, enabled: false })),
+  },
+
+  'ophis-mirrors': {
+    id: 'ophis-mirrors',
+    label: 'Mirrors · 10 operations',
+    note: 'Completes the X1/X2 grid of the sixteen with the same constants. Ship disabled; enable to experiment.',
+    // Additive for the same reason as the Extras: disjoint from every other pack,
+    // so appending can never duplicate. With both added you run all 36.
+    additive: true,
+    operations: MIRRORS.map(row('ophis-mirrors')).map((o) => ({ ...o, enabled: false })),
   },
 };
 

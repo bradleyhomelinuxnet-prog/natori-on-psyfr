@@ -573,6 +573,7 @@ test('every operation in every version ships enabled', () => {
   }
   // The extras are the exception: they never shipped on.
   assert.ok(packOperations('ophis-xtras').every((o) => o.enabled === false));
+  assert.ok(packOperations('ophis-mirrors').every((o) => o.enabled === false));
 });
 
 test('a guard does not swallow the reason the operations failed', () => {
