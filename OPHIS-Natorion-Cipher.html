@@ -2840,6 +2840,18 @@ pre.blob {
     ["X2+Yx2.178", 0.5, "vortex 217.8 / 100"],
     ["X2+Yx0.360", 0.5, "360 / 1000"]
   ];
+  var MIRRORS = [
+    ["X1+oph_round(Y)", 0.5, "Isometric Date on X1 \u2014 mirrors #1"],
+    ["X1+oph_flip(oph_round(Y))", 0.5, "Holo-date on X1 \u2014 mirrors #2"],
+    ["X1+Y/OPH_CRV", 0.5, "mirrors #3"],
+    ["X1+Y/OPH_PHI", 0.5, "mirrors #5"],
+    ["X1+(Y/2.0)xOPH_PHI", 0.5, "mirrors #6"],
+    ["X1+YxOPH_PHI", 0.5, "mirrors #9"],
+    ["X1+(Y/2.0)xOPH_HEP", 0.5, "half hepta-cycle, X1 \u2014 mirrors #15 as #4 does #10"],
+    ["X2+(Y/2.0)xOPH_HEP", 0.5, "half hepta-cycle, X2 \u2014 mirrors #16"],
+    ["X1+Y/OPH_PI", 0.5, "division by \u03C0, which the sixteen never do"],
+    ["X2+Y/OPH_PI", 0.5, "division by \u03C0, X2"]
+  ];
   var OPHIS_PACKS = {
     "ophis-gte-v10": {
       id: "ophis-gte-v10",
@@ -2885,6 +2897,13 @@ pre.blob {
       // no equation with any of the three.
       additive: true,
       operations: XTRAS.map(row("ophis-xtras")).map((o) => ({ ...o, enabled: false }))
+    },
+    "ophis-mirrors": {
+      id: "ophis-mirrors",
+      label: "Mirrors \xB7 10 operations",
+      note: "Completes the X1/X2 grid of the sixteen with the same constants. Ship disabled; enable to experiment.",
+      additive: true,
+      operations: MIRRORS.map(row("ophis-mirrors")).map((o) => ({ ...o, enabled: false }))
     }
   };
   var DEFAULT_OPHIS_PACK = "ophis-gte-v10";
@@ -2988,7 +3007,7 @@ pre.blob {
   // was not: a deployed copy had to be checked by reading view-source for a
   // function name, which needs developer tools and says nothing when it fails.
   // Bump this whenever you ship a build.
-  var BUILD_TAG = "2026-09-30 \u00B7 clear saved data";
+  var BUILD_TAG = "2026-10-18 \u00B7 mirrors pack";
   var SCHEMA_VERSION = 1;
   var VALIDATION = { STRICT: "strict", LOOSE: "loose" };
   var isObj = (v) => v !== null && typeof v === "object" && !Array.isArray(v);

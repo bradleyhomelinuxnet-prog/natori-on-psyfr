@@ -41,9 +41,37 @@ test('Extras shares no equation with the live default', () => {
   assert.deepEqual(shared, [], 'Extras must stay disjoint from the shipped table');
 });
 
-test('exactly one pack is marked additive', () => {
+test('the additive packs are exactly Extras and Mirrors', () => {
   const additive = Object.values(OPHIS_PACKS).filter((p) => p.additive).map((p) => p.id);
-  assert.deepEqual(additive, ['ophis-xtras']);
+  assert.deepEqual(additive, ['ophis-xtras', 'ophis-mirrors']);
+});
+
+/**
+ * Mirrors leans on the same assumption as Extras: disjoint from the shipped
+ * table AND from the other additive pack, or adding both would duplicate rows.
+ */
+test('Mirrors shares no equation with the default or with Extras', () => {
+  const m = eqs('ophis-mirrors');
+  assert.equal(m.size, 10, 'ten distinct equations');
+  for (const id of [DEFAULT_OPHIS_PACK, 'ophis-xtras']) {
+    const shared = [...eqs(id)].filter((e) => m.has(e));
+    assert.deepEqual(shared, [], `Mirrors must stay disjoint from ${id}`);
+  }
+});
+
+test('the Mirrors ship switched off', () => {
+  assert.equal(packOperations('ophis-mirrors').some((o) => o.enabled), false);
+});
+
+test('adding Extras then Mirrors gives all 36, the 26 untouched', () => {
+  const base = mergeOperations(packOperations(DEFAULT_OPHIS_PACK), 'ophis-xtras').operations;
+  const { operations, added, skipped } = mergeOperations(base, 'ophis-mirrors');
+  assert.equal(added, 10);
+  assert.equal(skipped, 0);
+  assert.equal(operations.length, 36);
+  assert.equal(new Set(operations.map((o) => o.equation)).size, 36, 'no duplicates');
+  assert.deepEqual(operations.slice(0, 26).map((o) => o.ordinal), base.map((o) => o.ordinal));
+  assert.deepEqual(operations.slice(26).map((o) => o.ordinal), [26, 27, 28, 29, 30, 31, 32, 33, 34, 35]);
 });
 
 test('the Extras ship switched off', () => {
