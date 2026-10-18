@@ -20,7 +20,7 @@ import { round1, round2, intToDecimalString } from '../../core/ophis/numeric.js'
 import { fmtDate } from '../../core/ophis/calendar.js';
 import { clampDayStart, makeIsoEvent } from '../../state/iso-event.js';
 import {
-  parseDocument, serialiseDocument, VALIDATION, APP_VERSION, BUILD_TAG,
+  parseDocument, serialiseDocument, serialiseDocumentV12, VALIDATION, APP_VERSION, BUILD_TAG,
 } from '../../io/oph.js';
 import { toCSV, toXLSX, toPDF, exportBasename } from '../../io/export-results.js';
 import { download } from '../../io/download.js';
@@ -567,7 +567,34 @@ export function renderExport(host) {
             toast('Wrote Export.oph');
           },
         }),
+        el('button.btn', {
+          type: 'button',
+          text: 'Save for Ophis v12',
+          title: 'A file the original Ophis v12 desktop app can open: dates as MM/DD/YYYY, app_version 12',
+          onclick: async () => {
+            const { text, notes } = serialiseDocumentV12(state.document, { prettify: opts.prettify_oph_files });
+            if (notes.length) {
+              const ok = await confirmDialog({
+                title: 'Some settings have no v12 equivalent',
+                body: [...notes, 'Everything else, including every operation and X-Date, carries over unchanged.'],
+                cancel: 'NO, cancel',
+                confirm: 'YES, save anyway',
+              });
+              if (!ok) return;
+            }
+            download(new Blob([text], { type: 'application/json' }), 'Export-v12.oph');
+            // Only a lossless copy counts as saving the document.
+            if (!notes.length) state.saved = true;
+            toast('Wrote Export-v12.oph');
+          },
+        }),
       ]),
+      el('p.note', {
+        style: 'margin-top:12px',
+        text:
+          'Export file writes this app’s own format. The original Ophis v12 desktop app cannot read its ' +
+          'dates and opens such a file with no X-Dates, so use Save for Ophis v12 for anything going there.',
+      }),
     ]),
   ]);
 }

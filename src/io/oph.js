@@ -37,7 +37,7 @@ export const APP_VERSION = '13.0.0';
  * view-source for a function name, which is fragile, needs developer tools, and
  * tells you nothing when it fails. Bump this whenever you ship a build.
  */
-export const BUILD_TAG = '2026-10-18 · mirrors pack';
+export const BUILD_TAG = '2026-10-18 · save for v12';
 export const SCHEMA_VERSION = 1;
 
 /** `strict` rejects anything unrecognised; `loose` repairs and warns. */
@@ -351,6 +351,96 @@ export function serialiseDocument(doc, { prettify = true, minify = false } = {})
     iso_events: doc.iso_events.map((ev, i) => (minify ? minifyEvent(ev, i) : fullEvent(ev))),
   };
   return JSON.stringify(body, null, prettify ? 2 : undefined);
+}
+
+/* ---------------------------------------------------- the v12 on-disk form -- */
+
+/** The one version string the original wrote ("12.0.0" normalised at boot). */
+export const V12_APP_VERSION = '12';
+
+/** The chart flags in the order v12 wrote them (ours are grouped by phase). */
+const V12_CHART_ORDER = [
+  'chart_option__show_chart', 'chart_option__show_dates',
+  'chart_option__show_new_moons', 'chart_option__show_first_quarter_moons',
+  'chart_option__show_full_moons', 'chart_option__show_third_quarter_moons',
+  'chart_option__show_waxing_crescent_moons', 'chart_option__show_waning_crescent_moons',
+  'chart_option__show_waxing_gibbous_moons', 'chart_option__show_waning_gibbous_moons',
+  'chart_option__full_solar_eclipses', 'chart_option__partial_solar_eclipses',
+  'chart_option__full_lunar_eclipses', 'chart_option__partial_lunar_eclipses',
+];
+
+/** Values the original knew. Anything else it either coerced or mis-sorted. */
+const V12_SORT_TYPES = [SORT_TYPE.SCORE, SORT_TYPE.DATE, SORT_TYPE.MSRF, SORT_TYPE.HIT_COUNT, SORT_TYPE.OPERATIONS];
+const V12_EVENT_TYPES = [EVENT_TYPE.PERSONAL, EVENT_TYPE.MARKETS];
+
+const pad = (n, w) => String(n).padStart(w, '0');
+const v12Date = (x) => ({
+  date: `${pad(x.m, 2)}/${pad(x.d, 2)}/${pad(x.y, 4)}`,
+  time: x.time || '00:00',
+  enabled: x.enabled !== false,
+});
+
+function v12Event(ev, index, notes) {
+  const label = ev.name || `Event ${index + 1}`;
+
+  let sort = ev.z_date_sort_type;
+  if (!V12_SORT_TYPES.includes(sort)) {
+    notes.push(`${label}: v12 has no "${sort}" sort, so the file asks for the date sort instead`);
+    sort = SORT_TYPE.DATE;
+  }
+  let type = ev.type;
+  if (!V12_EVENT_TYPES.includes(type)) {
+    notes.push(`${label}: v12 has no "${type}" event type, so the file says personal (the type changes no result)`);
+    type = EVENT_TYPE.PERSONAL;
+  }
+
+  // Key order is v12's createNewIsoEvent order, so a diff against a file the
+  // desktop app wrote lines up field for field.
+  const out = {
+    name: ev.name,
+    notes: ev.notes,
+    x_dates: ev.x_dates.map(v12Date),
+    t_dates: ev.t_dates.map(v12Date),
+    lat: ev.lat,
+    long: ev.long,
+    location_enabled: ev.location_enabled,
+    scope: ev.scope,
+    type,
+    operations: ev.operations.map((o) => ({ equation: o.equation, weight: o.weight, enabled: o.enabled })),
+    scoring_system: ev.scoring_system,
+  };
+  for (const key of Object.keys(FILTER_DEFAULTS)) out[key] = ev[key];
+  for (const key of V12_CHART_ORDER) out[key] = ev[key];
+  for (const key of ['chart_x_min', 'chart_x_max', 'chart_y_min', 'chart_y_max']) out[key] = ev[key];
+  out.z_date_sort_type = sort;
+  out.day_scope_start_time_in_millis = ev.day_scope_start_time_in_millis;
+  return out;
+}
+
+/**
+ * Serialise a document in the form the original Ophis v12 desktop app reads.
+ *
+ * The native form above carries X-Dates as `{y, m, d}`. v12 only knows
+ * `{date: "MM/DD/YYYY"}`, and in its default loose mode it drops every date it
+ * cannot parse without saying so -- the event opens with no anchors and casts
+ * nothing. So this writes `app_version: "12"`, no `schema`, and v12's date form.
+ * Always the full form: v12's own defaults are not ours, so a minified file
+ * would cast differently there.
+ *
+ * Returns the text and any notes about values v12 cannot represent, which the
+ * caller shows; nothing is dropped silently.
+ *
+ * @param {{iso_events: object[]}} doc
+ * @param {{prettify?: boolean}} opts
+ * @returns {{text: string, notes: string[]}}
+ */
+export function serialiseDocumentV12(doc, { prettify = true } = {}) {
+  const notes = [];
+  const body = {
+    app_version: V12_APP_VERSION,
+    iso_events: doc.iso_events.map((ev, i) => v12Event(ev, i, notes)),
+  };
+  return { text: JSON.stringify(body, null, prettify ? 2 : undefined), notes };
 }
 
 /**

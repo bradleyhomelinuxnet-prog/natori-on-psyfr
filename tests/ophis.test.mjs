@@ -1019,3 +1019,87 @@ test('an event with fewer than two anchors is left alone', () => {
   repairAnchorOrder({ iso_events: [ev] });
   assert.equal(ev.x_dates.length, 1);
 });
+
+/* ---------------------------------------------------------------- Group Q --
+ * Saving for the original Ophis v12 desktop app.
+ *
+ * v12 reads X-Dates only as {date: "MM/DD/YYYY"} and, in its default loose
+ * mode, silently drops any it cannot parse -- a native file opens there with
+ * no anchors and casts nothing. The v12 writer exists to prevent that.
+ */
+
+const v12Fixture = () => {
+  const ev = makeIsoEvent(0, {
+    name: 'For the desktop app',
+    x_dates: [makeXDate(2026, 7, 4), makeXDate(2026, 8, 20), makeXDate(2027, 3, 9)],
+    operations: packOperations(),
+  });
+  ev.t_dates = [makeXDate(2028, 1, 5, { enabled: false })];
+  return { iso_events: [ev] };
+};
+
+test('the v12 file carries app_version 12, no schema, and MM/DD/YYYY dates', async () => {
+  const { serialiseDocumentV12 } = await import('../src/io/oph.js');
+  const { text, notes } = serialiseDocumentV12(v12Fixture());
+  const body = JSON.parse(text);
+
+  assert.deepEqual(notes, [], 'a default event needs no caveats');
+  assert.deepEqual(Object.keys(body), ['app_version', 'iso_events']);
+  assert.equal(body.app_version, '12');
+
+  const ev = body.iso_events[0];
+  assert.deepEqual(ev.x_dates[0], { date: '07/04/2026', time: '00:00', enabled: true }, 'zero-padded, v12 shape');
+  assert.deepEqual(ev.t_dates[0], { date: '01/05/2028', time: '00:00', enabled: false });
+  assert.ok(ev.x_dates.every((x) => !('y' in x)), 'no y/m/d left for v12 to choke on');
+  assert.deepEqual(
+    Object.keys(ev).slice(0, 11),
+    ['name', 'notes', 'x_dates', 't_dates', 'lat', 'long', 'location_enabled', 'scope', 'type', 'operations', 'scoring_system'],
+    'the order the desktop app writes, so the two diff cleanly'
+  );
+  assert.equal(Object.keys(ev).at(-1), 'day_scope_start_time_in_millis');
+});
+
+test('a v12 file reads back to the same event and casts the same Z-Dates', async () => {
+  const { serialiseDocumentV12, parseDocument, VALIDATION } = await import('../src/io/oph.js');
+  const doc = v12Fixture();
+  const { document: back, errors } = parseDocument(serialiseDocumentV12(doc).text, VALIDATION.STRICT);
+  assert.deepEqual(errors, []);
+
+  const a = doc.iso_events[0];
+  const b = back.iso_events[0];
+  const dates = (xs) => xs.map((x) => [x.y, x.m, x.d, x.time, x.enabled]);
+  assert.deepEqual(dates(b.x_dates), dates(a.x_dates));
+  assert.deepEqual(dates(b.t_dates), dates(a.t_dates));
+  assert.deepEqual(
+    b.operations.map((o) => [o.equation, o.weight, o.enabled]),
+    a.operations.map((o) => [o.equation, o.weight, o.enabled])
+  );
+
+  const now = Date.UTC(2026, 0, 1);
+  const za = runOphis(a, { now }).processed_z_dates.map((z) => [z.z_start, z.score]);
+  const zb = runOphis(b, { now }).processed_z_dates.map((z) => [z.z_start, z.score]);
+  assert.ok(za.length > 0);
+  assert.deepEqual(zb, za);
+});
+
+test('values v12 cannot hold are swapped for its nearest and reported, never dropped quietly', async () => {
+  const { serialiseDocumentV12 } = await import('../src/io/oph.js');
+  const doc = v12Fixture();
+  doc.iso_events[0].z_date_sort_type = SORT_TYPE.OPERATION_SCORE;
+  doc.iso_events[0].type = 'EVENT_TYPE__ASTROLOGICAL';
+
+  const { text, notes } = serialiseDocumentV12(doc);
+  const ev = JSON.parse(text).iso_events[0];
+  assert.equal(ev.z_date_sort_type, SORT_TYPE.DATE);
+  assert.equal(ev.type, 'EVENT_TYPE__PERSONAL');
+  assert.equal(notes.length, 2);
+  assert.ok(notes.every((n) => n.startsWith('For the desktop app:')), 'each note names its event');
+});
+
+test('the native export is unchanged by the v12 writer', async () => {
+  const { serialiseDocument, APP_VERSION } = await import('../src/io/oph.js');
+  const body = JSON.parse(serialiseDocument(v12Fixture()));
+  assert.equal(body.app_version, APP_VERSION);
+  assert.equal(body.schema, 1);
+  assert.deepEqual(Object.keys(body.iso_events[0].x_dates[0]), ['y', 'm', 'd', 'time', 'enabled']);
+});
