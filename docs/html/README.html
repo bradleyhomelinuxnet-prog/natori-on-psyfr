@@ -85,6 +85,7 @@
   </nav>
   <article>
 <h1 id="ophis-pattern-recognition-event-prediction">OPHIS · Pattern-Recognition Event Prediction</h1>
+<p><a href="https://github.com/bradleyhomelinuxnet-prog/natori-on-psyfr/actions/workflows/test.yml/badge.svg">![tests</a>](https://github.com/bradleyhomelinuxnet-prog/natori-on-psyfr/actions/workflows/test.yml) <a href="https://img.shields.io/badge/live-site-d8a943">![Live site</a>](https://bradleyhomelinuxnet-prog.github.io/natori-on-psyfr/) <a href="https://img.shields.io/badge/license-CC%20BY--NC--SA%204.0-3d6fb4">![license: CC BY-NC-SA 4.0</a>](https://github.com/bradleyhomelinuxnet-prog/natori-on-psyfr/blob/main/LICENSE) !<a href="https://img.shields.io/badge/dependencies-none-7faa5a">No dependencies</a> !<a href="https://img.shields.io/badge/works-offline-54b8c9">Works offline</a></p>
 <p>A ground-up rebuild of <strong>Ophis v12</strong> — Jason M. Breshears' date-projection instrument — reverse engineered from the shipped Windows application with the owner's permission, and verified bit-exact against it.</p>
 <p>Give it two or more dates on which similar events occurred. It measures the distance between every pair of them in axial rotations of the Earth, runs each distance through a table of sixteen operations, projects the results forward, and filters out the projections that bear no arithmetic relationship to the controls.</p>
 <p>Nothing leaves the page. There is no network call, no sign-in, and no dependency.</p>
@@ -138,7 +139,7 @@ docs/reverse/           the full reverse-engineering study, 23 specs</code></pre
 <h2 id="built-to-be-modified">Built to be modified</h2>
 <p>Each kind of change touches exactly one file:</p>
 <div class="tablewrap"><table><thead><tr><th style="text-align:left">Change</th><th style="text-align:left">File</th></tr></thead><tbody><tr><td style="text-align:left">Operation packs</td><td style="text-align:left"><code>src/data/packs-ophis.js</code></td></tr><tr><td style="text-align:left">MSRF numbers</td><td style="text-align:left"><code>src/data/msrf-ophis.js</code></td></tr><tr><td style="text-align:left">Equation constants / functions</td><td style="text-align:left"><code>src/core/equation/reckonings.js</code></td></tr><tr><td style="text-align:left">Scoring</td><td style="text-align:left"><code>src/core/ophis/scoring.js</code></td></tr><tr><td style="text-align:left">Filters</td><td style="text-align:left"><code>src/core/ophis/filters.js</code></td></tr><tr><td style="text-align:left">Colours, fonts, spacing</td><td style="text-align:left"><code>src/styles/ophis-tokens.css</code></td></tr></tbody></table></div>
-<p>Full details in <strong><a href="MODDING.html">docs/MODDING.md</a></strong>.</p>
+<p>Full details in <strong><a href="MODDING.html">docs/MODDING.md</a></strong>. The two additive packs, Extras and the ten Mirrors, take the table from sixteen operations to 36; the Mirrors are written up in <strong><a href="../MIRRORS.md">docs/MIRRORS.md</a></strong>.</p>
 <hr>
 <h2 id="verification">Verification</h2>
 <p><code>tests/ophis.test.mjs</code> pins the engine against values read out of the original, not out of this implementation:</p>
