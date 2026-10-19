@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<base target="_blank">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>23 · The author's source documents, second set</title>
+<meta http-equiv="Content-Security-Policy"
+      content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'none'; img-src 'self' data:; connect-src 'none'">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../src/styles/ophis-tokens.css">
+<link rel="stylesheet" href="../../src/styles/ophis-app.css">
+<style>
+  body { padding-bottom: 96px; }
+  .doc-top {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding: 20px var(--gutter); max-width: 1180px; margin: 0 auto;
+  }
+  .paper {
+    display: grid; grid-template-columns: 232px minmax(0, 1fr); gap: 48px;
+    max-width: 1180px; margin: 0 auto; padding: 0 var(--gutter);
+  }
+  .paper > nav {
+    position: sticky; top: 24px; align-self: start;
+    max-height: calc(100vh - 48px); overflow-y: auto;
+    padding: 24px 0; font-size: 12.5px;
+  }
+  .paper > nav a { display: block; color: var(--dim); text-decoration: none; padding: 3px 0; line-height: 1.4; }
+  .paper > nav a:hover { color: var(--gold-2); }
+  .paper > nav a.l3 { padding-left: 14px; font-size: 11.5px; color: var(--faint); }
+
+  article { padding: 24px 0; max-width: 76ch; }
+  article h1 { font-family: var(--font-display); font-size: clamp(28px, 4vw, 40px); color: var(--ink); margin: 0 0 20px; letter-spacing: .01em; }
+  article h2 { font-family: var(--font-display); font-size: 24px; color: var(--gold-2); margin: 52px 0 16px; }
+  article h3 { font-size: 17px; color: var(--ink); margin: 34px 0 12px; font-weight: 600; }
+  article h4 { font-size: 14px; color: var(--gold); margin: 26px 0 10px; font-weight: 600; letter-spacing: .04em; }
+  article p { font-size: 15.5px; line-height: 1.68; color: var(--prose); margin: 0 0 15px; max-width: none; }
+  article strong { color: var(--ink); }
+  article ul, article ol { color: var(--prose); font-size: 15.5px; line-height: 1.68; padding-left: 22px; margin: 0 0 16px; }
+  article li { margin-bottom: 6px; }
+  article hr { border: 0; border-top: 1px solid var(--line); margin: 40px 0; }
+  article blockquote {
+    border-left: 3px solid var(--gold); background: var(--panel);
+    margin: 20px 0; padding: 12px 20px; border-radius: 0 var(--r-2) var(--r-2) 0;
+  }
+  article blockquote p:last-child { margin-bottom: 0; }
+  article pre {
+    background: var(--well); border: 1px solid var(--line); border-radius: var(--r-2);
+    padding: 14px 16px; overflow-x: auto; font-family: var(--font-mono);
+    font-size: 12px; line-height: 1.55; color: var(--prose); margin: 0 0 18px;
+  }
+  article pre code { background: none; border: 0; padding: 0; font-size: inherit; }
+  article .tablewrap { margin: 0 0 20px; }
+  article td, article th { font-size: 12.5px; }
+  article td:first-child { color: var(--ink); }
+
+  @media (max-width: 900px) {
+    .paper { grid-template-columns: 1fr; gap: 0; }
+    .paper > nav { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="doc-top">
+  <div class="brand">OPHIS <small>23 · The author's source documents, second set</small></div>
+  <a class="btn" href="../../index.html">Open the instrument &rarr;</a>
+</div>
+
+<div class="paper">
+  <nav aria-label="Contents">
+    <a target="_self" class="l2" href="#1-protocol-prime-objective-and-subjective-projections">1 · Protocol Prime: objective and subjective projections</a>
+    <a target="_self" class="l2" href="#2-the-filter-rules-that-22-6-recorded-as-undisclosed">2 · The filter rules that 22 §6 recorded as undisclosed</a>
+    <a target="_self" class="l2" href="#3-operating-limits-from-the-sop">3 · Operating limits from the SOP</a>
+    <a target="_self" class="l2" href="#4-the-projection-window-2559-is-a-diurnal-number">4 · The projection window: 2559 is a diurnal number</a>
+    <a target="_self" class="l2" href="#5-on-scaling-vectors-the-engine-on-26-million-graded-predictions">5 · "On Scaling Vectors": the engine on 26 million graded predictions</a>
+    <a target="_self" class="l2" href="#6-context-the-prospectus-and-the-rights">6 · Context: the prospectus and the rights</a>
+    <a target="_self" class="l2" href="#7-proposed-actions">7 · Proposed actions</a>
+  </nav>
+  <article>
+<h1 id="23-the-author-s-source-documents-second-set">23 · The author's source documents, second set</h1>
+<p><strong>Assignment:</strong> read the remaining design documents shared in the research group against the rebuild, and record what is new. This follows <a href="22-author-source-documents.html">22</a>, which covered the Flow Chart, <em>PREPS</em>, the Procedural Notes, <em>Items Not Disclosed</em> and the MSRF workbook.</p>
+<p><strong>Primary sources, read in full</strong> (the documents themselves are not reproduced here):</p>
+<div class="tablewrap"><table><thead><tr><th style="text-align:left">File</th><th style="text-align:left">Pages</th><th style="text-align:left">What it is</th><th style="text-align:left">New?</th></tr></thead><tbody><tr><td style="text-align:left"><code>c. Ophis Definitions &amp; SOP</code></td><td style="text-align:left">5</td><td style="text-align:left">Glossary, plus the standard operating procedure</td><td style="text-align:left"><strong>Yes</strong>: operating limits (§3)</td></tr><tr><td style="text-align:left"><code>Protocol Prime</code></td><td style="text-align:left">1</td><td style="text-align:left">"The Law of Prediction"</td><td style="text-align:left"><strong>Yes</strong>: objective vs subjective (§1)</td></tr><tr><td style="text-align:left"><code>Other MSRA Filters</code></td><td style="text-align:left">2</td><td style="text-align:left">Fibonacci, IntraDecimal, palindrome and Geodetic rules</td><td style="text-align:left"><strong>Yes</strong>: the first concrete filter rules (§2)</td></tr><tr><td style="text-align:left"><code>Diurnal Projections</code></td><td style="text-align:left">3</td><td style="text-align:left">The Annular Chronometric number lists</td><td style="text-align:left"><strong>Yes</strong>: resolves the 2556/2559 question (§4)</td></tr><tr><td style="text-align:left"><code>On Scaling Vectors</code></td><td style="text-align:left">8</td><td style="text-align:left">A research-group study of the engine on sports data</td><td style="text-align:left"><strong>Yes</strong>: independent evidence (§5)</td></tr><tr><td style="text-align:left"><code>b. Ophis as a Company</code></td><td style="text-align:left">5</td><td style="text-align:left">A sales prospectus</td><td style="text-align:left">Context only (§6)</td></tr><tr><td style="text-align:left"><code>Ophis Links Download Experience</code></td><td style="text-align:left">7</td><td style="text-align:left">One user's install notes for the original app and workbooks</td><td style="text-align:left">Context only</td></tr><tr><td style="text-align:left"><code>a. Flow Chart</code>, <code>d. PREPS</code>, <code>g. Procedural Notes</code></td><td style="text-align:left"></td><td style="text-align:left">Same as the copies read in 22</td><td style="text-align:left">No</td></tr></tbody></table></div>
+<hr>
+<h2 id="1-protocol-prime-objective-and-subjective-projections">1 · Protocol Prime: objective and subjective projections</h2>
+<p>22 §1.1 reconstructed Protocol Prime as "enter the projection date as a further control". The one-page <em>Protocol Prime</em> confirms that, and adds a rule the rebuild does not yet apply:</p>
+<div class="tablewrap"><table><thead><tr><th style="text-align:left">Kind</th><th style="text-align:left">What the X-Dates are</th><th style="text-align:left">Rule</th></tr></thead><tbody><tr><td style="text-align:left"><strong>Objective</strong></td><td style="text-align:left">Dates not personally tied to the operator: market moves, a team's wins</td><td style="text-align:left">No extra date required</td></tr><tr><td style="text-align:left"><strong>Subjective</strong></td><td style="text-align:left">The operator's or client's own dates</td><td style="text-align:left"><strong>Must</strong> end with the date the projection is run, as the <strong>last</strong> X-Date</td></tr></tbody></table></div>
+<p>The author's reasoning is that the act of measuring becomes part of the measurement, so every subjective projection is unique to the day it is run. The SOP adds that skipping it costs accuracy.</p>
+<p><strong>Consequence.</strong> natori-on-psyfr has a ☉ Today button that appends the date. Ophis Web has none, and neither build asks whether a cast is objective or subjective.</p>
+<h2 id="2-the-filter-rules-that-22-6-recorded-as-undisclosed">2 · The filter rules that 22 §6 recorded as undisclosed</h2>
+<p>22 §6 lists the internals of the Fibonacci, Geodetic Chronometry and IntraDecimal filters as withheld. <em>Other MSRA Filters</em> gives rules for three of them.</p>
+<p><strong>Fibonacci Sequence Filter.</strong> Set F = {8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597}.</p>
+<ul><li><em>Operation 1.</em> If Y (X1→X2) is in F, project the members of F forward from X2.</li><li><em>Operation 2.</em> Project every member of F forward from X1 and from X2.</li><li>Either way, a projected date that coincides with a Core Algorithm date marks that date as a <strong>Fibonacci Projection</strong>. The text says "one of the 15 Core Algorithm dates", which matches the 15-operation v8–v9 table.</li></ul>
+<p>This is specific enough to implement, as a tag on Z-Dates, without touching the engine.</p>
+<p><strong>Geodetic Chronometry Filter (138).</strong> 365.25 × 1.38k gives 504.0, 1008.0, 1512.1, 2016.1 and 2520.2. 365.25 ÷ 1.38k gives 264, 132, 88, 66, 53 and 44. Multiples of 138 run from 138 to 2484.</p>
+<p><strong>IntraDecimal Matrix.</strong> A number times a smaller decimal copy of itself, for example 819 × 0.819 ≈ 670. The rule is given, but the list of about 50 base numbers is not.</p>
+<p><strong>Palindromes.</strong> A palindromic count (828, for example) has no value alone. Alongside another match, it adds magnitude.</p>
+<h2 id="3-operating-limits-from-the-sop">3 · Operating limits from the SOP</h2>
+<div class="tablewrap"><table><thead><tr><th style="text-align:left">Rule</th><th style="text-align:left">Rebuild today</th></tr></thead><tbody><tr><td style="text-align:left">X1 and X2 at least <strong>6 days</strong> apart</td><td style="text-align:left">Engine requires 1 day</td></tr><tr><td style="text-align:left">6 days apart gives a window of about 39–42 days after X2; 15 days apart gives about 3 months</td><td style="text-align:left">Not shown</td></tr><tr><td style="text-align:left">Best on X-Dates <strong>within 3 years</strong>, with full MSRF support</td><td style="text-align:left">Not checked</td></tr><tr><td style="text-align:left">Older X-Dates need <strong>5 or more</strong>, the MSRF does not apply, and results should be read as <strong>periods</strong> (5-day or week-long), not exact days</td><td style="text-align:left">Not checked or shown</td></tr><tr><td style="text-align:left">Use cases: outcomes on scheduled dates; best day to act or wait; when an event recurs; developments in an ongoing matter</td><td style="text-align:left"></td></tr></tbody></table></div>
+<p><strong>Consequence.</strong> Casts built from decades-old dates (birthdays, historical events) are outside the author's intended use. The interface could warn about that and group results into windows.</p>
+<h2 id="4-the-projection-window-2559-is-a-diurnal-number">4 · The projection window: 2559 is a diurnal number</h2>
+<p>22 §4 concluded that the 2559-day default and the author's "2556 day period" were unrelated and only "collided". <em>Diurnal Projections</em> contains <strong>both</strong>:</p>
+<ul><li>365.25 × 7 = <strong>2556.75</strong>, the author's "7 years";</li><li>(365.25 ÷ 3.14) × 22 = <strong>2559.08</strong>, the last entry of the same list, matching the 365.25 / 3.14 series (116.32, 232.64 … 2559).</li></ul>
+<p>So 2559, which is also the largest Normal MSRF number, is a diurnal value in its own right. The default and the MSRF ceiling share a source; they did not collide by accident. <strong>22 §4 should be amended.</strong> The default stays at 2559 for parity either way.</p>
+<p>The document also lists the 365.25 × 1.618 and 365.25 ÷ 1.618 series and the 365.25 × 3.14 series, which together make up the Annular Chronometric Filter the MSRF arrays compress.</p>
+<h2 id="5-on-scaling-vectors-the-engine-on-26-million-graded-predictions">5 · "On Scaling Vectors": the engine on 26 million graded predictions</h2>
+<p>A group member's study of the engine on sports results reports:</p>
+<div class="tablewrap"><table><thead><tr><th style="text-align:left">Level tested</th><th style="text-align:left">Result</th></tr></thead><tbody><tr><td style="text-align:left">Individual MSRF numbers (624)</td><td style="text-align:left">Enrichment ≈ 1.0: no better than the base rate. 504 fires on about 46 % of matches</td></tr><tr><td style="text-align:left">Density of matches</td><td style="text-align:left">Real, but explained by match difficulty (EPL) and late-season predictability (NBA), not resonance</td></tr><tr><td style="text-align:left">MSRF number pairs (162,000+)</td><td style="text-align:left"><strong>None</strong> survive false-discovery-rate correction</td></tr><tr><td style="text-align:left">Converging constants</td><td style="text-align:left">Degenerate: every operation fires on almost every match</td></tr></tbody></table></div>
+<p>Its conclusion is that the engine runs <strong>saturated</strong>. Any signal is in the composite score, not in which numbers fire. It also reports an MSRF set grown from 628 to 632 by data mining, with <strong>2574, 21978, 6534 and 198</strong> as new members; none of these are in the 390-number arrays shipped here. It also records triangular numbers (2.56×) and Kaprekar numbers (2.08×) as over-represented in the set.</p>
+<p>This agrees with this project's own Backtest, which found no edge over chance on the personal test sets. The study's method is worth copying: it applies multiple-comparison correction and compares lift, not raw accuracy.</p>
+<h2 id="6-context-the-prospectus-and-the-rights">6 · Context: the prospectus and the rights</h2>
+<p><em>Ophis as a Company</em> is marketing. It quotes accuracies (70.5 %, 75.9 %) that no document supplies evidence for, and §5 found no such edge. Don't reuse those figures without a test that supports them.</p>
+<p>The SOP states that Protocol Prime "cannot be shared until algorithm bought". The prospectus refers to "Ophis Rights &amp; Privileges" that were not included. Check those terms before publishing the author's methods further, or before any commercial use.</p>
+<hr>
+<h2 id="7-proposed-actions">7 · Proposed actions</h2>
+<div class="tablewrap"><table><thead><tr><th style="text-align:left">#</th><th style="text-align:left">Action</th><th style="text-align:left">Touches the engine?</th></tr></thead><tbody><tr><td style="text-align:left">1</td><td style="text-align:left">Amend 22 §4: 2559 is diurnal (§4 here)</td><td style="text-align:left">No</td></tr><tr><td style="text-align:left">2</td><td style="text-align:left">Fibonacci Sequence Filter as an optional tag, Operations 1 and 2</td><td style="text-align:left">No, it reads results</td></tr><tr><td style="text-align:left">3</td><td style="text-align:left">Geodetic and Diurnal lists as optional tags, shown separately from the shipped MSRF</td><td style="text-align:left">No</td></tr><tr><td style="text-align:left">4</td><td style="text-align:left">Objective / Subjective switch; Subjective appends today as the last X-Date (☉ Today in Ophis Web)</td><td style="text-align:left">No, it changes inputs</td></tr><tr><td style="text-align:left">5</td><td style="text-align:left">SOP warnings: X1–X2 under 6 days; X-Dates over 3 years old (suggest 5+ dates and window reading)</td><td style="text-align:left">No</td></tr><tr><td style="text-align:left">6</td><td style="text-align:left">Optional "window" view grouping Z-Dates within 7 days</td><td style="text-align:left">No</td></tr><tr><td style="text-align:left">7</td><td style="text-align:left">Leave 2574, 21978, 6534 and 198 out of the MSRF (parity), but document them</td><td style="text-align:left">No</td></tr></tbody></table></div>
+<p>Every item keeps parity with the original engine: the shipped numbers do not change.</p>
+  </article>
+</div>
+
+</body>
+</html>

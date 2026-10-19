@@ -146,9 +146,12 @@ z-struct bucketing on the day    =  "38 to 39 actual dates"</code></pre>
 <h2 id="4-the-projection-window-2556-vs-2559">4 · The projection window: 2556 vs 2559</h2>
 <p><em>Items Not Disclosed</em> is explicit:</p>
 <blockquote><p>Ophis window of projections is within a 2556 day period [7 years].</p></blockquote>
-<p>The shipped default for <code>iso_event_filter_beyond_max_days_value</code> is <strong>2559</strong>, because the code reuses <code>HIGHEST_MSRF_NUMBER</code> — the largest member of the Normal filter — for the filter's default. The two constants have no relationship; they collided because one happened to be near the other.</p>
+<p>The shipped default for <code>iso_event_filter_beyond_max_days_value</code> is <strong>2559</strong>, because the code reuses <code>HIGHEST_MSRF_NUMBER</code> — the largest member of the Normal filter — for the filter's default.</p>
+<p><em>Amended (see <a href="23-author-source-documents-2.html#4-the-projection-window-2559-is-a-diurnal-number">23 §4</a>):</em> an earlier version of this section said the two numbers were unrelated and had only "collided". That was wrong. Both come from the author's <em>Diurnal Projections</em> list:</p>
+<ul><li>365.25 × 7 = <strong>2556.75</strong> is the author's "7 years";</li><li>(365.25 ÷ 3.14) × 22 = <strong>2559.08</strong> is the last entry of the 365.25 / 3.14 series (116.32, 232.64 … 2559).</li></ul>
+<p>So 2559 — the default window and the largest Normal MSRF number — is itself a diurnal value. The default and the MSRF ceiling share a source; they did not collide by accident.</p>
 <p>The author also notes the window "can be expanded to at least 20 years", but that "this expansion can not be added to this 2556-day Ophis version" — a 20-year build would have to start from scratch. That is the authoritative answer to any request to widen the horizon: it is not a configuration change.</p>
-<p>Left at 2559 for parity. It is a user-editable field, so anyone wanting the author's stated window types <code>2556</code>.</p>
+<p>Left at 2559 for parity; no code changes. It is a user-editable field, so anyone wanting the author's stated window types <code>2556</code>.</p>
 <hr>
 <h2 id="5-the-six-msrf-filters-in-the-author-s-words">5 · The six MSRF filters, in the author's words</h2>
 <p><code>PREPS.pdf</code> gives each filter a rationale. Summarised, because the names alone have been carried in the code with no explanation of what they mean:</p>

@@ -29,6 +29,7 @@ const PAGES = [
   'docs/html/VORTEX.html',
   'docs/html/00-BUILD-SPEC.html',
   'docs/html/22-author-source-documents.html',
+  'docs/html/23-author-source-documents-2.html',
   'docs/html/README.html',
 ];
 

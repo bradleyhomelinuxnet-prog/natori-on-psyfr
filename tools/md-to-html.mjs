@@ -74,6 +74,7 @@ const PUBLISHED = new Map([
   ['VORTEX.md', 'docs/html/VORTEX.html'],
   ['00-BUILD-SPEC.md', 'docs/html/00-BUILD-SPEC.html'],
   ['22-author-source-documents.md', 'docs/html/22-author-source-documents.html'],
+  ['23-author-source-documents-2.md', 'docs/html/23-author-source-documents-2.html'],
   ['README.md', 'docs/html/README.html'],
 ]);
 

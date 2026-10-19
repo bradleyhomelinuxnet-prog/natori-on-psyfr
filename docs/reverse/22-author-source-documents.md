@@ -209,14 +209,24 @@ Only 390 of the 565 reached the app, so the master is roughly 1.45× the shipped
 
 The shipped default for `iso_event_filter_beyond_max_days_value` is **2559**, because the code
 reuses `HIGHEST_MSRF_NUMBER` — the largest member of the Normal filter — for the filter's default.
-The two constants have no relationship; they collided because one happened to be near the other.
+
+*Amended (see [23 §4](23-author-source-documents-2.md#4-the-projection-window-2559-is-a-diurnal-number)):*
+an earlier version of this section said the two numbers were unrelated and had only "collided".
+That was wrong. Both come from the author's *Diurnal Projections* list:
+
+- 365.25 × 7 = **2556.75** is the author's "7 years";
+- (365.25 ÷ 3.14) × 22 = **2559.08** is the last entry of the 365.25 / 3.14 series
+  (116.32, 232.64 … 2559).
+
+So 2559 — the default window and the largest Normal MSRF number — is itself a diurnal value. The
+default and the MSRF ceiling share a source; they did not collide by accident.
 
 The author also notes the window "can be expanded to at least 20 years", but that "this expansion
 can not be added to this 2556-day Ophis version" — a 20-year build would have to start from
 scratch. That is the authoritative answer to any request to widen the horizon: it is not a
 configuration change.
 
-Left at 2559 for parity. It is a user-editable field, so anyone wanting the author's stated window
+Left at 2559 for parity; no code changes. It is a user-editable field, so anyone wanting the author's stated window
 types `2556`.
 
 ---
