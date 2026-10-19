@@ -1103,3 +1103,49 @@ test('the native export is unchanged by the v12 writer', async () => {
   assert.equal(body.schema, 1);
   assert.deepEqual(Object.keys(body.iso_events[0].x_dates[0]), ['y', 'm', 'd', 'time', 'enabled']);
 });
+
+/* ------------------------------------------------- the pre-worked examples --
+ * `examples/*.oph` are the files docs/MANUAL.md tells a reader to open. Each is
+ * re-read through the importer and cast on two very different "todays": with
+ * F3 off the clock must not matter, and what comes out must be what the
+ * manual and the file's own Notes promise.
+ * ------------------------------------------------------------------------ */
+
+test('examples/*.oph are current with tools/make-examples.mjs', async () => {
+  const { readFileSync } = await import('node:fs');
+  const { buildExamples } = await import('../tools/make-examples.mjs');
+  for (const [name, text] of buildExamples()) {
+    const onDisk = readFileSync(new URL(`../examples/${name}`, import.meta.url), 'utf8');
+    assert.equal(onDisk, text + '\n', `examples/${name} is stale; run npm run examples`);
+  }
+});
+
+test('MANUAL examples: each .oph casts what the manual says, whatever today is', async () => {
+  const { readFileSync } = await import('node:fs');
+  const { parseDocument } = await import('../src/io/oph.js');
+  const text = readFileSync(new URL('../examples/manual-examples.oph', import.meta.url), 'utf8');
+  const { document, errors } = parseDocument(text);
+  assert.deepEqual(errors, []);
+
+  const EXPECT = [
+    // [pairs, shown, hidden, top date, top score, rows carrying an MSRF chip > 0]
+    [10, 114, 39, '09/29/2027', 3, true],
+    [3, 23, 24, '05/18/2024', 2, false],
+    [6, 25, 70, '09/29/2026', 1, false],
+    [3, 32, 5, '06/01/2020', 4.5, true],
+  ];
+  assert.equal(document.iso_events.length, EXPECT.length);
+
+  for (const now of [Date.UTC(2019, 0, 19), Date.UTC(2038, 0, 19)]) {
+    document.iso_events.forEach((ev, i) => {
+      const r = runOphis(ev, { now });
+      const top = [...r.processed_z_dates].sort((a, b) => b.score - a.score || b.hit_count - a.hit_count)[0];
+      const chips = r.processed_z_dates.some((z) => z.resonance_matches.length);
+      assert.deepEqual(
+        [r.y_structs.length, r.processed_z_dates.length, r.hidden, fmtDate(top.zStart), top.score, chips],
+        EXPECT[i],
+        `${ev.name} @ ${new Date(now).toISOString().slice(0, 10)}`
+      );
+    });
+  }
+});

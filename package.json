@@ -20,7 +20,8 @@
     "bundle:check": "node tools/bundle.mjs --check",
     "extract-data": "node tools/extract-data.mjs",
     "docs": "node tools/md-to-html.mjs docs/WHITEPAPER.md --out whitepaper.html && node tools/md-to-html.mjs docs/MANUAL.md --out manual.html && node tools/md-to-html.mjs docs/HANDOFF.md docs/DEPLOYING.md docs/DEVIATIONS.md docs/MODDING.md docs/DOMAIN.md docs/VORTEX.md docs/MIRRORS.md docs/reverse/00-BUILD-SPEC.md docs/reverse/22-author-source-documents.md docs/reverse/23-author-source-documents-2.md README.md --out-dir docs/html && node tools/check-links.mjs",
-    "build-map-tiles": "python3 tools/build-map-tiles.py"
+    "build-map-tiles": "python3 tools/build-map-tiles.py",
+    "examples": "node tools/make-examples.mjs"
   },
   "keywords": [
     "chronology",

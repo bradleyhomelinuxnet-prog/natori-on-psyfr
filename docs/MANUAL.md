@@ -5,10 +5,28 @@ into Ophis, press the button, and understand what comes back. You do not want to
 read a specification first.
 
 That is this document. No maths background assumed. Ten minutes to your first
-result, and everything you need to read it honestly.
+result, and everything you need to read it honestly. Every click below was
+driven in the real app, and every number quoted is pinned by the test suite.
 
 > If you want the theory instead, the [field guide](../field-guide.html) is the
 > ten-minute tour and the [white paper](../whitepaper.html) is the study.
+
+### The fastest start: open a pre-worked file
+
+Four ready-made runs ship in [`examples/`](../examples/), each one the example a
+section of this manual walks through:
+
+| File | What it shows | Section |
+|---|---|---|
+| [`01-worked-example.oph`](../examples/01-worked-example.oph) | The app's own five-date example: 114 rows, top score 3 | §5, §6 |
+| [`02-job-changes.oph`](../examples/02-job-changes.oph) | Three real-shaped job dates: no MSRF chip anywhere | §8 |
+| [`03-job-changes-protocol-prime.oph`](../examples/03-job-changes-protocol-prime.oph) | The same jobs plus the day of asking | §7 |
+| [`04-even-spacing-19-138.oph`](../examples/04-even-spacing-19-138.oph) | Dates 138 days apart from the 19th: lights up, and why that proves nothing | §8 |
+| [`manual-examples.oph`](../examples/manual-examples.oph) | All four in one file, as Iso-Events E1–E4 | — |
+
+Open the **Import** screen → **☰ Open .oph file…** → pick one → **Load**. Each
+file's **Settings → S1 Misc. Notes** says what you should see. They give the
+same rows on whatever day you open them (§9 explains how).
 
 ---
 
@@ -57,6 +75,7 @@ unrelated milestones have no pattern between them to find.
 | One date | Nothing to measure a gap against |
 | Two dates one week apart | One tiny gap; every projection lands in a heap |
 | Dates you half-remember | The gap is the whole input; a month out is garbage in |
+| Dates you chose to be evenly spaced | The formulas agree by construction (§8) |
 
 **Two dates is the minimum. Three is where it gets interesting** — three dates
 give three gaps instead of one, so three times as much to work with.
@@ -73,34 +92,49 @@ Open the app (`index.html`). It starts on the **Work** screen with a worked
 example already loaded, so you can see the shape of things before you touch it.
 
 **Step 1 — Name your event.** In the **Iso-Events** panel on the left, click the
-name field and type what your dates have in common. "Started a new job". "Moved
-house". The name changes nothing in the maths; it stops you forgetting what you
-were asking six months from now.
+name field next to `E1` and type what your dates have in common. "Started a new
+job". "Moved house". The name changes nothing in the maths; it stops you
+forgetting what you were asking six months from now.
 
-**Step 2 — Clear the example dates.** In the **X-Dates** panel, click the `✕`
-next to each row until the list is empty. (X-Dates is what the app calls your
-input dates — X for the ones you know, Z for the ones it projects.)
+**Step 2 — Clear the example dates.** In the **X-Dates** panel, press **Delete
+All** and confirm with **Yes, delete all**. (Or remove rows one at a time with
+their `✕`.) X-Dates is what the app calls your input dates — X for the ones you
+know, Z for the ones it projects.
 
-**Step 3 — Add your dates, oldest first.** Use the `MON / DAY / YEAR` boxes at
-the bottom of the X-Dates panel and press **+ X-Date** for each one.
+**Step 3 — Add your dates.** Type into the `MON`, `DAY` and `YEAR` boxes at the
+bottom of the X-Dates panel and press **+ X-Date** for each one. You can add them
+in any order: **+ X-Date slots each new date into its place in time**, so the
+list always reads oldest to newest.
 
-**Order is not cosmetic — get it wrong and you get nothing.** The list has to
-climb: each date later than the one above it, by at least a day. Enter them out
-of sequence and the engine refuses to run at all, reporting `X2 must be greater
-than X1` and producing zero rows. It will not reorder them for you; the order is
-a deliberate control, and X1 means *the first row*, not *the earliest date*.
+**Editing a date in place is different, and it is the one way to break a run.**
+Each row is also a text box you can retype (`MM/DD/YYYY`, then Enter). That edit
+is taken literally. Retype X1 to a date later than X2 and the run stops: the
+status bar drops to `0 PAIRS`, the table empties, and the panel reports
+`X2 must be greater than X1`. The list must climb by at least a day, row by row —
+X1 means *the first row*, not *the earliest date*. Fix the row and it casts again.
+If you need to change a date a lot, deleting it and re-adding it with + X-Date is
+the safe way.
 
-**Step 4 — Look at the status bar.** Above the timeline you will see something
-like `3 ANCHORS · 3 PAIRS · 16 OPERATIONS · 47 Z-DATES · 24 HIDDEN`. If PAIRS is
-0, you have fewer than two dates enabled. If Z-DATES is 0, check the status area
-for that ordering error first, then check your dates entered correctly.
+**Step 4 — Read the status bar.** Across the top you will see something like
+`3 ANCHORS · 3 PAIRS · 16 OPERATIONS · 23 Z-DATES · 24 HIDDEN`, then a
+**Current date** box, a state label, and **Recalculate**.
 
-**Step 5 — Read the table.** It is already sorted by date. Click the **SCORE**
-column header to sort by score instead, highest first. That is your shortlist.
+- PAIRS 0 means fewer than two dates are enabled — or an ordering error (Step 3).
+- **Current date** is the day the projection is "being conducted from". It
+  starts as today. Change it (type `MM/DD/YYYY`, Enter) to see what the run
+  would have looked like on another day; it matters to one filter (§9) and to
+  Protocol Prime (§7). It is *not* saved in a file.
+- The app re-casts on every change, so the label normally reads **Up to date**.
+  **Recalculate** forces a fresh cast — useful if the tab has been open across
+  midnight and "today" has moved.
 
-**Step 6 — Click a row.** Any row opens the **Audit** screen, which shows every
-arithmetic step that produced that date. If a number ever surprises you, this is
-where you find out why — nothing is hidden.
+**Step 5 — Read the table.** It is sorted by date. Click the **Score** column
+header to sort by score instead, highest first. That is your shortlist.
+
+**Step 6 — Click a row.** Any row opens the **Audit** screen: the score worked
+out line by line, every formula that landed there with its anchor, gap and
+result, and the full list of gaps (Y-structs) the run used. If a number ever
+surprises you, this is where you find out why — nothing is hidden.
 
 That is a complete run. Everything below is about reading it well.
 
@@ -108,9 +142,19 @@ That is a complete run. Everything below is about reading it well.
 
 ## 4. Reading a row
 
-Five columns matter.
+A row looks like this:
+
+```
+Z8   05/18/2024   ♊   2   2   —   O1(X2→X3) O2(X2→X3)
+```
+
+**Z8** — the row's number in date order. It stays put when you re-sort, so you
+can refer to "Z8" while the list is sorted by score.
 
 **Z-DATE** — the projected date. This is the output.
+
+**The glyph** — the hit count again, as a shape so it does not rely on colour:
+`♊` two, `▲` three, `◆` four, `●` five or more. Blank means one.
 
 **HITS** — how many separate things pointed at this date. It counts both the
 formulas that landed here and the significant numbers that matched. More hits
@@ -119,17 +163,19 @@ of the method. **This is the column to trust most.**
 
 **SCORE** — hits, weighted. Explained in full in §5.
 
-**MSRF** — a green, red or purple chip showing a number. MSRF stands for
+**MSRF** — a green, red or purple chip showing a number, or `—`. MSRF stands for
 Multidimensional Spatial Recognition Filters, which is a long name for a list of
-390 numbers the system treats as significant. If the gap that produced this date
-is on that list, you get a chip. Green is *Normal*, red is *Important*, purple is
-*Vortex*. Red and purple are rarer and count for more.
+390 numbers the system treats as significant. If a gap behind this date is on
+that list, you get a chip. Green is *Normal*, red is *Important*, purple is
+*Vortex*. Red and purple are rarer and count for more. Hover a chip for detail.
 
-A blank MSRF column is completely normal. Most rows have nothing there.
+A `—` in the MSRF column is completely normal. Most rows have nothing there.
 
 **OPERATIONS** — which formulas landed here, and from which pair of your dates.
-`05(X2→X4)` means formula number 5, working on the gap between your second and
-fourth date.
+`O5(X2→X4)` means formula number 5, working on the gap between your second and
+fourth date. The **Operations** screen lists all sixteen with their equations.
+
+The **Columns** buttons above the table hide or show each column.
 
 ---
 
@@ -219,8 +265,8 @@ Not just your historical dates — today's date, entered as another X-Date. The
 reasoning is that the moment you ask the question is itself part of the pattern.
 
 There is a button for it: **☉ Today · Protocol Prime** in the X-Dates panel. It
-adds today as a control, refuses if it is already there, and follows the
-Current-date setting if you have overridden it.
+adds the Current date (§3, Step 4) as a control, slotted into date order like any
+other + X-Date, and says *"Today is already a control"* if you press it twice.
 
 **What it does to the numbers.** Adding a fourth date takes you from 3 pairs to
 6, which doubles the projections. Here are the job dates of §8 run both ways,
@@ -236,10 +282,11 @@ something if that is the same on each row:
 projections cast: in each run, one projection lands on a day another already
 occupies, and the two merge into a single row.)
 
-Six rows becomes twenty-five, and most of that is not the extra projections. It
-is that Protocol Prime makes *today* the last X-Date, which slides the "beyond
-2,559 days from the last X-Date" filter more than four years forward. The window
-moved; the arithmetic barely changed.
+Six rows becomes twenty-five, and most of that is not the extra projections. For
+the job dates, today is later than all of them, so Protocol Prime makes it the
+last X-Date — and that slides the "beyond 2,559 days from the last X-Date"
+filter more than four years forward. The window moved; the arithmetic barely
+changed.
 
 And look at what arrived. The top four rows are **the same four dates in both
 runs** — 09/29/2026, 01/21/2027, 02/15/2027, 11/10/2027 — each scoring 1.00, and
@@ -248,7 +295,9 @@ score 1.00 or 0.50.
 
 So: more input gave a longer list and an identical top. More input does not
 automatically mean more signal, and a list getting longer is not the same thing
-as it getting better.
+as it getting better. Open
+[`03-job-changes-protocol-prime.oph`](../examples/03-job-changes-protocol-prime.oph)
+to see the second run.
 
 ---
 
@@ -258,7 +307,9 @@ Here is a real run on three real-shaped job dates — 14 Mar 2016, 6 Sep 2019,
 11 Jan 2022 — cast with the **Current date set to `02/01/2022`**, just after the
 last of them. (That setting matters: leave the Current date at today and the
 *hide before the current date* filter cuts this run down to six rows, because
-everything below already happened. Set it to reproduce what you see here.)
+everything below already happened. Set it to reproduce what you see here — or
+open [`02-job-changes.oph`](../examples/02-job-changes.oph), which has that
+filter off and shows these rows on any day.)
 
 ```
 3 anchors | 3 pairs | 48 projections | 47 distinct dates | 23 shown | 24 hidden
@@ -289,35 +340,142 @@ Things worth trying before you conclude there is nothing:
 - **Try Protocol Prime** (§7).
 - **Loosen the filters** (§9) — the default settings are hiding rows.
 
+### Why evenly spaced dates light up — and why that proves nothing
+
+Now the opposite. Three dates exactly **138 days** apart, starting on the
+**19th**: 01/19/2019, 06/06/2019, 10/22/2019
+([`04-even-spacing-19-138.oph`](../examples/04-even-spacing-19-138.oph)).
+
+```
+3 anchors | 3 pairs | 32 shown | 5 hidden
+
+Top row:
+  06/01/2020   score 4.5   hits 4   MSRF: two green chips (223)
+```
+
+A 4.5 is higher than anything in the app's own worked example. It means nothing,
+and the Audit screen shows why. The gaps are 138 and 276, and 276 is exactly
+2 × 138. One formula takes *half a gap × 1.618*; another takes *a gap × 1.618*.
+Half of 276 **is** 138, so both formulas compute 138 × 1.618 = 223.3, from the
+same last date, and land on the same day. 223 happens to be on the Normal list,
+so the agreement is scored twice over.
+
+The formulas did not discover a pattern; **the pattern was typed in.** Evenly
+spaced input makes the sixteen formulas collide by construction. Real events are
+rarely that regular — and when yours are, that regularity is the thing to
+notice, not the score built on top of it. Treat any run whose gaps are simple
+multiples of each other with suspicion.
+
 ---
 
 ## 9. The filters, and why rows go missing
 
 `24 HIDDEN` on the status bar means exactly that: 24 projections were computed
 and then removed before you saw them. The **Filters** panel controls this. There
-are eight, and they only ever *remove* rows — none of them can invent one.
+are eight, numbered F1–F8, and they only ever *remove* rows — none of them can
+invent one. Ticked means the filter is on.
+
+| | Filter | Default |
+|---|---|---|
+| F1 | Hide Z-Dates before the last X-Date | on |
+| F2 | Hide Z-Dates on the last X-Date | on |
+| F3 | Hide Z-Dates before the current date | on |
+| F4 | Hide Z-Dates on the current date | off |
+| F5 | Hide Z-Dates beyond *n* days from the last X-Date | on, 2559 |
+| F6 | Hide Z-Dates with fewer than *n* hits | off, 2 |
+| F7 | Hide Z-Dates scoring below *n* | off, 1 |
+| F8 | Hide Z-Dates with no MSRF match | off |
 
 The ones you will care about:
 
-- **Hide Z-Dates before the current date.** On by default, and usually right — a
-  projection into last year is not a forecast. Turn it off if you want to check
-  the method against something that already happened.
-- **Hide Z-Dates with fewer than *n* hits.** The most useful dial in the app. Set
-  it to 2 and everything with no agreement disappears at once.
-- **Hide Z-Dates with no MSRF match.** Aggressive. Turns 114 rows into a handful.
-  Worth trying once to see what survives.
-- **Hide Z-Dates beyond *n* days from the last X-Date.** Caps how far out it will
-  look.
+- **F3 — before the current date.** Usually right — a projection into last year
+  is not a forecast. It is the **only** filter that reads the clock, which is why
+  the files in `examples/` ship with it off: switch it off and a run shows the
+  same rows on any day. Turn it off yourself to check the method against
+  something that already happened.
+- **F6 — fewer than *n* hits.** The most useful dial in the app. Tick it (the
+  value is already 2) and everything with no agreement disappears at once.
+- **F7 — scoring below *n*.** The same idea, by score instead of hits.
+- **F8 — no MSRF match.** Aggressive. Turns 114 rows into a handful. Worth trying
+  once to see what survives.
+- **F5 — beyond *n* days.** Caps how far out it will look. 2559 days is the
+  author's window — about seven years.
 
-Press **RESET** in that panel to get back to the defaults.
+Press **Reset** in that panel to get back to the defaults.
 
 A useful habit: run once with the filters wide open to see the true spread, then
 tighten them. Starting tight can hide the fact that your top row is only top
 because everything else was cut.
 
+**T-Dates** are the opposite tool. If you only care about particular days — the
+next scheduled match, a planned launch — add them in the **T-Dates** panel and
+the table keeps only Z-Dates that land exactly on one of them. Leave it empty
+(the default, *"showing every date"*) to see everything.
+
 ---
 
-## 10. What the score is not
+## 10. The rest of the screen
+
+**The timeline.** Every arc jumps forward from the X-Date it was counted from
+to the date it projects; its colour is the hit count (grey 1–2, yellow 3, blue 4, red 5+).
+Hover an arc to measure it, use the wheel to zoom, drag to pan, and **Recentre**
+to reset.
+
+**Chart Config.** Overlays for the timeline: C1–C2 turn the chart and its date
+labels on and off; C3–C10 mark the eight moon phases; C11–C14 mark solar and
+lunar eclipses (full and partial). They draw context on the chart and **never
+change a score**.
+
+**Scope & Location.** **Days** (the default) works in whole days, locked to UTC
+so the same file gives the same answer on any machine. **HH:MM** works to the
+minute; only then does a location matter, and **◍ Pick on map** sets it from the
+offline map.
+
+**More than one event.** **+ Add** in the Iso-Events panel starts another event
+(`E2`, `E3`…); the radio button chooses which one the screen shows, `⧉`
+clones one, `✕` deletes it. Each event keeps its own dates, filters and
+settings. The **Transfer** screen copies chosen parts — X-Dates, Filters,
+T-Dates, Operations and so on — from one event onto others.
+
+**Operations.** The sixteen formulas, editable. Untick one to leave it out of
+the cast; change its weight to move it between Alpha (1 or more) and Beta.
+Changing these changes every score, so note what you did.
+
+**Settings.** **S1 Misc. Notes** is free text that never affects results — the
+example files use it to say what you should see. **S2** sets the hour a day
+begins in Days scope.
+
+---
+
+## 11. Saving, files and exports
+
+**Your work is kept in this browser.** Close the tab and come back, and your
+events are still there. But it is kept only in *this* browser on *this* machine
+(at this web address) — a different browser, device or private window starts
+fresh, and clearing site data erases it.
+
+**The badge at the top right** reads **Not saved** until you export a file, and
+**Saved** after. It is about files, not the browser copy.
+
+**To keep a run for good: Export → Export file.** That writes an `.oph` file
+(plain text; the **Export** screen also shows it for **Copy**). **Save for Ophis
+v12** writes the older format the original desktop app reads — the plain export
+opens there with no X-Dates.
+
+**To bring one back: Import → ☰ Open .oph file… → Load**, or paste the text and
+press **Load**. Nothing changes until you press Load, and if you have unsaved
+changes it asks before overwriting them. The Current date is not part of a file:
+an imported run is cast against today (§9, F3).
+
+**To take the results elsewhere: the Z-Dates screen** exports the table as CSV,
+XLSX or PDF. All three honour your filters and list rows by date, whatever
+column you last sorted on.
+
+**Nothing leaves your machine.** No network call, no account, no telemetry.
+
+---
+
+## 12. What the score is not
 
 Worth being straight about, because the output looks authoritative and dates feel
 personal.
@@ -328,8 +486,9 @@ multiplied by 1.618 and added to a day you supplied.
 
 **It is not evidence.** A high score means several formulas in one table happened
 to converge. With 160 projections from five dates, some convergence is expected
-by chance alone. That is why §6 matters: the question is never "is this score
-high" but "is it high compared to the rest of *this* run".
+by chance alone — and with evenly spaced dates it is guaranteed (§8). That is why
+§6 matters: the question is never "is this score high" but "is it high compared
+to the rest of *this* run".
 
 **It does not know what your event was.** Job, illness, argument — identical
 arithmetic. The name you typed is a label for you.
@@ -345,23 +504,27 @@ is stated inside the app too.
 
 ---
 
-## 11. Quick reference
+## 13. Quick reference
 
 | You want to | Do this |
 |---|---|
-| Start over | X-Dates panel → `✕` each row → add your own |
+| See a finished run first | Import → ☰ Open .oph file… → an `examples/` file → Load |
+| Start over | X-Dates panel → **Delete All** → **Yes, delete all** |
+| Add a date | `MON` `DAY` `YEAR` → **+ X-Date** (any order; it sorts itself) |
+| Fix `X2 must be greater than X1` | Retype the row so the list climbs, or delete it and re-add it |
 | Add today as a control | X-Dates panel → **☉ Today · Protocol Prime** |
-| Sort by strength | Click the **SCORE** column header |
-| See only rows with agreement | Filters → *fewer than* **2** *hits* |
+| See the run as of another day | Status bar → **Current date** → type it, Enter |
+| Sort by strength | Click the **Score** column header |
+| See only rows with agreement | Filters → tick **F6** (*fewer than 2 hits*) |
+| Only see certain days | T-Dates panel → **+ T-Date** |
 | Understand one row | Click it → the Audit screen |
-| See the whole spread | Filters → **RESET**, then turn off *before the current date* |
+| See the whole spread | Filters → **Reset**, then untick **F3** |
 | Zoom the timeline | Wheel over it; drag to pan; **Recentre** to reset |
+| Show moon phases or eclipses | Chart Config → C3–C14 |
 | Set a location (HH:MM scope only) | Scope & Location → **◍ Pick on map** |
-| Keep your setup | **Export** screen → copy or save the document |
-| Bring it back | **Import** screen → paste it |
-
-**Nothing leaves your machine.** No network call, no account, no telemetry. Close
-the tab and it is gone unless you exported it.
+| Keep your setup for good | **Export** screen → **Export file** |
+| Bring it back | **Import** screen → open the file or paste it → **Load** |
+| Take the results to a spreadsheet | **Z-Dates** screen → CSV or XLSX |
 
 ---
 
