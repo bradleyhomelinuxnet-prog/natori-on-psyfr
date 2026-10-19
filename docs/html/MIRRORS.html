@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<base target="_blank">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The 10 Mirrors</title>
+<meta http-equiv="Content-Security-Policy"
+      content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'none'; img-src 'self' data:; connect-src 'none'">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../src/styles/ophis-tokens.css">
+<link rel="stylesheet" href="../../src/styles/ophis-app.css">
+<style>
+  body { padding-bottom: 96px; }
+  .doc-top {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding: 20px var(--gutter); max-width: 1180px; margin: 0 auto;
+  }
+  .paper {
+    display: grid; grid-template-columns: 232px minmax(0, 1fr); gap: 48px;
+    max-width: 1180px; margin: 0 auto; padding: 0 var(--gutter);
+  }
+  .paper > nav {
+    position: sticky; top: 24px; align-self: start;
+    max-height: calc(100vh - 48px); overflow-y: auto;
+    padding: 24px 0; font-size: 12.5px;
+  }
+  .paper > nav a { display: block; color: var(--dim); text-decoration: none; padding: 3px 0; line-height: 1.4; }
+  .paper > nav a:hover { color: var(--gold-2); }
+  .paper > nav a.l3 { padding-left: 14px; font-size: 11.5px; color: var(--faint); }
+
+  article { padding: 24px 0; max-width: 76ch; }
+  article h1 { font-family: var(--font-display); font-size: clamp(28px, 4vw, 40px); color: var(--ink); margin: 0 0 20px; letter-spacing: .01em; }
+  article h2 { font-family: var(--font-display); font-size: 24px; color: var(--gold-2); margin: 52px 0 16px; }
+  article h3 { font-size: 17px; color: var(--ink); margin: 34px 0 12px; font-weight: 600; }
+  article h4 { font-size: 14px; color: var(--gold); margin: 26px 0 10px; font-weight: 600; letter-spacing: .04em; }
+  article p { font-size: 15.5px; line-height: 1.68; color: var(--prose); margin: 0 0 15px; max-width: none; }
+  article strong { color: var(--ink); }
+  article ul, article ol { color: var(--prose); font-size: 15.5px; line-height: 1.68; padding-left: 22px; margin: 0 0 16px; }
+  article li { margin-bottom: 6px; }
+  article hr { border: 0; border-top: 1px solid var(--line); margin: 40px 0; }
+  article blockquote {
+    border-left: 3px solid var(--gold); background: var(--panel);
+    margin: 20px 0; padding: 12px 20px; border-radius: 0 var(--r-2) var(--r-2) 0;
+  }
+  article blockquote p:last-child { margin-bottom: 0; }
+  article pre {
+    background: var(--well); border: 1px solid var(--line); border-radius: var(--r-2);
+    padding: 14px 16px; overflow-x: auto; font-family: var(--font-mono);
+    font-size: 12px; line-height: 1.55; color: var(--prose); margin: 0 0 18px;
+  }
+  article pre code { background: none; border: 0; padding: 0; font-size: inherit; }
+  article .tablewrap { margin: 0 0 20px; }
+  article td, article th { font-size: 12.5px; }
+  article td:first-child { color: var(--ink); }
+
+  @media (max-width: 900px) {
+    .paper { grid-template-columns: 1fr; gap: 0; }
+    .paper > nav { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="doc-top">
+  <div class="brand">OPHIS <small>The 10 Mirrors</small></div>
+  <a class="btn" href="../../index.html">Open the instrument &rarr;</a>
+</div>
+
+<div class="paper">
+  <nav aria-label="Contents">
+    <a target="_self" class="l2" href="#the-completed-grid">The completed grid</a>
+    <a target="_self" class="l2" href="#how-they-behave">How they behave</a>
+    <a target="_self" class="l2" href="#where-to-find-them">Where to find them</a>
+  </nav>
+  <article>
+<h1 id="the-10-mirrors">The 10 Mirrors</h1>
+<p>Ten operations, numbered <strong>27–36</strong>, that complete the X1/X2 grid of the sixteen using the same constants. Added October 18, 2026.</p>
+<p>The sixteen leave gaps. They run several forms on only one anchor: the isometric date, the holo-date, Y/CRV, Y/PHI, (Y/2)×PHI and Y×PHI appear on X2 but never on X1. They also never halve the hepta-cycle, and never divide by π. The Mirrors fill those ten gaps.</p>
+<div class="tablewrap"><table><thead><tr><th style="text-align:left">#</th><th style="text-align:left">Operation</th><th style="text-align:left">Plain form</th><th style="text-align:left">Mirrors</th></tr></thead><tbody><tr><td style="text-align:left">27</td><td style="text-align:left"><code>X1+oph_round(Y)</code></td><td style="text-align:left">Y + X1, the isometric date on X1</td><td style="text-align:left">#1</td></tr><tr><td style="text-align:left">28</td><td style="text-align:left"><code>X1+oph_flip(oph_round(Y))</code></td><td style="text-align:left">Y reversed + X1, the holo-date on X1</td><td style="text-align:left">#2</td></tr><tr><td style="text-align:left">29</td><td style="text-align:left"><code>X1+Y/OPH_CRV</code></td><td style="text-align:left">Y / 5.08 + X1</td><td style="text-align:left">#3</td></tr><tr><td style="text-align:left">30</td><td style="text-align:left"><code>X1+Y/OPH_PHI</code></td><td style="text-align:left">Y / 1.618 + X1</td><td style="text-align:left">#5</td></tr><tr><td style="text-align:left">31</td><td style="text-align:left"><code>X1+(Y/2.0)xOPH_PHI</code></td><td style="text-align:left">Y / 2 × 1.618 + X1</td><td style="text-align:left">#6</td></tr><tr><td style="text-align:left">32</td><td style="text-align:left"><code>X1+YxOPH_PHI</code></td><td style="text-align:left">Y × 1.618 + X1</td><td style="text-align:left">#9</td></tr><tr><td style="text-align:left">33</td><td style="text-align:left"><code>X1+(Y/2.0)xOPH_HEP</code></td><td style="text-align:left">Y / 2 × 7.01 + X1, the half hepta-cycle</td><td style="text-align:left">#15 (as #4 does #10)</td></tr><tr><td style="text-align:left">34</td><td style="text-align:left"><code>X2+(Y/2.0)xOPH_HEP</code></td><td style="text-align:left">Y / 2 × 7.01 + X2, the half hepta-cycle</td><td style="text-align:left">#16</td></tr><tr><td style="text-align:left">35</td><td style="text-align:left"><code>X1+Y/OPH_PI</code></td><td style="text-align:left">Y / 3.14 + X1</td><td style="text-align:left">division by π, which the sixteen never do</td></tr><tr><td style="text-align:left">36</td><td style="text-align:left"><code>X2+Y/OPH_PI</code></td><td style="text-align:left">Y / 3.14 + X2</td><td style="text-align:left">division by π, on X2</td></tr></tbody></table></div>
+<h2 id="the-completed-grid">The completed grid</h2>
+<p>With the Mirrors added, every form below runs on both anchors.</p>
+<div class="tablewrap"><table><thead><tr><th style="text-align:left">Form</th><th style="text-align:left">X1</th><th style="text-align:left">X2</th></tr></thead><tbody><tr><td style="text-align:left">Y (isometric date)</td><td style="text-align:left"><strong>27</strong></td><td style="text-align:left">1</td></tr><tr><td style="text-align:left">Y reversed (holo-date)</td><td style="text-align:left"><strong>28</strong></td><td style="text-align:left">2</td></tr><tr><td style="text-align:left">Y / CRV</td><td style="text-align:left"><strong>29</strong></td><td style="text-align:left">3</td></tr><tr><td style="text-align:left">Y / PHI</td><td style="text-align:left"><strong>30</strong></td><td style="text-align:left">5</td></tr><tr><td style="text-align:left">(Y/2) × PHI</td><td style="text-align:left"><strong>31</strong></td><td style="text-align:left">6</td></tr><tr><td style="text-align:left">Y × PHI</td><td style="text-align:left"><strong>32</strong></td><td style="text-align:left">9</td></tr><tr><td style="text-align:left">(Y/2) × CRV</td><td style="text-align:left">7</td><td style="text-align:left">11</td></tr><tr><td style="text-align:left">Y × CRV</td><td style="text-align:left">13</td><td style="text-align:left">14</td></tr><tr><td style="text-align:left">(Y/2) × PI</td><td style="text-align:left">4</td><td style="text-align:left">8</td></tr><tr><td style="text-align:left">Y × PI</td><td style="text-align:left">10</td><td style="text-align:left">12</td></tr><tr><td style="text-align:left">Y / PI</td><td style="text-align:left"><strong>35</strong></td><td style="text-align:left"><strong>36</strong></td></tr><tr><td style="text-align:left">(Y/2) × HEP</td><td style="text-align:left"><strong>33</strong></td><td style="text-align:left"><strong>34</strong></td></tr><tr><td style="text-align:left">Y × HEP</td><td style="text-align:left">15</td><td style="text-align:left">16</td></tr></tbody></table></div>
+<p>Bold = a Mirror.</p>
+<h2 id="how-they-behave">How they behave</h2>
+<ul><li>All ten are <strong>beta, weight 0.5</strong>, and arrive <strong>switched off</strong>. Nothing that cast before casts differently until you tick them.</li><li>The pack is <strong>additive</strong>: adding it appends rows 27–36 and leaves the sixteen, and their numbering, untouched. Adding it twice does nothing.</li><li>The <strong>Extras</strong> (17–26: e, 1.38, 5.52, 2.178, 0.360) are the other additive pack. With both added, the table runs all <strong>36</strong>.</li></ul>
+<h2 id="where-to-find-them">Where to find them</h2>
+<div class="tablewrap"><table><thead><tr><th style="text-align:left">App</th><th style="text-align:left">Repo</th><th style="text-align:left">How to add</th></tr></thead><tbody><tr><td style="text-align:left">OPHIS · Pattern-Recognition Event Prediction (<code>index.html</code> + <code>src/</code>, and its single-file build <code>ophis-single.html</code>)</td><td style="text-align:left">natori-on-psyfr</td><td style="text-align:left">Mirrors, in the pack bar on the Operations screen</td></tr><tr><td style="text-align:left"><code>ophis-single.html</code> (older single-file build)</td><td style="text-align:left">OPHIS-Pattern-Recognition-Event-Prediction_files</td><td style="text-align:left">Mirrors pack button</td></tr><tr><td style="text-align:left">Natorion Cipher (<code>natorion/</code>)</td><td style="text-align:left">NatorionCipherPredictiveEngine</td><td style="text-align:left"><strong>Add mirrors</strong> button</td></tr><tr><td style="text-align:left">Ophis Web (<code>web/</code>)</td><td style="text-align:left">NatorionCipherPredictiveEngine</td><td style="text-align:left"><strong>Mirrors</strong> button; listed as O27–O36 in the formula reference</td></tr><tr><td style="text-align:left"><code>OPHIS-Natorion-Cipher.html</code></td><td style="text-align:left">NatorionCipherPredictiveEngine · natori-on-psyfr</td><td style="text-align:left">Mirrors pack, beside Extras</td></tr><tr><td style="text-align:left"><code>index.html</code>, <code>ophis-psyfy-natorion-cipher.html</code></td><td style="text-align:left">OPHIS-Pattern-Recognition-Event-Prediction_files</td><td style="text-align:left">Mirrors pack button</td></tr></tbody></table></div>
+<p>To open all 36 in the original Ophis v12 desktop app, use <strong>Export → Save for Ophis v12</strong> in natori-on-psyfr.</p>
+  </article>
+</div>
+
+</body>
+</html>

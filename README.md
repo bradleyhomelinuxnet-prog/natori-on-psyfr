@@ -115,7 +115,9 @@ Each kind of change touches exactly one file:
 | Filters | `src/core/ophis/filters.js` |
 | Colours, fonts, spacing | `src/styles/ophis-tokens.css` |
 
-Full details in **[docs/MODDING.md](docs/MODDING.md)**.
+Full details in **[docs/MODDING.md](docs/MODDING.md)**. The two additive packs, Extras and the ten
+Mirrors, take the table from sixteen operations to 36; the Mirrors are written up in
+**[docs/MIRRORS.md](docs/MIRRORS.md)**.
 
 ---
 
