@@ -37,7 +37,7 @@ export const APP_VERSION = '13.0.0';
  * view-source for a function name, which is fragile, needs developer tools, and
  * tells you nothing when it fails. Bump this whenever you ship a build.
  */
-export const BUILD_TAG = '2026-10-18 · save for v12';
+export const BUILD_TAG = '2026-10-18 · chronicon link';
 export const SCHEMA_VERSION = 1;
 
 /** `strict` rejects anything unrecognised; `loose` repairs and warns. */
