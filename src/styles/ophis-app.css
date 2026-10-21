@@ -83,6 +83,9 @@ a { color: var(--cyan); text-underline-offset: 2px; }
   color: var(--gold-2);
   white-space: nowrap;
 }
+/* Save As sits at the left edge, beside the brand; it must never be squeezed out. */
+.topbar .saveas { flex: 0 0 auto; white-space: nowrap; }
+
 .brand small {
   font-family: var(--font-body);
   font-size: 11px;
