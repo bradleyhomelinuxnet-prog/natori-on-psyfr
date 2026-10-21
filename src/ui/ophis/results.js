@@ -14,7 +14,7 @@
  */
 
 import { el, replace } from '../dom.js';
-import { state, currentEvent, touch } from '../../state/ophis-store.js';
+import { state, currentEvent, touch, saveOptions } from '../../state/ophis-store.js';
 import { SORT_TYPE } from '../../core/ophis/constants.js';
 import { round2, intToDecimalString } from '../../core/ophis/numeric.js';
 import { fmtDate, fmtDateTime } from '../../core/ophis/calendar.js';
@@ -24,6 +24,7 @@ import { operationClass } from '../../core/ophis/scoring.js';
 import {
   fibonacciTags, describeFibonacci, listTags, describeListHit, GEODETIC, DIURNAL,
 } from '../../core/ophis/tags.js';
+import { groupIntoWindows, WINDOW_DAYS } from '../../core/ophis/sop.js';
 import { tooltip, goto } from './shell.js';
 
 /** The table renders at most this many rows; the counter says so when it bites. */
@@ -262,6 +263,49 @@ function noInputPanel(errors) {
   ]);
 }
 
+/**
+ * The 7-day windows view: the same surviving Z-Dates, grouped into periods.
+ *
+ * The SOP says a cast built on older dates should be read as windows, not
+ * exact days. Each window reports its members' own numbers — the summed hits
+ * and the best single score — and nothing is re-scored or re-ranked; switch
+ * back to Days and the table is exactly as it was.
+ */
+function windowsTable(r) {
+  const windows = groupIntoWindows(r.processed_z_dates);
+  const rows = windows.map((w) => el('tr', {}, [
+    el('td', {}, [
+      el('span.datepill', {
+        text: w.end === w.start ? fmtDate(w.start) : `${fmtDate(w.start)} – ${fmtDate(w.end)}`,
+      }),
+    ]),
+    el('td', { text: String(w.members.length) }),
+    el('td', {
+      class: 'mono',
+      text: w.members.map((z) => `Z${z.z_ordinal + 1}`).join(' '),
+    }),
+    el('td', { text: String(w.hits) }),
+    el('td', {}, [el('b', { text: String(w.best) })]),
+  ]));
+  return el('div.tablewrap', { class: state.stale ? 'stale' : '' }, [
+    el('table', {}, [
+      el('caption', {
+        text:
+          `${r.processed_z_dates.length} Z-Dates in ${windows.length} window${windows.length === 1 ? '' : 's'} ` +
+          `of up to ${WINDOW_DAYS} days · a reading aid: nothing is re-scored`,
+      }),
+      el('thead', {}, [el('tr', {}, [
+        ['Window', 'Each window opens at a Z-Date and takes every Z-Date less than 7 days after it.'],
+        ['Z-Dates', 'How many surviving Z-Dates fall in the window.'],
+        ['Labels', 'The same Z-labels as the Days table and the chart.'],
+        ['Hits', 'The members’ hit counts, added together.'],
+        ['Best score', 'The highest single score among the members. Scores are not summed or changed.'],
+      ].map(([label, tip]) => el('th', { scope: 'col', title: tip, text: label })))]),
+      el('tbody', {}, rows),
+    ]),
+  ]);
+}
+
 export function renderResults(host) {
   const r = state.results;
   const ev = currentEvent();
@@ -293,6 +337,11 @@ export function renderResults(host) {
   const rows = r.processed_z_dates;
   if (!rows.length) {
     replace(host, [el('div.tablewrap', {}, [emptyPanel()])]);
+    return;
+  }
+
+  if (opts.results_view === 'windows') {
+    replace(host, [windowsTable(r)]);
     return;
   }
 
@@ -443,11 +492,30 @@ export function renderColumnToggles(host) {
     })
   );
 
+  const label = (text) => el('span', {
+    style: 'font:600 9.5px/1 var(--font-body);letter-spacing:.16em;text-transform:uppercase;color:var(--dim)',
+    text,
+  });
+
+  // Days is the original's table; windows groups it for reading as periods.
+  const views = [['days', 'Days'], ['windows', `${WINDOW_DAYS}-day windows`]].map(([id, text]) =>
+    el('button', {
+      type: 'button',
+      text,
+      'aria-pressed': String((opts.results_view ?? 'days') === id),
+      onclick: () => {
+        opts.results_view = id;
+        saveOptions();
+        renderResults(document.getElementById('resultsHost'));
+        renderColumnToggles(host);
+      },
+    })
+  );
+
   replace(host, [
-    el('span', {
-      style: 'font:600 9.5px/1 var(--font-body);letter-spacing:.16em;text-transform:uppercase;color:var(--dim)',
-      text: 'Columns',
-    }),
-    el('div.segmented', {}, toggles),
+    label('Rows'),
+    el('div.segmented', {}, views),
+    opts.results_view === 'windows' ? null : label('Columns'),
+    opts.results_view === 'windows' ? null : el('div.segmented', {}, toggles),
   ]);
 }

@@ -147,3 +147,16 @@ Every item keeps parity with the original engine: the shipped numbers do not cha
   tagged when an operation's rotation count from its anchor is within **0.1 day** of a list value —
   one display step of `rotation_count_z` — with a 1e-9 slack so the edge is decided by that rule and
   not by IEEE-754.
+- **4 — done.** An **Objective / Subjective** switch under each event's X-Dates. Subjective adds
+  today through the same code as ☉ Today (`addTodayAsXDate`), in date order, so it is the last X-Date
+  whenever the others are in the past. The field is written to a `.oph` only for a subjective event:
+  absent means objective, so every existing file and example stays byte-identical. The v12 writer
+  notes that it cannot carry the label.
+- **5 — done.** Non-blocking SOP warnings under the X-Dates (`src/core/ophis/sop.js`): enabled
+  anchors under 6 days apart; any X-Date more than 3 years before the projection date (suggesting 5+
+  dates and window reading); and, for a subjective event, today missing or not last. None of them
+  stops a cast.
+- **6 — done.** Ophis had no windows view (the convergence windows belong to Chronicon and stay
+  there), so the results bar gains **Rows: Days | 7-day windows**. A window opens at a Z-Date and
+  takes every Z-Date less than 7 days after it; it shows the members' labels, summed hits and best
+  single score, and re-scores nothing. Pinned by `npm run test:sop`.

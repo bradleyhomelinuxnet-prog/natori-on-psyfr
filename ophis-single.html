@@ -983,6 +983,10 @@ td.zlabel {
 .pill.geodetic  { color: var(--warn); }
 .pill.diurnal   { color: var(--prose); }
 
+/* SOP warnings under the X-Dates: advice, never a guard. */
+.sopwarn { margin-top: 10px; padding-left: 10px; border-left: 2px solid var(--warn); }
+.sopwarn .note { color: var(--warn); margin: 0 0 6px; }
+
 /* --------------------------------------------------------------- tooltip -- */
 
 .tip {
@@ -3108,6 +3112,17 @@ pre.blob {
       ...overrides
     };
   }
+  var PROJECTION_KIND = { OBJECTIVE: "objective", SUBJECTIVE: "subjective" };
+  var isSubjective = (ev) => ev?.projection_kind === PROJECTION_KIND.SUBJECTIVE;
+  function addTodayAsXDate(ev, nowMs) {
+    const t = new Date(nowMs);
+    const y = t.getUTCFullYear();
+    const m = t.getUTCMonth() + 1;
+    const d = t.getUTCDate();
+    const at = ev.x_dates.findIndex((x) => x.enabled && x.y === y && x.m === m && x.d === d);
+    if (at !== -1) return { added: false, index: at };
+    return { added: true, index: insertXDateInOrder(ev.x_dates, makeXDate(y, m, d), ev) };
+  }
   var clampDayStart = (ms) => {
     const v = Number(ms);
     if (!Number.isFinite(v) || v < 0) return 0;
@@ -3117,7 +3132,7 @@ pre.blob {
 
   // src/io/oph.js
   var APP_VERSION = "13.0.0";
-  var BUILD_TAG = "2026-10-21 · geodetic + diurnal tags";
+  var BUILD_TAG = "2026-10-21 · protocol prime + SOP";
   var SCHEMA_VERSION = 1;
   var VALIDATION = { STRICT: "strict", LOOSE: "loose" };
   var isObj = (v) => v !== null && typeof v === "object" && !Array.isArray(v);
@@ -3254,6 +3269,11 @@ pre.blob {
     if (Number.isFinite(long)) ev.long = long;
     ev.location_enabled = ev.scope === EVENT_SCOPE.HH_MM;
     ev.x_dates = Array.isArray(raw.x_dates) ? raw.x_dates.map((x) => readXDate(x, out)).filter(Boolean) : [];
+    if (raw.projection_kind === PROJECTION_KIND.SUBJECTIVE) {
+      ev.projection_kind = PROJECTION_KIND.SUBJECTIVE;
+    } else if (raw.projection_kind !== void 0 && raw.projection_kind !== PROJECTION_KIND.OBJECTIVE) {
+      out.warnings.push(`unrecognised projection kind ${raw.projection_kind}; reading it as objective`);
+    }
     ev.t_dates = Array.isArray(raw.t_dates) ? raw.t_dates.map((x) => readXDate(x, out)).filter(Boolean) : [];
     return ev;
   }
@@ -3326,6 +3346,7 @@ pre.blob {
         return t;
       });
     }
+    if (isSubjective(ev)) out.projection_kind = PROJECTION_KIND.SUBJECTIVE;
     return out;
   }
   function fullEvent(ev) {
@@ -3338,6 +3359,7 @@ pre.blob {
       weight: o.weight,
       enabled: o.enabled
     }));
+    if (isSubjective(ev)) out.projection_kind = PROJECTION_KIND.SUBJECTIVE;
     return out;
   }
   function serialiseDocument(doc, { prettify = true, minify = false } = {}) {
@@ -3379,6 +3401,9 @@ pre.blob {
     if (!V12_SORT_TYPES.includes(sort)) {
       notes.push(`${label}: v12 has no "${sort}" sort, so the file asks for the date sort instead`);
       sort = SORT_TYPE.DATE;
+    }
+    if (isSubjective(ev)) {
+      notes.push(`${label}: v12 has no Objective / Subjective switch; the file keeps today's X-Date but not the label`);
     }
     let type = ev.type;
     if (!V12_EVENT_TYPES.includes(type)) {
@@ -3458,7 +3483,13 @@ pre.blob {
      */
     tag_fibonacci: false,
     tag_geodetic: false,
-    tag_diurnal: false
+    tag_diurnal: false,
+    /**
+     * 'days' is the table the original drew, one row per Z-Date. 'windows' groups
+     * them into 7-day periods, the way the SOP says to read a cast built on older
+     * dates. A reading aid: it re-scores nothing.
+     */
+    results_view: "days"
   };
   var listeners = /* @__PURE__ */ new Set();
   function blankDocument() {
@@ -4011,6 +4042,67 @@ pre.blob {
     return render;
   }
 
+  // src/core/ophis/sop.js
+  var SOP_MIN_DAYS_BETWEEN = 6;
+  var SOP_MAX_AGE_YEARS = 3;
+  var SOP_MIN_X_DATES_WHEN_OLD = 5;
+  var WINDOW_DAYS = 7;
+  var YEAR_MS = 365.25 * MILLIS_PER_DAY;
+  function sopWarnings(ev, nowMs, { subjective = false } = {}) {
+    const out = [];
+    const enabled = (ev.x_dates ?? []).map((x, i) => ({ x, i, t: toInstant(x, ev) })).filter(({ x, t }) => x.enabled === true && Number.isFinite(t));
+    for (let n = 1; n < enabled.length; n++) {
+      const a = enabled[n - 1];
+      const b = enabled[n];
+      const y = span(a.t, b.t, ev);
+      if (y > 0 && y < SOP_MIN_DAYS_BETWEEN) {
+        out.push({
+          id: "spacing",
+          text: `X${a.i + 1} and X${b.i + 1} are ${y} day${y === 1 ? "" : "s"} apart. The SOP asks for at least ${SOP_MIN_DAYS_BETWEEN}: 6 days apart gives a window of about 39–42 days after the later date, 15 days about 3 months.`
+        });
+      }
+    }
+    const old = enabled.filter(({ t }) => nowMs - t > SOP_MAX_AGE_YEARS * YEAR_MS);
+    if (old.length) {
+      const oldest = old.reduce((p, q) => q.t < p.t ? q : p);
+      const few = enabled.length < SOP_MIN_X_DATES_WHEN_OLD;
+      out.push({
+        id: "age",
+        text: `${old.length} X-Date${old.length === 1 ? " is" : "s are"} more than ${SOP_MAX_AGE_YEARS} years old (oldest: X${oldest.i + 1}, ${fmtDate(oldest.t)}). The SOP says the method is best within ${SOP_MAX_AGE_YEARS} years; older dates need ${SOP_MIN_X_DATES_WHEN_OLD} or more X-Dates` + (few ? ` (this event has ${enabled.length})` : "") + ", the MSRF does not apply to them, and results should be read as windows of about a week, not exact days."
+      });
+    }
+    if (subjective) {
+      const d = new Date(nowMs);
+      const today = Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate());
+      const last = enabled.at(-1);
+      const lastDay = last ? Date.UTC(last.x.y, last.x.m - 1, last.x.d) : null;
+      if (lastDay !== today) {
+        const has = enabled.some(({ x }) => Date.UTC(x.y, x.m - 1, x.d) === today);
+        out.push({
+          id: "protocol-prime",
+          text: has ? `Subjective: today (${fmtDate(today)}) is an X-Date but not the last one. Protocol Prime wants the day the projection is run as the LAST X-Date, so later dates are outside it.` : `Subjective: today (${fmtDate(today)}) is not an X-Date. Protocol Prime wants the day the projection is run as the last X-Date; ☉ Today adds it.`
+        });
+      }
+    }
+    return out;
+  }
+  function groupIntoWindows(zDates, days = WINDOW_DAYS) {
+    const sorted = [...zDates].sort((a, b) => a.zStart - b.zStart);
+    const out = [];
+    for (const z of sorted) {
+      const cur = out.at(-1);
+      if (cur && z.zStart - cur.start < days * MILLIS_PER_DAY) {
+        cur.members.push(z);
+        cur.end = z.zStart;
+        cur.hits += z.hit_count;
+        cur.best = Math.max(cur.best, z.score);
+      } else {
+        out.push({ start: z.zStart, end: z.zStart, members: [z], hits: z.hit_count, best: z.score });
+      }
+    }
+    return out;
+  }
+
   // src/core/ophis/mercator.js
   var TILE_SIZE = 256;
   var MAP_MAX_ZOOM = 5;
@@ -4559,18 +4651,26 @@ pre.blob {
       touch();
     };
     const addToday = () => {
-      const t = new Date(now());
-      const y = t.getUTCFullYear();
-      const m = t.getUTCMonth() + 1;
-      const d = t.getUTCDate();
-      if (list.some((x) => x.enabled && x.y === y && x.m === m && x.d === d)) {
+      const { added } = addTodayAsXDate(ev, now());
+      if (!added) {
         toast("Today is already a control.");
         return;
       }
-      insertXDateInOrder(list, makeXDate(y, m, d), ev);
       touch();
       toast("Added today as a control — every historical date now casts against it.");
     };
+    const setKind = (kind) => {
+      if (kind === PROJECTION_KIND.SUBJECTIVE) {
+        ev.projection_kind = PROJECTION_KIND.SUBJECTIVE;
+        const { added } = addTodayAsXDate(ev, now());
+        touch();
+        toast(added ? "Subjective: today added as an X-Date, per Protocol Prime." : "Subjective: today is already an X-Date.");
+      } else {
+        delete ev.projection_kind;
+        touch();
+      }
+    };
+    const warnings = key === "x_dates" ? sopWarnings(ev, now(), { subjective: isSubjective(ev) }) : [];
     const on = list.filter((x) => x.enabled).length;
     const count = key === "t_dates" ? list.length === 0 ? "none · showing every date" : on === 0 ? `${list.length} off · showing every date` : `${on} of ${list.length} targeting` : `${on} / ${list.length}`;
     return panel(title, {
@@ -4611,6 +4711,23 @@ pre.blob {
           el("div.field", {}, [el("label", { text: "Year" }), yInput]),
           el("button.btn.primary", { type: "button", text: addLabel, onclick: add })
         ]),
+        key === "x_dates" ? el("div.formrow", { style: "margin-top:10px;align-items:center" }, [
+          el("div.segmented", {
+            role: "group",
+            "aria-label": "Objective or subjective projection",
+            title: "Protocol Prime. Objective: dates not personally tied to you — a market, a team. Subjective: your own or a client’s dates, which must end with the day the projection is run as the last X-Date. Choosing Subjective adds today."
+          }, [
+            [PROJECTION_KIND.OBJECTIVE, "Objective"],
+            [PROJECTION_KIND.SUBJECTIVE, "Subjective"]
+          ].map(
+            ([kind, label]) => el("button", {
+              type: "button",
+              text: label,
+              "aria-pressed": String(isSubjective(ev) === (kind === PROJECTION_KIND.SUBJECTIVE)),
+              onclick: () => setKind(kind)
+            })
+          ))
+        ]) : null,
         key === "x_dates" ? el("div.formrow", { style: "margin-top:6px" }, [
           el("button.btn", {
             type: "button",
@@ -4618,6 +4735,18 @@ pre.blob {
             title: "The author’s operating procedure: enter the date the projection is being conducted as a control alongside the historical dates. Three controls give three spans — and three times the projections.",
             onclick: addToday
           })
+        ]) : null,
+        warnings.length ? el("div.sopwarn", { role: "note", "aria-label": "Operating procedure warnings" }, [
+          ...warnings.map((w) => el("p.note", { text: `⚠ ${w.text}` })),
+          warnings.some((w) => w.id === "age") && state.options.results_view !== "windows" ? el("button.btn.sm", {
+            type: "button",
+            text: "Read results as 7-day windows",
+            onclick: () => {
+              state.options.results_view = "windows";
+              saveOptions();
+              notify();
+            }
+          }) : null
         ]) : null
       ]
     });
@@ -5209,6 +5338,38 @@ pre.blob {
       })
     ]);
   }
+  function windowsTable(r) {
+    const windows = groupIntoWindows(r.processed_z_dates);
+    const rows = windows.map((w) => el("tr", {}, [
+      el("td", {}, [
+        el("span.datepill", {
+          text: w.end === w.start ? fmtDate(w.start) : `${fmtDate(w.start)} – ${fmtDate(w.end)}`
+        })
+      ]),
+      el("td", { text: String(w.members.length) }),
+      el("td", {
+        class: "mono",
+        text: w.members.map((z) => `Z${z.z_ordinal + 1}`).join(" ")
+      }),
+      el("td", { text: String(w.hits) }),
+      el("td", {}, [el("b", { text: String(w.best) })])
+    ]));
+    return el("div.tablewrap", { class: state.stale ? "stale" : "" }, [
+      el("table", {}, [
+        el("caption", {
+          text: `${r.processed_z_dates.length} Z-Dates in ${windows.length} window${windows.length === 1 ? "" : "s"} of up to ${WINDOW_DAYS} days · a reading aid: nothing is re-scored`
+        }),
+        el("thead", {}, [el("tr", {}, [
+          ["Window", "Each window opens at a Z-Date and takes every Z-Date less than 7 days after it."],
+          ["Z-Dates", "How many surviving Z-Dates fall in the window."],
+          ["Labels", "The same Z-labels as the Days table and the chart."],
+          ["Hits", "The members’ hit counts, added together."],
+          ["Best score", "The highest single score among the members. Scores are not summed or changed."]
+        ].map(([label, tip]) => el("th", { scope: "col", title: tip, text: label })))]),
+        el("tbody", {}, rows)
+      ])
+    ]);
+  }
   function renderResults(host) {
     const r = state.results;
     const ev = currentEvent();
@@ -5234,6 +5395,10 @@ pre.blob {
     const rows = r.processed_z_dates;
     if (!rows.length) {
       replace(host, [el("div.tablewrap", {}, [emptyPanel()])]);
+      return;
+    }
+    if (opts.results_view === "windows") {
+      replace(host, [windowsTable(r)]);
       return;
     }
     const shown = rows.slice(0, MAX_ROWS);
@@ -5337,9 +5502,9 @@ pre.blob {
       ["hide_msrf_col", "MSRF"],
       ["hide_operations_col", "Operations"]
     ].map(
-      ([key, label]) => el("button", {
+      ([key, label2]) => el("button", {
         type: "button",
-        text: label,
+        text: label2,
         "aria-pressed": String(!opts[key]),
         onclick: () => {
           opts[key] = !opts[key];
@@ -5348,12 +5513,28 @@ pre.blob {
         }
       })
     );
+    const label = (text) => el("span", {
+      style: "font:600 9.5px/1 var(--font-body);letter-spacing:.16em;text-transform:uppercase;color:var(--dim)",
+      text
+    });
+    const views = [["days", "Days"], ["windows", `${WINDOW_DAYS}-day windows`]].map(
+      ([id, text]) => el("button", {
+        type: "button",
+        text,
+        "aria-pressed": String((opts.results_view ?? "days") === id),
+        onclick: () => {
+          opts.results_view = id;
+          saveOptions();
+          renderResults(document.getElementById("resultsHost"));
+          renderColumnToggles(host);
+        }
+      })
+    );
     replace(host, [
-      el("span", {
-        style: "font:600 9.5px/1 var(--font-body);letter-spacing:.16em;text-transform:uppercase;color:var(--dim)",
-        text: "Columns"
-      }),
-      el("div.segmented", {}, toggles)
+      label("Rows"),
+      el("div.segmented", {}, views),
+      opts.results_view === "windows" ? null : label("Columns"),
+      opts.results_view === "windows" ? null : el("div.segmented", {}, toggles)
     ]);
   }
 

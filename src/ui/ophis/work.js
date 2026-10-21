@@ -18,8 +18,10 @@ import {
 } from '../../state/ophis-store.js';
 import { ECLIPSE_SOURCES, setEclipseSource } from '../../core/eclipses.js';
 import {
-  makeXDate, parseXDate, CHART_OPTIONS, clampDayStart, insertXDateInOrder,
+  parseXDate, CHART_OPTIONS, clampDayStart, insertXDateInOrder,
+  addTodayAsXDate, isSubjective, PROJECTION_KIND,
 } from '../../state/iso-event.js';
+import { sopWarnings } from '../../core/ophis/sop.js';
 import { FILTER_ROWS, FILTER_DEFAULTS } from '../../core/ophis/filters.js';
 import { EVENT_SCOPE, MILLIS_PER_DAY, LAT_LIMIT } from '../../core/ophis/constants.js';
 import { fmtDate, toInstant } from '../../core/ophis/calendar.js';
@@ -232,19 +234,38 @@ function datesPanel({ key, title, note, addLabel }) {
    * now, so the Current-date override carries through.
    */
   const addToday = () => {
-    const t = new Date(now());
-    const y = t.getUTCFullYear();
-    const m = t.getUTCMonth() + 1;
-    const d = t.getUTCDate();
-    if (list.some((x) => x.enabled && x.y === y && x.m === m && x.d === d)) {
+    const { added } = addTodayAsXDate(ev, now());
+    if (!added) {
       toast('Today is already a control.');
       return;
     }
-    // In date order, never appended — see insertXDateInOrder for why.
-    insertXDateInOrder(list, makeXDate(y, m, d), ev);
     touch();
     toast('Added today as a control — every historical date now casts against it.');
   };
+
+  /**
+   * Objective or subjective (Protocol Prime, docs/reverse/23 §1). Choosing
+   * subjective adds today through the same path as ☉ Today, so the two can
+   * never disagree. Choosing objective removes nothing: today may be a date
+   * the user wants, and deleting an anchor behind their back moves results.
+   */
+  const setKind = (kind) => {
+    if (kind === PROJECTION_KIND.SUBJECTIVE) {
+      ev.projection_kind = PROJECTION_KIND.SUBJECTIVE;
+      const { added } = addTodayAsXDate(ev, now());
+      touch();
+      toast(added
+        ? 'Subjective: today added as an X-Date, per Protocol Prime.'
+        : 'Subjective: today is already an X-Date.');
+    } else {
+      delete ev.projection_kind;
+      touch();
+    }
+  };
+
+  const warnings = key === 'x_dates'
+    ? sopWarnings(ev, now(), { subjective: isSubjective(ev) })
+    : [];
 
   // "1 / 3" does not say what it counts, and for T-Dates the difference between
   // 0 and 1 enabled is the difference between seeing everything and seeing one
@@ -297,6 +318,28 @@ function datesPanel({ key, title, note, addLabel }) {
         el('button.btn.primary', { type: 'button', text: addLabel, onclick: add }),
       ]),
       key === 'x_dates'
+        ? el('div.formrow', { style: 'margin-top:10px;align-items:center' }, [
+            el('div.segmented', {
+              role: 'group',
+              'aria-label': 'Objective or subjective projection',
+              title:
+                'Protocol Prime. Objective: dates not personally tied to you — a market, a team. ' +
+                'Subjective: your own or a client’s dates, which must end with the day the ' +
+                'projection is run as the last X-Date. Choosing Subjective adds today.',
+            }, [
+              [PROJECTION_KIND.OBJECTIVE, 'Objective'],
+              [PROJECTION_KIND.SUBJECTIVE, 'Subjective'],
+            ].map(([kind, label]) =>
+              el('button', {
+                type: 'button',
+                text: label,
+                'aria-pressed': String(isSubjective(ev) === (kind === PROJECTION_KIND.SUBJECTIVE)),
+                onclick: () => setKind(kind),
+              })
+            )),
+          ])
+        : null,
+      key === 'x_dates'
         ? el('div.formrow', { style: 'margin-top:6px' }, [
             el('button.btn', {
               type: 'button',
@@ -307,6 +350,22 @@ function datesPanel({ key, title, note, addLabel }) {
                 'three spans — and three times the projections.',
               onclick: addToday,
             }),
+          ])
+        : null,
+      warnings.length
+        ? el('div.sopwarn', { role: 'note', 'aria-label': 'Operating procedure warnings' }, [
+            ...warnings.map((w) => el('p.note', { text: `⚠ ${w.text}` })),
+            warnings.some((w) => w.id === 'age') && state.options.results_view !== 'windows'
+              ? el('button.btn.sm', {
+                  type: 'button',
+                  text: 'Read results as 7-day windows',
+                  onclick: () => {
+                    state.options.results_view = 'windows';
+                    saveOptions();
+                    notify();
+                  },
+                })
+              : null,
           ])
         : null,
     ],

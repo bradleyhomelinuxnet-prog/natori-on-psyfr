@@ -46,6 +46,11 @@ jobs:
       - name: Check the optional tags
         run: npm run test:tags
 
+      # Protocol Prime and the SOP: advice and a reading view. Must never block
+      # a cast, and the objective default must leave every .oph byte-identical.
+      - name: Check Protocol Prime and the SOP warnings
+        run: npm run test:sop
+
       - name: Check nothing reaches for eval
         run: |
           if grep -rnE '\bnew Function\b|\beval\(' src/ --include='*.js' \

@@ -124,6 +124,42 @@ export function makeIsoEvent(index = 0, overrides = {}) {
   };
 }
 
+/**
+ * Protocol Prime's two kinds of projection (docs/reverse/23 §1).
+ *
+ * Objective: dates not personally tied to the operator — a market, a team.
+ * Subjective: the operator's or client's own dates, which the author says MUST
+ * end with the day the projection is run, as the last X-Date.
+ *
+ * Deliberately NOT in `makeIsoEvent`'s defaults, so it is not in ISO_EVENT_KEYS:
+ * an absent field reads as objective, and every file written before this
+ * existed — and every objective event written after — stays byte-identical.
+ * The writer adds the field only for a subjective event.
+ */
+export const PROJECTION_KIND = { OBJECTIVE: 'objective', SUBJECTIVE: 'subjective' };
+
+export const isSubjective = (ev) => ev?.projection_kind === PROJECTION_KIND.SUBJECTIVE;
+
+/**
+ * Protocol Prime: add the day the projection is run as an X-Date.
+ *
+ * "Today" is the engine's injected now, so the Current-date override carries
+ * through. Refuses a duplicate. Goes in at its place in date order, never
+ * appended (see insertXDateInOrder) — which is the LAST place whenever every
+ * historical date is in the past, as the author intends.
+ *
+ * @returns {{added: boolean, index: number}} index of today in the list
+ */
+export function addTodayAsXDate(ev, nowMs) {
+  const t = new Date(nowMs);
+  const y = t.getUTCFullYear();
+  const m = t.getUTCMonth() + 1;
+  const d = t.getUTCDate();
+  const at = ev.x_dates.findIndex((x) => x.enabled && x.y === y && x.m === m && x.d === d);
+  if (at !== -1) return { added: false, index: at };
+  return { added: true, index: insertXDateInOrder(ev.x_dates, makeXDate(y, m, d), ev) };
+}
+
 /** `location_enabled` is derived, never independently true. */
 export const locationActive = (ev) => ev.scope === EVENT_SCOPE.HH_MM;
 

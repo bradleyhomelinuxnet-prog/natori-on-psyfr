@@ -23,7 +23,9 @@ import {
   SORT_TYPE,
 } from '../core/ophis/constants.js';
 import { normaliseSortType } from '../core/ophis/sort.js';
-import { makeIsoEvent, makeXDate, clampDayStart, ISO_EVENT_KEYS, CHART_OPTIONS } from '../state/iso-event.js';
+import {
+  makeIsoEvent, makeXDate, clampDayStart, ISO_EVENT_KEYS, CHART_OPTIONS, PROJECTION_KIND, isSubjective,
+} from '../state/iso-event.js';
 import { FILTER_DEFAULTS } from '../core/ophis/filters.js';
 import { packOperations, DEFAULT_OPHIS_PACK } from '../data/packs-ophis.js';
 
@@ -37,7 +39,7 @@ export const APP_VERSION = '13.0.0';
  * view-source for a function name, which is fragile, needs developer tools, and
  * tells you nothing when it fails. Bump this whenever you ship a build.
  */
-export const BUILD_TAG = '2026-10-21 · geodetic + diurnal tags';
+export const BUILD_TAG = '2026-10-21 · protocol prime + SOP';
 export const SCHEMA_VERSION = 1;
 
 /** `strict` rejects anything unrecognised; `loose` repairs and warns. */
@@ -207,6 +209,13 @@ function readIsoEvent(raw, index, out, mode) {
   ev.x_dates = Array.isArray(raw.x_dates)
     ? raw.x_dates.map((x) => readXDate(x, out)).filter(Boolean)
     : [];
+
+  // Absent means objective; only a subjective event carries the field.
+  if (raw.projection_kind === PROJECTION_KIND.SUBJECTIVE) {
+    ev.projection_kind = PROJECTION_KIND.SUBJECTIVE;
+  } else if (raw.projection_kind !== undefined && raw.projection_kind !== PROJECTION_KIND.OBJECTIVE) {
+    out.warnings.push(`unrecognised projection kind ${raw.projection_kind}; reading it as objective`);
+  }
   ev.t_dates = Array.isArray(raw.t_dates)
     ? raw.t_dates.map((x) => readXDate(x, out)).filter(Boolean)
     : [];
@@ -318,6 +327,8 @@ function minifyEvent(ev, index) {
     });
   }
 
+  if (isSubjective(ev)) out.projection_kind = PROJECTION_KIND.SUBJECTIVE;
+
   // Notes and names are user text and are kept by the loop above whenever
   // they differ from the defaults — which is the only case that needs a byte.
   // A default "Event N" name regenerates by position on load. (v12's minifier
@@ -335,6 +346,8 @@ function fullEvent(ev) {
   out.operations = ev.operations.map((o) => ({
     equation: o.equation, weight: o.weight, enabled: o.enabled,
   }));
+  // Not in ISO_EVENT_KEYS on purpose; see PROJECTION_KIND.
+  if (isSubjective(ev)) out.projection_kind = PROJECTION_KIND.SUBJECTIVE;
   return out;
 }
 
@@ -387,6 +400,9 @@ function v12Event(ev, index, notes) {
   if (!V12_SORT_TYPES.includes(sort)) {
     notes.push(`${label}: v12 has no "${sort}" sort, so the file asks for the date sort instead`);
     sort = SORT_TYPE.DATE;
+  }
+  if (isSubjective(ev)) {
+    notes.push(`${label}: v12 has no Objective / Subjective switch; the file keeps today's X-Date but not the label`);
   }
   let type = ev.type;
   if (!V12_EVENT_TYPES.includes(type)) {

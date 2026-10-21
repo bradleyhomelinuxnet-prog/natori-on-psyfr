@@ -603,6 +603,10 @@ td.zlabel {
 .pill.geodetic  { color: var(--warn); }
 .pill.diurnal   { color: var(--prose); }
 
+/* SOP warnings under the X-Dates: advice, never a guard. */
+.sopwarn { margin-top: 10px; padding-left: 10px; border-left: 2px solid var(--warn); }
+.sopwarn .note { color: var(--warn); margin: 0 0 6px; }
+
 /* --------------------------------------------------------------- tooltip -- */
 
 .tip {

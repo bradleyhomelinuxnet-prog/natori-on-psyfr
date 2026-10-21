@@ -56,6 +56,12 @@ export const DEFAULT_OPTIONS = {
   tag_fibonacci: false,
   tag_geodetic: false,
   tag_diurnal: false,
+  /**
+   * 'days' is the table the original drew, one row per Z-Date. 'windows' groups
+   * them into 7-day periods, the way the SOP says to read a cast built on older
+   * dates. A reading aid: it re-scores nothing.
+   */
+  results_view: 'days',
 };
 
 const listeners = new Set();

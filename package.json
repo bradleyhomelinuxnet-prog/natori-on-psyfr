@@ -17,6 +17,7 @@
     "test:store": "node --test tests/store.test.mjs",
     "test:packs": "node --test tests/packs.test.mjs",
     "test:tags": "node --test tests/tags.test.mjs",
+    "test:sop": "node --test tests/sop.test.mjs",
     "bundle": "node tools/bundle.mjs",
     "bundle:check": "node tools/bundle.mjs --check",
     "extract-data": "node tools/extract-data.mjs",
