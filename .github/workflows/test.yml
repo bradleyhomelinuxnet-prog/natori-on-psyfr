@@ -40,6 +40,12 @@ jobs:
       - name: Check the operation packs and the merge
         run: npm run test:packs
 
+      # The optional tags from the author's later documents. Not in the parity
+      # count -- the original never ran them -- but they must prove they label
+      # rows without moving a score or a rank.
+      - name: Check the optional tags
+        run: npm run test:tags
+
       - name: Check nothing reaches for eval
         run: |
           if grep -rnE '\bnew Function\b|\beval\(' src/ --include='*.js' \

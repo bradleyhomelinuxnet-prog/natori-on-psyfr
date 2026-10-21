@@ -132,3 +132,10 @@ author's methods further, or before any commercial use.
 | 7 | Leave 2574, 21978, 6534 and 198 out of the MSRF (parity), but document them | No |
 
 Every item keeps parity with the original engine: the shipped numbers do not change.
+
+### 7.1 Status
+
+- **2 — done.** Settings → *S3 · Optional tags* → *Fibonacci Sequence Filter* (off by default). A
+  dashed **Fibonacci** pill appears in a Tags column; its tooltip names the op, the pair, the anchor
+  and the member of F. The rule lives in `src/core/ophis/tags.js` and reads a finished run; it is
+  pinned by `npm run test:tags`, including a check that tagging leaves every score and rank as it was.

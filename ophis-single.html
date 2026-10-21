@@ -977,6 +977,9 @@ td.zlabel {
 .pill.alpha     { color: var(--op-alpha); }
 .pill.beta      { color: var(--op-beta); }
 .pill sub { font-size: 8px; }
+/* Optional tags: dashed, so they never read as a shipped MSRF match. */
+.pill.opt-tag   { border-style: dashed; background: transparent; }
+.pill.fibonacci { color: var(--moon); }
 
 /* --------------------------------------------------------------- tooltip -- */
 
@@ -3112,7 +3115,7 @@ pre.blob {
 
   // src/io/oph.js
   var APP_VERSION = "13.0.0";
-  var BUILD_TAG = "2026-10-18 · chronicon link";
+  var BUILD_TAG = "2026-10-21 · fibonacci tag";
   var SCHEMA_VERSION = 1;
   var VALIDATION = { STRICT: "strict", LOOSE: "loose" };
   var isObj = (v) => v !== null && typeof v === "object" && !Array.isArray(v);
@@ -3444,7 +3447,14 @@ pre.blob {
      * An app preference, beside theme -- not a per-event field, so it is not in
      * the `.oph` and changing it does not dirty the document.
      */
-    eclipse_table: "original"
+    eclipse_table: "original",
+    /**
+     * Optional tags from the author's later documents (docs/reverse/23 §2). They
+     * read a finished run and label rows; none of them can move a score or a
+     * rank, so -- like the eclipse table -- they are preferences, not event
+     * fields, and switching one never dirties the document. All off by default.
+     */
+    tag_fibonacci: false
   };
   var listeners = /* @__PURE__ */ new Set();
   function blankDocument() {
@@ -4909,6 +4919,52 @@ pre.blob {
     replace(host, [statusBar()]);
   }
 
+  // src/core/ophis/tags.js
+  var FIBONACCI = Object.freeze([8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597]);
+  function bucketKey(baseInstant, days, isoEvent) {
+    const dayStart = (isoEvent.scope ?? EVENT_SCOPE.DAYS) === EVENT_SCOPE.DAYS ? Number(isoEvent.day_scope_start_time_in_millis) || 0 : 0;
+    const { zStart } = normaliseWindow(baseInstant + (dayStart > 0 ? dayStart : 0) + days * MILLIS_PER_DAY, isoEvent);
+    return Number.isFinite(zStart) ? String(zStart) : null;
+  }
+  function fibonacciTags(results, isoEvent) {
+    const out = /* @__PURE__ */ new Map();
+    const survivors = new Set((results?.processed_z_dates ?? []).map((z) => z.key));
+    if (!survivors.size) return out;
+    const seen = /* @__PURE__ */ new Set();
+    const hit3 = (ys, op, from, n) => {
+      const base = from === "X1" ? ys.x_1_instant : ys.x_2_instant;
+      const key = bucketKey(base, n, isoEvent);
+      if (key === null || !survivors.has(key)) return;
+      const id = `${key}|${op}|${ys.x_1_ordinal}|${ys.x_2_ordinal}|${from}|${n}`;
+      if (seen.has(id)) return;
+      seen.add(id);
+      if (!out.has(key)) out.set(key, []);
+      out.get(key).push({
+        op,
+        x1: ys.x_1_ordinal,
+        x2: ys.x_2_ordinal,
+        from,
+        n,
+        y: ys.rotation_count_y
+      });
+    };
+    for (const ys of results.y_structs ?? []) {
+      if (FIBONACCI.includes(ys.rotation_count_y)) {
+        for (const n of FIBONACCI) hit3(ys, 1, "X2", n);
+      }
+      for (const n of FIBONACCI) {
+        hit3(ys, 2, "X1", n);
+        hit3(ys, 2, "X2", n);
+      }
+    }
+    return out;
+  }
+  function describeFibonacci(t) {
+    const pair = `X${t.x1 + 1}→X${t.x2 + 1}`;
+    const anchor = `X${(t.from === "X1" ? t.x1 : t.x2) + 1}`;
+    return t.op === 1 ? `Y(${pair}) = ${t.y}, in F · ${anchor} + ${t.n} days` : `${pair} · ${anchor} + ${t.n} days`;
+  }
+
   // src/ui/ophis/results.js
   var MAX_ROWS = 500;
   var GLYPH = { 2: "♊", 3: "▲", 4: "◆" };
@@ -4990,6 +5046,31 @@ pre.blob {
       ]
     ]);
     return pill;
+  }
+  var MAX_TAG_LINES = 8;
+  function optionalTags(r, ev, opts) {
+    if (!opts.tag_fibonacci) return null;
+    return {
+      fibonacci: opts.tag_fibonacci ? fibonacciTags(r, ev) : /* @__PURE__ */ new Map()
+    };
+  }
+  function fibonacciPill(hits) {
+    const pill = el("span", { class: "pill opt-tag fibonacci", tabindex: "0", text: "Fibonacci" });
+    tooltip(pill, () => [
+      ["Tag", "Fibonacci Projection — the author’s Fibonacci Sequence Filter"],
+      ...hits.slice(0, MAX_TAG_LINES).map((t) => [`Op ${t.op}`, describeFibonacci(t)]),
+      ...hits.length > MAX_TAG_LINES ? [["", `+ ${hits.length - MAX_TAG_LINES} more`]] : [],
+      ["Effect", "None. A label only: score, hits and rank are unchanged."]
+    ]);
+    return pill;
+  }
+  function tagCell(z, tags) {
+    const pills = [];
+    const fib = tags.fibonacci.get(z.key);
+    if (fib) pills.push(fibonacciPill(fib));
+    return el("td", {}, [
+      pills.length ? el("div.pills", {}, pills) : el("span", { style: "color:var(--faint)", text: "—" })
+    ]);
   }
   function headerCell(col, sortType) {
     if (!col.sort) return el("th", { scope: "col", "aria-label": "Row label" });
@@ -5084,6 +5165,7 @@ pre.blob {
     const visible = COLUMNS.filter(
       (c) => !(c.key === "ops" && opts.hide_operations_col_completely)
     );
+    const tags = optionalTags(r, ev, opts);
     const body = shown.map((z) => {
       const cells = [
         el("td.zlabel", { text: `Z${z.z_ordinal + 1}` }),
@@ -5112,6 +5194,7 @@ pre.blob {
           z.resonance_matches.length ? el("div.pills", {}, z.resonance_matches.map((m) => msrfPill(m, z))) : el("span", { style: "color:var(--faint)", text: "—" })
         ])
       ];
+      if (tags) cells.push(tagCell(z, tags));
       if (!opts.hide_operations_col_completely) {
         cells.push(
           el("td", { class: opts.hide_operations_col ? "hidden-col" : "" }, [
@@ -5153,7 +5236,15 @@ pre.blob {
           el("caption", {
             text: capped ? `Showing ${MAX_ROWS} of ${rows.length} Z-Dates · ${r.hidden} hidden by filters · click a row to audit it` : `${rows.length} Z-Date${rows.length === 1 ? "" : "s"} · ${r.hidden} hidden by filters · click a row to audit it`
           }),
-          el("thead", {}, [el("tr", {}, visible.map((c) => headerCell(c, sortType)))]),
+          el("thead", {}, [el("tr", {}, [
+            ...visible.filter((c) => c.key !== "ops").map((c) => headerCell(c, sortType)),
+            tags ? el("th", {
+              scope: "col",
+              title: "Optional tags from the author’s later documents, switched on in Settings. They label rows only: no score, hit count or rank changes.",
+              text: "Tags"
+            }) : null,
+            ...visible.filter((c) => c.key === "ops").map((c) => headerCell(c, sortType))
+          ])]),
           el("tbody", {}, body)
         ])
       ])
@@ -6254,7 +6345,36 @@ stream
           })
         ]),
         ev.scope !== EVENT_SCOPE.DAYS ? el("p.note", { style: "color:var(--warn)", text: "Only meaningful in Days scope." }) : null
+      ]),
+      section("S3 · Optional tags", [
+        el("p.note", {
+          text: "Rules from the author’s later documents that the original program never ran. Each one reads the finished results and adds a dashed pill in a Tags column. None of them changes a score, a hit count or the order of the rows. They apply to every event, are remembered by this browser, and are not saved in the .oph file."
+        }),
+        el("div.rowlist.full", {}, OPTIONAL_TAGS.map(tagToggle))
       ])
+    ]);
+  }
+  var OPTIONAL_TAGS = [
+    {
+      key: "tag_fibonacci",
+      label: "Fibonacci Sequence Filter",
+      note: "F = 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597. Op 1: when Y (X1→X2) is in F, each member of F is projected forward from X2. Op 2: each member is projected forward from X1 and from X2. A projection landing on a Z-Date tags it."
+    }
+  ];
+  function tagToggle({ key, label, note }) {
+    const box = el("input", {
+      type: "checkbox",
+      "aria-label": label,
+      onchange: (e) => {
+        state.options[key] = e.target.checked;
+        saveOptions();
+        log("settings", `${label} ${e.target.checked ? "on" : "off"}`);
+      }
+    });
+    box.checked = state.options[key] === true;
+    return el("label.row", {}, [
+      box,
+      el("div.grow", {}, [el("b", { text: label }), el("div.sub", { text: note })])
     ]);
   }
   var SWAP_CATEGORIES = [

@@ -21,6 +21,7 @@ import { fmtDate, fmtDateTime } from '../../core/ophis/calendar.js';
 import { FILTER_ROWS } from '../../core/ophis/filters.js';
 import { EVENT_SCOPE } from '../../core/ophis/constants.js';
 import { operationClass } from '../../core/ophis/scoring.js';
+import { fibonacciTags, describeFibonacci } from '../../core/ophis/tags.js';
 import { tooltip, goto } from './shell.js';
 
 /** The table renders at most this many rows; the counter says so when it bites. */
@@ -98,6 +99,44 @@ function msrfPill(match, z) {
   ]);
 
   return pill;
+}
+
+/** A tooltip lists at most this many hits, then says how many it left out. */
+const MAX_TAG_LINES = 8;
+
+/**
+ * The optional tags for this run, or null when every tag is off.
+ *
+ * Computed from the run on screen and nothing else; the run itself is never
+ * touched, so a tag cannot move a score or a row.
+ */
+function optionalTags(r, ev, opts) {
+  if (!opts.tag_fibonacci) return null;
+  return {
+    fibonacci: opts.tag_fibonacci ? fibonacciTags(r, ev) : new Map(),
+  };
+}
+
+function fibonacciPill(hits) {
+  const pill = el('span', { class: 'pill opt-tag fibonacci', tabindex: '0', text: 'Fibonacci' });
+  tooltip(pill, () => [
+    ['Tag', 'Fibonacci Projection — the author’s Fibonacci Sequence Filter'],
+    ...hits.slice(0, MAX_TAG_LINES).map((t) => [`Op ${t.op}`, describeFibonacci(t)]),
+    ...(hits.length > MAX_TAG_LINES ? [['', `+ ${hits.length - MAX_TAG_LINES} more`]] : []),
+    ['Effect', 'None. A label only: score, hits and rank are unchanged.'],
+  ]);
+  return pill;
+}
+
+function tagCell(z, tags) {
+  const pills = [];
+  const fib = tags.fibonacci.get(z.key);
+  if (fib) pills.push(fibonacciPill(fib));
+  return el('td', {}, [
+    pills.length
+      ? el('div.pills', {}, pills)
+      : el('span', { style: 'color:var(--faint)', text: '—' }),
+  ]);
 }
 
 function headerCell(col, sortType) {
@@ -227,6 +266,7 @@ export function renderResults(host) {
   const visible = COLUMNS.filter(
     (c) => !(c.key === 'ops' && opts.hide_operations_col_completely)
   );
+  const tags = optionalTags(r, ev, opts);
 
   const body = shown.map((z) => {
     const cells = [
@@ -264,6 +304,7 @@ export function renderResults(host) {
           : el('span', { style: 'color:var(--faint)', text: '—' }),
       ]),
     ];
+    if (tags) cells.push(tagCell(z, tags));
 
     if (!opts.hide_operations_col_completely) {
       cells.push(
@@ -319,7 +360,19 @@ export function renderResults(host) {
             ? `Showing ${MAX_ROWS} of ${rows.length} Z-Dates · ${r.hidden} hidden by filters · click a row to audit it`
             : `${rows.length} Z-Date${rows.length === 1 ? '' : 's'} · ${r.hidden} hidden by filters · click a row to audit it`,
         }),
-        el('thead', {}, [el('tr', {}, visible.map((c) => headerCell(c, sortType)))]),
+        el('thead', {}, [el('tr', {}, [
+          ...visible.filter((c) => c.key !== 'ops').map((c) => headerCell(c, sortType)),
+          tags
+            ? el('th', {
+                scope: 'col',
+                title:
+                  'Optional tags from the author’s later documents, switched on in Settings. ' +
+                  'They label rows only: no score, hit count or rank changes.',
+                text: 'Tags',
+              })
+            : null,
+          ...visible.filter((c) => c.key === 'ops').map((c) => headerCell(c, sortType)),
+        ])]),
         el('tbody', {}, body),
       ]),
     ]),

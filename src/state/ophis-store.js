@@ -47,6 +47,13 @@ export const DEFAULT_OPTIONS = {
    * the `.oph` and changing it does not dirty the document.
    */
   eclipse_table: 'original',
+  /**
+   * Optional tags from the author's later documents (docs/reverse/23 §2). They
+   * read a finished run and label rows; none of them can move a score or a
+   * rank, so -- like the eclipse table -- they are preferences, not event
+   * fields, and switching one never dirties the document. All off by default.
+   */
+  tag_fibonacci: false,
 };
 
 const listeners = new Set();

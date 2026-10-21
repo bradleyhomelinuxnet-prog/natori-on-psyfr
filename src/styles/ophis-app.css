@@ -597,6 +597,9 @@ td.zlabel {
 .pill.alpha     { color: var(--op-alpha); }
 .pill.beta      { color: var(--op-beta); }
 .pill sub { font-size: 8px; }
+/* Optional tags: dashed, so they never read as a shipped MSRF match. */
+.pill.opt-tag   { border-style: dashed; background: transparent; }
+.pill.fibonacci { color: var(--moon); }
 
 /* --------------------------------------------------------------- tooltip -- */
 

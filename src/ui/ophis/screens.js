@@ -8,7 +8,7 @@
 import { el, replace } from '../dom.js';
 import {
   state, currentEvent, touch, markDirty, recalculate, adoptDocument, log,
-  clearStoredState, storedKeysInUse, DOCUMENT_KEYS,
+  clearStoredState, storedKeysInUse, DOCUMENT_KEYS, saveOptions,
 } from '../../state/ophis-store.js';
 import { compileOperation, validateOperation, getReckoning } from '../../core/equation/index.js';
 import { OPHIS_PACKS, packOperations, mergeOperations, newOperation } from '../../data/packs-ophis.js';
@@ -263,6 +263,46 @@ export function renderSettings(host) {
         ? el('p.note', { style: 'color:var(--warn)', text: 'Only meaningful in Days scope.' })
         : null,
     ]),
+
+    section('S3 · Optional tags', [
+      el('p.note', {
+        text:
+          'Rules from the author’s later documents that the original program never ran. Each one ' +
+          'reads the finished results and adds a dashed pill in a Tags column. None of them ' +
+          'changes a score, a hit count or the order of the rows. They apply to every event, ' +
+          'are remembered by this browser, and are not saved in the .oph file.',
+      }),
+      el('div.rowlist.full', {}, OPTIONAL_TAGS.map(tagToggle)),
+    ]),
+  ]);
+}
+
+/** The Settings checkboxes for the optional tags, in the order they are listed. */
+const OPTIONAL_TAGS = [
+  {
+    key: 'tag_fibonacci',
+    label: 'Fibonacci Sequence Filter',
+    note:
+      'F = 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597. Op 1: when Y (X1→X2) is in F, ' +
+      'each member of F is projected forward from X2. Op 2: each member is projected forward ' +
+      'from X1 and from X2. A projection landing on a Z-Date tags it.',
+  },
+];
+
+function tagToggle({ key, label, note }) {
+  const box = el('input', {
+    type: 'checkbox',
+    'aria-label': label,
+    onchange: (e) => {
+      state.options[key] = e.target.checked;
+      saveOptions();
+      log('settings', `${label} ${e.target.checked ? 'on' : 'off'}`);
+    },
+  });
+  box.checked = state.options[key] === true;
+  return el('label.row', {}, [
+    box,
+    el('div.grow', {}, [el('b', { text: label }), el('div.sub', { text: note })]),
   ]);
 }
 

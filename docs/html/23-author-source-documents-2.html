@@ -79,6 +79,7 @@
     <a target="_self" class="l2" href="#5-on-scaling-vectors-the-engine-on-26-million-graded-predictions">5 · "On Scaling Vectors": the engine on 26 million graded predictions</a>
     <a target="_self" class="l2" href="#6-context-the-prospectus-and-the-rights">6 · Context: the prospectus and the rights</a>
     <a target="_self" class="l2" href="#7-proposed-actions">7 · Proposed actions</a>
+    <a target="_self" class="l3" href="#7-1-status">7.1 Status</a>
   </nav>
   <article>
 <h1 id="23-the-author-s-source-documents-second-set">23 · The author's source documents, second set</h1>
@@ -119,6 +120,8 @@
 <h2 id="7-proposed-actions">7 · Proposed actions</h2>
 <div class="tablewrap"><table><thead><tr><th style="text-align:left">#</th><th style="text-align:left">Action</th><th style="text-align:left">Touches the engine?</th></tr></thead><tbody><tr><td style="text-align:left">1</td><td style="text-align:left">Amend 22 §4: 2559 is diurnal (§4 here)</td><td style="text-align:left">No</td></tr><tr><td style="text-align:left">2</td><td style="text-align:left">Fibonacci Sequence Filter as an optional tag, Operations 1 and 2</td><td style="text-align:left">No, it reads results</td></tr><tr><td style="text-align:left">3</td><td style="text-align:left">Geodetic and Diurnal lists as optional tags, shown separately from the shipped MSRF</td><td style="text-align:left">No</td></tr><tr><td style="text-align:left">4</td><td style="text-align:left">Objective / Subjective switch; Subjective appends today as the last X-Date (☉ Today in Ophis Web)</td><td style="text-align:left">No, it changes inputs</td></tr><tr><td style="text-align:left">5</td><td style="text-align:left">SOP warnings: X1–X2 under 6 days; X-Dates over 3 years old (suggest 5+ dates and window reading)</td><td style="text-align:left">No</td></tr><tr><td style="text-align:left">6</td><td style="text-align:left">Optional "window" view grouping Z-Dates within 7 days</td><td style="text-align:left">No</td></tr><tr><td style="text-align:left">7</td><td style="text-align:left">Leave 2574, 21978, 6534 and 198 out of the MSRF (parity), but document them</td><td style="text-align:left">No</td></tr></tbody></table></div>
 <p>Every item keeps parity with the original engine: the shipped numbers do not change.</p>
+<h3 id="7-1-status">7.1 Status</h3>
+<ul><li><strong>2 — done.</strong> Settings → <em>S3 · Optional tags</em> → <em>Fibonacci Sequence Filter</em> (off by default). A dashed <strong>Fibonacci</strong> pill appears in a Tags column; its tooltip names the op, the pair, the anchor and the member of F. The rule lives in <code>src/core/ophis/tags.js</code> and reads a finished run; it is pinned by <code>npm run test:tags</code>, including a check that tagging leaves every score and rank as it was.</li></ul>
   </article>
 </div>
 
