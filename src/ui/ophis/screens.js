@@ -993,7 +993,7 @@ export function renderAbout(host) {
       ]),
       el('p.note', {
         text:
-          'Export anything worth keeping first: Results → Export, or ☰ → Save .oph. Clearing ' +
+          'Export anything worth keeping first: Save As (top left), or Export → Export file. Clearing ' +
           'affects this address only, and no other site.',
       }),
     ]),

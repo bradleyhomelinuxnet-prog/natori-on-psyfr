@@ -463,6 +463,9 @@ a { color: var(--cyan); text-underline-offset: 2px; }
   color: var(--gold-2);
   white-space: nowrap;
 }
+/* Save As sits at the left edge, beside the brand; it must never be squeezed out. */
+.topbar .saveas { flex: 0 0 auto; white-space: nowrap; }
+
 .brand small {
   font-family: var(--font-body);
   font-size: 11px;
@@ -1312,6 +1315,8 @@ pre.blob {
 
   <header class="topbar">
     <div class="brand">OPHIS <small>Pattern-Recognition Event Prediction</small></div>
+    <button id="saveAsBtn" class="btn primary saveas" type="button"
+            title="Save the document as an .oph file the original Ophis v12 app can open (Ctrl+Shift+S)">Save As…</button>
     <nav class="screens" id="screenNav" aria-label="Screens"></nav>
     <div class="chrome">
       <div class="zoomctl" role="group" aria-label="Text size">
@@ -3132,7 +3137,7 @@ pre.blob {
 
   // src/io/oph.js
   var APP_VERSION = "13.0.0";
-  var BUILD_TAG = "2026-10-21 · protocol prime + SOP";
+  var BUILD_TAG = "2026-10-21 · Save As button";
   var SCHEMA_VERSION = 1;
   var VALIDATION = { STRICT: "strict", LOOSE: "loose" };
   var isObj = (v) => v !== null && typeof v === "object" && !Array.isArray(v);
@@ -3801,6 +3806,18 @@ pre.blob {
   }
   function eclipseNear(jd, tol = 1) {
     return { solar: hit2(solarTable(), jd, tol), lunar: hit2(lunarTable(), jd, tol) };
+  }
+
+  // src/io/download.js
+  function download(blob, filename) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.append(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1e3);
   }
 
   // src/ui/ophis/shell.js
@@ -6375,18 +6392,6 @@ stream
   }
   var exportBasename = (isoEvent) => safeFilename(isoEvent.name || "Z-Dates", "Z-Dates");
 
-  // src/io/download.js
-  function download(blob, filename) {
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = filename;
-    document.body.append(a);
-    a.click();
-    a.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 1e3);
-  }
-
   // src/ui/ophis/screens.js
   var section = (title, children) => el("section.panel", {}, [
     el("header", {}, [el("h3", { text: title })]),
@@ -7196,7 +7201,7 @@ stream
           })
         ]),
         el("p.note", {
-          text: "Export anything worth keeping first: Results → Export, or ☰ → Save .oph. Clearing affects this address only, and no other site."
+          text: "Export anything worth keeping first: Save As (top left), or Export → Export file. Clearing affects this address only, and no other site."
         })
       ])
     ]);
@@ -7220,6 +7225,45 @@ stream
       console.error(`[ophis] ${name} failed`, err);
       return null;
     }
+  }
+  async function saveAs(render) {
+    const { text, notes } = serialiseDocumentV12(state.document, {
+      prettify: state.options.prettify_oph_files !== false
+    });
+    if (notes.length) {
+      const ok = await confirmDialog({
+        title: "Some settings have no v12 equivalent",
+        body: [...notes, "Everything else, including every operation and X-Date, carries over unchanged."],
+        cancel: "NO, cancel",
+        confirm: "YES, save anyway"
+      });
+      if (!ok) return;
+    }
+    const first = state.document?.iso_events?.[0]?.name;
+    const suggested = `${safeFilename(first, "Ophis")}.oph`;
+    const blob = new Blob([text], { type: "application/json" });
+    let written = suggested;
+    if (typeof window.showSaveFilePicker === "function") {
+      try {
+        const handle = await window.showSaveFilePicker({
+          suggestedName: suggested,
+          types: [{ description: "Ophis document", accept: { "application/json": [".oph"] } }]
+        });
+        const out = await handle.createWritable();
+        await out.write(blob);
+        await out.close();
+        written = handle.name;
+      } catch (err) {
+        if (err?.name === "AbortError") return;
+        download(blob, suggested);
+      }
+    } else {
+      download(blob, suggested);
+    }
+    persistDocument();
+    if (!notes.length) state.saved = true;
+    toast(`Saved ${written}`);
+    render();
   }
   function main() {
     loadOptions();
@@ -7274,7 +7318,22 @@ stream
       safely("persist", persistDocument);
       safely("options", saveOptions);
     });
+    const saveAsBtn = $("saveAsBtn");
+    if (saveAsBtn) {
+      saveAsBtn.onclick = () => safely(
+        "saveAs",
+        () => saveAs(render).catch((err) => {
+          console.error("[ophis] saveAs failed", err);
+          toast("Could not save the file.", "error");
+        })
+      );
+    }
     addEventListener("keydown", (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === "s") {
+        e.preventDefault();
+        saveAsBtn?.click();
+        return;
+      }
       if ((e.ctrlKey || e.metaKey) && e.key === "s") {
         e.preventDefault();
         persistDocument();
