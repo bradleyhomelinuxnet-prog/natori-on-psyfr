@@ -14,7 +14,10 @@ import { runOphis } from '../src/core/ophis/run.js';
 import { makeIsoEvent, makeXDate } from '../src/state/iso-event.js';
 import { MILLIS_PER_DAY } from '../src/core/ophis/constants.js';
 import { utcMidnight } from '../src/core/ophis/calendar.js';
-import { FIBONACCI, fibonacciTags, describeFibonacci } from '../src/core/ophis/tags.js';
+import {
+  FIBONACCI, fibonacciTags, describeFibonacci,
+  GEODETIC, DIURNAL, LIST_CEILING, TAG_TOLERANCE_DAYS, listTags, describeListHit, shownValue,
+} from '../src/core/ophis/tags.js';
 import { DEFAULT_OPTIONS } from '../src/state/ophis-store.js';
 
 const NOW = Date.UTC(2020, 0, 1);
@@ -134,4 +137,93 @@ test('tagging changes nothing the engine produced', () => {
   assert.equal(JSON.stringify(r.z_structs, (k, v) => (k === 'y_struct' ? undefined : v)), zBefore);
   // And a second run is identical, so nothing leaked into the event either.
   assert.equal(fingerprint(runOphis(ev, { now: NOW })), before);
+});
+
+/* ------------------------------------------- Geodetic (138) and Diurnal -- */
+
+const r2 = (v) => Math.round(v * 100) / 100;
+const valuesOf = (list, id) => list.filter((e) => e.series === id);
+
+test('Geodetic: multiples of 138 run from 138 to 2484', () => {
+  const m = valuesOf(GEODETIC, '138').map((e) => e.value);
+  assert.equal(m.length, 18);
+  assert.equal(m[0], 138);
+  assert.equal(m.at(-1), 2484);
+  m.forEach((v, i) => assert.equal(v, 138 * (i + 1)));
+});
+
+test('Geodetic: 365.25 × 1.38k reproduces the author’s list as written', () => {
+  // The author truncates to one decimal: 1008.09 is written 1008.0, 2016.18 is 2016.1.
+  assert.deepEqual(valuesOf(GEODETIC, '1.38').map((e) => e.shown), [504.0, 1008.0, 1512.1, 2016.1, 2520.2]);
+});
+
+test('Diurnal: the series come from the formulas, up to (365.25 ÷ 3.14) × 22', () => {
+  assert.equal(r2(LIST_CEILING), 2559.08);
+  assert.deepEqual(valuesOf(DIURNAL, 'year').map((e) => e.value),
+    [365.25, 730.5, 1095.75, 1461, 1826.25, 2191.5, 2556.75]);
+
+  const byPi = valuesOf(DIURNAL, '÷pi').map((e) => r2(e.value));
+  assert.equal(byPi.length, 22);
+  assert.deepEqual(byPi.slice(0, 2), [116.32, 232.64]);
+  assert.equal(byPi.at(-1), 2559.08);
+
+  assert.deepEqual(valuesOf(DIURNAL, '×phi').map((e) => r2(e.value)), [590.97, 1181.95, 1772.92, 2363.9]);
+  assert.equal(r2(valuesOf(DIURNAL, '÷phi')[0].value), 225.74);
+  assert.equal(r2(valuesOf(DIURNAL, '×pi')[0].value), 1146.89);
+  for (const e of [...GEODETIC, ...DIURNAL]) assert.ok(e.value <= LIST_CEILING + 1e-9, e.label);
+});
+
+test('a rotation count within 0.1 day of a list value tags the Z-Date', () => {
+  assert.equal(TAG_TOLERANCE_DAYS, 0.1);
+  // Y = 138; "X2+Y" counts exactly 138 from X2.
+  const ev = pair([2026, 1, 1], [2026, 5, 19], ['X2+Y', 'X2+Yx2', 'X2+Y+0.2']);
+  const r = runOphis(ev, { now: NOW });
+  assert.equal(r.y_structs[0].rotation_count_y, 138);
+
+  const tags = listTags(r, GEODETIC);
+  const at = (rc) => r.processed_z_dates.find((z) =>
+    z.operation_match_structs.some((m) => m.operation_result.rotation_count_z === rc));
+
+  const exact = tags.get(at(138).key);
+  assert.equal(exact.length, 1);
+  assert.equal(exact[0].entry.value, 138);
+  assert.equal(describeListHit(exact[0]), '138 × 1 = 138 · O1(X1→X2) counts 138');
+
+  assert.equal(tags.get(at(276).key)[0].entry.value, 276);
+  // 138.2 is 0.2 away: outside the tolerance.
+  assert.ok(!(tags.get(at(138.2).key) ?? []).some((h) => h.rc === 138.2));
+});
+
+test('the tolerance is decided by the rule, not by IEEE-754', () => {
+  // 504.1 - 504.045 and 138.1 - 138 both sit at the 0.1 edge in floating point.
+  const fake = (rc) => ({
+    processed_z_dates: [{
+      key: 'k',
+      operation_match_structs: [{
+        y_struct: { x_1_ordinal: 0, x_2_ordinal: 1 },
+        operation_result: { rotation_count_z: rc, operation_ordinal: 0 },
+      }],
+    }],
+  });
+  assert.ok(listTags(fake(138.1), GEODETIC).has('k'));
+  assert.ok(listTags(fake(137.9), GEODETIC).has('k'));
+  assert.ok(!listTags(fake(138.2), GEODETIC).has('k'));
+  assert.ok(listTags(fake(2016.1), GEODETIC).has('k'), '2016.1 against 2016.18');
+  assert.ok(listTags(fake(2559.1), DIURNAL).has('k'), '2559.1 against 2559.08');
+  assert.equal(shownValue(1008.09), 1008.0);
+});
+
+test('Geodetic and Diurnal tags are off by default, and change nothing', () => {
+  assert.equal(DEFAULT_OPTIONS.tag_geodetic, false);
+  assert.equal(DEFAULT_OPTIONS.tag_diurnal, false);
+
+  const ev = worked();
+  const r = runOphis(ev, { now: NOW });
+  const before = fingerprint(r);
+  const geo = listTags(r, GEODETIC);
+  const diu = listTags(r, DIURNAL);
+  assert.equal(fingerprint(r), before);
+
+  const survivors = new Set(r.processed_z_dates.map((z) => z.key));
+  for (const key of [...geo.keys(), ...diu.keys()]) assert.ok(survivors.has(key));
 });

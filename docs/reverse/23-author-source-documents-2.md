@@ -139,3 +139,11 @@ Every item keeps parity with the original engine: the shipped numbers do not cha
   dashed **Fibonacci** pill appears in a Tags column; its tooltip names the op, the pair, the anchor
   and the member of F. The rule lives in `src/core/ophis/tags.js` and reads a finished run; it is
   pinned by `npm run test:tags`, including a check that tagging leaves every score and rank as it was.
+- **3 — done.** Settings → *S3* → *Geodetic Chronometry (138)* and *Diurnal projections*, both off
+  by default. Dashed **Geo** and **Diur** pills sit in the Tags column, apart from the MSRF pills, and
+  the table caption reads "author's list, not in the shipped MSRF". The lists are generated, not
+  typed: each series is `k × base` up to (365.25 ÷ 3.14) × 22 = 2559.08, which reproduces 138…2484,
+  504.0…2520.2 (truncated to one decimal, as the author writes them) and 116.32…2559.08. A Z-Date is
+  tagged when an operation's rotation count from its anchor is within **0.1 day** of a list value —
+  one display step of `rotation_count_z` — with a 1e-9 slack so the edge is decided by that rule and
+  not by IEEE-754.

@@ -92,3 +92,84 @@ export function describeFibonacci(t) {
     ? `Y(${pair}) = ${t.y}, in F · ${anchor} + ${t.n} days`
     : `${pair} · ${anchor} + ${t.n} days`;
 }
+
+/* ------------------------------------------- Geodetic (138) and Diurnal -- */
+
+/**
+ * How close a rotation count must be to a list value to be tagged, in days.
+ *
+ * One tenth of a day: `rotation_count_z` is itself rounded to one decimal, and
+ * the author writes these lists to one decimal too (2016.1 for 2016.18). So a
+ * count within one display step of the exact value is the same number as far
+ * as either side can tell. The 1e-9 is there so 138.1 against 138 is decided
+ * by this rule and not by IEEE-754 — unlike the MSRF's vortex check, which is
+ * pinned to raw floating point and must stay that way.
+ */
+export const TAG_TOLERANCE_DAYS = 0.1;
+const SLACK = 1e-9;
+
+/**
+ * The largest value any list runs to: (365.25 ÷ 3.14) × 22 = 2559.08, the last
+ * entry of the author's own ÷ 3.14 series and the shipped 2559-day window.
+ * Every series below is generated up to this and no further, which reproduces
+ * the author's ranges without typing them: 138 × 18 = 2484, 365.25 × 1.38 × 5
+ * = 2520.2, 365.25 × 7 = 2556.75.
+ */
+export const LIST_CEILING = (365.25 / 3.14) * 22;
+
+/** Truncate to one decimal, as the author's lists are written (2016.18 → 2016.1). */
+export const shownValue = (v) => Math.trunc(v * 10 + SLACK) / 10;
+
+/** Every k × base up to the ceiling. */
+function series(id, label, base) {
+  const out = [];
+  for (let k = 1; k * base <= LIST_CEILING + SLACK; k++) {
+    out.push({ series: id, label, k, value: k * base, shown: shownValue(k * base) });
+  }
+  return out;
+}
+
+/** Geodetic Chronometry (138): multiples of 138, and 365.25 × 1.38k. */
+export const GEODETIC = Object.freeze([
+  ...series('138', '138 × k', 138),
+  ...series('1.38', '365.25 × 1.38 × k', 365.25 * 1.38),
+]);
+
+/** The Diurnal (Annular Chronometric) series, docs/reverse/23 §4. */
+export const DIURNAL = Object.freeze([
+  ...series('year', '365.25 × k', 365.25),
+  ...series('×phi', '365.25 × 1.618 × k', 365.25 * 1.618),
+  ...series('÷phi', '365.25 ÷ 1.618 × k', 365.25 / 1.618),
+  ...series('×pi', '365.25 × 3.14 × k', 365.25 * 3.14),
+  ...series('÷pi', '365.25 ÷ 3.14 × k', 365.25 / 3.14),
+]);
+
+/**
+ * Tag every surviving Z-Date one of whose contributors' rotation counts — the
+ * days from that operation's anchor to the Z-Date, the very number the MSRF
+ * probes — is within TAG_TOLERANCE_DAYS of a list value.
+ *
+ * @returns {Map<string, {entry: object, rc: number, ordinal: number, x1: number, x2: number}[]>}
+ */
+export function listTags(results, list) {
+  const out = new Map();
+  for (const z of results?.processed_z_dates ?? []) {
+    const hits = [];
+    for (const { y_struct: ys, operation_result: r } of z.operation_match_structs) {
+      for (const entry of list) {
+        if (Math.abs(r.rotation_count_z - entry.value) <= TAG_TOLERANCE_DAYS + SLACK) {
+          hits.push({ entry, rc: r.rotation_count_z, ordinal: r.operation_ordinal, x1: ys.x_1_ordinal, x2: ys.x_2_ordinal });
+        }
+      }
+    }
+    if (hits.length) out.set(z.key, hits);
+  }
+  return out;
+}
+
+/** One list hit, in words, for a tooltip. */
+export function describeListHit(h) {
+  const exact = Math.round(h.entry.value * 100) / 100;
+  return `${h.entry.label.replace('k', String(h.entry.k))} = ${exact} · ` +
+    `O${h.ordinal + 1}(X${h.x1 + 1}→X${h.x2 + 1}) counts ${h.rc}`;
+}

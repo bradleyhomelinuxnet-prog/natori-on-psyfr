@@ -287,6 +287,22 @@ const OPTIONAL_TAGS = [
       'each member of F is projected forward from X2. Op 2: each member is projected forward ' +
       'from X1 and from X2. A projection landing on a Z-Date tags it.',
   },
+  {
+    key: 'tag_geodetic',
+    label: 'Geodetic Chronometry (138)',
+    note:
+      'Author’s list, not in the shipped MSRF. Multiples of 138 from 138 to 2484, and ' +
+      '365.25 × 1.38k: 504.0, 1008.0, 1512.1, 2016.1, 2520.2. A Z-Date is tagged when an ' +
+      'operation’s rotation count from its anchor is within 0.1 day of one of them.',
+  },
+  {
+    key: 'tag_diurnal',
+    label: 'Diurnal projections',
+    note:
+      'Author’s list, not in the shipped MSRF. 365.25 × k, and 365.25 × and ÷ 1.618 and 3.14, ' +
+      'each times k, up to (365.25 ÷ 3.14) × 22 = 2559.08. Generated from those formulas; a ' +
+      'rotation count within 0.1 day of a value tags the Z-Date.',
+  },
 ];
 
 function tagToggle({ key, label, note }) {

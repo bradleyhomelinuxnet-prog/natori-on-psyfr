@@ -21,7 +21,9 @@ import { fmtDate, fmtDateTime } from '../../core/ophis/calendar.js';
 import { FILTER_ROWS } from '../../core/ophis/filters.js';
 import { EVENT_SCOPE } from '../../core/ophis/constants.js';
 import { operationClass } from '../../core/ophis/scoring.js';
-import { fibonacciTags, describeFibonacci } from '../../core/ophis/tags.js';
+import {
+  fibonacciTags, describeFibonacci, listTags, describeListHit, GEODETIC, DIURNAL,
+} from '../../core/ophis/tags.js';
 import { tooltip, goto } from './shell.js';
 
 /** The table renders at most this many rows; the counter says so when it bites. */
@@ -111,10 +113,41 @@ const MAX_TAG_LINES = 8;
  * touched, so a tag cannot move a score or a row.
  */
 function optionalTags(r, ev, opts) {
-  if (!opts.tag_fibonacci) return null;
+  if (!opts.tag_fibonacci && !opts.tag_geodetic && !opts.tag_diurnal) return null;
   return {
     fibonacci: opts.tag_fibonacci ? fibonacciTags(r, ev) : new Map(),
+    geodetic: opts.tag_geodetic ? listTags(r, GEODETIC) : new Map(),
+    diurnal: opts.tag_diurnal ? listTags(r, DIURNAL) : new Map(),
   };
+}
+
+const LIST_TAG = {
+  geodetic: { prefix: 'Geo', name: 'Geodetic Chronometry (138)' },
+  diurnal: { prefix: 'Diur', name: 'Diurnal projection' },
+};
+
+/** One pill per list value a row hits; the tooltip lists the operations that hit it. */
+function listPills(kind, hits) {
+  const byEntry = new Map();
+  for (const h of hits) {
+    if (!byEntry.has(h.entry)) byEntry.set(h.entry, []);
+    byEntry.get(h.entry).push(h);
+  }
+  return [...byEntry].map(([entry, group]) => {
+    const pill = el('span', {
+      class: `pill opt-tag ${kind}`,
+      tabindex: '0',
+      text: `${LIST_TAG[kind].prefix} ${entry.shown}`,
+    });
+    tooltip(pill, () => [
+      ['Tag', `${LIST_TAG[kind].name} — author’s list, not in the shipped MSRF`],
+      ...group.slice(0, MAX_TAG_LINES).map((h) => ['Hit', describeListHit(h)]),
+      ...(group.length > MAX_TAG_LINES ? [['', `+ ${group.length - MAX_TAG_LINES} more`]] : []),
+      ['Tolerance', 'Within 0.1 day of the exact value'],
+      ['Effect', 'None. A label only: score, hits and rank are unchanged.'],
+    ]);
+    return pill;
+  });
 }
 
 function fibonacciPill(hits) {
@@ -132,6 +165,10 @@ function tagCell(z, tags) {
   const pills = [];
   const fib = tags.fibonacci.get(z.key);
   if (fib) pills.push(fibonacciPill(fib));
+  for (const kind of ['geodetic', 'diurnal']) {
+    const hits = tags[kind].get(z.key);
+    if (hits) pills.push(...listPills(kind, hits));
+  }
   return el('td', {}, [
     pills.length
       ? el('div.pills', {}, pills)
@@ -351,14 +388,19 @@ export function renderResults(host) {
   });
 
   const capped = rows.length > MAX_ROWS;
+  // The Geodetic and Diurnal lists are the author's, never the program's; say
+  // so where the eye lands, not only in a tooltip.
+  const listNote = opts.tag_geodetic || opts.tag_diurnal
+    ? ' · Tags: author’s list, not in the shipped MSRF'
+    : '';
 
   replace(host, [
     el('div.tablewrap', { class: state.stale ? 'stale' : '' }, [
       el('table', {}, [
         el('caption', {
           text: capped
-            ? `Showing ${MAX_ROWS} of ${rows.length} Z-Dates · ${r.hidden} hidden by filters · click a row to audit it`
-            : `${rows.length} Z-Date${rows.length === 1 ? '' : 's'} · ${r.hidden} hidden by filters · click a row to audit it`,
+            ? `Showing ${MAX_ROWS} of ${rows.length} Z-Dates · ${r.hidden} hidden by filters · click a row to audit it${listNote}`
+            : `${rows.length} Z-Date${rows.length === 1 ? '' : 's'} · ${r.hidden} hidden by filters · click a row to audit it${listNote}`,
         }),
         el('thead', {}, [el('tr', {}, [
           ...visible.filter((c) => c.key !== 'ops').map((c) => headerCell(c, sortType)),

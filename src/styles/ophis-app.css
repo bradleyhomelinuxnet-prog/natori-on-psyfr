@@ -600,6 +600,8 @@ td.zlabel {
 /* Optional tags: dashed, so they never read as a shipped MSRF match. */
 .pill.opt-tag   { border-style: dashed; background: transparent; }
 .pill.fibonacci { color: var(--moon); }
+.pill.geodetic  { color: var(--warn); }
+.pill.diurnal   { color: var(--prose); }
 
 /* --------------------------------------------------------------- tooltip -- */
 

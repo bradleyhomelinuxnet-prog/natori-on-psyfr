@@ -980,6 +980,8 @@ td.zlabel {
 /* Optional tags: dashed, so they never read as a shipped MSRF match. */
 .pill.opt-tag   { border-style: dashed; background: transparent; }
 .pill.fibonacci { color: var(--moon); }
+.pill.geodetic  { color: var(--warn); }
+.pill.diurnal   { color: var(--prose); }
 
 /* --------------------------------------------------------------- tooltip -- */
 
@@ -3115,7 +3117,7 @@ pre.blob {
 
   // src/io/oph.js
   var APP_VERSION = "13.0.0";
-  var BUILD_TAG = "2026-10-21 · fibonacci tag";
+  var BUILD_TAG = "2026-10-21 · geodetic + diurnal tags";
   var SCHEMA_VERSION = 1;
   var VALIDATION = { STRICT: "strict", LOOSE: "loose" };
   var isObj = (v) => v !== null && typeof v === "object" && !Array.isArray(v);
@@ -3454,7 +3456,9 @@ pre.blob {
      * rank, so -- like the eclipse table -- they are preferences, not event
      * fields, and switching one never dirties the document. All off by default.
      */
-    tag_fibonacci: false
+    tag_fibonacci: false,
+    tag_geodetic: false,
+    tag_diurnal: false
   };
   var listeners = /* @__PURE__ */ new Set();
   function blankDocument() {
@@ -4964,6 +4968,47 @@ pre.blob {
     const anchor = `X${(t.from === "X1" ? t.x1 : t.x2) + 1}`;
     return t.op === 1 ? `Y(${pair}) = ${t.y}, in F · ${anchor} + ${t.n} days` : `${pair} · ${anchor} + ${t.n} days`;
   }
+  var TAG_TOLERANCE_DAYS = 0.1;
+  var SLACK = 1e-9;
+  var LIST_CEILING = 365.25 / 3.14 * 22;
+  var shownValue = (v) => Math.trunc(v * 10 + SLACK) / 10;
+  function series(id, label, base) {
+    const out = [];
+    for (let k = 1; k * base <= LIST_CEILING + SLACK; k++) {
+      out.push({ series: id, label, k, value: k * base, shown: shownValue(k * base) });
+    }
+    return out;
+  }
+  var GEODETIC = Object.freeze([
+    ...series("138", "138 × k", 138),
+    ...series("1.38", "365.25 × 1.38 × k", 365.25 * 1.38)
+  ]);
+  var DIURNAL = Object.freeze([
+    ...series("year", "365.25 × k", 365.25),
+    ...series("×phi", "365.25 × 1.618 × k", 365.25 * 1.618),
+    ...series("÷phi", "365.25 ÷ 1.618 × k", 365.25 / 1.618),
+    ...series("×pi", "365.25 × 3.14 × k", 365.25 * 3.14),
+    ...series("÷pi", "365.25 ÷ 3.14 × k", 365.25 / 3.14)
+  ]);
+  function listTags(results, list) {
+    const out = /* @__PURE__ */ new Map();
+    for (const z of results?.processed_z_dates ?? []) {
+      const hits = [];
+      for (const { y_struct: ys, operation_result: r } of z.operation_match_structs) {
+        for (const entry of list) {
+          if (Math.abs(r.rotation_count_z - entry.value) <= TAG_TOLERANCE_DAYS + SLACK) {
+            hits.push({ entry, rc: r.rotation_count_z, ordinal: r.operation_ordinal, x1: ys.x_1_ordinal, x2: ys.x_2_ordinal });
+          }
+        }
+      }
+      if (hits.length) out.set(z.key, hits);
+    }
+    return out;
+  }
+  function describeListHit(h) {
+    const exact = Math.round(h.entry.value * 100) / 100;
+    return `${h.entry.label.replace("k", String(h.entry.k))} = ${exact} · O${h.ordinal + 1}(X${h.x1 + 1}→X${h.x2 + 1}) counts ${h.rc}`;
+  }
 
   // src/ui/ophis/results.js
   var MAX_ROWS = 500;
@@ -5049,10 +5094,38 @@ pre.blob {
   }
   var MAX_TAG_LINES = 8;
   function optionalTags(r, ev, opts) {
-    if (!opts.tag_fibonacci) return null;
+    if (!opts.tag_fibonacci && !opts.tag_geodetic && !opts.tag_diurnal) return null;
     return {
-      fibonacci: opts.tag_fibonacci ? fibonacciTags(r, ev) : /* @__PURE__ */ new Map()
+      fibonacci: opts.tag_fibonacci ? fibonacciTags(r, ev) : /* @__PURE__ */ new Map(),
+      geodetic: opts.tag_geodetic ? listTags(r, GEODETIC) : /* @__PURE__ */ new Map(),
+      diurnal: opts.tag_diurnal ? listTags(r, DIURNAL) : /* @__PURE__ */ new Map()
     };
+  }
+  var LIST_TAG = {
+    geodetic: { prefix: "Geo", name: "Geodetic Chronometry (138)" },
+    diurnal: { prefix: "Diur", name: "Diurnal projection" }
+  };
+  function listPills(kind, hits) {
+    const byEntry = /* @__PURE__ */ new Map();
+    for (const h of hits) {
+      if (!byEntry.has(h.entry)) byEntry.set(h.entry, []);
+      byEntry.get(h.entry).push(h);
+    }
+    return [...byEntry].map(([entry, group]) => {
+      const pill = el("span", {
+        class: `pill opt-tag ${kind}`,
+        tabindex: "0",
+        text: `${LIST_TAG[kind].prefix} ${entry.shown}`
+      });
+      tooltip(pill, () => [
+        ["Tag", `${LIST_TAG[kind].name} — author’s list, not in the shipped MSRF`],
+        ...group.slice(0, MAX_TAG_LINES).map((h) => ["Hit", describeListHit(h)]),
+        ...group.length > MAX_TAG_LINES ? [["", `+ ${group.length - MAX_TAG_LINES} more`]] : [],
+        ["Tolerance", "Within 0.1 day of the exact value"],
+        ["Effect", "None. A label only: score, hits and rank are unchanged."]
+      ]);
+      return pill;
+    });
   }
   function fibonacciPill(hits) {
     const pill = el("span", { class: "pill opt-tag fibonacci", tabindex: "0", text: "Fibonacci" });
@@ -5068,6 +5141,10 @@ pre.blob {
     const pills = [];
     const fib = tags.fibonacci.get(z.key);
     if (fib) pills.push(fibonacciPill(fib));
+    for (const kind of ["geodetic", "diurnal"]) {
+      const hits = tags[kind].get(z.key);
+      if (hits) pills.push(...listPills(kind, hits));
+    }
     return el("td", {}, [
       pills.length ? el("div.pills", {}, pills) : el("span", { style: "color:var(--faint)", text: "—" })
     ]);
@@ -5230,11 +5307,12 @@ pre.blob {
       return tr;
     });
     const capped = rows.length > MAX_ROWS;
+    const listNote = opts.tag_geodetic || opts.tag_diurnal ? " · Tags: author’s list, not in the shipped MSRF" : "";
     replace(host, [
       el("div.tablewrap", { class: state.stale ? "stale" : "" }, [
         el("table", {}, [
           el("caption", {
-            text: capped ? `Showing ${MAX_ROWS} of ${rows.length} Z-Dates · ${r.hidden} hidden by filters · click a row to audit it` : `${rows.length} Z-Date${rows.length === 1 ? "" : "s"} · ${r.hidden} hidden by filters · click a row to audit it`
+            text: capped ? `Showing ${MAX_ROWS} of ${rows.length} Z-Dates · ${r.hidden} hidden by filters · click a row to audit it${listNote}` : `${rows.length} Z-Date${rows.length === 1 ? "" : "s"} · ${r.hidden} hidden by filters · click a row to audit it${listNote}`
           }),
           el("thead", {}, [el("tr", {}, [
             ...visible.filter((c) => c.key !== "ops").map((c) => headerCell(c, sortType)),
@@ -6359,6 +6437,16 @@ stream
       key: "tag_fibonacci",
       label: "Fibonacci Sequence Filter",
       note: "F = 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597. Op 1: when Y (X1→X2) is in F, each member of F is projected forward from X2. Op 2: each member is projected forward from X1 and from X2. A projection landing on a Z-Date tags it."
+    },
+    {
+      key: "tag_geodetic",
+      label: "Geodetic Chronometry (138)",
+      note: "Author’s list, not in the shipped MSRF. Multiples of 138 from 138 to 2484, and 365.25 × 1.38k: 504.0, 1008.0, 1512.1, 2016.1, 2520.2. A Z-Date is tagged when an operation’s rotation count from its anchor is within 0.1 day of one of them."
+    },
+    {
+      key: "tag_diurnal",
+      label: "Diurnal projections",
+      note: "Author’s list, not in the shipped MSRF. 365.25 × k, and 365.25 × and ÷ 1.618 and 3.14, each times k, up to (365.25 ÷ 3.14) × 22 = 2559.08. Generated from those formulas; a rotation count within 0.1 day of a value tags the Z-Date."
     }
   ];
   function tagToggle({ key, label, note }) {

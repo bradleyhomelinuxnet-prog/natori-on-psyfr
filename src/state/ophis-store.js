@@ -54,6 +54,8 @@ export const DEFAULT_OPTIONS = {
    * fields, and switching one never dirties the document. All off by default.
    */
   tag_fibonacci: false,
+  tag_geodetic: false,
+  tag_diurnal: false,
 };
 
 const listeners = new Set();
