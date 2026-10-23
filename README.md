@@ -13,7 +13,40 @@ relationship to the controls.
 
 Nothing leaves the page. There is no network call, no sign-in, and no dependency.
 
----
+---What it is
+
+It’s a browser app with no server and no install. You open index.html (or the all-in-one ophis-single.html) and everything runs on your own machine. It also deploys as a plain GitHub Pages site. REA found no network calls in the core code, so nothing you enter leaves your computer. Your work is saved in the browser’s own storage, and you can also save it to a .oph file.
+
+The folder actually holds two generations of the same tool:
+
+ophis/ is the original OPHIS app: older jQuery code with charting, map and astronomy libraries. Your docs/reverse/ notes show it was taken apart from a desktop (Electron) build, versions 9 through 12.
+src/ is your clean rebuild of that engine, plus the Natorion/PSYFR cipher layer on top.
+How a prediction run works
+You describe a recurring event. For example, “job changes.” You list the past dates it happened (the app calls these X-dates) and pick a location on a built-in offline world map.
+It sanity-checks your dates. Before calculating, it warns you if dates are too close together, too old, or too few. These are the “SOP warnings.”
+It runs “operations.” These are small formulas written in the app’s own mini-language, which has its own tokenizer, parser, constants and named “reckonings.” Each formula takes your past dates and projects them forward to candidate future dates.
+It anchors each day to sunset, not midnight. It calculates local sunset for your location and uses that as the day boundary, the way ancient calendars did.
+It checks the sky. Each candidate date is compared against moon phase and two eclipse tables (solar and lunar). Dates that fall within a few days of an eclipse or a key lunar phase get flagged.
+It scores and tags. Each hit gets a score, a strength rating from the MSRF magnitude system, and pattern tags such as Fibonacci spacing, daily-rhythm (diurnal) markers, and geographic (geodetic) markers. Top-strength results are marked “alpha.”
+It filters and groups. Your filter settings trim the list. Nearby hits are bundled into time windows, so a cluster of agreeing formulas stands out as one strong window.
+You see the results. They appear as a sortable table, a timeline chart, and points on the map. You can export them or save the whole session as a .oph file. The examples/ folder has ready-made ones, including 04-even-spacing-19-138.oph.
+The Natorion / Chronicon layer
+
+The other half of src/ (app.js, plus the panels for anchors, wheels, convergence and ledger) is the cipher-and-cycles side. It converts dates to Julian Day Numbers and checks those numbers for palindromes. It also places each date within long cycles:
+
+Maya Long Count
+Metonic (19-year) cycle
+Phoenix cycle
+Nemesis cycle
+“Anunna turnings”
+Years since the cataclysm
+
+A convergence finder then looks for moments where several of these cycles line up at once. chronicon.html, PSYFR1/2.html and natori-on-cyphr.html are the standalone pages for this side.
+
+Supporting pieces
+tests/: checks that the rebuild gives the same answers as the original (“golden” and “parity” tests).
+tools/: scripts to serve the app locally, bundle it into one HTML file, and convert the docs to HTML.
+docs/: your manual, whitepaper and reverse-engineering notes.
 
 ## Running it
 
