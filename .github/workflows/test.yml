@@ -57,6 +57,12 @@ jobs:
       - name: Check the Start here reading
         run: npm run test:start
 
+      # The Lab: readings from the author's later notes (docs/reverse/24). Not in
+      # the parity count -- the original never ran them -- but they must prove
+      # they read a run without moving a score, a hit count, a rank or a row.
+      - name: Check the Lab readings
+        run: npm run test:lab
+
       - name: Check nothing reaches for eval
         run: |
           if grep -rnE '\bnew Function\b|\beval\(' src/ --include='*.js' \

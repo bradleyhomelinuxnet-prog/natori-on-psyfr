@@ -107,6 +107,14 @@ collapsing to "38 or 39 actual dates" once duplicates merge.
 Nothing in the software enforces this, and nothing in it hints at it. Enter today's date as a third
 X-Date and the engine does the rest. See [`docs/reverse/22`](docs/reverse/22-author-source-documents.md).
 
+### The Lab
+
+The **Lab** screen runs the author's later working notes against your dates, without touching a
+score: the rotation count from *every* X-Date to each Z-Date with its MSRF tier, the validity rule
+from the Programmer Instructions as an optional reading view, a Holoflective Sums tag, the gaps
+between your dates in lunations, and the moon's long returns (Metonic, Saros, Callippic, Exeligmos)
+as Antikythera-style dials. See [`docs/reverse/24`](docs/reverse/24-author-source-documents-3.md).
+
 ---
 
 ## Layout

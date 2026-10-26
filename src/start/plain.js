@@ -15,6 +15,7 @@
  */
 
 import { runOphis } from '../core/ophis/run.js';
+import { horizon } from '../core/ophis/lab.js';
 import { MILLIS_PER_DAY } from '../core/ophis/constants.js';
 import { lunarPhase, phaseGapDays, toJD, LUNAR_MATCH_DAYS, ECLIPSE_MATCH_DAYS } from '../core/ophis/moon.js';
 import { SOP_MIN_DAYS_BETWEEN, SOP_MAX_AGE_YEARS, SOP_MIN_X_DATES_WHEN_OLD } from '../core/ophis/sop.js';
@@ -135,7 +136,12 @@ export function coach(dates, now, { includeToday = false } = {}) {
     }
   }
 
-  return { ok: !notes.some((n) => n.level === 'stop'), notes };
+  const ok = !notes.some((n) => n.level === 'stop');
+  if (ok) {
+    const ahead = horizon(buildEvent({ dates: list, includeToday, now }), now);
+    if (ahead) notes.push({ level: 'tip', text: ahead.text });
+  }
+  return { ok, notes };
 }
 
 /* ------------------------------------------------------------- the context -- */
@@ -302,5 +308,5 @@ export function readRun(ev, now, { top = 5 } = {}) {
     verdict = { key: 'faint', text: 'A few faint overlaps, nothing strong. Treat these as places to keep half an eye on.' };
   else verdict = { key: 'some', text: 'Some dates stand out from the rest of your results. These are where the most agreement piles up.' };
 
-  return { errors: [], picks, total: future.length, verdict, results };
+  return { errors: [], picks, total: future.length, verdict, horizon: horizon(ev, now), results };
 }

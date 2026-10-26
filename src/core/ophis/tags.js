@@ -8,11 +8,13 @@
  * pins the engine, and a tag that could reach the score would have to be pinned
  * there too.
  *
- * Source: the author's *Other MSRA Filters*, read in docs/reverse/23 §2.
+ * Source: the author's *Other MSRA Filters*, read in docs/reverse/23 §2, and
+ * *Holoflective Sums*, read in docs/reverse/24 §2.
  */
 
 import { MILLIS_PER_DAY, EVENT_SCOPE } from './constants.js';
 import { normaliseWindow } from './calendar.js';
+import { HOLOFLECTIVE, IMMORTAL_LOOP } from '../../data/holoflective.js';
 
 /** The author's Fibonacci set, F. It starts at 8, not 1. */
 export const FIBONACCI = Object.freeze([8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597]);
@@ -142,6 +144,33 @@ export const DIURNAL = Object.freeze([
   ...series('÷phi', '365.25 ÷ 1.618 × k', 365.25 / 1.618),
   ...series('×pi', '365.25 × 3.14 × k', 365.25 * 3.14),
   ...series('÷pi', '365.25 ÷ 3.14 × k', 365.25 / 3.14),
+]);
+
+/**
+ * Holoflective sums (docs/reverse/24 §2): the author's table of a sum and its
+ * digit reversal, plus 2178, the "Immortal Loop Number" the source credits the
+ * method with finding (2178 × 4 = 8712, its own reversal). Shaped like the other
+ * lists so listTags reads it unchanged; `label` carries the reflection.
+ */
+export const HOLOFLECTIVE_LIST = Object.freeze([
+  ...HOLOFLECTIVE.map(({ sum, mirror, major }) => ({
+    series: 'holo',
+    label: `${sum} ⇄ ${mirror}${major ? ' (both major)' : ''}`,
+    k: 1,
+    value: sum,
+    shown: sum,
+    mirror,
+    major,
+  })),
+  {
+    series: 'holo',
+    label: `${IMMORTAL_LOOP} ⇄ ${IMMORTAL_LOOP * 4} (the Immortal Loop: × 4 reverses it)`,
+    k: 1,
+    value: IMMORTAL_LOOP,
+    shown: IMMORTAL_LOOP,
+    mirror: IMMORTAL_LOOP * 4,
+    major: true,
+  },
 ]);
 
 /**

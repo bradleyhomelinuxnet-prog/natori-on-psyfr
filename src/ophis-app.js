@@ -23,6 +23,7 @@ import {
   renderOperations, renderSettings, renderSwap, renderImport,
   renderExport, renderZExport, renderAudit, renderAbout,
 } from './ui/ophis/screens.js';
+import { renderLab } from './ui/ophis/lab.js';
 
 /** Run `fn`, reporting rather than propagating a failure. */
 function safely(name, fn) {
@@ -134,6 +135,7 @@ function main() {
     import: () => renderImport($('importHost')),
     export: () => renderExport($('exportHost')),
     zexport: () => renderZExport($('zexportHost')),
+    lab: () => renderLab($('labHost')),
     audit: () => renderAudit($('auditHost')),
     about: () => renderAbout($('aboutHost')),
   };

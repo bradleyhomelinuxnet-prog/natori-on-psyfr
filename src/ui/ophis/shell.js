@@ -25,6 +25,8 @@ export const SCREENS = [
     lede: 'The document as text — copy it, or write it to a file.' },
   { id: 'zexport', label: 'Z-Dates', kind: 'data', title: 'Export Z-Dates',
     lede: 'The results as CSV, XLSX or PDF.' },
+  { id: 'lab', label: 'Lab', kind: 'place', title: 'The Lab',
+    lede: 'The author’s working notes, read against this run: every anchor’s count, the moon’s long returns, and the rules the original never ran.' },
   { id: 'audit', label: 'Audit', kind: 'place', title: 'Audit',
     lede: 'How a projection was derived, one arithmetic step at a time — and everything the engine wanted to tell you.' },
   { id: 'about', label: 'About', kind: 'place', title: 'About',

@@ -22,9 +22,10 @@ import { FILTER_ROWS } from '../../core/ophis/filters.js';
 import { EVENT_SCOPE } from '../../core/ophis/constants.js';
 import { operationClass } from '../../core/ophis/scoring.js';
 import {
-  fibonacciTags, describeFibonacci, listTags, describeListHit, GEODETIC, DIURNAL,
+  fibonacciTags, describeFibonacci, listTags, describeListHit, GEODETIC, DIURNAL, HOLOFLECTIVE_LIST,
 } from '../../core/ophis/tags.js';
 import { groupIntoWindows, WINDOW_DAYS } from '../../core/ophis/sop.js';
+import { applyValidity } from '../../core/ophis/lab.js';
 import { tooltip, goto } from './shell.js';
 
 /** The table renders at most this many rows; the counter says so when it bites. */
@@ -114,17 +115,19 @@ const MAX_TAG_LINES = 8;
  * touched, so a tag cannot move a score or a row.
  */
 function optionalTags(r, ev, opts) {
-  if (!opts.tag_fibonacci && !opts.tag_geodetic && !opts.tag_diurnal) return null;
+  if (!opts.tag_fibonacci && !opts.tag_geodetic && !opts.tag_diurnal && !opts.tag_holoflective) return null;
   return {
     fibonacci: opts.tag_fibonacci ? fibonacciTags(r, ev) : new Map(),
     geodetic: opts.tag_geodetic ? listTags(r, GEODETIC) : new Map(),
     diurnal: opts.tag_diurnal ? listTags(r, DIURNAL) : new Map(),
+    holoflective: opts.tag_holoflective ? listTags(r, HOLOFLECTIVE_LIST) : new Map(),
   };
 }
 
 const LIST_TAG = {
   geodetic: { prefix: 'Geo', name: 'Geodetic Chronometry (138)' },
   diurnal: { prefix: 'Diur', name: 'Diurnal projection' },
+  holoflective: { prefix: 'Holo', name: 'Holoflective sum' },
 };
 
 /** One pill per list value a row hits; the tooltip lists the operations that hit it. */
@@ -166,7 +169,7 @@ function tagCell(z, tags) {
   const pills = [];
   const fib = tags.fibonacci.get(z.key);
   if (fib) pills.push(fibonacciPill(fib));
-  for (const kind of ['geodetic', 'diurnal']) {
+  for (const kind of ['geodetic', 'diurnal', 'holoflective']) {
     const hits = tags[kind].get(z.key);
     if (hits) pills.push(...listPills(kind, hits));
   }
@@ -334,14 +337,18 @@ export function renderResults(host) {
     return;
   }
 
-  const rows = r.processed_z_dates;
+  // The author's validity rule, switched on in the Lab, is a reading view: a
+  // filtered copy for this table, never a change to the run, the chart or the
+  // exports.
+  const view = opts.lab_validity ? applyValidity(r) : r;
+  const rows = view.processed_z_dates;
   if (!rows.length) {
     replace(host, [el('div.tablewrap', {}, [emptyPanel()])]);
     return;
   }
 
   if (opts.results_view === 'windows') {
-    replace(host, [windowsTable(r)]);
+    replace(host, [windowsTable(view)]);
     return;
   }
 
@@ -439,9 +446,9 @@ export function renderResults(host) {
   const capped = rows.length > MAX_ROWS;
   // The Geodetic and Diurnal lists are the author's, never the program's; say
   // so where the eye lands, not only in a tooltip.
-  const listNote = opts.tag_geodetic || opts.tag_diurnal
+  const listNote = (opts.tag_geodetic || opts.tag_diurnal || opts.tag_holoflective
     ? ' · Tags: author’s list, not in the shipped MSRF'
-    : '';
+    : '') + (view.set_aside ? ` · ${view.set_aside} set aside by the author’s validity rule (Lab)` : '');
 
   replace(host, [
     el('div.tablewrap', { class: state.stale ? 'stale' : '' }, [

@@ -927,3 +927,46 @@ pre.blob {
     scroll-behavior: auto !important;
   }
 }
+
+/* ============================== LAB ============================== */
+/* docs/reverse/24. Readings only; nothing here styles a score. */
+
+.panel.lab { margin-bottom: var(--sp-4); }
+.panel.lab p { max-width: var(--measure); }
+
+.tierchip {
+  display: inline-block;
+  padding: 0 5px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--msrf-normal);
+  color: var(--msrf-normal);
+  font-family: var(--font-mono);
+  font-size: var(--fs-pill);
+  line-height: 1.5;
+  white-space: nowrap;
+}
+.tierchip[data-apex='true'] { border-color: var(--msrf-vortex); color: var(--msrf-vortex); }
+
+table.matrix td.matrixcell { white-space: nowrap; }
+table.matrix td.matrixcell[data-tier='false'] { color: var(--dim); }
+table.matrix td.ok { color: var(--ok); }
+table.matrix td.faint { color: var(--faint); }
+
+.dials { display: flex; flex-wrap: wrap; gap: var(--sp-4); margin: var(--sp-3) 0; }
+.dial { margin: 0; display: flex; gap: var(--sp-2); align-items: center; min-width: 200px; }
+.dial svg { flex: 0 0 auto; }
+.dial .ring { fill: none; stroke: var(--line-2); stroke-width: 2; }
+.dial .zero { stroke: var(--gold); stroke-width: 3; stroke-linecap: round; }
+.dial .hand { stroke: var(--cyan); stroke-width: 2.5; stroke-linecap: round; }
+.dial .hub { fill: var(--cyan); }
+.dial[data-return='true'] .ring { stroke: var(--gold); }
+.dial[data-return='true'] .hand { stroke: var(--gold-2); }
+.dial figcaption { display: flex; flex-direction: column; font-size: var(--fs-ui); color: var(--prose); }
+.dial figcaption b { color: var(--ink); font-family: var(--font-display); font-size: 15px; }
+.dial figcaption .sub { color: var(--dim); }
+
+.panel.lab label.row { display: flex; gap: var(--sp-2); align-items: center; }
+.panel.lab select {
+  font: inherit; font-size: var(--fs-ui); color: var(--ink); background: var(--well);
+  border: 1px solid var(--line-2); border-radius: var(--r-1); padding: 4px 6px; max-width: 100%;
+}

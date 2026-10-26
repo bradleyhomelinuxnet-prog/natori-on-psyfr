@@ -67,6 +67,10 @@ test('coaching stops on what cannot work, and warns on what works badly', () => 
     'old dates need more of them (SOP)'
   );
   assert.deepEqual(levels(DATES), ['tip']);
+  assert.ok(
+    coach([d(2026, 5, 1), d(2026, 10, 10)], NOW).notes.some((n) => /5 months ahead/.test(n.text)),
+    'recent dates get the Programmer Instructions’ look-ahead (docs/reverse/24 §1)'
+  );
 });
 
 test('the reading shows only what the engine produced, ahead of today, best first', () => {
