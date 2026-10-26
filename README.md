@@ -13,6 +13,12 @@ relationship to the controls.
 
 Nothing leaves the page. There is no network call, no sign-in, and no dependency.
 
+**New here?** [`start.html`](start.html) is the guided first run: a short story (Natori's notebook)
+walks you through naming something that keeps happening, adding the dates, and reading the few
+future days worth watching, in plain English. It runs the same engine and hands your dates to the
+full app when you want every row. Each date also links out to the Chronotecture plates that name its
+year or numbers.
+
 ---What it is
 
 It’s a browser app with no server and no install. You open index.html (or the all-in-one ophis-single.html) and everything runs on your own machine. It also deploys as a plain GitHub Pages site. REA found no network calls in the core code, so nothing you enter leaves your computer. Your work is saved in the browser’s own storage, and you can also save it to a .oph file.

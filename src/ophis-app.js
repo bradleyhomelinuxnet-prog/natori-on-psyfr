@@ -10,7 +10,7 @@
 import { $ } from './ui/dom.js';
 import {
   state, subscribe, loadOptions, restoreDocument, persistDocument,
-  recalculate, seedExample, saveOptions,
+  recalculate, seedExample, saveOptions, adoptHandoff,
 } from './state/ophis-store.js';
 import { setEclipseSource, isEclipseSource } from './core/eclipses.js';
 import { serialiseDocumentV12, safeFilename } from './io/oph.js';
@@ -111,8 +111,12 @@ function main() {
   document.addEventListener('ophis:chartview', syncRecenter);
 
   // Restore what was on screen last time; seed a worked example on a first run,
-  // so the app is never a blank page that gives no clue what it is for.
-  if (!restoreDocument()) seedExample();
+  // so the app is never a blank page that gives no clue what it is for. An event
+  // handed over by start.html joins what was restored, or stands in for the
+  // example when nothing was.
+  const restored = restoreDocument();
+  const handed = safely('handoff', () => adoptHandoff({ alone: !restored }));
+  if (!restored && !handed) seedExample();
   recalculate();
 
   const renderers = {

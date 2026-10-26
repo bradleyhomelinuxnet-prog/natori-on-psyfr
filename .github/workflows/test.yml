@@ -51,6 +51,12 @@ jobs:
       - name: Check Protocol Prime and the SOP warnings
         run: npm run test:sop
 
+      # start.html, the guided first run. Not in the parity count -- the original
+      # had no such page -- but it must prove it only reads the engine: every
+      # date and score it shows is a row runOphis produced.
+      - name: Check the Start here reading
+        run: npm run test:start
+
       - name: Check nothing reaches for eval
         run: |
           if grep -rnE '\bnew Function\b|\beval\(' src/ --include='*.js' \
