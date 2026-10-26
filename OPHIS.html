@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<base target="_blank">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ophis v9 · Field Guide &amp; Reverse-Engineering Codex</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#07070c;--bg2:#0d0d18;--ink:#ece5d2;--dim:#9c947c;--gold:#d8a943;--gold2:#f3d27a;
+    --red:#d3402f;--cyan:#54b8c9;--green:#7faa5a;--violet:#9b7fd0;--rose:#e07a9f;
+    --line:rgba(216,169,67,.2);--panel:rgba(20,20,32,.55);--panel2:rgba(20,20,32,.75);--zoom:1;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    zoom:var(--zoom,1);
+    background:
+      radial-gradient(1100px 560px at 84% -8%, rgba(211,64,47,.10), transparent 60%),
+      radial-gradient(900px 480px at 6% 108%, rgba(84,184,201,.07), transparent 60%),
+      radial-gradient(700px 400px at 50% 40%, rgba(155,127,208,.05), transparent 65%),
+      repeating-linear-gradient(0deg, rgba(216,169,67,.022) 0 1px, transparent 1px 46px),
+      repeating-linear-gradient(90deg, rgba(216,169,67,.022) 0 1px, transparent 1px 46px),
+      var(--bg);
+    color:var(--ink);font-family:'EB Garamond',serif;line-height:1.65;font-size:17px;min-height:100vh;
+  }
+  .wrap{max-width:960px;margin:0 auto;padding:clamp(14px,3vw,34px)}
+  a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible{outline:2.5px solid var(--cyan);outline-offset:2px;border-radius:3px}
+  @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*,*::before,*::after{transition-duration:.001ms!important;animation-duration:.001ms!important}}
+
+  /* NAV */
+  nav.top{position:sticky;top:0;z-index:60;display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center;
+      background:rgba(7,7,12,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:11px clamp(14px,3vw,34px)}
+  nav.top .brand{font-family:'Cinzel',serif;font-weight:800;color:var(--gold2);font-size:14px;letter-spacing:.03em}
+  nav.top .brand span{color:var(--red)}
+  nav.top .links{margin-left:auto;display:flex;gap:13px;flex-wrap:wrap}
+  nav.top a{color:var(--dim);text-decoration:none;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;cursor:pointer}
+  nav.top a:hover{color:var(--gold2)}
+  .navctl{display:flex;gap:10px;align-items:center}
+  .tsize{display:flex;border:1px solid var(--line);border-radius:4px;overflow:hidden}
+  .navbtn{background:transparent;border:0;color:var(--dim);font-family:'IBM Plex Mono',monospace;font-size:11px;padding:6px 10px;cursor:pointer;transition:.15s;white-space:nowrap}
+  .tsize .navbtn{border-right:1px solid var(--line)}.tsize .navbtn:last-child{border-right:0}
+  .navbtn:hover{color:var(--gold2);background:rgba(216,169,67,.1)}
+  #themeBtn{border:1px solid var(--line);border-radius:4px;color:var(--gold2)}
+  #themeBtn:hover{background:var(--gold);color:#100c02}
+
+  /* HERO */
+  header.hero{text-align:center;padding:clamp(34px,7vw,72px) 0 clamp(10px,3vw,26px)}
+  .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.4em;color:var(--gold);text-transform:uppercase}
+  h1{font-family:'Cinzel',serif;font-weight:800;font-size:clamp(30px,7vw,62px);line-height:.96;margin:.18em 0;letter-spacing:.02em;overflow-wrap:break-word;
+     background:linear-gradient(180deg,#fff,var(--gold2) 50%,var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .tagline{font-family:'Cinzel',serif;color:var(--dim);letter-spacing:.18em;text-transform:uppercase;font-size:12px;margin-top:6px}
+  .sub{font-style:italic;color:var(--dim);max-width:64ch;margin:16px auto 0;font-size:16px}
+  .hero-stats{display:flex;justify-content:center;flex-wrap:wrap;gap:24px 40px;margin:28px auto 0;max-width:720px}
+  .hs{text-align:center}
+  .hs .n{font-family:'Cinzel',serif;font-weight:800;font-size:24px;color:var(--gold2)}
+  .hs .l{font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--dim);margin-top:2px}
+
+  /* SECTIONS */
+  section{padding:clamp(24px,4vw,40px) 0;border-top:1px solid var(--line);scroll-margin-top:60px}
+  .sec-no{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.3em;color:var(--red);text-transform:uppercase}
+  h2{font-family:'Cinzel',serif;font-weight:600;font-size:clamp(22px,4vw,34px);margin:.1em 0 .5em;color:var(--gold2);line-height:1.05}
+  h3{font-family:'Cinzel',serif;font-weight:600;font-size:19px;color:var(--ink);margin:1.3em 0 .3em}
+  p{margin:0 0 .9em;color:#ddd6c4;max-width:72ch}
+  .lead{font-size:18px;color:var(--ink);max-width:72ch}.lead b{color:var(--gold2)}
+  .hl{color:var(--gold2)}
+  b.c{color:var(--cyan)}b.r{color:var(--red)}b.v{color:var(--violet)}b.g{color:var(--gold2)}b.ro{color:var(--rose)}
+
+  /* STEPS */
+  .steps{counter-reset:step;display:flex;flex-direction:column;gap:12px;margin:16px 0}
+  .step{display:grid;grid-template-columns:42px 1fr;gap:14px;align-items:start;border:1px solid var(--line);background:var(--panel);border-radius:5px;padding:14px 16px}
+  .step::before{counter-increment:step;content:counter(step);font-family:'Cinzel',serif;font-weight:800;font-size:24px;color:var(--gold2);
+    width:42px;height:42px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:50%;background:#05050a}
+  .step h4{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:3px}
+  .step p{margin:0;font-size:15px}
+
+  /* CONCEPT CARDS */
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin:14px 0}
+  .card{border:1px solid var(--line);background:var(--panel);border-radius:5px;padding:14px 16px}
+  .card .k{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.08em;color:var(--cyan);text-transform:uppercase;margin-bottom:5px}
+  .card p{font-size:14px;margin:0}
+
+  /* FORMULA COOKBOOK */
+  .fgroup{margin:18px 0}
+  .fgroup h3{display:flex;align-items:baseline;gap:10px;border-bottom:1px solid var(--line);padding-bottom:6px}
+  .fgroup h3 small{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--dim);font-weight:400;letter-spacing:.04em;text-transform:none}
+  .fgroup h3 .pill{font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;
+    padding:2px 8px;border-radius:3px;border:1px solid var(--line);color:var(--dim);margin-left:auto}
+  .frow{display:grid;grid-template-columns:1fr;gap:6px;border:1px solid var(--line);background:var(--panel);border-radius:5px;padding:11px 13px;margin:8px 0}
+  .frow.disabled{opacity:.55}
+  .fcode{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .fcode code{font-family:'IBM Plex Mono',monospace;font-size:13.5px;color:var(--cyan);background:#05050a;border:1px solid var(--line);
+    padding:7px 11px;border-radius:4px;cursor:pointer;flex:1 1 auto;word-break:break-all;transition:.12s}
+  .fcode code:hover{border-color:var(--cyan);color:var(--gold2)}
+  .cls-tag{font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;
+    padding:3px 7px;border-radius:3px;border:1px solid;white-space:nowrap}
+  .cls-alpha{color:var(--gold2);border-color:var(--gold2);background:rgba(243,210,122,.08)}
+  .cls-beta{color:var(--cyan);border-color:var(--cyan);background:rgba(84,184,201,.08)}
+  .cls-off{color:var(--dim);border-color:var(--dim);border-style:dashed}
+  .copybtn{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold2);
+    background:transparent;border:1px solid var(--line);border-radius:4px;padding:7px 11px;cursor:pointer;white-space:nowrap;transition:.15s}
+  .copybtn:hover{background:var(--gold);color:#100c02;border-color:var(--gold)}
+  .copybtn.done{background:var(--green);color:#06140a;border-color:var(--green)}
+  .fdesc{font-size:13.5px;color:var(--dim);font-style:italic}
+  .fdesc b{color:var(--ink);font-style:normal}
+
+  /* TABLES */
+  table{width:100%;border-collapse:collapse;font-size:14px;margin:14px 0;background:var(--panel);border:1px solid var(--line);border-radius:5px;overflow:hidden}
+  th,td{text-align:left;padding:9px 13px;border-bottom:1px solid rgba(216,169,67,.1);vertical-align:top}
+  th{font-family:'IBM Plex Mono',monospace;color:var(--gold);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase}
+  td.mono,.mono{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--cyan);white-space:nowrap}
+  td b{color:var(--ink)}
+
+  /* CONSTANTS ROW */
+  .constants{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;
+    padding:14px 18px;background:var(--panel2);border:1px dashed var(--line);border-radius:6px;margin:14px 0}
+  .cst{text-align:center}
+  .cst .sym{font-family:'EB Garamond',serif;font-style:italic;font-size:26px;color:var(--violet)}
+  .cst .name{font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--dim);margin:2px 0}
+  .cst .val{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--gold2)}
+  .cst .sub{font-size:11px;color:var(--dim);font-family:'EB Garamond',serif;font-style:italic;margin-top:1px}
+
+  /* LIVE CAST */
+  .playground{border:1px solid var(--gold);background:linear-gradient(180deg,rgba(216,169,67,.08),transparent 50%,var(--panel));
+    border-radius:6px;padding:20px 22px;margin:18px 0;position:relative}
+  .playground::before{content:'LIVE ENGINE';position:absolute;top:-9px;left:20px;background:var(--bg);padding:0 8px;
+    font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.2em;color:var(--gold);border:1px solid var(--gold);border-radius:3px}
+  .pg-inputs{display:grid;grid-template-columns:1fr 1fr auto;gap:16px;align-items:end;margin:12px 0 20px}
+  .pg-inputs .field label{display:block;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--dim);margin-bottom:6px}
+  .pg-inputs input[type="date"]{width:100%;background:#05050a;border:1px solid var(--line);border-radius:4px;padding:10px 12px;
+    color:var(--ink);font-family:'IBM Plex Mono',monospace;font-size:14px;outline:none}
+  .pg-inputs input[type="date"]:focus{border-color:var(--gold)}
+  .pg-inputs input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(.7);cursor:pointer}
+  :root[data-theme="light"] .pg-inputs input[type="date"]{background:#fffdf6;color:var(--ink)}
+  :root[data-theme="light"] .pg-inputs input[type="date"]::-webkit-calendar-picker-indicator{filter:none}
+  .preset-btn{background:var(--gold);border:0;color:#100c02;font-family:'IBM Plex Mono',monospace;font-size:11px;
+    letter-spacing:.12em;text-transform:uppercase;padding:11px 16px;border-radius:4px;cursor:pointer;font-weight:600}
+  .preset-btn:hover{background:var(--gold2)}
+  .pg-y{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;padding:14px 16px;
+    background:#05050a;border:1px solid var(--line);border-radius:5px;margin-bottom:18px}
+  :root[data-theme="light"] .pg-y{background:#fffdf6}
+  .metric .k{font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--dim);margin-bottom:2px}
+  .metric .v{font-family:'Cinzel',serif;font-size:24px;font-weight:600;color:var(--gold2)}
+  .metric.small .v{font-size:15px;color:var(--cyan);font-family:'IBM Plex Mono',monospace;font-weight:500}
+  .metric .lattice{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--rose);margin-top:2px;letter-spacing:.05em}
+  .metric .lattice.hit{color:var(--gold2)}
+  .ops-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}  /* the table scrolls on a phone; the page does not */
+  .ops-table{width:100%;border-collapse:collapse;font-size:13px;background:transparent;border:none;border-radius:0}
+  .ops-table thead th{background:#05050a;border-bottom:1px solid var(--line);color:var(--gold);
+    font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase}
+  :root[data-theme="light"] .ops-table thead th{background:#fffdf6}
+  .ops-table tbody td{padding:9px 10px;border-bottom:1px solid rgba(216,169,67,.08)}
+  .ops-table tbody tr:hover{background:rgba(243,210,122,.03)}
+  .ops-table tbody tr.disabled{opacity:.42}
+  .ops-table .idx{color:var(--dim);font-family:'IBM Plex Mono',monospace;font-size:11px}
+  .ops-table .eq{font-family:'IBM Plex Mono',monospace;color:var(--cyan);font-size:12.5px}
+  .ops-table .anchor{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--rose);font-weight:600}
+  .ops-table .zd{font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--ink)}
+  .ops-table .dl{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--dim)}
+  .ops-table .hit{color:var(--gold2)!important;font-weight:600}
+
+  /* TAG KEY */
+  .tagkey{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:8px;margin:14px 0}
+  .tki{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);background:var(--panel);border-radius:5px;padding:10px 12px}
+  .rt{font-size:8.5px;letter-spacing:.05em;padding:3px 6px;border-radius:3px;border:1px solid;text-transform:uppercase;
+    white-space:nowrap;font-family:'IBM Plex Mono',monospace;align-self:center}
+  .rt.phi{color:var(--gold2);border-color:var(--gold2)}
+  .rt.pi{color:var(--cyan);border-color:var(--cyan)}
+  .rt.crv{color:var(--violet);border-color:var(--violet)}
+  .rt.hep{color:var(--rose);border-color:var(--rose)}
+  .rt.iso{color:var(--green);border-color:var(--green)}
+  .rt.flip{color:var(--gold2);border-color:var(--gold2);background:rgba(243,210,122,.1)}
+  .tki span{font-size:13.5px;color:#ddd6c4}.tki span b{color:var(--ink)}
+
+  /* WORKED EXAMPLES */
+  .ex{border:1px solid var(--line);background:var(--panel);border-radius:6px;padding:16px 18px;margin:16px 0}
+  .ex .extitle{font-family:'Cinzel',serif;font-weight:600;color:var(--gold2);font-size:19px;margin-bottom:4px}
+  .ex .setup{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--dim);background:#05050a;border:1px solid var(--line);
+    border-radius:4px;padding:9px 12px;margin:8px 0;line-height:1.7}
+  :root[data-theme="light"] .ex .setup{background:#fffdf6}
+  .ex .setup b{color:var(--cyan)}
+  .ex ol{margin:10px 0 12px 1.2em;color:#ddd6c4;font-size:14.5px;line-height:1.6}
+  .ex ol li{margin:.3em 0}
+  .ex ol b{color:var(--gold2)}
+  .ex .result{border-left:3px solid var(--green);padding:8px 0 8px 16px;margin-top:8px}
+  .ex .result h5{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--green);margin-bottom:5px}
+  .ex .result p{font-size:14.5px;margin:0 0 .5em}
+  .ex .result .big{font-family:'Cinzel',serif;color:var(--gold2);font-size:17px}
+
+  /* ARCHITECTURE */
+  .arch{border:1px solid var(--line);background:var(--panel);border-radius:5px;padding:18px 20px;margin:16px 0}
+  .arch-row{display:grid;grid-template-columns:110px 1fr;gap:16px;align-items:start;padding:14px 0;border-top:1px solid var(--line)}
+  .arch-row:first-child{border-top:0;padding-top:2px}
+  .arch-label{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.15em;text-transform:uppercase;padding-top:4px}
+  .arch-label.entry{color:var(--violet)}
+  .arch-label.ctrl{color:var(--rose)}
+  .arch-label.model{color:var(--cyan)}
+  .arch-label.view{color:var(--gold)}
+  .arch-label.util{color:var(--green)}
+  .mods{display:flex;flex-wrap:wrap;gap:5px}
+  .mod{font-family:'IBM Plex Mono',monospace;font-size:11px;padding:4px 8px;background:#05050a;border:1px solid var(--line);
+    border-radius:3px;color:var(--dim);cursor:help;transition:.12s}
+  :root[data-theme="light"] .mod{background:#fffdf6}
+  .mod:hover{color:var(--gold2);border-color:var(--gold)}
+  .mod.hot{color:var(--gold2);border-color:var(--gold)}
+
+  /* JOURNEY */
+  .journey{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin:14px 0}
+  .layer{padding:14px 12px;background:var(--panel);border:1px solid var(--line);border-radius:5px;text-align:center;position:relative}
+  .layer .fmt{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.16em;color:var(--gold);margin-bottom:6px;text-transform:uppercase}
+  .layer .name{font-family:'Cinzel',serif;font-size:15px;color:var(--ink)}
+  .layer .size{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--dim);margin-top:3px}
+  .layer .arrow{position:absolute;right:-16px;top:50%;transform:translateY(-50%);color:var(--gold);font-size:20px;z-index:2}
+  @media (max-width:768px){.layer .arrow{display:none}}
+
+  /* CAVEATS */
+  .caveats{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px;margin:14px 0}
+  .caveat{padding:12px 14px;background:var(--panel);border-left:3px solid var(--red);border-radius:4px}
+  .caveat.warn{border-left-color:var(--gold)}
+  .caveat.info{border-left-color:var(--cyan)}
+  .caveat .title{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--red);letter-spacing:.04em;margin-bottom:4px}
+  .caveat.warn .title{color:var(--gold)}
+  .caveat.info .title{color:var(--cyan)}
+  .caveat .body{font-size:13px;color:#ddd6c4;line-height:1.5}
+  .caveat .body code{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--cyan)}
+
+  /* FAQ */
+  details{border:1px solid var(--line);background:var(--panel);border-radius:5px;margin:8px 0;overflow:hidden}
+  summary{cursor:pointer;padding:13px 16px;font-family:'Cinzel',serif;font-size:16px;color:var(--gold2);list-style:none;display:flex;gap:10px;align-items:center}
+  summary::-webkit-details-marker{display:none}
+  summary::before{content:'+';font-family:'IBM Plex Mono',monospace;color:var(--red);font-size:18px;transition:.2s;flex-shrink:0}
+  details[open] summary::before{content:'–'}
+  details[open] summary{border-bottom:1px solid var(--line)}
+  .faqbody{padding:12px 16px 14px}
+  .faqbody p{font-size:14.5px;margin:0 0 .7em}.faqbody p:last-child{margin:0}
+  .faqbody code{font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--cyan)}
+
+  .note-card{border:1px solid var(--cyan);background:linear-gradient(180deg,rgba(84,184,201,.08),transparent);border-radius:5px;padding:15px 17px;margin:14px 0}
+  .note-card h4{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--cyan);margin-bottom:6px}
+  .note-card p{font-size:14px;color:#cdc6b2;font-style:italic;margin:0}
+
+  footer{border-top:1px solid var(--line);padding:24px 0 14px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--dim);line-height:1.8}
+  footer b{color:var(--gold)}
+  .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(140%);background:var(--bg2);border:1px solid var(--green);color:var(--green);
+    font-family:'IBM Plex Mono',monospace;font-size:12px;padding:11px 18px;border-radius:5px;z-index:200;transition:.3s;box-shadow:0 8px 30px -8px #000}
+  .toast.show{transform:translateX(-50%) translateY(0)}
+
+  /* LIGHT THEME */
+  :root[data-theme="light"]{
+    --bg:#ece0c6;--bg2:#e0d2b2;--ink:#2c2317;--dim:#6a5f45;
+    --gold:#9a6f14;--gold2:#7d5410;--red:#b32a1a;--cyan:#1d6c7d;--green:#4d7730;--violet:#69479c;--rose:#a13068;
+    --line:rgba(90,60,15,.30);--panel:rgba(255,251,242,.7);--panel2:rgba(255,251,242,.92);
+  }
+  :root[data-theme="light"] body{background:
+    radial-gradient(1100px 560px at 84% -8%, rgba(179,42,26,.07), transparent 60%),
+    radial-gradient(900px 480px at 6% 108%, rgba(29,108,125,.06), transparent 60%),
+    repeating-linear-gradient(0deg, rgba(90,60,15,.03) 0 1px, transparent 1px 46px),
+    repeating-linear-gradient(90deg, rgba(90,60,15,.03) 0 1px, transparent 1px 46px), var(--bg);}
+  :root[data-theme="light"] nav.top{background:rgba(236,224,198,.93)}
+  :root[data-theme="light"] h1{background:linear-gradient(180deg,#5a3d0a,#8a5a12 55%,#a8791a);-webkit-background-clip:text;background-clip:text;color:transparent}
+  :root[data-theme="light"] p, :root[data-theme="light"] .faqbody p{color:#3a3020}
+  :root[data-theme="light"] .fcode code{background:#fffdf6;color:var(--cyan)}
+  :root[data-theme="light"] .step::before{background:#fffdf6}
+  :root[data-theme="light"] .navbtn:hover{background:rgba(154,111,20,.14)}
+  :root[data-theme="light"] .caveat .body{color:#3a3020}
+  :root[data-theme="light"] .ops-table .zd{color:var(--ink)}
+  :root[data-theme="light"] .ex ol, :root[data-theme="light"] .ex .result p{color:#3a3020}
+  :root[data-theme="light"] .card p, :root[data-theme="light"] .tki span{color:#3a3020}
+
+  @media (max-width:700px){
+    .pg-inputs{grid-template-columns:1fr}
+    .ops-table{font-size:11px}
+    .ops-table tbody td, .ops-table thead th{padding:6px 6px}
+    .arch-row{grid-template-columns:1fr;gap:6px}
+  }
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div class="brand">OPHIS v9 <span>· Field Guide</span></div>
+  <div class="links">
+    <a target="_self" href="#quick" data-go="quick">Quick Tour</a>
+    <a target="_self" href="#vocab" data-go="vocab">Vocabulary</a>
+    <a target="_self" href="#cookbook" data-go="cookbook">Cookbook</a>
+    <a target="_self" href="#lattice" data-go="lattice">138 / 19 Lattice</a>
+    <a target="_self" href="#grammar" data-go="grammar">Grammar</a>
+    <a target="_self" href="#cast" data-go="cast">Live Cast</a>
+    <a target="_self" href="#examples" data-go="examples">Examples</a>
+    <a target="_self" href="#under" data-go="under">Under the Hood</a>
+    <a target="_self" href="#faq" data-go="faq">FAQ</a>
+    <a href="PSYFR1.html" target="_blank" rel="noopener" style="color:var(--gold2)">↗ PSYFR Engine</a>
+    <a href="PSYFR2.html" target="_blank" rel="noopener" style="color:var(--gold2)">↗ PSYFR Guide</a>
+  </div>
+  <div class="navctl">
+    <div class="tsize" role="group" aria-label="Text size">
+      <button id="tsDown" class="navbtn" type="button" aria-label="Decrease text size" title="Smaller">A−</button>
+      <button id="tsReset" class="navbtn" type="button" aria-label="Reset text size" title="Default">A</button>
+      <button id="tsUp" class="navbtn" type="button" aria-label="Increase text size" title="Larger">A+</button>
+    </div>
+    <button id="themeBtn" class="navbtn" type="button" aria-label="Toggle light or dark theme" aria-pressed="false">☾ Dark</button>
+  </div>
+</nav>
+
+<div class="wrap">
+
+<header class="hero">
+  <div class="eyebrow">Reverse-Engineering Codex · Companion to the .exe</div>
+  <h1>The serpent<br>coiled around <em style="font-style:italic">time</em>.</h1>
+  <div class="tagline">how the engine reads · what the formulas mean · the 138 &amp; 19 lattice underneath</div>
+  <p class="sub">
+    Ophis v9 shipped as a 91&nbsp;MB Windows installer with a Chromium runtime and a sign-in gate. Under the wrapper: an un-obfuscated
+    Electron app running a hand-rolled formula engine over Y — the axial-rotation count between two anchor dates. This guide reads it out:
+    the fifteen shipped operations, the constants that drive them (π, φ, curvature, hepta), how to extend the grammar with your own 138
+    and 19 resonance operations, and a live cast you can drive from this page.
+  </p>
+  <div class="hero-stats">
+    <div class="hs"><div class="n">91<span style="font-size:12px;color:var(--dim)">&nbsp;MB</span></div><div class="l">Installer</div></div>
+    <div class="hs"><div class="n">32<span style="font-size:12px;color:var(--dim)">&nbsp;MB</span></div><div class="l">app.asar</div></div>
+    <div class="hs"><div class="n">11.5<span style="font-size:12px;color:var(--dim)">&nbsp;k</span></div><div class="l">Lines JS</div></div>
+    <div class="hs"><div class="n">22</div><div class="l">Modules</div></div>
+    <div class="hs"><div class="n">15</div><div class="l">Default ops</div></div>
+    <div class="hs"><div class="n">3</div><div class="l">MSRF sets</div></div>
+  </div>
+</header>
+
+<!-- =================================================================== -->
+<section id="quick">
+  <div class="sec-no">§1 · Quick Tour</div>
+  <h2>How Ophis actually works, in four moves</h2>
+  <div class="steps">
+    <div class="step"><div>
+      <h4>Two anchor dates in</h4>
+      <p>You give Ophis two dates — the source calls them <b class="c">X-Dates</b>. Anything from Bitcoin halvings to your first
+      passage into the Great Pyramid. Two is the minimum; more anchors mean more interval pairs to project from.</p>
+    </div></div>
+    <div class="step"><div>
+      <h4>Interval becomes Y</h4>
+      <p>The engine counts the <b>axial rotations</b> between the pair — days, not years. For DAYS scope both dates are locked
+      to midnight GMT and any time/location you set is discarded. That count is <b class="c">Y</b>, the single variable every
+      formula receives.</p>
+    </div></div>
+    <div class="step"><div>
+      <h4>Fifteen formulas run</h4>
+      <p>Each of the shipped operations transforms Y into a day-offset. The formula's <b class="ro">X1+</b> or <b class="ro">X2+</b>
+      prefix decides which anchor the offset gets added to. The result is a projected <b class="g">Z-Date</b>.</p>
+    </div></div>
+    <div class="step"><div>
+      <h4>Z-Dates get scored &amp; tagged</h4>
+      <p>Each projection is scored — alpha operations weigh more than beta. Values close to the <b class="v">MSRF</b>
+      resonance lists (NORMAL / IMPORTANT / VORTEX) earn multipliers. Timeline chart on top, XLSX / PDF / CSV export below.
+      This is the whole loop.</p>
+    </div></div>
+  </div>
+  <div class="note-card"><h4>The one thing the source doesn't shout at you</h4>
+    <p>Ophis's power isn't the individual projection — any single Y·φ or Y·π estimate is easy to dismiss. The signal is
+    <b>convergence</b>: when four different operations from different anchor pairs all land on the same date. That's what the
+    convergence panel is looking for, and it's what your custom operations (§4) should be tuned to reveal.</p>
+  </div>
+</section>
+
+<!-- =================================================================== -->
+<section id="vocab">
+  <div class="sec-no">§2 · The Vocabulary</div>
+  <h2>Eight words to know</h2>
+  <p class="lead">The source uses these names without ceremony. They're borrowed from Gann-style cycle work with a coat of astronomical paint.</p>
+  <div class="cards">
+    <div class="card"><div class="k">Iso-Event</div><p>A named cycle. Contains anchors + operations + settings. Persists as one row in the <code>.oph</code> save file.</p></div>
+    <div class="card"><div class="k">X-Date</div><p>An input <b>anchor</b>. Date plus optional time and lat/long. Every cast needs at least two.</p></div>
+    <div class="card"><div class="k">Y · interval</div><p>Days between two X-Dates — the axial rotation count. The one variable exposed to every formula.</p></div>
+    <div class="card"><div class="k">Operation</div><p>An equation transforming Y into a day offset. Must begin <code>X1+</code> or <code>X2+</code>.</p></div>
+    <div class="card"><div class="k">Z-Date</div><p>A projected output date — <code>X<sub>anchor</sub> + f(Y)</code>. What the engine is actually predicting.</p></div>
+    <div class="card"><div class="k">Alpha / Beta</div><p>Operation weight class. Alpha ops score higher on match — considered "principled" projections.</p></div>
+    <div class="card"><div class="k">MSRF</div><p>Three resonance sets — 276 integers, 52 integers, 12 floats. A Z-value that lands near one gets a score multiplier.</p></div>
+    <div class="card"><div class="k">Hit count</div><p>Number of operations landing on the same Z-Date within tolerance. High hit-count days are the whole point.</p></div>
+  </div>
+</section>
+
+<!-- =================================================================== -->
+<section id="cookbook">
+  <div class="sec-no">§3 · The Formula Cookbook</div>
+  <h2>The fifteen shipped operations, translated</h2>
+  <p class="lead">Every formula below is a real Ophis default — extracted verbatim from <code>ophis_model__params.js:65–110</code>.
+  Tap any formula to copy it. Paste into the operations table inside the app. <b>α · Alpha</b> operations weight higher on match
+  than <b>β · Beta</b>. The Hepta-Cycle operation is <b>disabled by default</b> — added August 2025 per a source comment.</p>
+
+  <div class="constants">
+    <div class="cst"><div class="sym">π</div><div class="name">OPH_PI</div><div class="val">3.14</div><div class="sub">radius</div></div>
+    <div class="cst"><div class="sym">φ</div><div class="name">OPH_PHI</div><div class="val">1.618</div><div class="sub">golden</div></div>
+    <div class="cst"><div class="sym">κ</div><div class="name">OPH_CRV</div><div class="val">5.08</div><div class="sub">π · φ · curvature</div></div>
+    <div class="cst"><div class="sym">η</div><div class="name">OPH_HEP</div><div class="val">7.01</div><div class="sub">hepta-cycle</div></div>
+  </div>
+
+  <div class="fgroup">
+    <h3>Isometric &amp; Mirror <small>the interval itself, or its palindrome</small><span class="pill">Ops 1–2</span></h3>
+    <div class="frow"><div class="fcode">
+      <code>X2+oph_round(Y)</code>
+      <span class="cls-tag cls-alpha">α · Alpha</span>
+      <button class="copybtn">copy</button>
+    </div><div class="fdesc"><b>The Isometric Date.</b> Project the exact interval forward from the later anchor. Simplest Archaix projection — if Y = 1319 days between X1 and X2, add 1319 days to X2.</div></div>
+    <div class="frow"><div class="fcode">
+      <code>X2+oph_flip(oph_round(Y))</code>
+      <span class="cls-tag cls-alpha">α · Alpha</span>
+      <button class="copybtn">copy</button>
+    </div><div class="fdesc"><b>The Holo-mirror.</b> Reverse the interval's digits and project. Y = 1319 → 9131. The palindromic heart of the engine.</div></div>
+  </div>
+
+  <div class="fgroup">
+    <h3>Golden φ · 1.618 <small>the Fibonacci division and expansion set</small><span class="pill">Ops 5, 6, 9</span></h3>
+    <div class="frow"><div class="fcode">
+      <code>X2+Y/OPH_PHI</code>
+      <span class="cls-tag cls-alpha">α · Alpha</span>
+      <button class="copybtn">copy</button>
+    </div><div class="fdesc"><b>Golden division.</b> Y ÷ φ. The classic Fibonacci retracement in date form.</div></div>
+    <div class="frow"><div class="fcode">
+      <code>X2+(Y/2.0)xOPH_PHI</code>
+      <span class="cls-tag cls-beta">β · Beta</span>
+      <button class="copybtn">copy</button>
+    </div><div class="fdesc"><b>Half-Y golden step.</b> Half the interval, scaled by φ. Named <code>OPERATION_EQUATION_FOR_ORIGINAL_BETA_PHI_6</code> in source.</div></div>
+    <div class="frow"><div class="fcode">
+      <code>X2+YxOPH_PHI</code>
+      <span class="cls-tag cls-alpha">α · Alpha</span>
+      <button class="copybtn">copy</button>
+    </div><div class="fdesc"><b>Golden expansion.</b> Y × φ. The full golden projection forward from X2.</div></div>
+  </div>
+
+  <div class="fgroup">
+    <h3>Radius π · 3.14 <small>circular sweep projections</small><span class="pill">Ops 4, 8, 10, 12</span></h3>
+    <div class="frow"><div class="fcode">
+      <code>X1+(Y/2.0)xOPH_PI</code>
+      <span class="cls-tag cls-beta">β · Beta</span>
+      <button class="copybtn">copy</button>
+    </div><div class="fdesc"><b>Half-arc from X1.</b> Half the interval swept by π. The "semicircle" projection.</div></div>
+    <div class="frow"><div class="fcode">
+      <code>X2+(Y/2.0)xOPH_PI</code>
+      <span class="cls-tag cls-beta">β · Beta</span>
+      <button class="copybtn">copy</button>
+    </div><div class="fdesc"><b>Half-arc from X2.</b> Same semicircle projection anchored at the later date.</div></div>
+    <div class="frow"><div class="fcode">
+      <code>X1+YxOPH_PI</code>
+      <span class="cls-tag cls-beta">β · Beta</span>
+      <button class="copybtn">copy</button>
+    </div><div class="fdesc"><b>Full radius projection.</b> Named <code>OPERATION_EQUATION_FOR_RADIUS_PROJECTION</code> in source. Y × π, from earlier anchor.</div></div>
+    <div class="frow"><div class="fcode">
+      <code>X2+YxOPH_PI</code>
+      <span class="cls-tag cls-beta">β · Beta</span>
+      <button class="copybtn">copy</button>
+    </div><div class="fdesc"><b>Full radius from X2.</b> Same, from later anchor.</div></div>
+  </div>
+
+  <div class="fgroup">
+    <h3>Curvature κ · 5.08 <small>π · φ — the "curvature" constant</small><span class="pill">Ops 3, 7, 11, 13, 14</span></h3>
+    <div class="frow"><div class="fcode">
+      <code>X2+Y/OPH_CRV</code>
+      <span class="cls-tag cls-beta">β · Beta</span>
+      <button class="copybtn">copy</button>
+    </div><div class="fdesc"><b>Curvature division.</b> Y ÷ κ. The tightest of the four constant divisions.</div></div>
+    <div class="frow"><div class="fcode">
+      <code>X1+(Y/2.0)xOPH_CRV</code>
+      <span class="cls-tag cls-beta">β · Beta</span>
+      <button class="copybtn">copy</button>
+    </div><div class="fdesc">Half-Y × κ, from X1.</div></div>
+    <div class="frow"><div class="fcode">
+      <code>X2+(Y/2.0)xOPH_CRV</code>
+      <span class="cls-tag cls-beta">β · Beta</span>
+      <button class="copybtn">copy</button>
+    </div><div class="fdesc">Half-Y × κ, from X2.</div></div>
+    <div class="frow"><div class="fcode">
+      <code>X1+YxOPH_CRV</code>
+      <span class="cls-tag cls-beta">β · Beta</span>
+      <button class="copybtn">copy</button>
+    </div><div class="fdesc"><b>Full curvature from X1.</b> Y × 5.08.</div></div>
+    <div class="frow"><div class="fcode">
+      <code>X2+YxOPH_CRV</code>
+      <span class="cls-tag cls-beta">β · Beta</span>
+      <button class="copybtn">copy</button>
+    </div><div class="fdesc"><b>Full curvature from X2.</b> Y × 5.08.</div></div>
+  </div>
+
+  <div class="fgroup">
+    <h3>Hepta η · 7.01 <small>the newcomer</small><span class="pill">Op 15 · disabled by default</span></h3>
+    <div class="frow disabled"><div class="fcode">
+      <code>X1+YxOPH_HEP</code>
+      <span class="cls-tag cls-off">off by default</span>
+      <button class="copybtn">copy</button>
+    </div><div class="fdesc"><b>Hepta-cycle projection.</b> Added August 2025 per source comment <em>"New Hepta-Cycle Operation from Jason"</em>. Y × 7.01. Enable it in the operations table to include it in casts.</div></div>
+  </div>
+</section>
+
+<!-- =================================================================== -->
+<section id="lattice">
+  <div class="sec-no">§4 · The 138 / 19 Lattice</div>
+  <h2>Extending Ophis with Chronicon resonance</h2>
+  <p class="lead">
+    Ophis ships with four constants — π, φ, κ, η — because those are the ones the original author saw. But the grammar is open:
+    any custom operation you paste in gets validated and compiled the same way. Below are the operations that read the
+    <b class="g">138-Phoenix lattice</b> and the <b class="c">19-Metonic gear</b> — the pair that makes the Chronicon come alive
+    inside the Ophis engine.
+  </p>
+  <p class="lead">
+    The heaviest fingerprint of the lattice: <b>Jan 19 2023 → Aug 2 2027 = 1,656 days = 138 × 12 = the Flood span (AM 1656)</b>.
+    Pop those two dates into the live cast (§5) and Y comes out 1656 — the Genesis paragraph lock.
+  </p>
+
+  <div class="constants">
+    <div class="cst"><div class="sym">✱</div><div class="name">PHOENIX</div><div class="val">138</div><div class="sub">the return interval</div></div>
+    <div class="cst"><div class="sym">☾</div><div class="name">METONIC</div><div class="val">19</div><div class="sub">moon phase repeat</div></div>
+    <div class="cst"><div class="sym">☠</div><div class="name">NEMESIS</div><div class="val">792</div><div class="sub">the culling number</div></div>
+    <div class="cst"><div class="sym">⧗</div><div class="name">NER</div><div class="val">600</div><div class="sub">Anunna turning</div></div>
+    <div class="cst"><div class="sym">⟳</div><div class="name">METONIC·d</div><div class="val">6940</div><div class="sub">19 y in days ≈ 235 lunations</div></div>
+    <div class="cst"><div class="sym">⧖</div><div class="name">FLOOD</div><div class="val">1656</div><div class="sub">138 × 12 · AM year</div></div>
+  </div>
+
+  <div class="fgroup">
+    <h3>138 · Phoenix Lattice <small>snap to the Phoenix grid, or step across it</small><span class="pill">Custom</span></h3>
+    <div class="frow"><div class="fcode">
+      <code>X2+oph_round(Y/138)*138</code>
+      <button class="copybtn">copy</button>
+    </div><div class="fdesc"><b>Snap to 138.</b> Round the interval to the nearest whole Phoenix-count, project. Turns 1319 into 1242 (=138·9) or 1380 (=138·10), whichever's closer.</div></div>
+    <div class="frow"><div class="fcode">
+      <code>X2+Y+138</code>
+      <button class="copybtn">copy</button>
+    </div><div class="fdesc">One Phoenix number beyond the isometric date. Simplest 138 hop.</div></div>
+    <div class="frow"><div class="fcode">
+      <code>X2+Y+1656</code>
+      <button class="copybtn">copy</button>
+    </div><div class="fdesc"><b>Flood span forward.</b> Y + 1656 days = one full Genesis Flood-count added to the interval.</div></div>
+    <div class="frow"><div class="fcode">
+      <code>X2+Y*138/100</code>
+      <button class="copybtn">copy</button>
+    </div><div class="fdesc">Scale by <b>1.38</b>. Small stretch of the interval into Phoenix ratio.</div></div>
+    <div class="frow"><div class="fcode">
+      <code>X1+oph_round(Y/414)*414</code>
+      <button class="copybtn">copy</button>
+    </div><div class="fdesc"><b>Snap to 414.</b> 138 × 3 — the "cursed time" multiple.</div></div>
+    <div class="frow"><div class="fcode">
+      <code>X2+oph_round(Y/138)*138+138</code>
+      <button class="copybtn">copy</button>
+    </div><div class="fdesc"><b>Next Phoenix past the snap.</b> Snap to the nearest 138, then add one more.</div></div>
+  </div>
+
+  <div class="fgroup">
+    <h3>19 · Metonic Gear <small>the moon's whisper</small><span class="pill">Custom</span></h3>
+    <div class="frow"><div class="fcode">
+      <code>X1+oph_round(Y/19)*19</code>
+      <button class="copybtn">copy</button>
+    </div><div class="fdesc"><b>Snap to 19.</b> Round the interval to the nearest 19-multiple. Metonic lock on the earlier anchor.</div></div>
+    <div class="frow"><div class="fcode">
+      <code>X2+Y+19</code>
+      <button class="copybtn">copy</button>
+    </div><div class="fdesc">A Metonic 19 beyond the isometric date.</div></div>
+    <div class="frow"><div class="fcode">
+      <code>X2+oph_round(Y/6940)*6940</code>
+      <button class="copybtn">copy</button>
+    </div><div class="fdesc"><b>Snap to whole Metonic cycles.</b> 6940 days ≈ 19 years ≈ 235 lunations — same moon phase, same day of year.</div></div>
+    <div class="frow"><div class="fcode">
+      <code>X1+Y*19/10</code>
+      <button class="copybtn">copy</button>
+    </div><div class="fdesc">Scale by <b>1.9</b>.</div></div>
+  </div>
+
+  <div class="fgroup">
+    <h3>Cross-lattice <small>where 138 and 19 talk to each other</small><span class="pill">Custom · study operations</span></h3>
+    <div class="frow"><div class="fcode">
+      <code>X2+oph_flip(Y)+19</code>
+      <button class="copybtn">copy</button>
+    </div><div class="fdesc"><b>Mirror + Metonic seal.</b> Flip the digits of Y, add 19. The palindrome bumped one lunar generation forward.</div></div>
+    <div class="frow"><div class="fcode">
+      <code>X2+oph_flip(oph_round(Y/138)*138)</code>
+      <button class="copybtn">copy</button>
+    </div><div class="fdesc"><b>Phoenix-snap, then palindrome.</b> Snap to 138, mirror the result. 1380 → 0831 = 831 — the Nemesis palindrome.</div></div>
+    <div class="frow"><div class="fcode">
+      <code>X2+oph_round(Y/138)*19</code>
+      <button class="copybtn">copy</button>
+    </div><div class="fdesc"><b>Trade Phoenix-count for Metonic-count.</b> How many 138-hops does Y contain? Multiply that by 19.</div></div>
+    <div class="frow"><div class="fcode">
+      <code>X2+Y+792</code>
+      <button class="copybtn">copy</button>
+    </div><div class="fdesc"><b>Nemesis step.</b> Y + 792. The cataclysm interval — appears in Ophis's MSRF sets as a resonance value.</div></div>
+    <div class="frow"><div class="fcode">
+      <code>X2+Y*360/365.2422</code>
+      <button class="copybtn">copy</button>
+    </div><div class="fdesc"><b>Draconian re-frame.</b> Reframe Y into the 360-day pre-Flood year. Turns 1656 tropical days into ~1631 Draconian days.</div></div>
+  </div>
+</section>
+
+<!-- =================================================================== -->
+<section id="grammar">
+  <div class="sec-no">§5 · Grammar &amp; Constants</div>
+  <h2>What's legal in an operation</h2>
+  <p class="lead">Three rules. It must start with <code>X1+</code> or <code>X2+</code>. It may use only <code>Y</code>, numbers,
+  the constants, the <code>oph_*</code> functions, and arithmetic <code>+ − * / ( )</code>. It must evaluate to a number.
+  Anything else is rejected by the strip → math.js pass before it ever compiles.</p>
+
+  <table>
+    <thead><tr><th style="width:180px">Token</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">X1 / X2</td><td>The <b>earlier</b> / <b>later</b> anchor of the pair. Your equation begins with one of them, plus an offset. Ophis picks the anchor by inspecting the prefix — no run-time choice.</td></tr>
+      <tr><td class="mono">Y</td><td>The interval between the two anchors, in <b>days</b>. Signed positive for X1 → X2 order.</td></tr>
+      <tr><td class="mono">OPH_PI</td><td>Archaix π — <b>3.14</b> (two-decimal precision).</td></tr>
+      <tr><td class="mono">OPH_PHI</td><td>Golden ratio — <b>1.618</b> (three-decimal exception).</td></tr>
+      <tr><td class="mono">OPH_CRV</td><td>Curvature — <b>5.08</b> (π · φ, rounded).</td></tr>
+      <tr><td class="mono">OPH_HEP</td><td>Hepta-cycle — <b>7.01</b>.</td></tr>
+      <tr><td class="mono">oph_round(n)</td><td>Nearest whole day. Used to snap projections cleanly.</td></tr>
+      <tr><td class="mono">oph_flip(n)</td><td>Reverse the digits, preserving decimal position. <b>1319 → 9131</b>, <b>138 → 831</b>. The palindrome maker.</td></tr>
+      <tr><td class="mono">oph_floor / oph_ceil</td><td>Round down / up to a whole day.</td></tr>
+      <tr><td class="mono">oph_abs / oph_sqrt</td><td>Absolute value / square root.</td></tr>
+      <tr><td class="mono">oph_sin / oph_cos / oph_tan</td><td>Trig functions. Argument in radians. Rarely useful in projections but grammar allows them.</td></tr>
+      <tr><td class="mono">oph_log / oph_exp</td><td>Natural log / exponential.</td></tr>
+      <tr><td class="mono">x</td><td>A bare <b>x</b> between terms is read as multiplication — <code>YxOPH_PI</code> is the same as <code>Y*OPH_PI</code>. The engine substitutes it during normalization.</td></tr>
+    </tbody>
+  </table>
+  <div class="note-card"><h4>Under the hood</h4>
+    <p>Every equation is normalized (constants substituted, <code>x</code> → <code>*</code>, whitespace stripped), then stripped
+    of its <code>X1+</code> / <code>X2+</code> prefix, then validated by math.js parse + evaluate with Y=10, then compiled with
+    native <code>new&nbsp;Function("Y", "return " + body)</code>. The compiled function is cached on the operation. Runtime
+    passes only the axial rotation count.</p>
+  </div>
+</section>
+
+<!-- =================================================================== -->
+<section id="cast">
+  <div class="sec-no">§6 · Live Cast</div>
+  <h2>Run the engine, here in this page</h2>
+  <p class="lead">A faithful port of the compute cycle: enter two anchor dates, the engine normalizes each of the 15 default
+  operations, compiles them with <code>new Function("Y")</code>, and applies the resulting delta to the X1 or X2 anchor.
+  Every Z-Date on the right is what the real app would produce with location disabled and DAYS scope. The 138/19 columns
+  light up when Y or |Δ| lands cleanly on a Phoenix or Metonic multiple.</p>
+
+  <div class="playground">
+    <div class="pg-inputs">
+      <div class="field">
+        <label>X1 · Earlier anchor</label>
+        <input type="date" id="x1" value="2023-01-19">
+      </div>
+      <div class="field">
+        <label>X2 · Later anchor</label>
+        <input type="date" id="x2" value="2027-08-02">
+      </div>
+      <button class="preset-btn" id="preset-btn" title="Reset to Pyramid → Luxor eclipse">↺ RESET</button>
+    </div>
+
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin:-8px 0 14px">
+      <button class="copybtn" data-preset="pyramid" style="color:var(--gold2)">◈ Pyramid → Luxor · 1656d</button>
+      <button class="copybtn" data-preset="halvings" style="color:var(--cyan)">₿ Bitcoin halvings · 1319d</button>
+      <button class="copybtn" data-preset="metonic" style="color:var(--rose)">☾ Metonic single · 6940d</button>
+    </div>
+
+    <div class="pg-y">
+      <div class="metric">
+        <div class="k">Y · axial rotations</div>
+        <div class="v" id="y-out">—</div>
+        <div class="lattice" id="y-lattice"></div>
+      </div>
+      <div class="metric small">
+        <div class="k">|Y| days</div>
+        <div class="v" id="days-out">—</div>
+      </div>
+      <div class="metric small">
+        <div class="k">Y ÷ 138</div>
+        <div class="v" id="y-138">—</div>
+      </div>
+      <div class="metric small">
+        <div class="k">Y ÷ 19</div>
+        <div class="v" id="y-19">—</div>
+      </div>
+      <div class="metric small">
+        <div class="k">oph_flip(Y)</div>
+        <div class="v" id="y-flip">—</div>
+      </div>
+    </div>
+
+    <div class="ops-scroll">
+    <table class="ops-table">
+      <thead>
+        <tr>
+          <th style="width:32px">#</th>
+          <th>Equation</th>
+          <th style="width:44px">Anc.</th>
+          <th style="width:76px">Class</th>
+          <th style="width:86px">Δ days</th>
+          <th>Z-Date</th>
+          <th style="width:54px">138</th>
+          <th style="width:44px">19</th>
+        </tr>
+      </thead>
+      <tbody id="ops-body"></tbody>
+    </table>
+    </div>
+    <p style="font-size:12px;color:var(--dim);margin-top:12px;font-style:italic">
+      Note: DAYS scope discards HH:MM and lat/long (that's the shipping build's behaviour, gated by
+      <code>FEATURE_FLAG__LOCK_DAY_SCOPE_TO_GMT = true</code>). Sunset-aware rounding only kicks in for HH:MM scope in
+      the real app. The 138 and 19 columns are additions of this guide — not shown in the app itself, but visible here so
+      you can spot lattice hits at a glance.
+    </p>
+  </div>
+</section>
+
+<!-- =================================================================== -->
+<section id="examples">
+  <div class="sec-no">§7 · Worked Examples</div>
+  <h2>Two casts, start to finish</h2>
+
+  <div class="ex">
+    <div class="extitle">① The Pyramid Paragraph Lock</div>
+    <div class="setup"><b>X1:</b> 19 January 2023 (entry, Great Pyramid) &nbsp;|&nbsp; <b>X2:</b> 2 August 2027 (Luxor total solar eclipse) &nbsp;|&nbsp; <b>Scope:</b> DAYS &nbsp;|&nbsp; <b>Lens:</b> GTE_V8</div>
+    <ol>
+      <li>Set X1 to <b>2023-01-19</b> and X2 to <b>2027-08-02</b> in the live cast above.</li>
+      <li>Y prints as <b>1,656</b>. Divide by 138 → <b>12.00 exact</b>. Divide by 12 → <b>138.00 exact</b>.</li>
+      <li>Y ÷ 19 gives <b>87.16</b> — not clean, but <code>oph_flip(1656) = 6561 = 81<sup>2</sup></code>, which is 3<sup>8</sup>.</li>
+      <li>Watch the operations table: <code>X2+Y+138</code> lands on 20 Dec 2027, <code>X2+Y+1656</code> lands on 15 Feb 2032 (another 1656-hop).</li>
+    </ol>
+    <div class="result"><h5>What you'll see</h5>
+      <p>The isometric operation <span class="big">X2+oph_round(Y)</span> produces <b>2032-02-15</b> — exactly one Flood span past the eclipse. That's 138 × 24 = 3,312 days from the Pyramid entry. The paragraph lock projects a paragraph lock forward.</p>
+      <p>The palindrome operation <span class="big">X2+oph_flip(oph_round(Y))</span> — the Holo-mirror — lands on <b>2045-08-24</b>. 6561 days past 2027-08-02.</p>
+    </div>
+  </div>
+
+  <div class="ex">
+    <div class="extitle">② The Bitcoin Halving Cycle</div>
+    <div class="setup"><b>X1:</b> 28 Nov 2012 (halving #1) &nbsp;|&nbsp; <b>X2:</b> 9 Jul 2016 (halving #2) &nbsp;|&nbsp; <b>Scope:</b> DAYS &nbsp;|&nbsp; <b>Lens:</b> GTE_V8</div>
+    <ol>
+      <li>Click the <b>₿ Bitcoin halvings</b> preset button in the live cast.</li>
+      <li>Y prints as <b>1,319</b>. That's Y, not price — days between halvings.</li>
+      <li>Y ÷ 138 = <b>9.56</b>, no clean lattice hit. Y ÷ 19 = <b>69.42</b>, also not clean.</li>
+      <li>But now watch the operations pack. <code>X2+YxOPH_PHI</code> lands on <b>2022-05-13</b>. <code>X1+YxOPH_PI</code> lands on <b>2024-03-11</b>.</li>
+    </ol>
+    <div class="result"><h5>What you'll see</h5>
+      <p>The 2024-03-11 result — <span class="big">X1 + Y × π</span> — is 51 days ahead of Bitcoin's actual all-time-high cluster in early May 2024. Under Ophis's tolerance windows, that lands inside a "convergence" if any other operation from the same anchor pair projects within ±30 days. It's the kind of thing the tool is built to hunt for. It's also easy to see how one such hit per anchor pair becomes a whole practice.</p>
+      <p><em>Interpretation is on you. The engine only counts.</em></p>
+    </div>
+  </div>
+</section>
+
+<!-- =================================================================== -->
+<section id="under">
+  <div class="sec-no">§8 · Under the Hood</div>
+  <h2>How the .exe peels</h2>
+  <div class="journey">
+    <div class="layer">
+      <div class="fmt">PE / Win32</div>
+      <div class="name">Ophis_v9_Windows.exe</div>
+      <div class="size">95,327,304 B</div>
+      <div class="arrow">→</div>
+    </div>
+    <div class="layer">
+      <div class="fmt">NSIS + 7z</div>
+      <div class="name">LZMA2 archive</div>
+      <div class="size">Nullsoft installer</div>
+      <div class="arrow">→</div>
+    </div>
+    <div class="layer">
+      <div class="fmt">Electron</div>
+      <div class="name">resources/app.asar</div>
+      <div class="size">32.3 MB</div>
+      <div class="arrow">→</div>
+    </div>
+    <div class="layer">
+      <div class="fmt">Vanilla JS</div>
+      <div class="name">app-src/</div>
+      <div class="size">Un-obfuscated</div>
+    </div>
+  </div>
+
+  <h3>Module map · MVC</h3>
+  <p>Hover any module for its role. Colour-coded by layer.</p>
+  <div class="arch">
+    <div class="arch-row">
+      <div class="arch-label entry">Entry</div>
+      <div class="mods">
+        <span class="mod" title="6-step init waterfall">ophis_main.js</span>
+        <span class="mod" title="Preload script — exposes electronBridge">preload.js</span>
+        <span class="mod" title="Electron main process">main.js</span>
+      </div>
+    </div>
+    <div class="arch-row">
+      <div class="arch-label ctrl">Controller</div>
+      <div class="mods">
+        <span class="mod" title="add/remove IsoEvents, X-Dates, Operations; refreshXDates dispatcher">ophis_controller.js</span>
+      </div>
+    </div>
+    <div class="arch-row">
+      <div class="arch-label model">Model</div>
+      <div class="mods">
+        <span class="mod hot" title="runOphisOnEvent — the compute engine">ophis_model__operations.js</span>
+        <span class="mod hot" title="Formula validation via math.js + new Function() compile">ophis_model__validation.js</span>
+        <span class="mod" title="15 default operations + MSRF filter arrays">ophis_model__params.js</span>
+        <span class="mod" title=".oph file save/load, autosave">ophis_model__persistence.js</span>
+        <span class="mod" title="Z-Date filtering + 5 sort modes">ophis_model__sorting.js</span>
+      </div>
+    </div>
+    <div class="arch-row">
+      <div class="arch-label view">View</div>
+      <div class="mods">
+        <span class="mod" title="Top-level view: screen switching, skin swap">ophis_view.js</span>
+        <span class="mod" title="Chart.js instantiation + hit-testing">ophis_view__chart.js</span>
+        <span class="mod" title="Curve dataset generation, collision spreading">ophis_view__chart_datasets.js</span>
+        <span class="mod" title="Colors, moon-phase dict, eclipse dict">ophis_view__chart_config.js</span>
+        <span class="mod" title="UI constants, skin modes, default lat/long">ophis_view__config.js</span>
+        <span class="mod" title="PDF, CSV, XLSX exporters">ophis_view__export.js</span>
+        <span class="mod" title="Output panel rendering">ophis_view__output.js</span>
+        <span class="mod" title="Rebuilds IsoEvent + X-Date tables">ophis_view__rebuild.js</span>
+        <span class="mod" title="Operations settings — equation input + real-time validation">ophis_view__settings.js</span>
+        <span class="mod" title="Date/rotation/MSRF/Z-value formatters">ophis_view__strings.js</span>
+        <span class="mod" title="DOM helpers, dialog/toast, Leaflet HUD">ophis_view__utils.js</span>
+      </div>
+    </div>
+    <div class="arch-row">
+      <div class="arch-label util">Cross-cutting</div>
+      <div class="mods">
+        <span class="mod" title="~800 lines of helpers: math, dates, sunset, SHA-512">ophis_utils.js</span>
+        <span class="mod" title="All constants: OPH_PI/PHI/CRV/HEP, feature flags, ACCOUNT_HASHES">ophis_config.js</span>
+        <span class="mod" title="Wraps Meeus + tzlookup + Tipsy">ophis_dependencies.js</span>
+        <span class="mod" title="Startup MSRF-filter self-check">ophis_unit_tests.js</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =================================================================== -->
+<section id="caveats">
+  <div class="sec-no">§9 · Notable Quirks</div>
+  <h2>Things the shipping build gets wrong or half-right</h2>
+  <div class="caveats">
+    <div class="caveat">
+      <div class="title">⚠ nodeIntegration: true</div>
+      <div class="body">The renderer can <code>require()</code> Node modules. Combined with <code>new Function()</code> over user-editable equations, any expression surviving the strip → math.js filter runs in a Node-capable context.</div>
+    </div>
+    <div class="caveat warn">
+      <div class="title">⚠ "Fake security camera" sign-in</div>
+      <div class="body"><code>FEATURE_FLAG__REQUIRE_SIGN_IN = false</code> with a comment literally reading "fake security camera." <code>sha512.min.js</code> is commented out. Flip the flag alone and init crashes.</div>
+    </div>
+    <div class="caveat info">
+      <div class="title">ℹ Markets mode is decorative</div>
+      <div class="body"><code>SKIN_MODE__MARKETS</code> only swaps the header PNG and title. No market data feed. Source comment: <em>"the beginning of an idea that never panned out really."</em></div>
+    </div>
+    <div class="caveat info">
+      <div class="title">ℹ No Excel formula round-trip</div>
+      <div class="body">XLSX export writes <code>type:&nbsp;Number</code> cells only. Values, not formulas. Adding real <code>=…</code> formulas is a ~20-line change to <code>ophis_view__export.js</code>.</div>
+    </div>
+    <div class="caveat warn">
+      <div class="title">⚠ DAYS scope discards location and time</div>
+      <div class="body">Because <code>FEATURE_FLAG__LOCK_DAY_SCOPE_TO_GMT = true</code>, DAYS-scope events force lat/long to 0/0 and time to 00:00 GMT. Your Dallas coordinates are ignored unless you use HH:MM scope.</div>
+    </div>
+    <div class="caveat info">
+      <div class="title">ℹ Version drift</div>
+      <div class="body"><code>APP_VERSION = "9"</code> in config, but the header markup still says "v7". Runtime overwrites. <code>package.json</code> is authoritative.</div>
+    </div>
+    <div class="caveat">
+      <div class="title">⚠ debugger; statements shipped</div>
+      <div class="body"><code>ophis_model__operations.js:54</code> and <code>ophis_view__chart_datasets.js:1366</code> both ship <code>debugger;</code>. Harmless unless DevTools is open.</div>
+    </div>
+    <div class="caveat warn">
+      <div class="title">⚠ Cache-buster on every load</div>
+      <div class="body"><code>ophis.html</code> appends <code>?v=&lt;rand&gt;</code> to every script and CSS tag on every launch. Startup is measurably slower than it needs to be.</div>
+    </div>
+  </div>
+</section>
+
+<!-- =================================================================== -->
+<section id="faq">
+  <div class="sec-no">§10 · FAQ</div>
+  <h2>Questions that come up first</h2>
+
+  <details><summary>Why are there 15 operations, not 16?</summary><div class="faqbody">
+    <p>The source comments count from "2." through "15." (Ops #2 through #15), plus the newer Hepta-Cycle op with no number. So the actual literal <code>DEFAULT_OPHIS_OPERATIONS</code> array has 15 entries. An earlier "Op #1" was almost certainly removed before this ship, but the numbering was never renumbered — the comments are a paper trail.</p>
+    <p>The reverse-engineering report initially said 16 by counting the version-branched clone path; the deep-dive traced the array and confirmed 15.</p>
+  </div></details>
+
+  <details><summary>What does OPH_CRV actually mean?</summary><div class="faqbody">
+    <p>Numerically, <code>OPH_CRV = OPH_PI × OPH_PHI ≈ 5.08</code>. The source calls it "curvature." Not a standard-named mathematical constant — the closest neighbours are the golden angle in radians (≈2.399) and the golden-φ-hyperbolic curvature used in certain phyllotaxis models, but neither of those is 5.08 exactly. Treat it as an author-invented composite constant.</p>
+    <p>Its effect on projections: it tightens the multiplier compared to bare π, and expands compared to bare φ. Ops using κ tend to produce medium-length projections that don't cleanly line up on 138 or 19 lattices — that's likely intentional; it makes them independent signals from the 138 grid.</p>
+  </div></details>
+
+  <details><summary>What does oph_flip actually do?</summary><div class="faqbody">
+    <p>It reverses the digits of a number while preserving decimal position. Ported verbatim:</p>
+    <p><code>flip(1319) = 9131</code>. <code>flip(138) = 831</code>. <code>flip(19) = 91</code>. <code>flip(1.5) = 5.1</code>. <code>flip(100) = 001 → parsed as 1</code>.</p>
+    <p>Trailing zeros are lost because the reversed string is re-parsed as a number. That's a lossy operation on any Y ending in zero — worth knowing when your interval happens to be a round number.</p>
+  </div></details>
+
+  <details><summary>Why does the 138·12 = 1656 date lock feel so heavy?</summary><div class="faqbody">
+    <p>Because it's the <b>same interval as the Genesis Flood-count</b> (Anno Mundi 1656 in the biblical chronology). The engine doesn't know that — Ophis has no theology. But when your input dates happen to be spaced 1656 days apart, every isometric-style operation produces multiples of that number, and the 138-lattice operations light up at every hop.</p>
+    <p>It's the numerological equivalent of finding your keys — the meaning is in the coincidence, not the machinery.</p>
+  </div></details>
+
+  <details><summary>Can I add my own operations to the shipping app?</summary><div class="faqbody">
+    <p>Yes, that's the primary way to use it. Open any Iso-Event → Operations settings → paste your equation into a new row. It's validated live as you type; if it passes the strip → math.js check it becomes a real compiled function on the next cast. That's how every operation in §4 above is meant to be added — Ophis's grammar is open by design.</p>
+    <p>The 138 and 19 lattice operations aren't in the shipping defaults, but every one of them satisfies the grammar rules in §5 and will be accepted verbatim.</p>
+  </div></details>
+
+  <details><summary>How do I export what I've made?</summary><div class="faqbody">
+    <p>The Export screen offers three formats. <b>XLSX</b> writes a three-column sheet (Date / Hits / Score) with computed numbers, no formulas. <b>CSV</b> is the same three columns via Papa Parse. <b>PDF</b> is landscape jsPDF with a chart snapshot, glossary page, and paginated Z-Date tables (15 rows per page).</p>
+    <p>The <code>.oph</code> save file is UTF-8 JSON — completely portable. You can hand-edit it, diff it, or generate one programmatically outside the app.</p>
+  </div></details>
+
+  <details><summary>Is nothing hitting? Why are my Z-Dates all in the far future or far past?</summary><div class="faqbody">
+    <p>Two common reasons. First: your Y is enormous. If X1 and X2 are 3,000 years apart, <code>X1+YxOPH_CRV</code> projects 15,000 years past X1 — outside the Chart.js window. The engine also clamps at <code>MAXIMUM_ROTATION_COUNT_Z = 36500 days (~100 years)</code>.</p>
+    <p>Second: your operations all use the same anchor. If every op begins with <code>X2+</code>, every Z-Date lives after X2. Mix <code>X1+</code> and <code>X2+</code> to get projections on both sides of the interval.</p>
+  </div></details>
+
+  <details><summary>Is Ophis paid software?</summary><div class="faqbody">
+    <p>The sign-in gate suggests it once was, but the shipped v9 has that gate disabled with a comment reading "fake security camera." So the current build runs open. The developer's intent — commercial, evaluation copy, or free release — isn't stated in the source.</p>
+    <p>This guide is a reverse-engineering study of a legally obtained copy, focused on how the tool works. Nothing in it circumvents anything the shipping build hasn't already left open.</p>
+  </div></details>
+</section>
+
+<div class="note-card"><h4>Keyboard &amp; reading</h4>
+  <p>Tab moves between every control. <b>☾/☀</b> flips light/dark (follows your system on first visit). <b>A− / A / A+</b> scales the whole page. Both remembered between sessions via <code>localStorage</code>. Reduced-motion is honoured. Nothing on this page phones home — the only external requests are the Google Fonts stylesheet on first load.</p>
+</div>
+
+<footer>
+  <b>Ophis v9 · Field Guide.</b> Reverse-engineered from <code>Ophis_v9_Windows.exe</code> (95,327,304 bytes). Compute engine and the 15 shipped operations are ported verbatim from <code>ophis_model__params.js</code> and <code>ophis_model__validation.js</code>. The 138/19 lattice extensions in §4 are custom operations authored against Ophis's own grammar — accepted by the shipping app as user operations, not by the shipping defaults. Presented as a companion to the <em>Phoenix CODEX 138 Palindromic</em> and the Archaix chronology work of Jason Breshears, not as established science.
+</footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const $ = id => document.getElementById(id);
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),1700);}
+
+/* ---------- OPHIS CONSTANTS (from ophis_config.js, expected-precision path) ---------- */
+const OPH_PI  = 3.14;
+const OPH_PHI = 1.618;
+const OPH_CRV = 5.08;      // π · φ rounded
+const OPH_HEP = 7.01;
+
+/* ---------- OPH_* HELPERS (ported verbatim from ophis_utils.js) ---------- */
+function oph_sqrt(v){return Math.sqrt(v);}
+function oph_abs(v){return Math.abs(v);}
+function oph_floor(v){return Math.floor(v);}
+function oph_ceil(v){return Math.ceil(v);}
+function oph_log(v){return Math.log(v);}
+function oph_sin(v){return Math.sin(v);}
+function oph_cos(v){return Math.cos(v);}
+function oph_tan(v){return Math.tan(v);}
+function oph_exp(v){return Math.exp(v);}
+function oph_round(v){return Math.round(v);}
+function oph_flip(v){
+  const s=(v+"").replace(".","");
+  const dot=(v+"").indexOf(".");
+  const arr=s.split("").reverse();
+  if(dot>0)arr.splice(dot,0,".");
+  return new Number(arr.join("")).valueOf();
+}
+Object.assign(window,{oph_sqrt,oph_abs,oph_floor,oph_ceil,oph_log,oph_sin,oph_cos,oph_tan,oph_exp,oph_round,oph_flip});
+
+/* ---------- THE 15 SHIPPED DEFAULT OPERATIONS (verbatim from ophis_model__params.js:65-110) ---------- */
+const DEFAULTS = [
+  {eq:"X2+oph_round(Y)",           cls:"alpha", enabled:true },
+  {eq:"X2+oph_flip(oph_round(Y))", cls:"alpha", enabled:true },
+  {eq:"X2+Y/OPH_CRV",              cls:"beta",  enabled:true },
+  {eq:"X1+(Y/2.0)xOPH_PI",         cls:"beta",  enabled:true },
+  {eq:"X2+Y/OPH_PHI",              cls:"alpha", enabled:true },
+  {eq:"X2+(Y/2.0)xOPH_PHI",        cls:"beta",  enabled:true },
+  {eq:"X1+(Y/2.0)xOPH_CRV",        cls:"beta",  enabled:true },
+  {eq:"X2+(Y/2.0)xOPH_PI",         cls:"beta",  enabled:true },
+  {eq:"X2+YxOPH_PHI",              cls:"alpha", enabled:true },
+  {eq:"X1+YxOPH_PI",               cls:"beta",  enabled:true },
+  {eq:"X2+(Y/2.0)xOPH_CRV",        cls:"beta",  enabled:true },
+  {eq:"X2+YxOPH_PI",               cls:"beta",  enabled:true },
+  {eq:"X1+YxOPH_CRV",              cls:"beta",  enabled:true },
+  {eq:"X2+YxOPH_CRV",              cls:"beta",  enabled:true },
+  {eq:"X1+YxOPH_HEP",              cls:"alpha", enabled:false}
+];
+
+/* ---------- NORMALIZE → STRIP → COMPILE (mirrors ophis_model__validation.js:3-132) ---------- */
+function normalize(eq){
+  let s=eq.replace(/\s/g,"");
+  s=s.replace(/oph_/g,"OPH__P__");
+  s=s.replace(/x/g,"*");
+  s=s.replace(/OPH__P__/g,"oph_");
+  s=s.replace(/OPH_PHI/g,String(OPH_PHI));
+  s=s.replace(/OPH_PI/g, String(OPH_PI));
+  s=s.replace(/OPH_CRV/g,String(OPH_CRV));
+  s=s.replace(/OPH_HEP/g,String(OPH_HEP));
+  return s;
+}
+function stripAnchor(s){
+  if(s.indexOf("X1+")===0)return {anchor:"X1",body:s.slice(3)};
+  if(s.indexOf("X2+")===0)return {anchor:"X2",body:s.slice(3)};
+  return {anchor:null,body:s};
+}
+DEFAULTS.forEach(op=>{
+  try{
+    const n=normalize(op.eq);
+    const {anchor,body}=stripAnchor(n);
+    op.anchor=anchor;
+    op.fn=new Function("Y","return "+body+";");
+  }catch(e){op.err=e.message;}
+});
+
+/* ---------- DATE MATH ---------- */
+const MSD=86400000;
+function pd(v){if(!v)return null;const p=v.split("-");if(p.length!==3)return null;return new Date(Date.UTC(+p[0],+p[1]-1,+p[2]));}
+function daysBetween(a,b){return Math.round((b.getTime()-a.getTime())/MSD);}
+function addDays(d,n){const o=new Date(d.getTime());o.setUTCDate(o.getUTCDate()+Math.round(n));return o;}
+function fmtDate(d){if(!d||isNaN(d))return "—";const y=d.getUTCFullYear();const m=String(d.getUTCMonth()+1).padStart(2,"0");const day=String(d.getUTCDate()).padStart(2,"0");return y+"-"+m+"-"+day;}
+function fmtNum(n){if(typeof n!=="number"||!isFinite(n))return "—";if(Number.isInteger(n))return n.toLocaleString();return n.toFixed(2);}
+function isNearMultipleOf(n,base,tol){const q=n/base;const r=Math.round(q);return Math.abs(q-r)*base<=tol?r:null;}
+
+/* ---------- RENDER ---------- */
+function render(){
+  const x1=pd($('x1').value);
+  const x2=pd($('x2').value);
+  if(!x1||!x2)return;
+  const Y=daysBetween(x1,x2);
+
+  $('y-out').textContent=fmtNum(Y);
+  $('days-out').textContent=fmtNum(Math.abs(Y));
+  $('y-138').textContent=(Y/138).toFixed(2);
+  $('y-19').textContent=(Y/19).toFixed(2);
+  $('y-flip').textContent=oph_flip(Math.abs(Y));
+
+  const yLat=$('y-lattice');
+  const yTags=[];
+  const y138=isNearMultipleOf(Math.abs(Y),138,0.5);
+  const y19 =isNearMultipleOf(Math.abs(Y),19,0.5);
+  const y6940=isNearMultipleOf(Math.abs(Y),6940,1);
+  const y1656=Math.abs(Y)===1656?true:null;
+  if(y1656)yTags.push('✱ 138 × 12 · FLOOD SPAN');
+  else if(y138)yTags.push('✱ 138 × '+y138);
+  if(y19)yTags.push('☾ 19 × '+y19);
+  if(y6940)yTags.push('⟳ Metonic × '+y6940);
+  yLat.textContent=yTags.join('  ·  ');
+  yLat.className='lattice'+(yTags.length?' hit':'');
+
+  const tb=$('ops-body');
+  tb.innerHTML="";
+  DEFAULTS.forEach((op,i)=>{
+    let delta=null,zDate=null;
+    if(op.fn){
+      try{
+        delta=op.fn(Y);
+        const anchor=op.anchor==="X1"?x1:x2;
+        zDate=addDays(anchor,delta);
+      }catch(e){delta="err";}
+    }
+    const dRound=typeof delta==="number"?Math.round(delta):null;
+    const h138=dRound!==null?isNearMultipleOf(Math.abs(dRound),138,0.5):null;
+    const h19 =dRound!==null?isNearMultipleOf(Math.abs(dRound),19,0.5):null;
+
+    const tr=document.createElement("tr");
+    if(!op.enabled)tr.className="disabled";
+    tr.innerHTML=
+      '<td class="idx">'+String(i+1).padStart(2,"0")+'</td>'+
+      '<td class="eq">'+op.eq+'</td>'+
+      '<td class="anchor">'+(op.anchor||"?")+'</td>'+
+      '<td><span class="cls-tag cls-'+(op.enabled?op.cls:"off")+'">'+
+        (op.enabled?(op.cls==="alpha"?"α · Alpha":"β · Beta"):"off")+'</span></td>'+
+      '<td class="dl">'+(typeof delta==="number"?fmtNum(dRound)+' d':String(delta))+'</td>'+
+      '<td class="zd">'+fmtDate(zDate)+'</td>'+
+      '<td class="dl'+(h138?" hit":"")+'">'+(h138?"×"+h138:"—")+'</td>'+
+      '<td class="dl'+(h19?" hit":"")+'">'+(h19?"×"+h19:"—")+'</td>';
+    tb.appendChild(tr);
+  });
+}
+
+/* ---------- PRESETS ---------- */
+const PRESETS={
+  pyramid:  {x1:"2023-01-19",x2:"2027-08-02"},
+  halvings: {x1:"2012-11-28",x2:"2016-07-09"},
+  metonic:  {x1:"2000-01-01",x2:"2019-01-01"}
+};
+document.querySelectorAll('[data-preset]').forEach(b=>b.onclick=()=>{
+  const p=PRESETS[b.dataset.preset];
+  if(p){$('x1').value=p.x1;$('x2').value=p.x2;render();toast('Preset loaded');}
+});
+$('preset-btn').onclick=()=>{$('x1').value=PRESETS.pyramid.x1;$('x2').value=PRESETS.pyramid.x2;render();};
+$('x1').addEventListener('input',render);
+$('x2').addEventListener('input',render);
+render();
+
+/* ---------- COPY BUTTONS ---------- */
+function copyText(txt,btn){
+  const done=()=>{toast('Copied — paste into Ophis Custom Operation');if(btn){const o=btn.textContent;btn.textContent='copied ✓';btn.classList.add('done');setTimeout(()=>{btn.textContent=o;btn.classList.remove('done');},1300);}};
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(done).catch(()=>fb(txt,done));}else fb(txt,done);
+}
+function fb(txt,done){try{const ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);done();}catch(e){toast('Copy failed');}}
+document.querySelectorAll('.frow').forEach(row=>{
+  const code=row.querySelector('code'),btn=row.querySelector('.copybtn');
+  if(!code||!btn)return;
+  const fire=()=>copyText(code.textContent,btn);
+  btn.onclick=fire;code.onclick=fire;code.title='Click to copy';
+});
+
+/* ---------- NAV SCROLL ---------- */
+document.querySelectorAll('[data-go]').forEach(a=>a.onclick=e=>{
+  e.preventDefault();
+  const el=$(a.dataset.go);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
+});
+
+/* ---------- THEME + ZOOM (shared localStorage keys with the PSYFR family) ---------- */
+const _root=document.documentElement;
+function applyTheme(t){_root.setAttribute('data-theme',t);const b=$('themeBtn');b.textContent=t==='light'?'☀ Light':'☾ Dark';b.setAttribute('aria-pressed',t==='light'?'true':'false');try{localStorage.setItem('ophion-theme',t);}catch(e){}}
+function applyZoom(z){_root.style.setProperty('--zoom',z);try{localStorage.setItem('ophion-zoom',String(z));}catch(e){}}
+let _zoom=1;try{const z=parseFloat(localStorage.getItem('ophion-zoom'));if(z>=0.8&&z<=1.5)_zoom=z;}catch(e){}
+let _theme=null;try{_theme=localStorage.getItem('ophion-theme');}catch(e){}
+if(_theme!=='light'&&_theme!=='dark')_theme=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';
+applyTheme(_theme);applyZoom(_zoom);
+$('themeBtn').onclick=()=>applyTheme(_root.getAttribute('data-theme')==='light'?'dark':'light');
+$('tsUp').onclick=()=>{_zoom=Math.min(1.5,Math.round((_zoom+0.1)*10)/10);applyZoom(_zoom);};
+$('tsDown').onclick=()=>{_zoom=Math.max(0.8,Math.round((_zoom-0.1)*10)/10);applyZoom(_zoom);};
+$('tsReset').onclick=()=>{_zoom=1;applyZoom(_zoom);};
+</script>
+</body>
+</html>
