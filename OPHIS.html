@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <base target="_blank">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ophis v9 · Field Guide &amp; Reverse-Engineering Codex</title>
+<title>Ophis v12 · Field Guide &amp; Reverse-Engineering Codex</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -281,7 +281,7 @@
 <body>
 
 <nav class="top">
-  <div class="brand">OPHIS v9 <span>· Field Guide</span></div>
+  <div class="brand">OPHIS v12 <span>· Field Guide</span></div>
   <div class="links">
     <a target="_self" href="#quick" data-go="quick">Quick Tour</a>
     <a target="_self" href="#vocab" data-go="vocab">Vocabulary</a>
@@ -312,17 +312,17 @@
   <h1>The serpent<br>coiled around <em style="font-style:italic">time</em>.</h1>
   <div class="tagline">how the engine reads · what the formulas mean · the 138 &amp; 19 lattice underneath</div>
   <p class="sub">
-    Ophis v9 shipped as a 91&nbsp;MB Windows installer with a Chromium runtime and a sign-in gate. Under the wrapper: an un-obfuscated
-    Electron app running a hand-rolled formula engine over Y — the axial-rotation count between two anchor dates. This guide reads it out:
-    the fifteen shipped operations, the constants that drive them (π, φ, curvature, hepta), how to extend the grammar with your own 138
-    and 19 resonance operations, and a live cast you can drive from this page.
+    Ophis v12 ships as a 100&nbsp;MB portable Windows program — Electron&nbsp;39 with its own Chromium runtime, and a sign-in gate that is
+    switched off. Under the wrapper: an un-obfuscated app running a hand-rolled formula engine over Y — the axial-rotation count between
+    two anchor dates. This guide reads it out: the sixteen operations v12 runs by default, the constants that drive them (π, φ, curvature,
+    hepta), how to extend the grammar with your own 138 and 19 resonance operations, and a live cast you can drive from this page.
   </p>
   <div class="hero-stats">
-    <div class="hs"><div class="n">91<span style="font-size:12px;color:var(--dim)">&nbsp;MB</span></div><div class="l">Installer</div></div>
-    <div class="hs"><div class="n">32<span style="font-size:12px;color:var(--dim)">&nbsp;MB</span></div><div class="l">app.asar</div></div>
-    <div class="hs"><div class="n">11.5<span style="font-size:12px;color:var(--dim)">&nbsp;k</span></div><div class="l">Lines JS</div></div>
-    <div class="hs"><div class="n">22</div><div class="l">Modules</div></div>
-    <div class="hs"><div class="n">15</div><div class="l">Default ops</div></div>
+    <div class="hs"><div class="n">100<span style="font-size:12px;color:var(--dim)">&nbsp;MB</span></div><div class="l">Portable .exe</div></div>
+    <div class="hs"><div class="n">32.5<span style="font-size:12px;color:var(--dim)">&nbsp;MB</span></div><div class="l">app.asar</div></div>
+    <div class="hs"><div class="n">14.7<span style="font-size:12px;color:var(--dim)">&nbsp;k</span></div><div class="l">Lines JS</div></div>
+    <div class="hs"><div class="n">24</div><div class="l">Modules</div></div>
+    <div class="hs"><div class="n">16</div><div class="l">Default ops</div></div>
     <div class="hs"><div class="n">3</div><div class="l">MSRF sets</div></div>
   </div>
 </header>
@@ -344,7 +344,7 @@
       formula receives.</p>
     </div></div>
     <div class="step"><div>
-      <h4>Fifteen formulas run</h4>
+      <h4>Sixteen formulas run</h4>
       <p>Each of the shipped operations transforms Y into a day-offset. The formula's <b class="ro">X1+</b> or <b class="ro">X2+</b>
       prefix decides which anchor the offset gets added to. The result is a projected <b class="g">Z-Date</b>.</p>
     </div></div>
@@ -382,10 +382,11 @@
 <!-- =================================================================== -->
 <section id="cookbook">
   <div class="sec-no">§3 · The Formula Cookbook</div>
-  <h2>The fifteen shipped operations, translated</h2>
-  <p class="lead">Every formula below is a real Ophis default — extracted verbatim from <code>ophis_model__params.js:65–110</code>.
+  <h2>The sixteen v12 operations, translated</h2>
+  <p class="lead">Every formula below is a real Ophis v12 default — extracted verbatim from <code>ophis_model__params.js:65–138</code>.
   Tap any formula to copy it. Paste into the operations table inside the app. <b>α · Alpha</b> operations weight higher on match
-  than <b>β · Beta</b>. The Hepta-Cycle operation is <b>disabled by default</b> — added August 2025 per a source comment.</p>
+  than <b>β · Beta</b>. In v12 <b>all sixteen run</b>: the v8+ default switches every operation on and promotes two to alpha
+  (the half-Y golden step and the full radius projection), and the v10+ default adds the hepta-cycle on X2.</p>
 
   <div class="constants">
     <div class="cst"><div class="sym">π</div><div class="name">OPH_PI</div><div class="val">3.14</div><div class="sub">radius</div></div>
@@ -417,9 +418,9 @@
     </div><div class="fdesc"><b>Golden division.</b> Y ÷ φ. The classic Fibonacci retracement in date form.</div></div>
     <div class="frow"><div class="fcode">
       <code>X2+(Y/2.0)xOPH_PHI</code>
-      <span class="cls-tag cls-beta">β · Beta</span>
+      <span class="cls-tag cls-alpha">α · Alpha</span>
       <button class="copybtn">copy</button>
-    </div><div class="fdesc"><b>Half-Y golden step.</b> Half the interval, scaled by φ. Named <code>OPERATION_EQUATION_FOR_ORIGINAL_BETA_PHI_6</code> in source.</div></div>
+    </div><div class="fdesc"><b>Half-Y golden step.</b> Half the interval, scaled by φ. Named <code>OPERATION_EQUATION_FOR_ORIGINAL_BETA_PHI_6</code> in source — beta through v7, promoted to alpha from v8.</div></div>
     <div class="frow"><div class="fcode">
       <code>X2+YxOPH_PHI</code>
       <span class="cls-tag cls-alpha">α · Alpha</span>
@@ -441,9 +442,9 @@
     </div><div class="fdesc"><b>Half-arc from X2.</b> Same semicircle projection anchored at the later date.</div></div>
     <div class="frow"><div class="fcode">
       <code>X1+YxOPH_PI</code>
-      <span class="cls-tag cls-beta">β · Beta</span>
+      <span class="cls-tag cls-alpha">α · Alpha</span>
       <button class="copybtn">copy</button>
-    </div><div class="fdesc"><b>Full radius projection.</b> Named <code>OPERATION_EQUATION_FOR_RADIUS_PROJECTION</code> in source. Y × π, from earlier anchor.</div></div>
+    </div><div class="fdesc"><b>Full radius projection.</b> Named <code>OPERATION_EQUATION_FOR_RADIUS_PROJECTION</code> in source. Y × π, from earlier anchor — beta through v7, promoted to alpha from v8.</div></div>
     <div class="frow"><div class="fcode">
       <code>X2+YxOPH_PI</code>
       <span class="cls-tag cls-beta">β · Beta</span>
@@ -481,12 +482,17 @@
   </div>
 
   <div class="fgroup">
-    <h3>Hepta η · 7.01 <small>the newcomer</small><span class="pill">Op 15 · disabled by default</span></h3>
-    <div class="frow disabled"><div class="fcode">
+    <h3>Hepta η · 7.01 <small>the newcomers</small><span class="pill">Ops 15–16 · both on</span></h3>
+    <div class="frow"><div class="fcode">
       <code>X1+YxOPH_HEP</code>
-      <span class="cls-tag cls-off">off by default</span>
+      <span class="cls-tag cls-alpha">α · Alpha</span>
       <button class="copybtn">copy</button>
-    </div><div class="fdesc"><b>Hepta-cycle projection.</b> Added August 2025 per source comment <em>"New Hepta-Cycle Operation from Jason"</em>. Y × 7.01. Enable it in the operations table to include it in casts.</div></div>
+    </div><div class="fdesc"><b>Hepta-cycle from X1.</b> Added early August 2025 per source comment <em>"New Hepta-Cycle Operation from Jason"</em>. Y × 7.01. Declared disabled in the array, but the v8+ default switches every operation on, so it runs.</div></div>
+    <div class="frow"><div class="fcode">
+      <code>X2+YxOPH_HEP</code>
+      <span class="cls-tag cls-alpha">α · Alpha</span>
+      <button class="copybtn">copy</button>
+    </div><div class="fdesc"><b>Hepta-cycle from X2.</b> Added late December 2025 — <em>"for this one Z-Value is added to X2"</em>. The one row v10+ adds to the v8 table, and the whole operation-table difference between v9 and v12.</div></div>
   </div>
 </section>
 
@@ -625,7 +631,7 @@
 <section id="cast">
   <div class="sec-no">§6 · Live Cast</div>
   <h2>Run the engine, here in this page</h2>
-  <p class="lead">A faithful port of the compute cycle: enter two anchor dates, the engine normalizes each of the 15 default
+  <p class="lead">A faithful port of the compute cycle: enter two anchor dates, the engine normalizes each of the 16 default
   operations, compiles them with <code>new Function("Y")</code>, and applies the resulting delta to the X1 or X2 anchor.
   Every Z-Date on the right is what the real app would produce with location disabled and DAYS scope. The 138/19 columns
   light up when Y or |Δ| lands cleanly on a Phoenix or Metonic multiple.</p>
@@ -742,20 +748,20 @@
   <div class="journey">
     <div class="layer">
       <div class="fmt">PE / Win32</div>
-      <div class="name">Ophis_v9_Windows.exe</div>
-      <div class="size">95,327,304 B</div>
+      <div class="name">Ophis_v12_Windows.exe</div>
+      <div class="size">104,638,743 B</div>
       <div class="arrow">→</div>
     </div>
     <div class="layer">
       <div class="fmt">NSIS + 7z</div>
-      <div class="name">LZMA2 archive</div>
-      <div class="size">Nullsoft installer</div>
+      <div class="name">Portable stub</div>
+      <div class="size">self-extracts to %TEMP%</div>
       <div class="arrow">→</div>
     </div>
     <div class="layer">
       <div class="fmt">Electron</div>
       <div class="name">resources/app.asar</div>
-      <div class="size">32.3 MB</div>
+      <div class="size">32.5 MB · Electron 39</div>
       <div class="arrow">→</div>
     </div>
     <div class="layer">
@@ -787,7 +793,7 @@
       <div class="mods">
         <span class="mod hot" title="runOphisOnEvent — the compute engine">ophis_model__operations.js</span>
         <span class="mod hot" title="Formula validation via math.js + new Function() compile">ophis_model__validation.js</span>
-        <span class="mod" title="15 default operations + MSRF filter arrays">ophis_model__params.js</span>
+        <span class="mod" title="15-row operation array + v8/v10 default clones (16 ops) + MSRF filter arrays">ophis_model__params.js</span>
         <span class="mod" title=".oph file save/load, autosave">ophis_model__persistence.js</span>
         <span class="mod" title="Z-Date filtering + 5 sort modes">ophis_model__sorting.js</span>
       </div>
@@ -815,6 +821,8 @@
         <span class="mod" title="All constants: OPH_PI/PHI/CRV/HEP, feature flags, ACCOUNT_HASHES">ophis_config.js</span>
         <span class="mod" title="Wraps Meeus + tzlookup + Tipsy">ophis_dependencies.js</span>
         <span class="mod" title="Startup MSRF-filter self-check">ophis_unit_tests.js</span>
+        <span class="mod" title="New in v12: routes console output to the Electron main process">ophis_logging.js</span>
+        <span class="mod" title="New in v12: developer scratch file">scratchpad.js</span>
       </div>
     </div>
   </div>
@@ -865,9 +873,9 @@
   <div class="sec-no">§10 · FAQ</div>
   <h2>Questions that come up first</h2>
 
-  <details><summary>Why are there 15 operations, not 16?</summary><div class="faqbody">
-    <p>The source comments count from "2." through "15." (Ops #2 through #15), plus the newer Hepta-Cycle op with no number. So the actual literal <code>DEFAULT_OPHIS_OPERATIONS</code> array has 15 entries. An earlier "Op #1" was almost certainly removed before this ship, but the numbering was never renumbered — the comments are a paper trail.</p>
-    <p>The reverse-engineering report initially said 16 by counting the version-branched clone path; the deep-dive traced the array and confirmed 15.</p>
+  <details><summary>Why sixteen operations when the array has fifteen?</summary><div class="faqbody">
+    <p>The literal operation array in <code>ophis_model__params.js</code> has 15 rows: comments "2." through "15." plus the early-August 2025 hepta-cycle on X1. A new v12 event is not built from that array directly — it goes through the version clones. The v8+ clone switches every row on (so the X1 hepta-cycle, declared disabled, runs) and promotes the radius projection and the half-Y golden step to alpha. The v10+ clone then appends the late-December 2025 hepta-cycle on X2. Fifteen plus one: sixteen, all on.</p>
+    <p>That one appended row is the entire operation-table difference between v9 and v12. The missing "Op #1" in the comments is a paper trail from an earlier removal that was never renumbered.</p>
   </div></details>
 
   <details><summary>What does OPH_CRV actually mean?</summary><div class="faqbody">
@@ -902,7 +910,7 @@
   </div></details>
 
   <details><summary>Is Ophis paid software?</summary><div class="faqbody">
-    <p>The sign-in gate suggests it once was, but the shipped v9 has that gate disabled with a comment reading "fake security camera." So the current build runs open. The developer's intent — commercial, evaluation copy, or free release — isn't stated in the source.</p>
+    <p>The sign-in gate suggests it once was, but v12 — like v9 before it — ships with that gate disabled with a comment reading "fake security camera." So the current build runs open. The developer's intent — commercial, evaluation copy, or free release — isn't stated in the source.</p>
     <p>This guide is a reverse-engineering study of a legally obtained copy, focused on how the tool works. Nothing in it circumvents anything the shipping build hasn't already left open.</p>
   </div></details>
 </section>
@@ -912,7 +920,8 @@
 </div>
 
 <footer>
-  <b>Ophis v9 · Field Guide.</b> Reverse-engineered from <code>Ophis_v9_Windows.exe</code> (95,327,304 bytes). Compute engine and the 15 shipped operations are ported verbatim from <code>ophis_model__params.js</code> and <code>ophis_model__validation.js</code>. The 138/19 lattice extensions in §4 are custom operations authored against Ophis's own grammar — accepted by the shipping app as user operations, not by the shipping defaults. Presented as a companion to the <em>Phoenix CODEX 138 Palindromic</em> and the Archaix chronology work of Jason Breshears, not as established science.
+  <b>Ophis v12 · Field Guide.</b> Reverse-engineered from <code>Ophis_v12_Windows.exe</code> (104,638,743 bytes). Compute engine and the 16 default operations are ported verbatim from <code>ophis_model__params.js</code> and <code>ophis_model__validation.js</code>. The 138/19 lattice extensions in §4 are custom operations authored against Ophis's own grammar — accepted by the shipping app as user operations, not by the shipping defaults. Presented as a companion to the <em>Phoenix CODEX 138 Palindromic</em> and the Archaix chronology work of Jason Breshears, not as established science.
+  <br><span style="opacity:.7">Earlier edition: the <a href="https://bradleyhomelinuxnet-prog.github.io/NatorionCipherPredictiveEngine/Ophis_v9_Explained.html" rel="nofollow">v9 Field Guide</a>, kept as a historical record.</span>
 </footer>
 </div>
 
@@ -948,23 +957,24 @@ function oph_flip(v){
 }
 Object.assign(window,{oph_sqrt,oph_abs,oph_floor,oph_ceil,oph_log,oph_sin,oph_cos,oph_tan,oph_exp,oph_round,oph_flip});
 
-/* ---------- THE 15 SHIPPED DEFAULT OPERATIONS (verbatim from ophis_model__params.js:65-110) ---------- */
+/* ---------- THE 16 v12 DEFAULT OPERATIONS (ophis_model__params.js: the 15-row array through the v8 and v10 clones) ---------- */
 const DEFAULTS = [
   {eq:"X2+oph_round(Y)",           cls:"alpha", enabled:true },
   {eq:"X2+oph_flip(oph_round(Y))", cls:"alpha", enabled:true },
   {eq:"X2+Y/OPH_CRV",              cls:"beta",  enabled:true },
   {eq:"X1+(Y/2.0)xOPH_PI",         cls:"beta",  enabled:true },
   {eq:"X2+Y/OPH_PHI",              cls:"alpha", enabled:true },
-  {eq:"X2+(Y/2.0)xOPH_PHI",        cls:"beta",  enabled:true },
+  {eq:"X2+(Y/2.0)xOPH_PHI",        cls:"alpha", enabled:true },
   {eq:"X1+(Y/2.0)xOPH_CRV",        cls:"beta",  enabled:true },
   {eq:"X2+(Y/2.0)xOPH_PI",         cls:"beta",  enabled:true },
   {eq:"X2+YxOPH_PHI",              cls:"alpha", enabled:true },
-  {eq:"X1+YxOPH_PI",               cls:"beta",  enabled:true },
+  {eq:"X1+YxOPH_PI",               cls:"alpha", enabled:true },
   {eq:"X2+(Y/2.0)xOPH_CRV",        cls:"beta",  enabled:true },
   {eq:"X2+YxOPH_PI",               cls:"beta",  enabled:true },
   {eq:"X1+YxOPH_CRV",              cls:"beta",  enabled:true },
   {eq:"X2+YxOPH_CRV",              cls:"beta",  enabled:true },
-  {eq:"X1+YxOPH_HEP",              cls:"alpha", enabled:false}
+  {eq:"X1+YxOPH_HEP",              cls:"alpha", enabled:true },
+  {eq:"X2+YxOPH_HEP",              cls:"alpha", enabled:true }
 ];
 
 /* ---------- NORMALIZE → STRIP → COMPILE (mirrors ophis_model__validation.js:3-132) ---------- */
