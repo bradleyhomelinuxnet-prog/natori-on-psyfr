@@ -711,11 +711,11 @@
       <li>Set X1 to <b>2023-01-19</b> and X2 to <b>2027-08-02</b> in the live cast above.</li>
       <li>Y prints as <b>1,656</b>. Divide by 138 → <b>12.00 exact</b>. Divide by 12 → <b>138.00 exact</b>.</li>
       <li>Y ÷ 19 gives <b>87.16</b> — not clean, but <code>oph_flip(1656) = 6561 = 81<sup>2</sup></code>, which is 3<sup>8</sup>.</li>
-      <li>Watch the operations table: <code>X2+Y+138</code> lands on 20 Dec 2027, <code>X2+Y+1656</code> lands on 15 Feb 2032 (another 1656-hop).</li>
+      <li>Type in two of your own: <code>X2+Y+138</code> lands on 30 Jun 2032, <code>X2+Y+1656</code> lands on 26 Aug 2036 (a second 1656-hop past the eclipse).</li>
     </ol>
     <div class="result"><h5>What you'll see</h5>
-      <p>The isometric operation <span class="big">X2+oph_round(Y)</span> produces <b>2032-02-15</b> — exactly one Flood span past the eclipse. That's 138 × 24 = 3,312 days from the Pyramid entry. The paragraph lock projects a paragraph lock forward.</p>
-      <p>The palindrome operation <span class="big">X2+oph_flip(oph_round(Y))</span> — the Holo-mirror — lands on <b>2045-08-24</b>. 6561 days past 2027-08-02.</p>
+      <p>The isometric operation <span class="big">X2+oph_round(Y)</span> produces <b>2032-02-13</b> — exactly one Flood span past the eclipse. That's 138 × 24 = 3,312 days from the Pyramid entry. The paragraph lock projects a paragraph lock forward.</p>
+      <p>The palindrome operation <span class="big">X2+oph_flip(oph_round(Y))</span> — the Holo-mirror — lands on <b>2045-07-19</b>. 6561 days past 2027-08-02.</p>
     </div>
   </div>
 
@@ -726,10 +726,10 @@
       <li>Click the <b>₿ Bitcoin halvings</b> preset button in the live cast.</li>
       <li>Y prints as <b>1,319</b>. That's Y, not price — days between halvings.</li>
       <li>Y ÷ 138 = <b>9.56</b>, no clean lattice hit. Y ÷ 19 = <b>69.42</b>, also not clean.</li>
-      <li>But now watch the operations pack. <code>X2+YxOPH_PHI</code> lands on <b>2022-05-13</b>. <code>X1+YxOPH_PI</code> lands on <b>2024-03-11</b>.</li>
+      <li>But now watch the operations pack. <code>X2+YxOPH_PHI</code> lands on <b>2022-05-13</b>. <code>X1+YxOPH_PI</code> lands on <b>2024-03-31</b>.</li>
     </ol>
     <div class="result"><h5>What you'll see</h5>
-      <p>The 2024-03-11 result — <span class="big">X1 + Y × π</span> — is 51 days ahead of Bitcoin's actual all-time-high cluster in early May 2024. Under Ophis's tolerance windows, that lands inside a "convergence" if any other operation from the same anchor pair projects within ±30 days. It's the kind of thing the tool is built to hunt for. It's also easy to see how one such hit per anchor pair becomes a whole practice.</p>
+      <p>The 2024-03-31 result — <span class="big">X1 + Y × π</span> — lands 17 days after Bitcoin's all-time high of 14 March 2024 (about $73,800) and 20 days before the fourth halving on 20 April 2024. Under Ophis's tolerance windows, that lands inside a "convergence" if any other operation from the same anchor pair projects within ±30 days. It's the kind of thing the tool is built to hunt for. It's also easy to see how one such hit per anchor pair becomes a whole practice.</p>
       <p><em>Interpretation is on you. The engine only counts.</em></p>
     </div>
   </div>
@@ -997,7 +997,8 @@ DEFAULTS.forEach(op=>{
 const MSD=86400000;
 function pd(v){if(!v)return null;const p=v.split("-");if(p.length!==3)return null;return new Date(Date.UTC(+p[0],+p[1]-1,+p[2]));}
 function daysBetween(a,b){return Math.round((b.getTime()-a.getTime())/MSD);}
-function addDays(d,n){const o=new Date(d.getTime());o.setUTCDate(o.getUTCDate()+Math.round(n));return o;}
+/* The app adds the UNROUNDED offset to the anchor and keeps the calendar day it lands on, so the fraction drops: 4141.66 d is 4141 whole days. */
+function addDays(d,n){const o=new Date(d.getTime());o.setUTCDate(o.getUTCDate()+Math.floor(n));return o;}
 function fmtDate(d){if(!d||isNaN(d))return "—";const y=d.getUTCFullYear();const m=String(d.getUTCMonth()+1).padStart(2,"0");const day=String(d.getUTCDate()).padStart(2,"0");return y+"-"+m+"-"+day;}
 function fmtNum(n){if(typeof n!=="number"||!isFinite(n))return "—";if(Number.isInteger(n))return n.toLocaleString();return n.toFixed(2);}
 function isNearMultipleOf(n,base,tol){const q=n/base;const r=Math.round(q);return Math.abs(q-r)*base<=tol?r:null;}
@@ -1039,7 +1040,7 @@ function render(){
         zDate=addDays(anchor,delta);
       }catch(e){delta="err";}
     }
-    const dRound=typeof delta==="number"?Math.round(delta):null;
+    const dRound=typeof delta==="number"?Math.floor(delta):null;   // whole days the app actually adds
     const h138=dRound!==null?isNearMultipleOf(Math.abs(dRound),138,0.5):null;
     const h19 =dRound!==null?isNearMultipleOf(Math.abs(dRound),19,0.5):null;
 
