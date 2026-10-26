@@ -226,3 +226,11 @@
   .pick .meter { grid-column: 1 / -1; text-align: left; }
   .workings code { white-space: normal; word-break: break-all; }
 }
+
+/* After-sunset, under its date (docs/reverse/24 §3). */
+.datelist li { grid-template-areas: 'ord date rm' '. late late'; }
+.datelist .ord { grid-area: ord; }
+.datelist .start-input { grid-area: date; }
+.datelist .btn.icon { grid-area: rm; }
+.datelist .late { grid-area: late; display: flex; gap: var(--sp-2); align-items: center; font-size: 14px; color: var(--dim); cursor: pointer; }
+.datelist .late input { width: 16px; height: 16px; accent-color: var(--gold); margin: 0; }

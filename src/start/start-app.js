@@ -32,6 +32,9 @@ const draft = {
   step: 0,
   name: '',
   dates: ['', ''],
+  // Parallel to `dates`: true when that time happened after sunset, which the
+  // author's input notes say must be entered as the next day.
+  late: [false, false],
   includeToday: false,
 };
 
@@ -43,6 +46,7 @@ const store = {
       const saved = JSON.parse(raw);
       if (typeof saved.name === 'string') draft.name = saved.name;
       if (Array.isArray(saved.dates) && saved.dates.length) draft.dates = saved.dates.map(String).slice(0, 12);
+      draft.late = draft.dates.map((_, i) => Array.isArray(saved.late) && saved.late[i] === true);
       draft.includeToday = saved.includeToday === true;
       if ([0, 1, 2, 3].includes(saved.step)) draft.step = saved.step;
     } catch {
@@ -68,7 +72,20 @@ function parseISODate(text) {
 }
 
 const isoOf = (ms) => new Date(ms).toISOString().slice(0, 10);
-const typedDates = () => draft.dates.map(parseISODate).filter(Boolean);
+/**
+ * The dates as the engine should see them. "After sunset" moves one to the next
+ * calendar day: Ophis counts days by the Earth's rotation, and the author's input
+ * notes (docs/reverse/24 §3) have the operator enter the following date by hand.
+ */
+const typedDates = () =>
+  draft.dates
+    .map((text, i) => {
+      const d = parseISODate(text);
+      if (!d || !draft.late[i]) return d;
+      const next = new Date(Date.UTC(d.y, d.m - 1, d.d + 1));
+      return { y: next.getUTCFullYear(), m: next.getUTCMonth() + 1, d: next.getUTCDate() };
+    })
+    .filter(Boolean);
 
 const LONG = new Intl.DateTimeFormat(undefined, { weekday: 'short', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
 const SHORT = new Intl.DateTimeFormat(undefined, { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
@@ -106,6 +123,7 @@ function useExample() {
   const today = todayUTC(now());
   draft.name = EXAMPLE.name;
   draft.dates = EXAMPLE.daysAgo.map((d) => isoOf(today - d * MILLIS_PER_DAY));
+  draft.late = draft.dates.map(() => false);
   draft.includeToday = true;
   go(3);
 }
@@ -213,11 +231,29 @@ function stepDates() {
         disabled: draft.dates.length <= 2,
         onclick: () => {
           draft.dates.splice(i, 1);
+          draft.late.splice(i, 1);
           paintRows();
           refresh();
         },
       });
-      return el('li', {}, [el('span.ord', { text: ordinal(i) }), input, remove]);
+      const late = el('input', {
+        type: 'checkbox',
+        checked: draft.late[i] === true,
+        'aria-label': `The ${ordinal(i)} time was after sunset`,
+      });
+      late.addEventListener('change', () => {
+        draft.late[i] = late.checked;
+        refresh();
+      });
+      return el('li', {}, [
+        el('span.ord', { text: ordinal(i) }),
+        input,
+        remove,
+        el('label.late', { title: 'Ophis counts days by sunset. An evening event is entered as the next day.' }, [
+          late,
+          ' After sunset (around 6 PM or later): count it as the next day',
+        ]),
+      ]);
     }));
   };
   paintRows();
@@ -228,6 +264,7 @@ function stepDates() {
     onclick: () => {
       if (draft.dates.length >= 12) return;
       draft.dates.push('');
+      draft.late.push(false);
       paintRows();
       refresh();
       rows.querySelector('li:last-child input')?.focus();
@@ -387,6 +424,7 @@ function stepResults() {
     head(3, 'Dates worth watching'),
     story(`Natori ran the numbers on “${name}”. Rogue circled a few days on the calendar. Not because they were certain, but because they were worth watching.`),
     el('p.verdict', { data: { kind: read.verdict.key }, text: read.verdict.text }),
+    read.horizon ? el('p.start-hint', { text: `The method’s rule of thumb for these dates: ${read.horizon.text.replace(/^[^:]*: /, '')}` }) : null,
     read.picks.length ? timeline(ev, read.picks) : null,
     el('div.picks', {}, read.picks.map((p, i) => card(p, i, i === 0 ? phoenix : []))),
     read.total > read.picks.length
@@ -415,7 +453,7 @@ function stepResults() {
           type: 'button',
           text: 'Start over',
           onclick: () => {
-            Object.assign(draft, { name: '', dates: ['', ''], includeToday: false });
+            Object.assign(draft, { name: '', dates: ['', ''], late: [false, false], includeToday: false });
             go(0);
           },
         }),

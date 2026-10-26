@@ -1307,6 +1307,49 @@ pre.blob {
     scroll-behavior: auto !important;
   }
 }
+
+/* ============================== LAB ============================== */
+/* docs/reverse/24. Readings only; nothing here styles a score. */
+
+.panel.lab { margin-bottom: var(--sp-4); }
+.panel.lab p { max-width: var(--measure); }
+
+.tierchip {
+  display: inline-block;
+  padding: 0 5px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--msrf-normal);
+  color: var(--msrf-normal);
+  font-family: var(--font-mono);
+  font-size: var(--fs-pill);
+  line-height: 1.5;
+  white-space: nowrap;
+}
+.tierchip[data-apex='true'] { border-color: var(--msrf-vortex); color: var(--msrf-vortex); }
+
+table.matrix td.matrixcell { white-space: nowrap; }
+table.matrix td.matrixcell[data-tier='false'] { color: var(--dim); }
+table.matrix td.ok { color: var(--ok); }
+table.matrix td.faint { color: var(--faint); }
+
+.dials { display: flex; flex-wrap: wrap; gap: var(--sp-4); margin: var(--sp-3) 0; }
+.dial { margin: 0; display: flex; gap: var(--sp-2); align-items: center; min-width: 200px; }
+.dial svg { flex: 0 0 auto; }
+.dial .ring { fill: none; stroke: var(--line-2); stroke-width: 2; }
+.dial .zero { stroke: var(--gold); stroke-width: 3; stroke-linecap: round; }
+.dial .hand { stroke: var(--cyan); stroke-width: 2.5; stroke-linecap: round; }
+.dial .hub { fill: var(--cyan); }
+.dial[data-return='true'] .ring { stroke: var(--gold); }
+.dial[data-return='true'] .hand { stroke: var(--gold-2); }
+.dial figcaption { display: flex; flex-direction: column; font-size: var(--fs-ui); color: var(--prose); }
+.dial figcaption b { color: var(--ink); font-family: var(--font-display); font-size: 15px; }
+.dial figcaption .sub { color: var(--dim); }
+
+.panel.lab label.row { display: flex; gap: var(--sp-2); align-items: center; }
+.panel.lab select {
+  font: inherit; font-size: var(--fs-ui); color: var(--ink); background: var(--well);
+  border: 1px solid var(--line-2); border-radius: var(--r-1); padding: 4px 6px; max-width: 100%;
+}
 </style>
 </head>
 <body>
@@ -1422,6 +1465,16 @@ pre.blob {
       <h1 tabindex="-1">The results, as a file</h1>
     </div>
     <div id="zexportHost"></div>
+  </main>
+
+  <main class="screen" data-screen="lab">
+    <div class="screen-head">
+      <div class="eyebrow">The Lab</div>
+      <h1 tabindex="-1">The author’s notes, run against your dates</h1>
+      <p class="lede">Every anchor’s count, the moon’s long returns, and the rules the original
+        program never ran. Nothing here changes a score.</p>
+    </div>
+    <div id="labHost"></div>
   </main>
 
   <main class="screen" data-screen="audit">
@@ -3494,6 +3547,14 @@ pre.blob {
     tag_fibonacci: false,
     tag_geodetic: false,
     tag_diurnal: false,
+    /** The author's Holoflective Sums table (docs/reverse/24 §2), a label like the three above. */
+    tag_holoflective: false,
+    /**
+     * The Programmer Instructions' validity rule (docs/reverse/24 §1), applied to
+     * the table as a reading view: rows that fail it are set aside on screen, the
+     * run itself keeps them. Off by default, because the original never ran it.
+     */
+    lab_validity: false,
     /**
      * 'days' is the table the original drew, one row per Z-Date. 'windows' groups
      * them into 7-day periods, the way the SOP says to read a cast built on older
@@ -3772,14 +3833,14 @@ pre.blob {
 
   // src/core/eclipses.js
   function decode(base, deltas, types) {
-    const gaps = deltas.split(",");
-    const J = new Array(gaps.length + 1);
-    const T = new Array(gaps.length + 1);
+    const gaps2 = deltas.split(",");
+    const J = new Array(gaps2.length + 1);
+    const T = new Array(gaps2.length + 1);
     let jd = base;
     J[0] = jd;
     T[0] = types[0];
-    for (let i = 0; i < gaps.length; i++) {
-      jd += +gaps[i];
+    for (let i = 0; i < gaps2.length; i++) {
+      jd += +gaps2[i];
       J[i + 1] = jd;
       T[i + 1] = types[i + 1];
     }
@@ -3896,6 +3957,13 @@ pre.blob {
       kind: "data",
       title: "Export Z-Dates",
       lede: "The results as CSV, XLSX or PDF."
+    },
+    {
+      id: "lab",
+      label: "Lab",
+      kind: "place",
+      title: "The Lab",
+      lede: "The author’s working notes, read against this run: every anchor’s count, the moon’s long returns, and the rules the original never ran."
     },
     {
       id: "audit",
@@ -5095,6 +5163,92 @@ pre.blob {
     replace(host, [statusBar()]);
   }
 
+  // src/data/holoflective.js
+  var PAIRS = [
+    // page 1
+    [12, 21, false],
+    [18, 81, false],
+    [21, 12, true],
+    [24, 42, true],
+    [27, 72, false],
+    [36, 63, true],
+    [42, 24, false],
+    [45, 54, false],
+    [48, 84, false],
+    [63, 36, true],
+    [69, 96, false],
+    [81, 18, false],
+    [84, 48, false],
+    [96, 69, false],
+    [126, 621, false],
+    [216, 612, true],
+    // page 2
+    [234, 432, false],
+    [255, 552, false],
+    [259, 952, false],
+    [264, 462, false],
+    [273, 372, false],
+    [276, 672, true],
+    [279, 972, false],
+    [288, 882, true],
+    [297, 792, false],
+    [351, 153, false],
+    [405, 504, true],
+    [423, 324, false],
+    [429, 924, false],
+    [441, 144, true],
+    [447, 744, false],
+    [468, 864, false],
+    [492, 294, false],
+    [501, 105, false],
+    [504, 405, false],
+    [513, 315, false],
+    [531, 135, false],
+    [537, 735, false],
+    [549, 945, false],
+    [567, 765, false],
+    [576, 675, false],
+    [603, 306, false],
+    [612, 216, false],
+    [621, 126, true],
+    [633, 336, false],
+    [645, 546, false],
+    [657, 756, false],
+    [669, 966, false],
+    // page 3
+    [672, 276, true],
+    [674, 476, false],
+    [675, 576, false],
+    [681, 186, false],
+    [801, 108, false],
+    [819, 918, false],
+    [831, 138, false],
+    [846, 648, false],
+    [855, 558, false],
+    [861, 168, false],
+    [873, 378, false],
+    [882, 288, true],
+    [885, 588, false],
+    [897, 798, false],
+    [954, 459, false],
+    [1701, 1071, false],
+    [2031, 1302, false],
+    [2901, 1092, false],
+    [2151, 1512, false],
+    [2271, 1722, false],
+    [2322, 2232, false],
+    [2391, 1932, false],
+    [2412, 2142, false],
+    [2421, 1242, false],
+    [2502, 2052, false],
+    [2511, 1152, false],
+    [2532, 2352, false]
+  ];
+  var IMMORTAL_LOOP = 2178;
+  var HOLOFLECTIVE = Object.freeze(
+    PAIRS.map(([sum, mirror, major]) => Object.freeze({ sum, mirror, major }))
+  );
+
   // src/core/ophis/tags.js
   var FIBONACCI = Object.freeze([8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597]);
   function bucketKey(baseInstant, days, isoEvent) {
@@ -5162,6 +5316,26 @@ pre.blob {
     ...series("×pi", "365.25 × 3.14 × k", 365.25 * 3.14),
     ...series("÷pi", "365.25 ÷ 3.14 × k", 365.25 / 3.14)
   ]);
+  var HOLOFLECTIVE_LIST = Object.freeze([
+    ...HOLOFLECTIVE.map(({ sum, mirror, major }) => ({
+      series: "holo",
+      label: `${sum} ⇄ ${mirror}${major ? " (both major)" : ""}`,
+      k: 1,
+      value: sum,
+      shown: sum,
+      mirror,
+      major
+    })),
+    {
+      series: "holo",
+      label: `${IMMORTAL_LOOP} ⇄ ${IMMORTAL_LOOP * 4} (the Immortal Loop: × 4 reverses it)`,
+      k: 1,
+      value: IMMORTAL_LOOP,
+      shown: IMMORTAL_LOOP,
+      mirror: IMMORTAL_LOOP * 4,
+      major: true
+    }
+  ]);
   function listTags(results, list) {
     const out = /* @__PURE__ */ new Map();
     for (const z of results?.processed_z_dates ?? []) {
@@ -5180,6 +5354,711 @@ pre.blob {
   function describeListHit(h) {
     const exact = Math.round(h.entry.value * 100) / 100;
     return `${h.entry.label.replace("k", String(h.entry.k))} = ${exact} · O${h.ordinal + 1}(X${h.x1 + 1}→X${h.x2 + 1}) counts ${h.rc}`;
+  }
+
+  // src/data/msrf-tiers.js
+  var MSRF_TIERS = [
+    {
+      tier: "I",
+      dimensions: 2,
+      label: "Tier I",
+      short: "I",
+      numbers: [
+        27,
+        30,
+        33,
+        40,
+        45,
+        48,
+        129,
+        135,
+        140,
+        150,
+        160,
+        51,
+        54,
+        69,
+        80,
+        81,
+        90,
+        96,
+        99,
+        102,
+        196,
+        198,
+        200,
+        207,
+        218,
+        222,
+        225,
+        232,
+        105,
+        116,
+        238,
+        253,
+        259,
+        273,
+        279,
+        294,
+        312,
+        320,
+        324,
+        343,
+        348,
+        350,
+        351,
+        354,
+        357,
+        364,
+        365,
+        394,
+        400,
+        408,
+        423,
+        433,
+        440,
+        444,
+        450,
+        451,
+        465,
+        468,
+        468,
+        480,
+        492,
+        501,
+        509,
+        513,
+        525,
+        528,
+        537,
+        546,
+        549,
+        563,
+        570,
+        581,
+        591,
+        603,
+        627,
+        633,
+        640,
+        645,
+        657,
+        663,
+        670,
+        674,
+        677,
+        679,
+        680,
+        681,
+        698,
+        700,
+        701,
+        708,
+        728,
+        730,
+        750,
+        759,
+        760,
+        791,
+        798,
+        800,
+        814,
+        825,
+        846,
+        858,
+        861,
+        867,
+        870,
+        873,
+        880,
+        885,
+        888,
+        891,
+        897,
+        903,
+        910,
+        1062,
+        1095,
+        1111,
+        1116,
+        1128,
+        1130,
+        1146,
+        1160,
+        1163,
+        1184,
+        1190,
+        1197,
+        1215,
+        1290,
+        1315,
+        1318,
+        1323,
+        920,
+        936,
+        954,
+        957,
+        969,
+        1019,
+        1023,
+        1046,
+        1218,
+        1221,
+        1230,
+        1240,
+        1170,
+        1254,
+        1275,
+        1280,
+        1173,
+        1182,
+        1287,
+        1326,
+        1330,
+        1335,
+        1354,
+        1360,
+        1365,
+        1368,
+        1395,
+        1401,
+        1410,
+        1416,
+        1419,
+        1441,
+        1452,
+        1460,
+        1461,
+        1479,
+        1540,
+        1551,
+        1557,
+        1559,
+        1577,
+        1580,
+        1581,
+        1590,
+        1600,
+        1610,
+        1632,
+        1640,
+        1641,
+        1674,
+        1710,
+        1715,
+        1716,
+        1720,
+        1722,
+        1480,
+        1486,
+        1513,
+        1617,
+        1628,
+        1734,
+        1736,
+        1744,
+        1749,
+        1750,
+        1755,
+        1760,
+        1773,
+        1776,
+        1782,
+        1786,
+        1794,
+        1815,
+        1820,
+        1825,
+        1827,
+        1830,
+        1840,
+        1947,
+        1950,
+        1953,
+        1854,
+        1861,
+        1863,
+        1880,
+        1881,
+        1887,
+        1899,
+        1914,
+        1938,
+        1974,
+        1977,
+        1995,
+        1998,
+        2e3,
+        2010,
+        2013,
+        2025,
+        2030,
+        2047,
+        2052,
+        2058,
+        2088,
+        2091,
+        2093,
+        2103,
+        2120,
+        2124,
+        2130,
+        2133,
+        2145,
+        2151,
+        2191,
+        2193,
+        2200,
+        2210,
+        2226,
+        2250,
+        2257,
+        2271,
+        2293,
+        2320,
+        2322,
+        2326,
+        2331,
+        2343,
+        2360,
+        2363,
+        2415,
+        2421,
+        2440,
+        2447,
+        2450,
+        2511,
+        2532,
+        2541,
+        2555,
+        2370,
+        2388,
+        2391,
+        2397,
+        2457,
+        2475,
+        2480,
+        2490,
+        2401,
+        2409,
+        2412,
+        2499,
+        2502,
+        2508
+      ]
+    },
+    {
+      tier: "II",
+      dimensions: 3,
+      label: "Tier II",
+      short: "II",
+      numbers: [
+        8,
+        12,
+        13,
+        168,
+        180,
+        226,
+        231,
+        24,
+        34,
+        36,
+        55,
+        60,
+        70,
+        89,
+        98,
+        108,
+        114,
+        186,
+        204,
+        223,
+        233,
+        315,
+        336,
+        462,
+        476,
+        510,
+        520,
+        561,
+        588,
+        610,
+        363,
+        526,
+        618,
+        777,
+        810,
+        816,
+        1e3,
+        1035,
+        1040,
+        831,
+        1089,
+        1092,
+        675,
+        855,
+        1147,
+        1152,
+        1554,
+        1575,
+        1279,
+        1596,
+        1300,
+        1597,
+        1350,
+        1638,
+        1650,
+        1359,
+        165,
+        234,
+        280,
+        286,
+        300,
+        301,
+        372,
+        377,
+        390,
+        429,
+        434,
+        447,
+        453,
+        459,
+        463,
+        531,
+        534,
+        544,
+        552,
+        555,
+        558,
+        560,
+        686,
+        714,
+        726,
+        732,
+        735,
+        765,
+        770,
+        900,
+        918,
+        952,
+        966,
+        972,
+        980,
+        987,
+        1096,
+        1104,
+        1120,
+        1122,
+        1140,
+        1377,
+        1400,
+        1446,
+        1500,
+        138,
+        1701,
+        1738,
+        1740,
+        1770,
+        1785,
+        1806,
+        1826,
+        1872,
+        1904,
+        1944,
+        1960,
+        1989,
+        2031,
+        2079,
+        2080,
+        2112,
+        2170,
+        2184,
+        2190,
+        2304,
+        2340,
+        2550,
+        2556,
+        2208,
+        2211,
+        2220,
+        2240,
+        2277,
+        2288,
+        2346,
+        2352,
+        2380,
+        2394,
+        2418,
+        2442,
+        2460,
+        2483
+      ]
+    },
+    {
+      tier: "III",
+      dimensions: 4,
+      label: "Tier III",
+      short: "III",
+      numbers: [
+        42,
+        72,
+        120,
+        176,
+        495,
+        576,
+        594,
+        828,
+        868,
+        924,
+        189,
+        255,
+        270,
+        276,
+        297,
+        396,
+        405,
+        621,
+        660,
+        669,
+        702,
+        960,
+        1020,
+        1071,
+        1155,
+        1177,
+        460,
+        744,
+        774,
+        801,
+        480,
+        490,
+        819,
+        1188,
+        1332,
+        1386,
+        1449,
+        1485,
+        2046,
+        1488,
+        1518,
+        1560,
+        1764,
+        2178,
+        2205,
+        2244,
+        2280,
+        1848,
+        1860,
+        1920,
+        1932,
+        2292,
+        2295,
+        2430,
+        2436,
+        2478,
+        693,
+        1320,
+        210,
+        240,
+        252,
+        441,
+        540,
+        600,
+        780,
+        792,
+        882,
+        945,
+        1050,
+        1056,
+        1520,
+        1620,
+        1683,
+        1836,
+        1980
+      ]
+    },
+    {
+      tier: "IV",
+      dimensions: 5,
+      label: "Tier IV",
+      short: "IV",
+      numbers: [
+        21,
+        63,
+        66,
+        132,
+        144,
+        153,
+        330,
+        378,
+        414,
+        432,
+        264,
+        288,
+        612,
+        648,
+        666,
+        672,
+        1074,
+        1176,
+        1200,
+        306,
+        690,
+        1302,
+        2040,
+        2070,
+        2142,
+        2232,
+        2484
+      ]
+    },
+    {
+      tier: "V",
+      dimensions: 6,
+      label: "Tier V",
+      short: "V",
+      numbers: [84, 126, 216, 567, 2376, 2400, 630, 756, 864, 1380, 1470, 1728, 2268, 2448]
+    },
+    {
+      tier: "VI",
+      dimensions: 7,
+      label: "Tier VI",
+      short: "VI",
+      numbers: [360, 420, 720, 990, 1110, 1344, 1404, 1428, 1584, 1656, 1890, 2100, 2310]
+    },
+    // Tier VII — "Apex Projections", 8 or more dimensions of arithmetic. The
+    // source spells the lesser rank "ceta", which is not a Greek letter name, so
+    // it is left as the word rather than given a symbol like its two siblings.
+    {
+      tier: "VII.ceta",
+      dimensions: 8,
+      label: "Tier VII · ceta",
+      short: "VII ceta",
+      apex: true,
+      numbers: [930, 1080, 1134, 1440, 1800]
+    },
+    {
+      tier: "VII.beta",
+      dimensions: 8,
+      label: "Tier VII · beta",
+      short: "VII β",
+      apex: true,
+      numbers: [840, 1242, 1296, 1680, 2160]
+    },
+    {
+      tier: "VII.alpha",
+      dimensions: 8,
+      label: "Tier VII · alpha",
+      short: "VII α",
+      apex: true,
+      numbers: [504, 1008, 1224, 1260, 1512, 2016, 2520]
+    }
+  ];
+  var MSRF_TIER_INDEX = /* @__PURE__ */ new Map();
+  for (const { tier, dimensions, label, short, apex = false, numbers } of MSRF_TIERS) {
+    for (const n of numbers) {
+      const prior = MSRF_TIER_INDEX.get(n);
+      if (prior && prior.dimensions >= dimensions) continue;
+      MSRF_TIER_INDEX.set(n, { tier, dimensions, apex, label, short });
+    }
+  }
+  var MSRF_FULL = new Set(MSRF_TIER_INDEX.keys());
+  function msrfTier(n) {
+    return MSRF_TIER_INDEX.get(n) ?? null;
+  }
+
+  // src/core/ophis/lab.js
+  var SLACK2 = 1e-9;
+  function anchorMatrix(results, ev) {
+    const xs = (ev.x_dates ?? []).map((x, index) => ({ x, index, at: toInstant(x, ev) })).filter(({ x, at }) => x.enabled === true && Number.isFinite(at));
+    const rows = (results?.processed_z_dates ?? []).map((z) => {
+      const cells = xs.map(({ at }) => {
+        const days = Math.round((z.zStart - at) / MILLIS_PER_DAY * 10) / 10;
+        if (!(days > 0)) return null;
+        const tier = Number.isInteger(days) ? msrfTier(days) : null;
+        return { days, tier };
+      });
+      const tiered = cells.filter((c) => c?.tier);
+      return { key: z.key, z, cells, tiers: tiered.length, apex: tiered.some((c) => c.tier.apex) };
+    });
+    return { xs: xs.map(({ index, at }) => ({ index, at })), rows };
+  }
+  var ISO_OR_HOLO = /^X[12]\+(?:oph_flip\()?oph_round\(Y\)\)?$/;
+  var isIsometricOrHolo = (equation) => ISO_OR_HOLO.test(String(equation).replace(/\s+/g, ""));
+  function validity(z) {
+    if (z.resonance_matches?.length) return { valid: true, why: "an MSRF match" };
+    const core = z.operation_match_structs.filter((m) => !isIsometricOrHolo(m.operation_result.operation.equation));
+    if (core.some((m) => m.operation_result.operation.weight >= 1)) return { valid: true, why: "an ALPHA operation" };
+    if (core.length >= 2) return { valid: true, why: "two core operations agree" };
+    if (!core.length) return { valid: false, why: "only the isometric or holofractal projection, and no MSRF match" };
+    return { valid: false, why: "one beta operation alone, and no MSRF match" };
+  }
+  function applyValidity(results) {
+    const rows = results?.processed_z_dates ?? [];
+    const kept = rows.filter((z) => validity(z).valid);
+    return { ...results, processed_z_dates: kept, set_aside: rows.length - kept.length };
+  }
+  var MOON_CYCLES = Object.freeze([
+    { id: "lunation", name: "Lunation", lunations: 1, note: "new moon to new moon" },
+    { id: "saros", name: "Saros", lunations: 223, note: "eclipses repeat; 18 years 11 days" },
+    { id: "metonic", name: "Metonic", lunations: 235, note: "same phase on the same date; 19 years" },
+    { id: "exeligmos", name: "Exeligmos", lunations: 669, note: "three Saros; eclipses repeat at the same hour" },
+    { id: "callippic", name: "Callippic", lunations: 940, note: "four Metonic cycles; 76 years" }
+  ].map((c) => ({ ...c, days: c.lunations * SYNODIC_MONTH })));
+  var MOON_TOLERANCE_DAYS = 1;
+  function gapReadings(results) {
+    const holo = new Map(HOLOFLECTIVE.map((h) => [h.sum, h]));
+    return (results?.y_structs ?? []).map((ys) => {
+      const Y = ys.rotation_count_y;
+      const returns = MOON_CYCLES.filter((c) => {
+        const k = Math.round(Y / c.days);
+        return k >= 1 && Math.abs(Y - k * c.days) <= MOON_TOLERANCE_DAYS + SLACK2;
+      }).map((c) => ({ ...c, k: Math.round(Y / c.days) }));
+      return {
+        x1: ys.x_1_ordinal,
+        x2: ys.x_2_ordinal,
+        Y,
+        lunations: Y / SYNODIC_MONTH,
+        returns,
+        tier: Number.isInteger(Y) ? msrfTier(Y) : null,
+        holo: holo.get(Y) ?? null
+      };
+    });
+  }
+  function moonDials(fromMs, toMs) {
+    const elapsed = (toMs - fromMs) / MILLIS_PER_DAY;
+    return MOON_CYCLES.map((c) => {
+      const turns = elapsed / c.days;
+      const whole = Math.floor(turns + SLACK2);
+      const fraction = Math.max(0, turns - whole);
+      const sinceReturn = fraction * c.days;
+      const toReturn = c.days - sinceReturn;
+      return {
+        ...c,
+        turns,
+        whole,
+        fraction,
+        atReturn: sinceReturn <= MOON_TOLERANCE_DAYS || toReturn <= MOON_TOLERANCE_DAYS,
+        nextReturn: fromMs + (whole + 1) * c.days * MILLIS_PER_DAY
+      };
+    });
+  }
+  function horizon(ev, now2) {
+    const at = (ev.x_dates ?? []).filter((x) => x.enabled === true).map((x) => toInstant(x, ev)).filter(Number.isFinite).sort((a, b) => a - b);
+    if (at.length < 2) return null;
+    const latestAge = (now2 - at.at(-1)) / MILLIS_PER_DAY;
+    let closest = Infinity;
+    for (let i = 1; i < at.length; i++) closest = Math.min(closest, (at[i] - at[i - 1]) / MILLIS_PER_DAY);
+    if (closest <= 5) {
+      return { text: "Two of your dates are about 5 days apart: look from about 5 days to a month ahead.", fromDays: 5, toDays: 31 };
+    }
+    if (latestAge >= 0 && latestAge <= 30) {
+      return { text: "Your latest date is within 30 days: look from a few days to about 5 months ahead.", fromDays: 3, toDays: 152 };
+    }
+    if (latestAge >= 0 && latestAge <= 60) {
+      return { text: "Your latest date is within 60 days: look from about a week to about a year ahead.", fromDays: 7, toDays: 365 };
+    }
+    return null;
   }
 
   // src/ui/ophis/results.js
@@ -5266,16 +6145,18 @@ pre.blob {
   }
   var MAX_TAG_LINES = 8;
   function optionalTags(r, ev, opts) {
-    if (!opts.tag_fibonacci && !opts.tag_geodetic && !opts.tag_diurnal) return null;
+    if (!opts.tag_fibonacci && !opts.tag_geodetic && !opts.tag_diurnal && !opts.tag_holoflective) return null;
     return {
       fibonacci: opts.tag_fibonacci ? fibonacciTags(r, ev) : /* @__PURE__ */ new Map(),
       geodetic: opts.tag_geodetic ? listTags(r, GEODETIC) : /* @__PURE__ */ new Map(),
-      diurnal: opts.tag_diurnal ? listTags(r, DIURNAL) : /* @__PURE__ */ new Map()
+      diurnal: opts.tag_diurnal ? listTags(r, DIURNAL) : /* @__PURE__ */ new Map(),
+      holoflective: opts.tag_holoflective ? listTags(r, HOLOFLECTIVE_LIST) : /* @__PURE__ */ new Map()
     };
   }
   var LIST_TAG = {
     geodetic: { prefix: "Geo", name: "Geodetic Chronometry (138)" },
-    diurnal: { prefix: "Diur", name: "Diurnal projection" }
+    diurnal: { prefix: "Diur", name: "Diurnal projection" },
+    holoflective: { prefix: "Holo", name: "Holoflective sum" }
   };
   function listPills(kind, hits) {
     const byEntry = /* @__PURE__ */ new Map();
@@ -5313,7 +6194,7 @@ pre.blob {
     const pills = [];
     const fib = tags.fibonacci.get(z.key);
     if (fib) pills.push(fibonacciPill(fib));
-    for (const kind of ["geodetic", "diurnal"]) {
+    for (const kind of ["geodetic", "diurnal", "holoflective"]) {
       const hits = tags[kind].get(z.key);
       if (hits) pills.push(...listPills(kind, hits));
     }
@@ -5435,13 +6316,14 @@ pre.blob {
       ]);
       return;
     }
-    const rows = r.processed_z_dates;
+    const view = opts.lab_validity ? applyValidity(r) : r;
+    const rows = view.processed_z_dates;
     if (!rows.length) {
       replace(host, [el("div.tablewrap", {}, [emptyPanel()])]);
       return;
     }
     if (opts.results_view === "windows") {
-      replace(host, [windowsTable(r)]);
+      replace(host, [windowsTable(view)]);
       return;
     }
     const shown = rows.slice(0, MAX_ROWS);
@@ -5515,7 +6397,7 @@ pre.blob {
       return tr;
     });
     const capped = rows.length > MAX_ROWS;
-    const listNote = opts.tag_geodetic || opts.tag_diurnal ? " · Tags: author’s list, not in the shipped MSRF" : "";
+    const listNote = (opts.tag_geodetic || opts.tag_diurnal || opts.tag_holoflective ? " · Tags: author’s list, not in the shipped MSRF" : "") + (view.set_aside ? ` · ${view.set_aside} set aside by the author’s validity rule (Lab)` : "");
     replace(host, [
       el("div.tablewrap", { class: state.stale ? "stale" : "" }, [
         el("table", {}, [
@@ -6659,6 +7541,11 @@ stream
       key: "tag_diurnal",
       label: "Diurnal projections",
       note: "Author’s list, not in the shipped MSRF. 365.25 × k, and 365.25 × and ÷ 1.618 and 3.14, each times k, up to (365.25 ÷ 3.14) × 22 = 2559.08. Generated from those formulas; a rotation count within 0.1 day of a value tags the Z-Date."
+    },
+    {
+      key: "tag_holoflective",
+      label: "Holoflective sums",
+      note: "Author’s list, not in the shipped MSRF. The 75 sums of the Holoflective Sums table with their digit reversals (126 ⇄ 621, 405 ⇄ 504 …), plus 2178, the Immortal Loop. A rotation count within 0.1 day of a sum tags the Z-Date; the tooltip gives its reflection."
     }
   ];
   function tagToggle({ key, label, note }) {
@@ -7243,6 +8130,209 @@ stream
     return `A saved document is stored under this address (${docs.join(", ")}), and it is what you are seeing rather than the seeded example.${prefTail}`;
   }
 
+  // src/ui/ophis/lab.js
+  var SVG_NS = "http://www.w3.org/2000/svg";
+  var MATRIX_ROWS = 40;
+  function svg(tag, attrs = {}, children = []) {
+    const node = document.createElementNS(SVG_NS, tag);
+    for (const [k, v] of Object.entries(attrs)) node.setAttribute(k, String(v));
+    for (const c of children) node.append(c instanceof Node ? c : document.createTextNode(String(c)));
+    return node;
+  }
+  var section2 = (title, children) => el("section.panel.lab", {}, [
+    el("header", {}, [el("h3", { text: title })]),
+    el("div.body", {}, children)
+  ]);
+  function liveToggle(spec) {
+    const row2 = tagToggle(spec);
+    row2.querySelector("input").addEventListener("change", notify);
+    return row2;
+  }
+  var VALIDITY_SWITCH = {
+    key: "lab_validity",
+    label: "Author’s validity rule",
+    note: "From the Programmer Instructions. A Z-Date stands if it has an MSRF match, or an ALPHA hit from any operation but the isometric and holofractal ones, or two or more hits from those other operations. Rows that fail are set aside in the results table; the run, the chart and the exports keep them."
+  };
+  function tierChip(tier) {
+    return el("span.tierchip", {
+      data: { apex: String(tier.apex === true) },
+      title: `${tier.label} · ${tier.dimensions} dimensions of arithmetic`,
+      text: tier.short
+    });
+  }
+  function switches() {
+    const holo = OPTIONAL_TAGS.find((t) => t.key === "tag_holoflective");
+    return section2("L1 · Switches", [
+      el("p.note", {
+        text: "Both are remembered by this browser and never saved in the .oph. Neither changes a score, a hit count or a rank. The other optional tags are in Settings → S3."
+      }),
+      el("div.rowlist.full", {}, [liveToggle(holo), liveToggle(VALIDITY_SWITCH)])
+    ]);
+  }
+  function lookAhead(ev) {
+    const h = horizon(ev, now());
+    return section2("L2 · How far ahead to look", [
+      el("p", {
+        text: h ? h.text : "None of the three cases applies to these dates: the latest is not within 60 days before today, and no two are within 5 days of each other. Read the results as they come."
+      }),
+      el("p.note", {
+        text: "The Programmer Instructions’ rule of thumb: X-dates within 30 days of the run point a few days to about 5 months ahead; within 60 days, a week to a year; dates 5 days apart, 5 days to a month."
+      })
+    ]);
+  }
+  function matrix(r, ev, showAll) {
+    const { xs, rows } = anchorMatrix(r, ev);
+    const sorted = [...rows].sort((a, b) => b.z.score - a.z.score || b.tiers - a.tiers || a.z.zStart - b.z.zStart);
+    const shown = showAll ? sorted : sorted.slice(0, MATRIX_ROWS);
+    const body = shown.map((row2) => {
+      const v = validity(row2.z);
+      const tr = el("tr.hit", { tabindex: "0", role: "button", "aria-label": `Audit Z${row2.z.z_ordinal + 1}` }, [
+        el("td.zlabel", { text: `Z${row2.z.z_ordinal + 1}` }),
+        el("td", {}, [el("span.datepill", { text: fmtDate(row2.z.zStart) })]),
+        el("td.mono", { text: String(row2.z.score) }),
+        ...row2.cells.map(
+          (c) => el(
+            "td.mono.matrixcell",
+            { data: { tier: String(Boolean(c?.tier)) } },
+            c ? [String(c.days), c.tier ? " " : null, c.tier ? tierChip(c.tier) : null] : ["·"]
+          )
+        ),
+        el("td", { title: v.why, text: v.valid ? "✓" : "✕", class: v.valid ? "ok" : "faint" })
+      ]);
+      const audit = () => {
+        state.auditKey = row2.key;
+        goto("audit");
+      };
+      tr.addEventListener("click", audit);
+      tr.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          audit();
+        }
+      });
+      return tr;
+    });
+    const apex = rows.filter((x) => x.apex).length;
+    const more = sorted.length > MATRIX_ROWS ? el("button.btn.sm", {
+      type: "button",
+      text: showAll ? `Show the top ${MATRIX_ROWS}` : `Show all ${sorted.length}`,
+      onclick: () => {
+        state.labShowAll = !showAll;
+        notify();
+      }
+    }) : null;
+    return section2("L3 · Every anchor’s count", [
+      el("p.note", {
+        text: "The Earth’s rotations from each X-date to each Z-Date, with the MSRF Tier wherever the count is on it, as the Programmer Instructions lay out their H and I columns. The engine only probes the anchor that made a projection; this shows the others too. Tiers are the source’s seven, I to VII, with Tier VII (the Apex Projections) split into ceta, beta and alpha."
+      }),
+      el("p", { text: `${apex} Z-Date${apex === 1 ? "" : "s"} reach an Apex tier from at least one anchor. Sorted by score; click a row to audit it.` }),
+      el("div.tablewrap", {}, [
+        el("table.matrix", {}, [
+          el("thead", {}, [el("tr", {}, [
+            el("th", { scope: "col", text: "" }),
+            el("th", { scope: "col", text: "Date" }),
+            el("th", { scope: "col", text: "Score" }),
+            ...xs.map((x) => el("th", { scope: "col", title: fmtDate(x.at), text: `from X${x.index + 1}` })),
+            el("th", { scope: "col", title: "The author’s validity rule", text: "Valid" })
+          ])]),
+          el("tbody", {}, body)
+        ])
+      ]),
+      more
+    ]);
+  }
+  function gaps(r) {
+    const readings = gapReadings(r);
+    return section2("L4 · Gaps and the moon", [
+      el("p.note", {
+        text: "Each gap Y between two of your dates, measured in lunations. A whole number (within a day) means both dates fell at the same moon phase; a Saros or Metonic return would put them on the same eclipse or the same phase on the same calendar date. The moon here is the app’s own mean lunation, 29.5306 days, which stays within hours of NASA’s phase tables."
+      }),
+      el("div.tablewrap", {}, [
+        el("table", {}, [
+          el("thead", {}, [el("tr", {}, ["Pair", "Y", "Lunations", "Moon return", "MSRF tier", "Holoflective"].map((h) => el("th", { scope: "col", text: h })))]),
+          el("tbody", {}, readings.map(
+            (g) => el("tr", {}, [
+              el("td.mono", { text: `X${g.x1 + 1}→X${g.x2 + 1}` }),
+              el("td.mono", { text: String(g.Y) }),
+              el("td.mono", { text: g.lunations.toFixed(2) }),
+              el("td", { text: g.returns.length ? g.returns.map((c) => `${c.name} × ${c.k}`).join(", ") : "—" }),
+              el("td", {}, [g.tier ? tierChip(g.tier) : "—"]),
+              el("td.mono", { text: g.holo ? `⇄ ${g.holo.mirror}${g.holo.major ? " (both major)" : ""}` : "—" })
+            ])
+          ))
+        ])
+      ])
+    ]);
+  }
+  function dial(d) {
+    const R = 34;
+    const a = d.fraction * 2 * Math.PI - Math.PI / 2;
+    const tip = [44 + R * Math.cos(a), 44 + R * Math.sin(a)];
+    return el("figure.dial", { data: { return: String(d.atReturn) } }, [
+      svg("svg", { viewBox: "0 0 88 88", width: 88, height: 88, role: "img", "aria-label": `${d.name} dial` }, [
+        svg("circle", { cx: 44, cy: 44, r: R, class: "ring" }),
+        svg("line", { x1: 44, y1: 10, x2: 44, y2: 4, class: "zero" }),
+        svg("line", { x1: 44, y1: 44, x2: tip[0].toFixed(2), y2: tip[1].toFixed(2), class: "hand" }),
+        svg("circle", { cx: 44, cy: 44, r: 3, class: "hub" })
+      ]),
+      el("figcaption", {}, [
+        el("b", { text: d.name }),
+        el("span", { text: `${d.whole} turn${d.whole === 1 ? "" : "s"} + ${(d.fraction * 100).toFixed(0)}%` }),
+        el("span.sub", { text: d.atReturn ? "At a return" : `next ${fmtDate(d.nextReturn)}` })
+      ])
+    ]);
+  }
+  function dials(r, ev) {
+    const first = (ev.x_dates ?? []).find((x) => x.enabled === true);
+    const rows = [...r.processed_z_dates].sort((a, b) => b.score - a.score);
+    if (!first || !rows.length) return null;
+    const x1 = Date.UTC(first.y, first.m - 1, first.d);
+    const target = rows.find((z) => z.key === state.labDialKey) ?? rows.find((z) => z.key === state.auditKey) ?? rows[0];
+    const pick = el("select", {
+      "aria-label": "Z-Date for the dials",
+      onchange: (e) => {
+        state.labDialKey = e.target.value;
+        notify();
+      }
+    }, rows.slice(0, 60).map(
+      (z) => el("option", { value: z.key, text: `Z${z.z_ordinal + 1} · ${fmtDate(z.zStart)} · score ${z.score}` })
+    ));
+    pick.value = target.key;
+    return section2("L5 · The moon’s long returns", [
+      el("p.note", {
+        text: "The Antikythera mechanism’s back dials, started on your first date. Each hand shows how far round its cycle the chosen Z-Date is. A hand at the top is a return: the Metonic dial there means the same moon phase on very nearly the same calendar date as your first date."
+      }),
+      el("label.row", {}, [el("span", { text: "Z-Date" }), pick]),
+      el("div.dials", {}, moonDials(x1, target.zStart).map(dial)),
+      el("p.note", { text: `Counted from X1, ${fmtDate(x1)}, to ${fmtDate(target.zStart)}.` })
+    ]);
+  }
+  function notBuilt() {
+    return section2("L6 · In the notes, not built", [
+      el("ul.note", {}, [
+        el("li", { text: "Hydrogen Spacing Angle (105°). Core Algorithm Operations names it as a filter but gives no rule for turning a date or a count into an angle, so there is nothing to compute without inventing one." }),
+        el("li", { text: "Holofractal Recognition Projections. Described in prose as following trajectories “through mathematical discontinuities”; no arithmetic is given beyond the Holo-date operation the table already runs." }),
+        el("li", { text: "Tiers in the H and I columns are the source’s 565-number master (docs/reverse/19), not the 390 the engine scores with. A tier here is a reading; it is not part of the score." })
+      ])
+    ]);
+  }
+  function renderLab(host) {
+    const r = state.results;
+    const ev = currentEvent();
+    if (!r || r.errors.some((e) => typeof e === "string")) {
+      replace(host, [switches(), lookAhead(ev), el("p.note", { text: "Cast the event first — the Lab reads a finished run." })]);
+      return;
+    }
+    replace(host, [
+      switches(),
+      lookAhead(ev),
+      matrix(r, ev, state.labShowAll === true),
+      gaps(r),
+      dials(r, ev),
+      notBuilt()
+    ]);
+  }
+
   // src/ophis-app.js
   function safely(name, fn) {
     try {
@@ -7323,6 +8413,7 @@ stream
       import: () => renderImport($("importHost")),
       export: () => renderExport($("exportHost")),
       zexport: () => renderZExport($("zexportHost")),
+      lab: () => renderLab($("labHost")),
       audit: () => renderAudit($("auditHost")),
       about: () => renderAbout($("aboutHost"))
     };

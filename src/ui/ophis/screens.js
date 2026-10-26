@@ -278,7 +278,7 @@ export function renderSettings(host) {
 }
 
 /** The Settings checkboxes for the optional tags, in the order they are listed. */
-const OPTIONAL_TAGS = [
+export const OPTIONAL_TAGS = [
   {
     key: 'tag_fibonacci',
     label: 'Fibonacci Sequence Filter',
@@ -303,9 +303,17 @@ const OPTIONAL_TAGS = [
       'each times k, up to (365.25 ÷ 3.14) × 22 = 2559.08. Generated from those formulas; a ' +
       'rotation count within 0.1 day of a value tags the Z-Date.',
   },
+  {
+    key: 'tag_holoflective',
+    label: 'Holoflective sums',
+    note:
+      'Author’s list, not in the shipped MSRF. The 75 sums of the Holoflective Sums table with ' +
+      'their digit reversals (126 ⇄ 621, 405 ⇄ 504 …), plus 2178, the Immortal Loop. A rotation ' +
+      'count within 0.1 day of a sum tags the Z-Date; the tooltip gives its reflection.',
+  },
 ];
 
-function tagToggle({ key, label, note }) {
+export function tagToggle({ key, label, note }) {
   const box = el('input', {
     type: 'checkbox',
     'aria-label': label,

@@ -62,6 +62,14 @@ export const DEFAULT_OPTIONS = {
   tag_fibonacci: false,
   tag_geodetic: false,
   tag_diurnal: false,
+  /** The author's Holoflective Sums table (docs/reverse/24 §2), a label like the three above. */
+  tag_holoflective: false,
+  /**
+   * The Programmer Instructions' validity rule (docs/reverse/24 §1), applied to
+   * the table as a reading view: rows that fail it are set aside on screen, the
+   * run itself keeps them. Off by default, because the original never ran it.
+   */
+  lab_validity: false,
   /**
    * 'days' is the table the original drew, one row per Z-Date. 'windows' groups
    * them into 7-day periods, the way the SOP says to read a cast built on older

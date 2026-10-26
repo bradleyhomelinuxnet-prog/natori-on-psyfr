@@ -75,6 +75,7 @@ const PUBLISHED = new Map([
   ['00-BUILD-SPEC.md', 'docs/html/00-BUILD-SPEC.html'],
   ['22-author-source-documents.md', 'docs/html/22-author-source-documents.html'],
   ['23-author-source-documents-2.md', 'docs/html/23-author-source-documents-2.html'],
+  ['24-author-source-documents-3.md', 'docs/html/24-author-source-documents-3.html'],
   ['README.md', 'docs/html/README.html'],
 ]);
 

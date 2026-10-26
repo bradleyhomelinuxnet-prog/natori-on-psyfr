@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<base target="_blank">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>24 · The author's source documents, third set</title>
+<meta http-equiv="Content-Security-Policy"
+      content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'none'; img-src 'self' data:; connect-src 'none'">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../src/styles/ophis-tokens.css">
+<link rel="stylesheet" href="../../src/styles/ophis-app.css">
+<style>
+  body { padding-bottom: 96px; }
+  .doc-top {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding: 20px var(--gutter); max-width: 1180px; margin: 0 auto;
+  }
+  .paper {
+    display: grid; grid-template-columns: 232px minmax(0, 1fr); gap: 48px;
+    max-width: 1180px; margin: 0 auto; padding: 0 var(--gutter);
+  }
+  .paper > nav {
+    position: sticky; top: 24px; align-self: start;
+    max-height: calc(100vh - 48px); overflow-y: auto;
+    padding: 24px 0; font-size: 12.5px;
+  }
+  .paper > nav a { display: block; color: var(--dim); text-decoration: none; padding: 3px 0; line-height: 1.4; }
+  .paper > nav a:hover { color: var(--gold-2); }
+  .paper > nav a.l3 { padding-left: 14px; font-size: 11.5px; color: var(--faint); }
+
+  article { padding: 24px 0; max-width: 76ch; }
+  article h1 { font-family: var(--font-display); font-size: clamp(28px, 4vw, 40px); color: var(--ink); margin: 0 0 20px; letter-spacing: .01em; }
+  article h2 { font-family: var(--font-display); font-size: 24px; color: var(--gold-2); margin: 52px 0 16px; }
+  article h3 { font-size: 17px; color: var(--ink); margin: 34px 0 12px; font-weight: 600; }
+  article h4 { font-size: 14px; color: var(--gold); margin: 26px 0 10px; font-weight: 600; letter-spacing: .04em; }
+  article p { font-size: 15.5px; line-height: 1.68; color: var(--prose); margin: 0 0 15px; max-width: none; }
+  article strong { color: var(--ink); }
+  article ul, article ol { color: var(--prose); font-size: 15.5px; line-height: 1.68; padding-left: 22px; margin: 0 0 16px; }
+  article li { margin-bottom: 6px; }
+  article hr { border: 0; border-top: 1px solid var(--line); margin: 40px 0; }
+  article blockquote {
+    border-left: 3px solid var(--gold); background: var(--panel);
+    margin: 20px 0; padding: 12px 20px; border-radius: 0 var(--r-2) var(--r-2) 0;
+  }
+  article blockquote p:last-child { margin-bottom: 0; }
+  article pre {
+    background: var(--well); border: 1px solid var(--line); border-radius: var(--r-2);
+    padding: 14px 16px; overflow-x: auto; font-family: var(--font-mono);
+    font-size: 12px; line-height: 1.55; color: var(--prose); margin: 0 0 18px;
+  }
+  article pre code { background: none; border: 0; padding: 0; font-size: inherit; }
+  article .tablewrap { margin: 0 0 20px; }
+  article td, article th { font-size: 12.5px; }
+  article td:first-child { color: var(--ink); }
+
+  @media (max-width: 900px) {
+    .paper { grid-template-columns: 1fr; gap: 0; }
+    .paper > nav { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="doc-top">
+  <div class="brand">OPHIS <small>24 · The author's source documents, third set</small></div>
+  <a class="btn" href="../../index.html">Open the instrument &rarr;</a>
+</div>
+
+<div class="paper">
+  <nav aria-label="Contents">
+    <a target="_self" class="l2" href="#1-programmer-instructions">1 · Programmer Instructions</a>
+    <a target="_self" class="l3" href="#1-1-a-column-per-x-date">1.1 A column per X-date</a>
+    <a target="_self" class="l3" href="#1-2-the-validity-rule">1.2 The validity rule</a>
+    <a target="_self" class="l3" href="#1-3-how-far-ahead-to-look">1.3 How far ahead to look</a>
+    <a target="_self" class="l3" href="#1-4-restated-not-new">1.4 Restated, not new</a>
+    <a target="_self" class="l2" href="#2-holoflective-sums">2 · Holoflective Sums</a>
+    <a target="_self" class="l2" href="#3-input-after-sunset">3 · Input after sunset</a>
+    <a target="_self" class="l2" href="#4-the-metonic-cycle">4 · The Metonic Cycle</a>
+    <a target="_self" class="l2" href="#5-core-algorithm-operations">5 · Core Algorithm Operations</a>
+    <a target="_self" class="l2" href="#6-msra-key-to-constructional-programming">6 · MSRA Key to Constructional Programming</a>
+    <a target="_self" class="l2" href="#7-ophis-3-0-0-release-notes">7 · Ophis 3.0.0 release notes</a>
+    <a target="_self" class="l2" href="#8-actions-and-status">8 · Actions and status</a>
+  </nav>
+  <article>
+<h1 id="24-the-author-s-source-documents-third-set">24 · The author's source documents, third set</h1>
+<p><strong>Assignment:</strong> read the design documents not covered by <a href="22-author-source-documents.html">22</a> or <a href="23-author-source-documents-2.html">23</a> against the rebuild, record what is new, and build what can be built without inventing a rule. Everything built here lives in the <strong>Lab</strong> screen and in Settings → S3, reads a finished run, and changes no score.</p>
+<p><strong>Primary sources, read in full</strong> (the documents themselves are not reproduced here):</p>
+<div class="tablewrap"><table><thead><tr><th style="text-align:left">File</th><th style="text-align:left">Pages</th><th style="text-align:left">What it is</th><th style="text-align:left">New?</th></tr></thead><tbody><tr><td style="text-align:left"><code>e. Programmer Instructions</code></td><td style="text-align:left">3</td><td style="text-align:left">The author's brief to the original programmer, written against his Excel template</td><td style="text-align:left"><strong>Yes</strong>: per-anchor columns, the validity rule, the look-ahead (§1)</td></tr><tr><td style="text-align:left"><code>Holoflective Sums</code></td><td style="text-align:left">3</td><td style="text-align:left">A table of sums and their digit reversals</td><td style="text-align:left"><strong>Yes</strong>: new data (§2)</td></tr><tr><td style="text-align:left"><code>Ophis data input after sunset</code></td><td style="text-align:left">2</td><td style="text-align:left">A research-group guide to entering evening events</td><td style="text-align:left"><strong>Yes</strong>: a procedure, for beginners (§3)</td></tr><tr><td style="text-align:left"><code>The Metonic Cycle</code></td><td style="text-align:left">11</td><td style="text-align:left">An illustrated folio on the Metonic and Callippic cycles and the Antikythera mechanism</td><td style="text-align:left">Context: moon cycles (§4)</td></tr><tr><td style="text-align:left"><code>Core Algorithm Operations</code></td><td style="text-align:left">2</td><td style="text-align:left">The subroutines, named and described in prose</td><td style="text-align:left">Partly: two are not computable (§5)</td></tr><tr><td style="text-align:left"><code>MSRA Key to Constructional Programming</code></td><td style="text-align:left">1</td><td style="text-align:left">The nine filter families and the MSRF number list</td><td style="text-align:left">No: matches the shipped MSRF (§6)</td></tr><tr><td style="text-align:left"><code>Ophis_V3_0_0_Release_Notes</code></td><td style="text-align:left">1</td><td style="text-align:left">The programmer's notes for the version that introduced scope and the chart</td><td style="text-align:left">Context only (§7)</td></tr></tbody></table></div>
+<p>The other twelve files shared alongside these were read in 22 and 23, and <code>Ophis_v9_Windows.exe</code> is the binary the teardown in this folder came from.</p>
+<hr>
+<h2 id="1-programmer-instructions">1 · Programmer Instructions</h2>
+<p>The brief describes the author's Excel template: X1 and X2 in two cells, the day count Y in F7, and fourteen formulas run on it. Three things in it are not in the shipped program.</p>
+<h3 id="1-1-a-column-per-x-date">1.1 A column per X-date</h3>
+<blockquote><p>"The H and I columns in the current Excel spreadsheet are merely how many times the Earth has rotated on its axis since the X-dates … if 7 X-dates are entered then there must be seven columns."</p></blockquote>
+<p>Those columns show the <strong>MSRF Tier</strong> of each count — "the actual number never need be shown in the H/I columns, only the Tier number", I to VII, with VII as VII.c, VII.b or VII.a.</p>
+<p>The engine probes one number per projection: the count from the anchor that made it. The columns ask for every anchor, so a Z-Date can resonate with a date that did not project it.</p>
+<p><strong>Built:</strong> Lab → <em>L3 · Every anchor's count</em> (<code>anchorMatrix</code> in <code>src/core/ophis/lab.js</code>). Tiers come from the source's seven-tier table already transcribed in <code>src/data/msrf-tiers.js</code> (<a href="../reverse/19-msrf-magnitude-system.md">19</a>), not from the 390 numbers the engine scores with, so a tier there is a reading and never a score. On the worked example the top row, 09/29/2027, is 405 rotations from X2 (Tier III) and 204 from X3 (Tier II), though neither projected it.</p>
+<h3 id="1-2-the-validity-rule">1.2 The validity rule</h3>
+<blockquote><p>"After the first two, isometric and holofractal, which have no significance unless their projected dates also appear on the MSRF … beta dates need to be supported by either a second beta projection hit or by a hit on the MSRF to be valid. ALPHA dates need no correspondence with another Core Algorithm projection or the MSRF to be valid."</p></blockquote>
+<p>The shipped program scores every hit and never applies this. Read as a rule on a Z-Date, it stands if:</p>
+<ul><li>it has an MSRF match; or</li><li>it has an ALPHA hit (weight 1 or more) from any operation but the isometric (#1) and holofractal (#2) shapes, on either anchor; or</li><li>it has two or more hits from those other operations.</li></ul>
+<p>The isometric and holofractal projections are recognised by their equation, <code>X?+oph_round(Y)</code> and <code>X?+oph_flip(oph_round(Y))</code>, so the Mirrors' X1 versions count as them too. Their weight of 1 does not make them ALPHA here: the brief sets them apart before the ALPHA/beta hierarchy begins.</p>
+<p><strong>Built:</strong> Lab → <em>L1 · Switches</em> → <em>Author's validity rule</em>, off by default (<code>validity</code> and <code>applyValidity</code>). It is a reading view: the results table sets aside the rows that fail and its caption says how many; the run, the chart and the exports keep every row. On the worked example it keeps 74 of the 114.</p>
+<h3 id="1-3-how-far-ahead-to-look">1.3 How far ahead to look</h3>
+<blockquote><p>"If X-dates are within 30 days of time when Ophis system run then the future dates sought for could be anywhere within a few days to approx. 5 months away. If back dates are within 60 days … a week to approx. a year away. If the controls are 5 days apart then … 5 to about a month in the future."</p></blockquote>
+<p><strong>Built:</strong> Lab → <em>L2</em>, and a coaching tip on Start here (<code>horizon</code>). Read from the latest enabled X-date and the closest pair; silent when none of the three cases applies.</p>
+<h3 id="1-4-restated-not-new">1.4 Restated, not new</h3>
+<p>The 3-year limit, the 5-or-more dates beyond it, and "periods of dates … predicted with greater accuracy" are the SOP limits already in 23 §3 and <code>src/core/ophis/sop.js</code>. The after-sunset rule is §3 below. The MSRF figures given here (2556 days, 566 numbers, nine filters) are those of the master table discussed in 19 and 22 §3.2. The closing <em>Security</em> and <em>Assessment</em> paragraphs are about selling the system and are not read further.</p>
+<hr>
+<h2 id="2-holoflective-sums">2 · Holoflective Sums</h2>
+<blockquote><p>"Holoflective sums are the reverse of sums in our dimension, what they appear on The Other Side."</p></blockquote>
+<p>A table of <strong>75</strong> pairs over three pages (16, 32, 27), each a sum and its digit reversal: 12 ⇄ 21, 405 ⇄ 504, 2532 ⇄ 2352. Twelve carry an asterisk, "when BOTH the sum and its reflection are MAJOR numbers". The source is not symmetric about it — 216 is starred and 612 is not; 621 is starred and 126 is not — and the transcription keeps that.</p>
+<p>The note distinguishes these from the Holoflective <em>projection</em>, operation #2, which reverses Y itself. It also credits the method with <strong>2178</strong>, "the Immortal Loop Number" (2178 × 4 = 8712, its own reversal); 217.8 is already one of the shipped Vortex numbers.</p>
+<p><strong>Built:</strong> <code>src/data/holoflective.js</code> (data, source order) and a <strong>Holo</strong> tag beside Geodetic and Diurnal (<code>HOLOFLECTIVE_LIST</code> in <code>tags.js</code>), off by default, switched on in Settings → S3 or the Lab. It uses the same rule as the other lists: a contributor's rotation count within 0.1 day of a sum. 2178 is tagged with them. The Lab's gap table also gives each Y's reflection when the table has one: on the worked example X1→X4 = 255, reflection 552. <code>tests/lab.test.mjs</code> checks every pair is a true digit reversal, which also guards the transcription.</p>
+<hr>
+<h2 id="3-input-after-sunset">3 · Input after sunset</h2>
+<p>A research-group guide with screenshots of v12. Ophis counts days by the Earth's rotation and the day turns at sunset, so an event after sunset belongs to the next day. The original "does not automatically choose the following day"; the operator enters it by hand. The guide's worked cases are two evening games entered as the next calendar date.</p>
+<p>The rebuild already has the full form of this: HH:MM scope bounds each day by the computed local sunset. What a newcomer lacks is the simple form.</p>
+<p><strong>Built:</strong> Start here gives each date an <em>After sunset (around 6 PM or later): count it as the next day</em> box, which moves that date forward one day before the cast. Whole-date scope, as the guide's own "6 PM" rule of thumb is; HH:MM scope remains the exact version in the full app.</p>
+<hr>
+<h2 id="4-the-metonic-cycle">4 · The Metonic Cycle</h2>
+<p>An eleven-page illustrated folio, not an Ophis document: 19 tropical years ≈ 235 synodic months, the Callippic refinement (76 years, 940 months, 27,759 days), and the Antikythera mechanism, whose back face carries Metonic, Callippic, Saros (223 months) and Exeligmos (669 months) dials.</p>
+<p>Its figures are standard astronomy and are not taken from it. The cycles are built from the mean synodic month the app already uses (<code>SYNODIC_MONTH</code>, 29.5306 days), which stays within hours of NASA's phase tables; the eclipse tables are already rebuilt from NASA's canon. No network call is made: the app is offline by design.</p>
+<p><strong>Built:</strong> Lab → <em>L4 · Gaps and the moon</em> (each Y in lunations, and any Lunation, Saros, Metonic, Exeligmos or Callippic return within a day) and <em>L5 · The moon's long returns</em> (the Antikythera back dials, started on your first date, for a chosen Z-Date) — <code>gapReadings</code>, <code>moonDials</code>, <code>MOON_CYCLES</code>.</p>
+<hr>
+<h2 id="5-core-algorithm-operations">5 · Core Algorithm Operations</h2>
+<p>Prose descriptions of the subroutines. Three are already built: the isometric projection (operation #1), the MSRF, and the Annular Chronometric filter (the Diurnal tag, 23 §4). Two are not computable from what is written:</p>
+<ul><li><strong>Hydrogen Spacing Angle.</strong> "Two H-molecules will always be arranged at an angle of 105 degrees … a holofield of 105 degree angles." No rule turns a date, a count or a projection into an angle, and the MSRA Key lists it as a filter family without numbers of its own. (The H–O–H angle is in fact about 104.5°.)</li><li><strong>Holofractal Recognition Projections.</strong> Follows trajectories "through mathematical discontinuities". No arithmetic is given beyond the Holo-date operation the table already runs.</li></ul>
+<p>Neither is built: there is nothing to build without inventing a rule. Lab → <em>L6</em> says so on screen.</p>
+<p>The document also says "15 physics constants" and "15 future dates"; the shipped table has sixteen operations, and 22 §2 reconciles the author's fourteen with them.</p>
+<hr>
+<h2 id="6-msra-key-to-constructional-programming">6 · MSRA Key to Constructional Programming</h2>
+<p>One page: the nine filter families (Diurnal, Holofractal, Fibonacci, Hydrogen Spacing Angle, Golden Section, Geodetic, IntraDecimal, Palindromes, Vortex Holography) and a list of 378 numbers, 53 in bold as "of epic value".</p>
+<p>The 378 are <strong>exactly</strong> the shipped Normal (325) and Important (53) arrays; the 53 bold numbers are the Important tier, which 22 §3 had already confirmed 53/53 against the workbook. The shipped Vortex tier adds the twelve decimals (21.7 … 871.2). Nothing to change.</p>
+<p>The page's arithmetic holds against the list: "only 14.7% of numbers have any operations value out of the 2559" is 378 ÷ 2559 = 14.77%, cut to one decimal, and "53 … 2.07%" is 53 ÷ 2559 = 2.07%.</p>
+<hr>
+<h2 id="7-ophis-3-0-0-release-notes">7 · Ophis 3.0.0 release notes</h2>
+<p>The programmer's announcement of the version that introduced the two scopes (whole dates, or dates with time and location for sunset), the chart and its astronomical overlays, PDF export and the JSON file format, and that removed the 6-day minimum between the first two dates. All of it is in the teardown already; it confirms that the 6-day rule became advice, which is how the SOP warning in 23 §3 treats it.</p>
+<hr>
+<h2 id="8-actions-and-status">8 · Actions and status</h2>
+<div class="tablewrap"><table><thead><tr><th style="text-align:left">#</th><th style="text-align:left">Action</th><th style="text-align:left">Where</th><th style="text-align:left">Touches the engine?</th></tr></thead><tbody><tr><td style="text-align:left">1</td><td style="text-align:left">A column per X-date with its MSRF tier</td><td style="text-align:left">Lab L3</td><td style="text-align:left">No, it reads results</td></tr><tr><td style="text-align:left">2</td><td style="text-align:left">The validity rule as an optional reading view</td><td style="text-align:left">Lab L1, results table</td><td style="text-align:left">No, it filters the view</td></tr><tr><td style="text-align:left">3</td><td style="text-align:left">How far ahead to look</td><td style="text-align:left">Lab L2, Start here</td><td style="text-align:left">No</td></tr><tr><td style="text-align:left">4</td><td style="text-align:left">Holoflective tag, and reflections of each Y</td><td style="text-align:left">Settings S3, Lab L1 and L4</td><td style="text-align:left">No, it reads results</td></tr><tr><td style="text-align:left">5</td><td style="text-align:left">After-sunset helper</td><td style="text-align:left">Start here</td><td style="text-align:left">No, it changes inputs</td></tr><tr><td style="text-align:left">6</td><td style="text-align:left">Moon cycles in gaps, and the Antikythera dials</td><td style="text-align:left">Lab L4 and L5</td><td style="text-align:left">No</td></tr><tr><td style="text-align:left">7</td><td style="text-align:left">Record the two subroutines that cannot be built</td><td style="text-align:left">Lab L6, §5 here</td><td style="text-align:left">No</td></tr></tbody></table></div>
+<p>All seven are done. <code>npm test</code> still passes 140/140 against the original; the Lab is pinned separately by <code>npm run test:lab</code>, including a check that reading a run leaves every row, score and hit count as it was.</p>
+  </article>
+</div>
+
+</body>
+</html>
