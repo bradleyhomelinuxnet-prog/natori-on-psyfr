@@ -14,20 +14,45 @@ import {
   buildEvent, coach, readRun, describeEquation, platesFor, phoenixPlates, todayUTC, tidyDates,
 } from '../src/start/plain.js';
 import { runOphis } from '../src/core/ophis/run.js';
-import { packOperations, DEFAULT_OPHIS_PACK } from '../src/data/packs-ophis.js';
+import {
+  packOperations, DEFAULT_OPHIS_PACK, newDocumentOperations, isShippedTable, withNewDocumentPacks,
+} from '../src/data/packs-ophis.js';
 import { PROJECTION_KIND } from '../src/state/iso-event.js';
 
 const NOW = Date.UTC(2026, 9, 26, 15, 30);
 const d = (y, m, day) => ({ y, m, d: day });
 const DATES = [d(2025, 3, 10), d(2025, 11, 2), d(2026, 6, 20)];
 
-test('every operation in the default table reads in words', () => {
-  for (const op of packOperations(DEFAULT_OPHIS_PACK)) {
+test('every operation in the 36-row table reads in words', () => {
+  const ops = newDocumentOperations();
+  assert.equal(ops.length, 36);
+  for (const op of ops) {
     assert.ok(describeEquation(op.equation), `no words for ${op.equation}`);
   }
+  assert.equal(describeEquation('X1+Yx1.38'), 'the gap × the Phoenix number (1.38, from 138)');
   assert.equal(describeEquation('X1+(Y/2.0)xOPH_PI'), 'half the gap × π (3.14)');
   assert.equal(describeEquation('X2+oph_flip(oph_round(Y))'), 'the gap with its digits reversed');
   assert.equal(describeEquation('X1+sqrt(Y)'), null, 'an unknown shape is left for the page to show as written');
+});
+
+test('a new document runs 36 operations, with the shipped sixteen first and unchanged', () => {
+  const shipped = packOperations(DEFAULT_OPHIS_PACK);
+  const full = newDocumentOperations();
+  assert.equal(full.length, 36);
+  assert.ok(full.every((o) => o.enabled === true), 'all 36 cast');
+  full.slice(0, 16).forEach((o, i) => {
+    assert.equal(o.equation, shipped[i].equation);
+    assert.equal(o.weight, shipped[i].weight);
+    assert.equal(o.ordinal, shipped[i].ordinal, 'appending never renumbers a shipped row');
+  });
+  assert.equal(new Set(full.map((o) => o.equation)).size, 36, 'no duplicates');
+
+  assert.equal(isShippedTable(shipped), true);
+  assert.equal(isShippedTable(full), false);
+  assert.deepEqual(withNewDocumentPacks(full).length, 36, 'adding twice adds nothing');
+
+  const edited = shipped.map((o, i) => (i === 3 ? { ...o, enabled: false } : o));
+  assert.equal(isShippedTable(edited), false, 'an edited table is the user’s own');
 });
 
 test('the dates are sorted and de-duplicated before they reach the engine', () => {

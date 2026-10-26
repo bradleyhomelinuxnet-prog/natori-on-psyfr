@@ -1378,7 +1378,7 @@ pre.blob {
   <main class="screen" data-screen="operations">
     <div class="screen-head">
       <div class="eyebrow">The operation table</div>
-      <h1 tabindex="-1">Sixteen functions of Y</h1>
+      <h1 tabindex="-1">Thirty-six functions of Y</h1>
       <p class="lede">Weight decides Alpha from Beta, and feeds the score directly.</p>
     </div>
     <div id="operationsHost"></div>
@@ -3025,6 +3025,7 @@ pre.blob {
     }
   };
   var DEFAULT_OPHIS_PACK = "ophis-gte-v10";
+  var NEW_DOCUMENT_PACKS = ["ophis-xtras", "ophis-mirrors"];
   function packOperations(packId = DEFAULT_OPHIS_PACK) {
     const pack = OPHIS_PACKS[packId];
     return pack ? pack.operations.map((o) => ({ ...o })) : null;
@@ -3046,6 +3047,23 @@ pre.blob {
       skipped: incoming.length - added.length
     };
   }
+  function isShippedTable(ops) {
+    const def = packOperations(DEFAULT_OPHIS_PACK);
+    if (!Array.isArray(ops) || ops.length !== def.length) return false;
+    return ops.every(
+      (o, i) => o.equation === def[i].equation && o.weight === def[i].weight && o.enabled === def[i].enabled
+    );
+  }
+  function withNewDocumentPacks(ops) {
+    let out = ops;
+    for (const id of NEW_DOCUMENT_PACKS) {
+      const before = out.length;
+      out = mergeOperations(out, id).operations;
+      out = out.map((o, i) => i >= before ? { ...o, enabled: true } : o);
+    }
+    return out;
+  }
+  var newDocumentOperations = () => withNewDocumentPacks(packOperations(DEFAULT_OPHIS_PACK));
   var newOperation = () => ({ equation: "X1+Y", weight: 0.5, enabled: true, packId: null });
 
   // src/state/iso-event.js
@@ -3502,11 +3520,12 @@ pre.blob {
     results_view: "days"
   };
   var listeners = /* @__PURE__ */ new Set();
+  var newEvent = (index) => makeIsoEvent(index, { operations: newDocumentOperations() });
   function blankDocument() {
     return {
       app_version: APP_VERSION,
       schema: SCHEMA_VERSION,
-      iso_events: [makeIsoEvent(0)]
+      iso_events: [newEvent(0)]
     };
   }
   var state = {
@@ -3579,7 +3598,7 @@ pre.blob {
     return state.results;
   }
   function addEvent() {
-    const ev = makeIsoEvent(state.document.iso_events.length);
+    const ev = newEvent(state.document.iso_events.length);
     state.document.iso_events.push(ev);
     state.currentEventIndex = state.document.iso_events.length - 1;
     log("event", `Added ${ev.name}`);
@@ -3683,9 +3702,11 @@ pre.blob {
       app_version: APP_VERSION,
       schema: SCHEMA_VERSION,
       iso_events: state.document.iso_events,
-      global_options: state.options
+      global_options: state.options,
+      new_document_table: NEW_DOCUMENT_TABLE
     });
   }
+  var NEW_DOCUMENT_TABLE = 36;
   function repairAnchorOrder(doc) {
     let changed = false;
     for (const ev of doc.iso_events) {
@@ -3707,13 +3728,24 @@ pre.blob {
     if (!doc) return false;
     for (const w of warnings) log("restore", w);
     const repaired = repairAnchorOrder(doc);
+    const upgraded = blob.new_document_table === void 0 && upgradeShippedTables(doc);
     state.document = doc;
     state.currentEventIndex = Math.min(
       Number(state.options.current_iso_event_index) || 0,
       state.document.iso_events.length - 1
     );
-    if (repaired) persistDocument();
+    if (repaired || upgraded) persistDocument();
     return true;
+  }
+  function upgradeShippedTables(doc) {
+    let changed = false;
+    for (const ev of doc.iso_events) {
+      if (!isShippedTable(ev.operations)) continue;
+      ev.operations = withNewDocumentPacks(ev.operations);
+      changed = true;
+      log("restore", `Added the Extras and Mirrors to ${ev.name}: ${ev.operations.length} operations, the new default.`);
+    }
+    return changed;
   }
   function adoptHandoff({ alone = false } = {}) {
     const blob = readJSON(KEY.handoff);
@@ -3860,7 +3892,7 @@ pre.blob {
       label: "Operations",
       kind: "place",
       title: "The operation table",
-      lede: "Sixteen equations, each a pure function of Y. Weight decides Alpha from Beta, and feeds the score directly."
+      lede: "Equations, each a pure function of Y: the shipped sixteen, then the Extras and the Mirrors. Weight decides Alpha from Beta, and feeds the score directly."
     },
     {
       id: "settings",

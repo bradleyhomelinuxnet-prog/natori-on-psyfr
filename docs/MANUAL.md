@@ -35,7 +35,7 @@ same rows on whatever day you open them (§9 explains how).
 Give it two or more dates on which **the same kind of thing** happened to you.
 
 It measures the gap between every pair of those dates, in whole days. Then it
-takes each gap and runs it through sixteen small arithmetic formulas — halve it,
+takes each gap and runs it through 36 small arithmetic formulas — halve it,
 multiply it by 1.618, reverse its digits, and so on. Each result is a number of
 days, which it counts forward from one of your dates to land on a **new date**.
 
@@ -116,7 +116,7 @@ If you need to change a date a lot, deleting it and re-adding it with + X-Date i
 the safe way.
 
 **Step 4 — Read the status bar.** Across the top you will see something like
-`3 ANCHORS · 3 PAIRS · 16 OPERATIONS · 23 Z-DATES · 24 HIDDEN`, then a
+`3 ANCHORS · 3 PAIRS · 36 OPERATIONS · 67 Z-DATES · 34 HIDDEN`, then a
 **Current date** box, a state label, and **Recalculate**.
 
 - PAIRS 0 means fewer than two dates are enabled — or an ordering error (Step 3).
@@ -173,7 +173,7 @@ A `—` in the MSRF column is completely normal. Most rows have nothing there.
 
 **OPERATIONS** — which formulas landed here, and from which pair of your dates.
 `O5(X2→X4)` means formula number 5, working on the gap between your second and
-fourth date. The **Operations** screen lists all sixteen with their equations.
+fourth date. The **Operations** screen lists all 36 with their equations.
 
 The **Columns** buttons above the table hide or show each column.
 
@@ -361,7 +361,7 @@ same last date, and land on the same day. 223 happens to be on the Normal list,
 so the agreement is scored twice over.
 
 The formulas did not discover a pattern; **the pattern was typed in.** Evenly
-spaced input makes the sixteen formulas collide by construction. Real events are
+spaced input makes the formulas collide by construction. Real events are
 rarely that regular — and when yours are, that regularity is the thing to
 notice, not the score built on top of it. Treat any run whose gaps are simple
 multiples of each other with suspicion.
@@ -437,7 +437,8 @@ clones one, `✕` deletes it. Each event keeps its own dates, filters and
 settings. The **Transfer** screen copies chosen parts — X-Dates, Filters,
 T-Dates, Operations and so on — from one event onto others.
 
-**Operations.** The sixteen formulas, editable. Untick one to leave it out of
+**Operations.** The formulas, editable: the sixteen Ophis shipped with, then the
+ten Extras and the ten Mirrors that a new document also starts with. Untick one to leave it out of
 the cast; change its weight to move it between Alpha (1 or more) and Beta.
 Changing these changes every score, so note what you did.
 

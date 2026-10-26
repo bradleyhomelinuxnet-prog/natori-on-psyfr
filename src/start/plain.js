@@ -23,6 +23,7 @@ import { phoenixInfo, isMetonic, am } from '../core/cycles.js';
 import { jdn, isPalindrome } from '../core/jdn.js';
 import { makeIsoEvent, makeXDate, PROJECTION_KIND } from '../state/iso-event.js';
 import { PLATES, PHOENIX_PLATES, plateUrl } from '../data/chronotecture.js';
+import { newDocumentOperations } from '../data/packs-ophis.js';
 
 const YEAR_MS = 365.25 * MILLIS_PER_DAY;
 
@@ -68,6 +69,9 @@ export function buildEvent({ name = '', dates = [], includeToday = false, now })
   const overrides = {
     name: name.trim() || 'My pattern',
     x_dates: tidyDates(list).map(({ y, m, d }) => makeXDate(y, m, d)),
+    // The same 36-row table a new document gets in the full app, so the handoff
+    // opens there with the numbers this page showed.
+    operations: newDocumentOperations(),
   };
   if (includeToday) overrides.projection_kind = PROJECTION_KIND.SUBJECTIVE;
   return makeIsoEvent(0, overrides);
@@ -201,6 +205,12 @@ const CONSTANT_WORDS = {
   OPH_PI: 'π (3.14)',
   OPH_CRV: 'the curve number (5.08)',
   OPH_HEP: 'the seven-cycle number (7.01)',
+  // The Extras write their constants as literals.
+  '2.718': 'e (2.718)',
+  '1.38': 'the Phoenix number (1.38, from 138)',
+  '5.52': '5.52 (138 × 4 ÷ 100)',
+  '2.178': 'the vortex number (2.178)',
+  '0.360': '0.36 (360 ÷ 1000)',
 };
 
 const GAP_WORDS = {
@@ -217,7 +227,7 @@ const GAP_WORDS = {
  */
 export function describeEquation(equation) {
   const body = String(equation).replace(/^X[12]\+/, '');
-  const m = /^(\(Y\/2\.0\)|oph_flip\(oph_round\(Y\)\)|oph_round\(Y\)|Y)(?:([x/])(OPH_[A-Z]+))?$/.exec(body);
+  const m = /^(\(Y\/2\.0\)|oph_flip\(oph_round\(Y\)\)|oph_round\(Y\)|Y)(?:([x/])(OPH_[A-Z]+|\d+\.\d+))?$/.exec(body);
   if (!m) return null;
   const gap = GAP_WORDS[m[1]];
   if (!m[2]) return gap;
