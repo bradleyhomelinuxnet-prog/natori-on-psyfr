@@ -138,7 +138,7 @@ function intro() {
     ),
     said('Rogue:', '“Patterns hide in the gaps between dates. Let’s measure them.”'),
     story(
-      'That is all this does. You bring a few dates when the same kind of thing happened. It measures the gaps between them, runs each gap through sixteen fixed formulas, and shows you which future days the most formulas agree on.',
+      'That is all this does. You bring a few dates when the same kind of thing happened. It measures the gaps between them, runs each gap through 36 fixed formulas, and shows you which future days the most formulas agree on.',
       'Three steps, about two minutes. Nothing you type leaves this page.',
     ),
     el('div.btnrow.start-actions', {}, [

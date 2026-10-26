@@ -143,6 +143,9 @@ export const OPHIS_PACKS = {
 
 export const DEFAULT_OPHIS_PACK = 'ophis-gte-v10';
 
+/** The additive packs a new document starts with, in the order they are appended. */
+export const NEW_DOCUMENT_PACKS = ['ophis-xtras', 'ophis-mirrors'];
+
 /** A fresh copy — callers mutate operation rows, so never hand out the module's own objects. */
 export function packOperations(packId = DEFAULT_OPHIS_PACK) {
   const pack = OPHIS_PACKS[packId];
@@ -180,6 +183,42 @@ export function mergeOperations(existing, packId) {
     skipped: incoming.length - added.length,
   };
 }
+
+/** True when a table is the shipped sixteen, row for row, as the original program left it. */
+export function isShippedTable(ops) {
+  const def = packOperations(DEFAULT_OPHIS_PACK);
+  if (!Array.isArray(ops) || ops.length !== def.length) return false;
+  return ops.every(
+    (o, i) => o.equation === def[i].equation && o.weight === def[i].weight && o.enabled === def[i].enabled
+  );
+}
+
+/**
+ * Append the Extras and the Mirrors to a table, switched ON.
+ *
+ * The packs themselves still ship disabled, so the Operations screen's "add"
+ * keeps meaning "add them to try". Appending goes through mergeOperations, so no
+ * existing row is renumbered and nothing already present is duplicated.
+ */
+export function withNewDocumentPacks(ops) {
+  let out = ops;
+  for (const id of NEW_DOCUMENT_PACKS) {
+    const before = out.length;
+    out = mergeOperations(out, id).operations;
+    out = out.map((o, i) => (i >= before ? { ...o, enabled: true } : o));
+  }
+  return out;
+}
+
+/**
+ * The table a NEW document starts with: the sixteen, then the ten Extras and the
+ * ten Mirrors, all enabled -- 36 rows.
+ *
+ * Deliberately NOT makeIsoEvent's default, which stays the shipped sixteen: a
+ * `.oph` that omits its operations means the sixteen, and the parity suite pins
+ * the engine against the original on exactly that table.
+ */
+export const newDocumentOperations = () => withNewDocumentPacks(packOperations(DEFAULT_OPHIS_PACK));
 
 /** What the "add operation" button seeds. */
 export const newOperation = () => ({ equation: 'X1+Y', weight: 0.5, enabled: true, packId: null });

@@ -14,7 +14,7 @@ export const SCREENS = [
   { id: 'work', label: 'Work', kind: 'place', title: 'The working surface',
     lede: 'Seed the controls, cast them through the operation table, and read which projections survive.' },
   { id: 'operations', label: 'Operations', kind: 'place', title: 'The operation table',
-    lede: 'Sixteen equations, each a pure function of Y. Weight decides Alpha from Beta, and feeds the score directly.' },
+    lede: 'Equations, each a pure function of Y: the shipped sixteen, then the Extras and the Mirrors. Weight decides Alpha from Beta, and feeds the score directly.' },
   { id: 'settings', label: 'Settings', kind: 'place', title: 'Event settings',
     lede: 'Notes, and the hour a day is considered to begin.' },
   { id: 'swap', label: 'Transfer', kind: 'data', title: 'Event data transfer',

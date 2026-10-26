@@ -155,3 +155,38 @@ test('STORED_KEYS covers every key the store actually touches', async () => {
     );
   }
 });
+
+/* ------------------------------------------------------ the 36-row default -- */
+
+/**
+ * A stored event still on the untouched sixteen is brought up to the 36-row
+ * table new documents start with; one whose table was edited is left alone.
+ * Without the first half, everyone who visited before keeps seeing sixteen.
+ */
+test('restoring upgrades an untouched sixteen, and only that', async () => {
+  const { makeIsoEvent, makeXDate } = await import('../src/state/iso-event.js');
+  const { packOperations, DEFAULT_OPHIS_PACK } = await import('../src/data/packs-ophis.js');
+  const x = [makeXDate(2025, 1, 1), makeXDate(2025, 6, 1)];
+  const edited = packOperations(DEFAULT_OPHIS_PACK).map((o, i) => (i === 0 ? { ...o, weight: 0.5 } : o));
+  const doc = {
+    iso_events: [
+      makeIsoEvent(0, { name: 'untouched', x_dates: x }),
+      makeIsoEvent(1, { name: 'edited', x_dates: x, operations: edited }),
+    ],
+  };
+  const { mod, map } = await freshStore({ 'psyfr:document': JSON.stringify(doc) });
+
+  assert.equal(mod.restoreDocument(), true);
+  const [a, b] = mod.state.document.iso_events;
+  assert.equal(a.operations.length, 36);
+  assert.ok(a.operations.every((o) => o.enabled === true));
+  assert.equal(b.operations.length, 16, 'an edited table is the user’s own');
+  assert.equal(JSON.parse(map.get('psyfr:document')).iso_events[0].operations.length, 36, 'the upgrade is written back');
+
+  // Saved by this build (stamped), sixteen because the user imported a file
+  // that has sixteen: cast as written, before and after any reload.
+  const stamped = JSON.stringify({ ...doc, new_document_table: 36 });
+  const again = await freshStore({ 'psyfr:document': stamped });
+  assert.equal(again.mod.restoreDocument(), true);
+  assert.equal(again.mod.state.document.iso_events[0].operations.length, 16);
+});

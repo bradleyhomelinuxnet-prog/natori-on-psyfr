@@ -12,6 +12,7 @@
 import { runOphis, validateXDateSpread } from '../core/ophis/run.js';
 import { toInstant } from '../core/ophis/calendar.js';
 import { makeIsoEvent, makeXDate } from './iso-event.js';
+import { isShippedTable, withNewDocumentPacks, newDocumentOperations } from '../data/packs-ophis.js';
 import { APP_VERSION, SCHEMA_VERSION, readDocument, VALIDATION } from '../io/oph.js';
 
 const KEY = {
@@ -80,12 +81,15 @@ export const DEFAULT_OPTIONS = {
 
 const listeners = new Set();
 
+/** A new event as the app creates one: the full 36-operation table, not the engine's sixteen. */
+const newEvent = (index) => makeIsoEvent(index, { operations: newDocumentOperations() });
+
 /** A brand-new document: one event, seeded with nothing. */
 function blankDocument() {
   return {
     app_version: APP_VERSION,
     schema: SCHEMA_VERSION,
-    iso_events: [makeIsoEvent(0)],
+    iso_events: [newEvent(0)],
   };
 }
 
@@ -218,7 +222,7 @@ export function recalculate() {
 /* ------------------------------------------------------------------ events -- */
 
 export function addEvent() {
-  const ev = makeIsoEvent(state.document.iso_events.length);
+  const ev = newEvent(state.document.iso_events.length);
   state.document.iso_events.push(ev);
   state.currentEventIndex = state.document.iso_events.length - 1;
   log('event', `Added ${ev.name}`);
@@ -379,8 +383,17 @@ export function persistDocument() {
     schema: SCHEMA_VERSION,
     iso_events: state.document.iso_events,
     global_options: state.options,
+    new_document_table: NEW_DOCUMENT_TABLE,
   });
 }
+
+/**
+ * Stamped on the stored document by every build whose new documents start on
+ * the 36-row table. Its absence is how restore tells "sixteen because that was
+ * the default when this was saved" from "sixteen because the user imported a
+ * file that has sixteen" -- only the first is upgraded.
+ */
+const NEW_DOCUMENT_TABLE = 36;
 
 /**
  * Put a restored event's anchors back in date order — but ONLY if it cannot be
@@ -440,6 +453,7 @@ export function restoreDocument() {
 
   for (const w of warnings) log('restore', w);
   const repaired = repairAnchorOrder(doc);
+  const upgraded = blob.new_document_table === undefined && upgradeShippedTables(doc);
 
   state.document = doc;
   state.currentEventIndex = Math.min(
@@ -449,8 +463,32 @@ export function restoreDocument() {
 
   // Write the repair back, or the broken document survives on disk and keeps
   // breaking every other copy served from this origin.
-  if (repaired) persistDocument();
+  if (repaired || upgraded) persistDocument();
   return true;
+}
+
+/**
+ * Bring a restored event still on the untouched sixteen up to the 36-row table
+ * new documents start with.
+ *
+ * Only a table identical to the shipped one moves: that event was never given a
+ * table of its own, it simply had the old default. Anything edited -- a weight
+ * changed, a row disabled, a pack added -- is the user's choice and is left as
+ * it is. Appending never renumbers a row, so the original sixteen still bind to
+ * the same anchors; the event just has twenty more operations casting.
+ *
+ * Only for a stored document saved by an earlier build (no `new_document_table`
+ * stamp). An imported `.oph` is cast as written, including after a reload.
+ */
+function upgradeShippedTables(doc) {
+  let changed = false;
+  for (const ev of doc.iso_events) {
+    if (!isShippedTable(ev.operations)) continue;
+    ev.operations = withNewDocumentPacks(ev.operations);
+    changed = true;
+    log('restore', `Added the Extras and Mirrors to ${ev.name}: ${ev.operations.length} operations, the new default.`);
+  }
+  return changed;
 }
 
 /**
@@ -495,8 +533,10 @@ export function adoptDocument(doc) {
 /**
  * A worked example, so the app is never a blank page on first run.
  *
- * These are the five anchors the teardown's end-to-end fixture uses, which
- * means the numbers a new user sees first are the numbers the test suite pins.
+ * These are the five anchors the teardown's end-to-end fixture uses. The suite
+ * pins them on the shipped sixteen; a new document runs all 36, so the first
+ * screen shows more rows than the fixture's 114. Switch the Extras and Mirrors
+ * off on the Operations screen to see exactly the pinned numbers.
  */
 export function seedExample() {
   const ev = currentEvent();
