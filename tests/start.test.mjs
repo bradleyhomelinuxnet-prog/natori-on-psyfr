@@ -13,6 +13,7 @@ import assert from 'node:assert/strict';
 import {
   buildEvent, coach, readRun, describeEquation, platesFor, phoenixPlates, todayUTC, tidyDates,
 } from '../src/start/plain.js';
+import { pyramidUrl } from '../src/data/chronotecture.js';
 import { runOphis } from '../src/core/ophis/run.js';
 import {
   packOperations, DEFAULT_OPHIS_PACK, newDocumentOperations, isShippedTable, withNewDocumentPacks,
@@ -137,4 +138,9 @@ test('Chronotecture plates are found by year, by Annus Mundi, and by resonance n
   assert.ok(small.every((p) => p.why.every((w) => !/number (52|24)\b/.test(w))), 'small numbers match nothing');
 
   for (const p of phoenixPlates()) assert.match(p.url, /Chronotecture-Charts\/pages\/p11[4-7]\.html$/);
+
+  const url = pyramidUrl(['2026-11-09', '2027-04-04']);
+  assert.match(url, /^https:\/\/bradleyhomelinuxnet-prog\.github\.io\/Chronotecture-Charts\/redesign\/pyramid-3d\.html#dates=2026-11-09,2027-04-04$/);
+  assert.ok(!url.includes('?'), 'dates travel in the #fragment only, never to the server');
+  assert.ok(pyramidUrl().endsWith('pyramid-3d.html'));
 });

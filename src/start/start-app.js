@@ -14,7 +14,7 @@ import { $, el, replace } from '../ui/dom.js';
 import { START_KEYS } from '../state/ophis-store.js';
 import { MILLIS_PER_DAY } from '../core/ophis/constants.js';
 import { buildEvent, coach, readRun, ordinal, todayUTC, phoenixPlates } from './plain.js';
-import { CHRONOTECTURE_URL } from '../data/chronotecture.js';
+import { CHRONOTECTURE_URL, pyramidUrl } from '../data/chronotecture.js';
 
 /* ---------------------------------------------------------------- the story -- */
 
@@ -444,6 +444,8 @@ function stepResults() {
           el('button.btn.primary', { type: 'button', text: 'Open in Ophis →', onclick: () => handOff(ev) })),
         nextCard('The big cycles', 'Natori-on-Cyphr shows where any date sits in the Phoenix, Nemesis, NER and Metonic cycles, and where they line up.',
           el('a.btn', { href: 'natori-on-cyphr.html', text: 'Open Cyphr →' })),
+        nextCard('Your dates in the Great Pyramid', 'The 3D Pyramid Chronograph puts these dates on Breshears’ Great Step chronometer, one pyramid inch to the year from 1902. Turn it, zoom in, click anything.',
+          el('a.btn', { href: pyramidUrl(read.picks.map((p) => isoOf(p.at))), target: '_blank', rel: 'noopener', text: 'Open in 3D ↗' })),
         nextCard('Chronotecture', 'Breshears’ chart atlas, all 119 plates with rebuilt interactive charts. Start with the Phoenix Chronometry plates.',
           el('a.btn', { href: CHRONOTECTURE_URL + 'index.html', target: '_blank', rel: 'noopener', text: 'Open the atlas ↗' })),
       ]),

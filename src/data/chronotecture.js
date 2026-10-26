@@ -12,6 +12,20 @@
 
 export const CHRONOTECTURE_URL = 'https://hollywood-rogue-ai-ventures.w3spaces.com/Chronotecture-Charts/';
 
+/**
+ * The GitHub Pages copy, which publishes on every push; the mirror above is
+ * updated by hand. Used for pages newer than the mirror -- the 3D Pyramid
+ * Chronograph first of all.
+ */
+export const CHRONOTECTURE_PAGES_URL = 'https://bradleyhomelinuxnet-prog.github.io/Chronotecture-Charts/';
+
+/**
+ * The Pyramid Chronograph with these dates on its Great Step chronometer.
+ * They go in the #fragment, which the browser never sends to the server.
+ */
+export const pyramidUrl = (isoDates = []) =>
+  `${CHRONOTECTURE_PAGES_URL}redesign/pyramid-3d.html${isoDates.length ? `#dates=${isoDates.join(',')}` : ''}`;
+
 /** The four Phoenix Chronometry plates — the 138-year cycle, drawn on the Great Pyramid. */
 export const PHOENIX_PLATES = [114, 115, 116, 117];
 
