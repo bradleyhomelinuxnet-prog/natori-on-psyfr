@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ophis — Basic Reader</title>
+<meta http-equiv="Content-Security-Policy"
+      content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; img-src 'self' data:; connect-src 'self'">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<style>
+  :root { --bg:#faf7f0; --fg:#1d1a14; --mut:#6b6355; --acc:#8a5a00; --card:#fff; --line:#e4dccb; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#14120e; --fg:#ece4d2; --mut:#a59a85; --acc:#e0b050; --card:#1d1a14; --line:#3a342a; } }
+  body { background:var(--bg); color:var(--fg); font:16px/1.55 system-ui, sans-serif; margin:0; padding:16px; }
+  main { max-width:760px; margin:auto; }
+  .pick { display:flex; flex-wrap:wrap; gap:12px; align-items:center; padding:12px; border:1px solid var(--line); border-radius:8px; background:var(--card); }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:8px; padding:12px 16px; margin:12px 0; }
+  .card h3 { margin:0 0 4px; display:flex; gap:8px; align-items:baseline; }
+  .rank { color:var(--acc); } .score { margin-left:auto; font-size:14px; color:var(--mut); font-weight:normal; }
+  .pair { font-weight:600; color:var(--acc); }
+  code { display:block; font-size:12px; color:var(--mut); }
+  h4 { margin:16px 0 4px; } .notes, .muted { color:var(--mut); }
+  .hint { border-left:3px solid var(--acc); padding:4px 12px; }
+  .err { color:#c0392b; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Ophis — Basic Reader</h1>
+  <p class="muted">Open a <code style="display:inline">.oph</code> file and read what it says, in words. Same engine as the full app; nothing is sent anywhere. For editing dates and operations, use the <a href="index.html">full app</a>.</p>
+  <div class="pick">
+    <label>Example: <select id="example"><option value="">— choose —</option></select></label>
+    <label>or your file: <input type="file" id="file" accept=".oph,.json"></label>
+  </div>
+  <div id="out"></div>
+  <p class="muted"><small>A study and worldbuilding instrument rendering the Archaix thesis; a "resonance" means the program's scoring assigned points, not a claim about the future.</small></p>
+</main>
+<script type="module" src="src/basic.js"></script>
+</body>
+</html>

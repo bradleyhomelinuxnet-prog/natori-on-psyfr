@@ -107,6 +107,7 @@ X-Date and the engine does the rest. See [`docs/reverse/22`](docs/reverse/22-aut
 
 ```
 index.html              the app shell
+basic.html              Basic Reader: open a .oph, read the top dates in plain English
 src/
   ophis-app.js          bootstrap; wires each screen to its host
   core/
