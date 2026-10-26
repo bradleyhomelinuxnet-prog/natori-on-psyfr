@@ -1324,6 +1324,7 @@ pre.blob {
         <button id="zoomReset" type="button" aria-label="Default text size" title="Default text size">A</button>
         <button id="zoomUp" type="button" aria-label="Larger text" title="Larger text">A+</button>
       </div>
+      <a class="btn primary" href="start.html" target="_self" title="New here? A short story walks you through your first run in three steps">Start here</a>
       <a class="btn" href="manual.html" title="Plain-English: use it on your own dates">Manual</a>
       <a class="btn" href="field-guide.html" title="A ten-minute tour">Guide</a>
       <a class="btn" href="https://bradleyhomelinuxnet-prog.github.io/NatorionCipherPredictiveEngine/natorion/#chronicon" target="_blank" rel="noopener" title="The Natorion Chronicon: living clocks, the year dial, long cycles, the moon, the calendar wall and the ledger. Opens in a new tab; nothing here changes.">Chronicon ↗</a>
@@ -3455,8 +3456,12 @@ pre.blob {
     theme: "psyfr:theme",
     zoom: "psyfr:zoom",
     density: "psyfr:density",
-    options: "psyfr:options"
+    options: "psyfr:options",
+    // Written by start.html: its unsent draft, and the event it hands to this app.
+    startDraft: "psyfr:start",
+    handoff: "psyfr:handoff"
   };
+  var START_KEYS = { draft: KEY.startDraft, handoff: KEY.handoff };
   var DEFAULT_OPTIONS = {
     start_screen: "work",
     local_time_offset_in_millis: 0,
@@ -3629,6 +3634,8 @@ pre.blob {
     KEY.theme,
     KEY.zoom,
     KEY.density,
+    KEY.startDraft,
+    KEY.handoff,
     // The earlier single-file build's names, still read by loadOptions().
     "ophion-theme",
     "ophion-zoom",
@@ -3707,6 +3714,25 @@ pre.blob {
     );
     if (repaired) persistDocument();
     return true;
+  }
+  function adoptHandoff({ alone = false } = {}) {
+    const blob = readJSON(KEY.handoff);
+    if (blob === null) return null;
+    try {
+      localStorage.removeItem(KEY.handoff);
+    } catch {
+    }
+    const { document: doc } = readDocument({ iso_events: [blob] }, VALIDATION.LOOSE);
+    const ev = doc?.iso_events?.[0];
+    if (!ev) return null;
+    ev.id = `e${Date.now()}`;
+    if (alone) state.document.iso_events = [ev];
+    else state.document.iso_events.push(ev);
+    state.currentEventIndex = state.document.iso_events.length - 1;
+    state.options.current_iso_event_index = state.currentEventIndex;
+    log("event", `Opened ${ev.name} from Start here`);
+    touch();
+    return ev;
   }
   function adoptDocument(doc) {
     state.document = doc;
@@ -7278,7 +7304,9 @@ stream
     };
     recenterBtn.onclick = () => chart.recenter();
     document.addEventListener("ophis:chartview", syncRecenter);
-    if (!restoreDocument()) seedExample();
+    const restored = restoreDocument();
+    const handed = safely("handoff", () => adoptHandoff({ alone: !restored }));
+    if (!restored && !handed) seedExample();
     recalculate();
     const renderers = {
       work: () => {

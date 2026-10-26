@@ -21,7 +21,13 @@ const KEY = {
   zoom: 'psyfr:zoom',
   density: 'psyfr:density',
   options: 'psyfr:options',
+  // Written by start.html: its unsent draft, and the event it hands to this app.
+  startDraft: 'psyfr:start',
+  handoff: 'psyfr:handoff',
 };
+
+/** The two keys start.html writes, named here so Clear saved data covers them. */
+export const START_KEYS = { draft: KEY.startDraft, handoff: KEY.handoff };
 
 /** Options that live only in localStorage — never in a `.oph`. */
 export const DEFAULT_OPTIONS = {
@@ -287,6 +293,8 @@ export const STORED_KEYS = [
   KEY.theme,
   KEY.zoom,
   KEY.density,
+  KEY.startDraft,
+  KEY.handoff,
   // The earlier single-file build's names, still read by loadOptions().
   'ophion-theme',
   'ophion-zoom',
@@ -435,6 +443,37 @@ export function restoreDocument() {
   // breaking every other copy served from this origin.
   if (repaired) persistDocument();
   return true;
+}
+
+/**
+ * Take the event start.html left for this app, if there is one.
+ *
+ * Read once and removed, so a reload does not add it again. It goes through the
+ * `.oph` normaliser like any restored document. With `alone` (nothing was
+ * restored) it becomes the whole document; otherwise it is added beside the
+ * user's own events and selected, so nothing they had is replaced.
+ */
+export function adoptHandoff({ alone = false } = {}) {
+  const blob = readJSON(KEY.handoff);
+  if (blob === null) return null;
+  try {
+    localStorage.removeItem(KEY.handoff);
+  } catch {
+    /* storage unavailable — then nothing was handed over either. */
+  }
+
+  const { document: doc } = readDocument({ iso_events: [blob] }, VALIDATION.LOOSE);
+  const ev = doc?.iso_events?.[0];
+  if (!ev) return null;
+
+  ev.id = `e${Date.now()}`;
+  if (alone) state.document.iso_events = [ev];
+  else state.document.iso_events.push(ev);
+  state.currentEventIndex = state.document.iso_events.length - 1;
+  state.options.current_iso_event_index = state.currentEventIndex;
+  log('event', `Opened ${ev.name} from Start here`);
+  touch();
+  return ev;
 }
 
 /** Replace the document wholesale — used by load and by import. */

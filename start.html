@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Start here · OPHIS</title>
+<meta name="description" content="A short story walks you through your first Ophis run: name something that keeps happening, add the dates, and see which days the patterns point to. Runs entirely in your browser.">
+
+<!-- The same policy as index.html: nothing leaves this origin. The Chronotecture
+     links are plain navigations, which no directive here governs. -->
+<meta http-equiv="Content-Security-Policy"
+      content="default-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; script-src 'self'; img-src 'self' data:; connect-src 'self'">
+
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+
+<link rel="stylesheet" href="src/styles/fonts.css">
+<link rel="stylesheet" href="src/styles/ophis-tokens.css">
+<link rel="stylesheet" href="src/styles/ophis-app.css">
+<link rel="stylesheet" href="src/styles/start.css">
+</head>
+<body>
+
+<div id="app">
+  <header class="topbar start-top">
+    <a class="brand" href="index.html">OPHIS <small>Start here</small></a>
+    <div class="chrome">
+      <a class="btn" href="index.html" title="The full instrument, every setting and every row">Full app</a>
+      <a class="btn" href="manual.html" title="Plain-English: use it on your own dates">Manual</a>
+    </div>
+  </header>
+
+  <main class="start" id="start" aria-live="polite">
+    <noscript><p class="start-story">This page needs JavaScript to run. Everything stays on your computer.</p></noscript>
+  </main>
+
+  <footer class="start-foot">
+    Ophis is Jason M. Breshears' date-projection method, rebuilt as a study instrument.
+    It studies software, not cosmology. Nothing you type leaves this page.
+  </footer>
+</div>
+
+<script type="module" src="src/start/start-app.js"></script>
+</body>
+</html>
