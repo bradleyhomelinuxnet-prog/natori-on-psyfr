@@ -26,6 +26,14 @@ const CONSTANT_WORDS = {
   OPH_HEP: 'the hepta number (7.01)',
 };
 
+/** Plain numbers that appear in shared packs, named where the name is known. */
+const NUMBER_WORDS = {
+  '2.718': "Euler's number e (2.718)",
+  '1.38': '1.38 (the 138 cycle ÷ 100)',
+  '2.178': '2.178 (the 2178 vortex loop ÷ 1000)',
+  '0.360': '0.360 (a 360° circle ÷ 1000)',
+};
+
 /** Turn an operation's equation into one sentence. Falls back to the raw text. */
 export function explainEquation(eq) {
   const s = eq.replace(/\s+/g, '');
@@ -38,6 +46,12 @@ export function explainEquation(eq) {
   if (word && body === `Y/${k}`) return `Divide the gap by ${word}, step from ${from}.`;
   if (word && body === `Yx${k}`) return `Multiply the gap by ${word}, step from ${from}.`;
   if (word && body === `(Y/2.0)x${k}`) return `Take half the gap, multiply by ${word}, step from ${from}.`;
+  const lit = /^(\(Y\/2\.0\)|Y)([x/])(\d+(?:\.\d+)?)$/.exec(body);
+  if (lit) {
+    const n = NUMBER_WORDS[lit[3]] ?? lit[3];
+    const half = lit[1] === 'Y' ? 'the gap' : 'half the gap';
+    return `${lit[2] === 'x' ? 'Multiply' : 'Divide'} ${half} by ${n}, step from ${from}.`;
+  }
   return `Apply ${body} to the gap, step from ${from}.`;
 }
 
