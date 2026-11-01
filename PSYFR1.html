@@ -234,6 +234,16 @@
   details.fold.bare>summary{padding:10px 0}
   details.fold.bare>.foldbody{padding:2px 0 6px}
 
+  /* ---------- lens note · this is not Ophis v12 ---------- */
+  .lensnote{margin:12px 0 4px;padding:10px 14px;border:1px solid var(--line);border-left:3px solid var(--cyan);border-radius:5px;background:var(--panel)}
+  .lensnote>p{font-size:14px;color:var(--ink);line-height:1.5}
+  .lensnote>p b.lens{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--cyan);margin-right:6px}
+  .lensnote a{color:var(--cyan)}
+  .lensnote details.fold{margin:8px 0 0}
+  .lensnote ul{margin:2px 0 0 18px;font-size:13.5px;color:var(--ink);line-height:1.55}
+  .lensnote ul li{margin:2px 0}
+  .lensnote .mono{font-family:'IBM Plex Mono',monospace;font-size:.9em;color:var(--cyan)}
+
   /* ---------- guided cast flow ---------- */
   .castflow{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:16px 0 4px}
   .cstep{display:flex;gap:11px;align-items:center;border:1px solid var(--line);background:var(--panel);border-radius:5px;padding:11px 13px}
@@ -317,7 +327,7 @@
 <nav>
   <div class="brand">NATORI-ON-PSYFR <span>· Ophis × Chronicon</span></div>
   <div class="links">
-    <a target="_self" href="#oracle" data-go="oracle">The Oracle</a><a target="_self" href="#convergence" data-go="convergence">Convergence</a><a target="_self" href="#wheels" data-go="wheels">The Wheels</a><a target="_self" href="#ledger" data-go="ledger" class="simple-hide">The Ledger</a><a target="_self" href="#about" data-go="about" class="simple-hide">Method</a><a href="PSYFR2.html" target="_blank" rel="noopener" style="color:var(--gold2)">📖 Field Guide</a><a href="OPHIS.html" style="color:var(--cyan)" title="The serpent — how Ophis works, and how the build was peeled">↖ Ophis</a><a href="index.html" style="color:var(--cyan)" title="The Ophis instrument itself">⚙ Instrument</a>
+    <a target="_self" href="#oracle" data-go="oracle">The Oracle</a><a target="_self" href="#convergence" data-go="convergence">Convergence</a><a target="_self" href="#wheels" data-go="wheels">The Wheels</a><a target="_self" href="#ledger" data-go="ledger" class="simple-hide">The Ledger</a><a target="_self" href="#about" data-go="about" class="simple-hide">Method</a><a href="PSYFR2.html" target="_blank" rel="noopener" style="color:var(--gold2)">📖 Field Guide</a><a href="OPHIS.html" style="color:var(--cyan)" title="The serpent — how Ophis works, and how the build was peeled">↖ Ophis</a><a href="index.html" style="color:var(--cyan)" title="The Ophis instrument itself">⚙ Instrument</a><a href="https://bradleyhomelinuxnet-prog.github.io/NatorionCipherPredictiveEngine/natorion/#chronicon" target="_blank" rel="noopener" style="color:var(--cyan)" title="The Chronicon, on the Natorion Cipher site (opens in a new tab)">Chronicon ↗</a>
   </div>
   <div class="navctl">
     <div class="tsize" role="group" aria-label="Text size">
@@ -357,6 +367,21 @@
 <section id="oracle">
   <div class="sec-no">I · The Oracle — the predictive cast</div>
   <h2>Seed it. Cast it. Read the resonance.</h2>
+  <div class="lensnote" role="note">
+    <p><b class="lens">⚠ PSYFR lens</b>The PSYFR lens, not Ophis v12. Its own 19 formulas and calendar scoring, with no v12 filters, so past dates show. For v12-exact results open <a href="index.html" target="_blank" rel="noopener">the Instrument</a>.</p>
+    <details class="fold bare">
+      <summary>How this differs from v12 <span class="hint">read this before comparing numbers</span></summary>
+      <div class="foldbody"><ul>
+        <li><b>Different formulas.</b> The Oracle starts with its own 19-operation pack. v12 starts with 16 operations of its own; the two packs are not the same list.</li>
+        <li><b>Different scoring.</b> Scores here come from the calendar (V8 / V7): Phoenix nodes, documented ledger events, palindromes, the 19-year Metonic cycle, eclipses and so on. v12 scores differently, so the same date can rank differently.</li>
+        <li><b>No v12 filters.</b> There is no “before the last X-Date” cut and no 2,559-day window, so past dates and far-off dates both show.</li>
+        <li><b>One row per operation.</b> When several operations land on the same day you see each one as its own row. v12 merges them into a single row.</li>
+        <li><b>No 36,500-day cap.</b> v12 drops projections more than 36,500 days (about 100 years) out; the Oracle keeps them.</li>
+        <li><b>Fewer constants.</b> Formulas here know OPH_PHI, OPH_PI and OPH_CRV only; v12's OPH_HEP (7.01) is rejected, so some v12 operations will not load.</li>
+        <li><b>No .oph files.</b> Load reads this page's own <span class="mono">.json</span> setups, not Ophis <span class="mono">.oph</span> files.</li>
+      </ul></div>
+    </details>
+  </div>
   <div class="castflow">
     <div class="cstep"><b class="n">1</b><span><b>Seed</b> two or more anchor dates — type one in, or pick a documented event from the ledger menu.</span></div>
     <div class="cstep"><b class="n">2</b><span><b>Cast</b> the oracle — every anchor pair runs through every operation.</span></div>
