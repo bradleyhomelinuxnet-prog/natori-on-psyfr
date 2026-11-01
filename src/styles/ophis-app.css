@@ -977,3 +977,11 @@ table.matrix td.faint { color: var(--faint); }
   font: inherit; font-size: var(--fs-ui); color: var(--ink); background: var(--well);
   border: 1px solid var(--line-2); border-radius: var(--r-1); padding: 4px 6px; max-width: 100%;
 }
+
+/* The users' group's message under the results: present, never loud. */
+.disclaimer {
+  margin: 10px 2px 0;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--faint);
+}

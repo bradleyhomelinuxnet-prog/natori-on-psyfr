@@ -6,6 +6,7 @@
  */
 
 import { el, replace } from '../dom.js';
+import { DISCLAIMER } from './disclaimer.js';
 import {
   state, currentEvent, touch, markDirty, recalculate, adoptDocument, log,
   clearStoredState, storedKeysInUse, DOCUMENT_KEYS, saveOptions,
@@ -876,6 +877,9 @@ export function renderAbout(host) {
           'projects the results forward. The filters then remove the projections that bear no ' +
           'arithmetic relationship to the controls.',
       }),
+
+      el('h2', { text: 'Using its dates' }),
+      el('p', { text: DISCLAIMER }),
 
       el('h2', { text: 'How a score is built' }),
       el('p', {

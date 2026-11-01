@@ -27,6 +27,7 @@ import {
 import { groupIntoWindows, WINDOW_DAYS } from '../../core/ophis/sop.js';
 import { applyValidity } from '../../core/ophis/lab.js';
 import { tooltip, goto } from './shell.js';
+import { disclaimerLine } from './disclaimer.js';
 
 /** The table renders at most this many rows; the counter says so when it bites. */
 const MAX_ROWS = 500;
@@ -348,7 +349,7 @@ export function renderResults(host) {
   }
 
   if (opts.results_view === 'windows') {
-    replace(host, [windowsTable(view)]);
+    replace(host, [windowsTable(view), disclaimerLine()]);
     return;
   }
 
@@ -474,6 +475,7 @@ export function renderResults(host) {
         el('tbody', {}, body),
       ]),
     ]),
+    disclaimerLine(),
   ]);
 }
 

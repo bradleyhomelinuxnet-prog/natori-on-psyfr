@@ -1357,6 +1357,14 @@ table.matrix td.faint { color: var(--faint); }
   font: inherit; font-size: var(--fs-ui); color: var(--ink); background: var(--well);
   border: 1px solid var(--line-2); border-radius: var(--r-1); padding: 4px 6px; max-width: 100%;
 }
+
+/* The users' group's message under the results: present, never loud. */
+.disclaimer {
+  margin: 10px 2px 0;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--faint);
+}
 </style>
 </head>
 <body>
@@ -6153,6 +6161,10 @@ table.matrix td.faint { color: var(--faint); }
     return null;
   }
 
+  // src/ui/ophis/disclaimer.js
+  var DISCLAIMER = "Ophis is a prediction tool, not a betting tool. How you use its dates is your decision and your responsibility; there are no guarantees. Never wager money you and your family can’t live without.";
+  var disclaimerLine = () => el("p.disclaimer", { text: DISCLAIMER });
+
   // src/ui/ophis/results.js
   var MAX_ROWS = 500;
   var GLYPH = { 2: "♊", 3: "▲", 4: "◆" };
@@ -6415,7 +6427,7 @@ table.matrix td.faint { color: var(--faint); }
       return;
     }
     if (opts.results_view === "windows") {
-      replace(host, [windowsTable(view)]);
+      replace(host, [windowsTable(view), disclaimerLine()]);
       return;
     }
     const shown = rows.slice(0, MAX_ROWS);
@@ -6507,7 +6519,8 @@ table.matrix td.faint { color: var(--faint); }
           ])]),
           el("tbody", {}, body)
         ])
-      ])
+      ]),
+      disclaimerLine()
     ]);
   }
   function renderColumnToggles(host) {
@@ -8131,6 +8144,8 @@ stream
         el("p", {
           text: "Ophis is a relativity-based date-projection instrument. You give it two or more dates on which similar events occurred; it measures the distance between every pair of them in axial rotations of the Earth, runs each distance through a table of operations, and projects the results forward. The filters then remove the projections that bear no arithmetic relationship to the controls."
         }),
+        el("h2", { text: "Using its dates" }),
+        el("p", { text: DISCLAIMER }),
         el("h2", { text: "How a score is built" }),
         el("p", {
           text: "Each operation that reaches a date contributes its own weight in points. Each MSRF number the date matches contributes its tier points — except the strongest, which instead multiplies the total. The multiplier is a maximum, never a product: ten Important matches still multiply once."
