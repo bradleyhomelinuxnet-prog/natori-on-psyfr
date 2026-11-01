@@ -7,6 +7,9 @@
 *Version 2 extends the study from the browser lineage to the desktop engine itself, and adds
 §4.5 — a reading of the author's own design documents against the shipped behaviour.*
 
+*What came after, from Protocol Prime as a switch to the round trip back to v12, is in the
+[second white paper](../whitepaper-2.html) (November 2026).*
+
 ---
 
 ## Abstract

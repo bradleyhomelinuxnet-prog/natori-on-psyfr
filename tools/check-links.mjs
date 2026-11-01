@@ -18,6 +18,7 @@ const PAGES = [
   'index.html',
   'field-guide.html',
   'whitepaper.html',
+  'whitepaper-2.html',
   'manual.html',
   'ophis-single.html',
   'chronicon.html',

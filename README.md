@@ -221,6 +221,10 @@ worked example and the score distribution in it are computed by the engine, not 
 **[docs/WHITEPAPER.md](docs/WHITEPAPER.md)** — *Rebuilding a Closed Prediction Engine Without
 Breaking It.*
 
+**[docs/WHITEPAPER-2.md](docs/WHITEPAPER-2.md)** — *After Parity: What the Ophis Rebuild Became.*
+The follow-up (November 2026): Protocol Prime as a switch, 36 operations, the Lab and the optional
+tags, and the round trip to the original v12 app.
+
 ---
 
 ## Also here
