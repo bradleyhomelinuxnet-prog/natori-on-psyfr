@@ -242,6 +242,13 @@
   .lensnote details.fold{margin:8px 0 0}
   .lensnote ul{margin:2px 0 0 18px;font-size:13.5px;color:var(--ink);line-height:1.55}
   .lensnote ul li{margin:2px 0}
+  .ophpick{margin:auto;background:var(--bg2);color:var(--ink);border:1px solid var(--gold);border-radius:6px;padding:18px 20px;max-width:min(440px,calc(100vw - 32px));box-shadow:0 12px 40px -10px #000}
+  .ophpick::backdrop{background:rgba(0,0,0,.55)}
+  .ophpick h3{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+  .ophpick p{font-size:13.5px;color:var(--dim);margin-bottom:10px;line-height:1.45}
+  .ophpick select{width:100%;margin-bottom:14px}
+  .ophpick .row{display:flex;gap:8px;justify-content:flex-end}
+  .ophpick .btn.go{background:var(--gold);color:#100c02;border-color:var(--gold)}.ophpick .btn.go:hover{background:var(--gold2);border-color:var(--gold2)}
   .lensnote .mono{font-family:'IBM Plex Mono',monospace;font-size:.9em;color:var(--cyan)}
 
   /* ---------- guided cast flow ---------- */
@@ -377,7 +384,7 @@
         <li><b>No v12 filters.</b> There is no “before the last X-Date” cut and no 2,559-day window, so past dates and far-off dates both show.</li>
         <li><b>One row per operation.</b> When several operations land on the same day you see each one as its own row. v12 merges them into a single row.</li>
         <li><b>No 36,500-day cap.</b> v12 drops projections more than 36,500 days (about 100 years) out; the Oracle keeps them.</li>
-        <li><b>No .oph files.</b> Load reads this page's own <span class="mono">.json</span> setups, not Ophis <span class="mono">.oph</span> files.</li>
+        <li><b>Same file, different answer.</b> Load opens an Ophis <span class="mono">.oph</span> file: its X-Dates become anchors and its operations become the op list. The scoring is still the PSYFR lens, so expect different results from v12.</li>
       </ul></div>
     </details>
   </div>
@@ -438,15 +445,15 @@
   </div>
 
   <details class="fold simple-hide">
-    <summary>Advanced · themed op packs &amp; save / load <span class="hint">swap the 19 for a 138, Metonic, Phoenix or Golden pack · keep setups as .json</span></summary>
+    <summary>Advanced · themed op packs &amp; save / load <span class="hint">swap the 19 for a 138, Metonic, Phoenix or Golden pack · keep setups as .json · open an Ophis .oph</span></summary>
     <div class="foldbody">
       <div class="toolbar" style="border:0;background:transparent;padding:6px 0 0;margin:0">
         <div class="grp"><span class="glabel">Op packs</span><div id="packBar" style="display:flex;gap:6px;flex-wrap:wrap"></div></div>
         <div class="sep"></div>
         <div class="grp"><span class="glabel">Config</span>
           <button class="btn sm" id="saveCfg">⤓ Save .json</button>
-          <button class="btn sm" id="loadCfg">⤒ Load</button>
-          <input type="file" id="loadFile" accept="application/json,.json" style="display:none">
+          <button class="btn sm" id="loadCfg" title="Open a saved .json setup, or an Ophis .oph file (its dates and operations)">⤒ Load .json / .oph</button>
+          <input type="file" id="loadFile" accept="application/json,.json,.oph" style="display:none">
         </div>
       </div>
     </div>
@@ -1256,6 +1263,78 @@ function applyConfig(obj){
   }catch(e){toast('Load failed: bad file');}
 }
 
+/* ---- Ophis .oph import ----
+   An .oph is Ophis v12's document: {iso_events:[{name, x_dates, operations, ...}]}
+   (or a bare array of events). Only the dates and the operations come across.
+   v12's filters, weights and scoring system do not: casting here is still the
+   PSYFR lens, and the toast says so. */
+function isOphDoc(obj){return Array.isArray(obj)||(!!obj&&typeof obj==='object'&&Array.isArray(obj.iso_events));}
+function ophDate(x){
+  // v12 writes {date:"MM/DD/YYYY",time,enabled}; this repo's Ophis writes {y,m,d,time,enabled}; a bare string is MM/DD/YYYY.
+  let y,m,d,on=true;
+  const fromStr=str=>{const p=/^\s*(\d{1,2})\/(\d{1,2})\/(-?\d{1,6})\s*$/.exec(str);if(!p)return false;m=+p[1];d=+p[2];y=+p[3];return true;};
+  if(typeof x==='string'){if(!fromStr(x))return null;}
+  else if(x&&typeof x==='object'){on=x.enabled!==false;
+    if(typeof x.date==='string'){if(!fromStr(x.date))return null;}
+    else{y=+x.y;m=+x.m;d=+x.d;}}
+  else return null;
+  if(![y,m,d].every(Number.isInteger)||m<1||m>12||d<1||d>31)return null;
+  const jd=jdn(y,m,d),back=jdToDate(jd);
+  if(back.year!==y||back.month!==m||back.day!==d)return null; // 02/30 and the like
+  return{ay:y,m,d,jd,enabled:on};
+}
+function importOphEvent(ev,idx){
+  const name=(ev&&typeof ev.name==='string'&&ev.name.trim())||('Event '+(idx+1));
+  const raw=Array.isArray(ev&&ev.x_dates)?ev.x_dates:[];
+  let badDates=0;
+  const dates=[];
+  raw.forEach(x=>{const r=ophDate(x);if(!r){badDates++;return;}if(r.enabled)dates.push(r);});
+  dates.sort((p,q)=>p.jd-q.jd);
+  const rawOps=Array.isArray(ev&&ev.operations)?ev.operations:[];
+  let badOps=0;
+  const newOps=[];
+  rawOps.forEach(o=>{
+    const eq=typeof o==='string'?o:(o&&typeof o.equation==='string'?o.equation:(o&&typeof o.eq==='string'?o.eq:''));
+    try{const c=compileOp(eq);newOps.push({eq,start:c.start,fn:c.fn,enabled:typeof o==='string'||o.enabled!==false});}catch(e){badOps++;}
+  });
+  if(dates.length<1&&!newOps.length){toast('Nothing to load: "'+name+'" has no usable X-Dates or operations',4000);return;}
+  if(dates.length)anchors=dates.map((a,i)=>({ay:a.ay,m:a.m,d:a.d,jd:a.jd,enabled:true,label:name+' · X'+(i+1)}));
+  if(newOps.length)ops=newOps;
+  renderAnchors();renderOps();
+  let msg='Loaded "'+name+'": '+dates.length+' anchor'+(dates.length===1?'':'s')+', '+(newOps.length?newOps.length:'0 (kept the current)')+' operation'+(newOps.length===1?'':'s');
+  if(newOps.length)msg+=' ('+newOps.filter(o=>o.enabled).length+' on)';
+  if(badDates)msg+=' · '+badDates+' unreadable date'+(badDates===1?'':'s')+' skipped';
+  if(badOps)msg+=' · '+badOps+' operation'+(badOps===1?'':'s')+' would not compile';
+  msg+=' · scored by the PSYFR lens, not v12';
+  if(dates.length<2)msg+=' · add another anchor to cast';
+  toast(msg,6500);
+  if(dates.length>=2&&lastResults.length)recast();
+}
+function pickOphEvent(events,onPick){
+  const dlg=document.createElement('dialog');dlg.className='ophpick';
+  const h=document.createElement('h3');h.textContent='This .oph holds '+events.length+' events';
+  const p=document.createElement('p');p.textContent='Pick one. Its X-Dates become the anchors and its operations the op list.';
+  const sel=document.createElement('select');sel.className='convsel';sel.setAttribute('aria-label','Event to load');
+  events.forEach((ev,i)=>{const o=document.createElement('option');o.value=String(i);
+    const n=(ev&&typeof ev.name==='string'&&ev.name.trim())||('Event '+(i+1));
+    const nx=Array.isArray(ev&&ev.x_dates)?ev.x_dates.length:0, no=Array.isArray(ev&&ev.operations)?ev.operations.length:0;
+    o.textContent=n+' — '+nx+' date'+(nx===1?'':'s')+', '+no+' op'+(no===1?'':'s');sel.appendChild(o);});
+  const row=document.createElement('div');row.className='row';
+  const cancel=document.createElement('button');cancel.type='button';cancel.className='btn sm';cancel.textContent='Cancel';
+  const ok=document.createElement('button');ok.type='button';ok.className='btn sm go';ok.textContent='Load this event';
+  row.append(cancel,ok);dlg.append(h,p,sel,row);document.body.appendChild(dlg);
+  const done=()=>{dlg.close();dlg.remove();};
+  cancel.onclick=done;dlg.addEventListener('cancel',()=>dlg.remove());
+  ok.onclick=()=>{const i=+sel.value;done();onPick(events[i],i);};
+  dlg.showModal();sel.focus();
+}
+function applyOph(doc){
+  const events=(Array.isArray(doc)?doc:doc.iso_events).filter(ev=>ev&&typeof ev==='object');
+  if(!events.length){toast('This .oph holds no events',4000);return;}
+  if(events.length===1)importOphEvent(events[0],0);
+  else pickOphEvent(events,importOphEvent);
+}
+
 /* ============================================================
    CONVERGENCE RENDER
    ============================================================ */
@@ -1375,7 +1454,7 @@ let anchors=[], ops=[], lastResults=[], resFilter='all', sortKey='score', sortDi
 let curSystem=SCORING.V8, aEra='ad', dEra='ad';
 const $=id=>document.getElementById(id);
 const escH=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));  // text from the page or a loaded file, before it meets innerHTML
-function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),1900);}
+function toast(msg,ms){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),ms||1900);}
 
 /* ---- anchors ---- */
 function addAnchorObj(ay,m,d,label){
@@ -1667,7 +1746,9 @@ document.querySelectorAll('nav a[data-go]').forEach(a=>a.onclick=()=>$(a.dataset
   $('saveCfg').onclick=saveConfig;
   $('loadCfg').onclick=()=>$('loadFile').click();
   $('loadFile').onchange=e=>{const f=e.target.files[0];if(!f)return;const rd=new FileReader();
-    rd.onload=()=>{try{applyConfig(JSON.parse(rd.result));if(lastResults.length)recast();}catch(err){toast('Invalid JSON');}};rd.readAsText(f);e.target.value='';};
+    rd.onload=()=>{let obj;try{obj=JSON.parse(rd.result);}catch(err){toast('Invalid JSON');return;}
+      if(isOphDoc(obj)){applyOph(obj);return;}
+      applyConfig(obj);if(lastResults.length)recast();};rd.readAsText(f);e.target.value='';};
   $('convTolSel').onchange=e=>{const v=e.target.value;convTol=(v==='year')?'year':+v;if(lastResults.length)renderConvergence();};
 
   loadDefaultOps();
