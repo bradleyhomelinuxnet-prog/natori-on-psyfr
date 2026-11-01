@@ -35,7 +35,7 @@ It anchors each day to sunset, not midnight. It calculates local sunset for your
 It checks the sky. Each candidate date is compared against moon phase and two eclipse tables (solar and lunar). Dates that fall within a few days of an eclipse or a key lunar phase get flagged.
 It scores and tags. Each hit gets a score, a strength rating from the MSRF magnitude system, and pattern tags such as Fibonacci spacing, daily-rhythm (diurnal) markers, and geographic (geodetic) markers. Top-strength results are marked “alpha.”
 It filters and groups. Your filter settings trim the list. Nearby hits are bundled into time windows, so a cluster of agreeing formulas stands out as one strong window.
-You see the results. They appear as a sortable table, a timeline chart, and points on the map. You can export them or save the whole session as a .oph file. The examples/ folder has ready-made ones, including 04-even-spacing-19-138.oph.
+You see the results. They appear as a sortable table, a timeline chart, and points on the map. You can export them or save the whole session as a .oph file. The examples/ folder has ready-made ones, including 04-even-spacing-19-138.oph. Copies in the older v12 format, in examples/v12/, open in the original Ophis v12 desktop app.
 The Natorion / Chronicon layer
 
 The other half of src/ (app.js, plus the panels for anchors, wheels, convergence and ledger) is the cipher-and-cycles side. It converts dates to Julian Day Numbers and checks those numbers for palindromes. It also places each date within long cycles:

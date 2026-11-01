@@ -63,6 +63,12 @@ jobs:
       - name: Check the Lab readings
         run: npm run test:lab
 
+      # The v12-format copies of the examples, for the original desktop app. Not
+      # in the parity count -- the original never had these files -- but a stale
+      # copy, or one not in v12's exact key order, opens wrong there.
+      - name: Check the v12 copies of the examples
+        run: npm run test:examples-v12
+
       - name: Check nothing reaches for eval
         run: |
           if grep -rnE '\bnew Function\b|\beval\(' src/ --include='*.js' \

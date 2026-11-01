@@ -24,6 +24,8 @@ section of this manual walks through:
 | [`04-even-spacing-19-138.oph`](../examples/04-even-spacing-19-138.oph) | Dates 138 days apart from the 19th: lights up, and why that proves nothing | §8 |
 | [`manual-examples.oph`](../examples/manual-examples.oph) | All four in one file, as Iso-Events E1–E4 | — |
 
+Each file also has a v12-format copy in [`examples/v12/`](../examples/v12/) (`<name>_v12.oph`) that opens in the original Ophis v12 desktop app.
+
 Open the **Import** screen → **☰ Open .oph file…** → pick one → **Load**. Each
 file's **Settings → S1 Misc. Notes** says what you should see. They give the
 same rows on whatever day you open them (§9 explains how).
