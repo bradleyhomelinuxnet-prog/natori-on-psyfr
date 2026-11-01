@@ -377,7 +377,6 @@
         <li><b>No v12 filters.</b> There is no “before the last X-Date” cut and no 2,559-day window, so past dates and far-off dates both show.</li>
         <li><b>One row per operation.</b> When several operations land on the same day you see each one as its own row. v12 merges them into a single row.</li>
         <li><b>No 36,500-day cap.</b> v12 drops projections more than 36,500 days (about 100 years) out; the Oracle keeps them.</li>
-        <li><b>Fewer constants.</b> Formulas here know OPH_PHI, OPH_PI and OPH_CRV only; v12's OPH_HEP (7.01) is rejected, so some v12 operations will not load.</li>
         <li><b>No .oph files.</b> Load reads this page's own <span class="mono">.json</span> setups, not Ophis <span class="mono">.oph</span> files.</li>
       </ul></div>
     </details>
@@ -416,7 +415,7 @@
       <details class="fold bare">
         <summary>View / edit the pack <span class="hint">19 equations · add your own</span></summary>
         <div class="foldbody">
-          <div class="ph-sub">Each starts <span class="mono" style="color:var(--cyan)">X1+</span> or <span class="mono" style="color:var(--cyan)">X2+</span>, then arithmetic on <b>Y</b>. Constants: OPH_PHI · OPH_PI · OPH_CRV. Functions: oph_flip (mirror) · oph_round.</div>
+          <div class="ph-sub">Each starts <span class="mono" style="color:var(--cyan)">X1+</span> or <span class="mono" style="color:var(--cyan)">X2+</span>, then arithmetic on <b>Y</b>. Constants: OPH_PHI · OPH_PI · OPH_CRV · OPH_HEP. Functions: oph_flip (mirror) · oph_round.</div>
           <div class="rowlist" id="opList" style="max-height:300px;overflow:auto"></div>
           <div class="addbar">
             <div class="ctl" style="flex:1 1 100%"><label class="fld">Custom operation</label>
@@ -624,7 +623,7 @@
     <div class="panel"><h3>The constants &amp; functions</h3>
       <p style="font-size:14px;line-height:1.8">
         <span class="mono" style="color:var(--cyan)">OPH_PHI</span> = 1.61803398875 · golden ratio<br>
-        <span class="mono" style="color:var(--cyan)">OPH_PI</span> = 3.14 · Archaix π · <span class="mono" style="color:var(--cyan)">OPH_CRV</span> = 5.08 · curvature<br>
+        <span class="mono" style="color:var(--cyan)">OPH_PI</span> = 3.14 · Archaix π · <span class="mono" style="color:var(--cyan)">OPH_CRV</span> = 5.08 · curvature · <span class="mono" style="color:var(--cyan)">OPH_HEP</span> = 7.01 · hepta-cycle (Ophis v12)<br>
         <span class="mono" style="color:var(--cyan)">oph_flip(n)</span> reverses digits — 138 ⮌ 831, 19 ⮌ 91<br>
         <span class="mono" style="color:var(--cyan)">oph_round/floor/ceil/abs/sqrt(n)</span> · Y is always axial rotations (days).</p>
     </div>
@@ -703,7 +702,7 @@
    OPHION CORE  — verified date + prediction math (16/16 + 812/812)
    ============================================================ */
 const SYN=29.530588853, NEWMOON_J2000=2451550.1;
-const OPH_PHI=1.61803398875, OPH_PI=3.14, OPH_CRV=5.08;
+const OPH_PHI=1.61803398875, OPH_PI=3.14, OPH_CRV=5.08, OPH_HEP=7.01; /* OPH_HEP: the v12 hepta-cycle, as src/core/equation/constants.js */
 const _NOW=new Date(), TODAY={y:_NOW.getFullYear(),m:_NOW.getMonth()+1,d:_NOW.getDate()};
 function mod(n,m){return((n%m)+m)%m;}
 function jdn(ay,m,d){const a=Math.floor((14-m)/12),y=ay+4800-a,mm=m+12*a-3;
@@ -1060,14 +1059,14 @@ function compileOp(eqRaw){
   else if(eq.startsWith('X2+'))start='X2';
   else throw new Error("must start with X1+ or X2+");
   let body=eq.slice(3).replace(/x/g,'*');
-  let test=body.replace(/OPH_PHI|OPH_PI|OPH_CRV/g,'1').replace(/oph_(flip|round|floor|ceil|abs|sqrt)/g,'f').replace(/Y/g,'1');
+  let test=body.replace(/OPH_PHI|OPH_PI|OPH_CRV|OPH_HEP/g,'1').replace(/oph_(flip|round|floor|ceil|abs|sqrt)/g,'f').replace(/Y/g,'1');
   if(/[^0-9+\-*/().f]/.test(test))throw new Error("illegal token in equation");
   let fn;
-  try{fn=new Function('Y','OPH_PHI','OPH_PI','OPH_CRV','oph_flip','oph_round','oph_floor','oph_ceil','oph_abs','oph_sqrt','return '+body+';');}
+  try{fn=new Function('Y','OPH_PHI','OPH_PI','OPH_CRV','OPH_HEP','oph_flip','oph_round','oph_floor','oph_ceil','oph_abs','oph_sqrt','return '+body+';');}
   catch(e){throw new Error("syntax error");}
-  let t=fn(1000,OPH_PHI,OPH_PI,OPH_CRV,oph_flip,oph_round,oph_floor,oph_ceil,oph_abs,oph_sqrt);
+  let t=fn(1000,OPH_PHI,OPH_PI,OPH_CRV,OPH_HEP,oph_flip,oph_round,oph_floor,oph_ceil,oph_abs,oph_sqrt);
   if(typeof t!=='number'||!isFinite(t))throw new Error("does not evaluate to a number");
-  return {start, fn:(Y)=>fn(Y,OPH_PHI,OPH_PI,OPH_CRV,oph_flip,oph_round,oph_floor,oph_ceil,oph_abs,oph_sqrt)};
+  return {start, fn:(Y)=>fn(Y,OPH_PHI,OPH_PI,OPH_CRV,OPH_HEP,oph_flip,oph_round,oph_floor,oph_ceil,oph_abs,oph_sqrt)};
 }
 
 function scoreZDate(ZA, J, system){
