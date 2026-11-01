@@ -931,13 +931,15 @@ export function renderAbout(host) {
       el('div.btnrow', {}, [
         el('a.btn', { href: 'field-guide.html', text: 'Field Guide' }),
         el('a.btn', { href: 'whitepaper.html', text: 'White Paper' }),
+        el('a.btn', { href: 'whitepaper-2.html', text: 'White Paper II' }),
         el('a.btn', { href: 'docs/html/index.html', text: 'All documentation' }),
       ]),
       el('p', {
         style: 'margin-top:12px',
         text:
           'The Field Guide is a ten-minute tour and the fastest way to learn what the numbers mean. ' +
-          'It also explains Protocol Prime — the reason the X-Dates panel carries a ☉ Today button.',
+          'It also explains Protocol Prime — the reason the X-Dates panel carries a ☉ Today button. ' +
+          'The White Paper covers how the original was rebuilt exactly; White Paper II covers what was built on top since.',
       }),
     ]),
 

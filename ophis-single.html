@@ -3249,7 +3249,7 @@ table.matrix td.faint { color: var(--faint); }
 
   // src/io/oph.js
   var APP_VERSION = "13.0.0";
-  var BUILD_TAG = "2026-11-01 · Protocol Prime replaces";
+  var BUILD_TAG = "2026-11-01 · White Paper II";
   var SCHEMA_VERSION = 1;
   var VALIDATION = { STRICT: "strict", LOOSE: "loose" };
   var isObj = (v) => v !== null && typeof v === "object" && !Array.isArray(v);
@@ -8173,11 +8173,12 @@ stream
         el("div.btnrow", {}, [
           el("a.btn", { href: "field-guide.html", text: "Field Guide" }),
           el("a.btn", { href: "whitepaper.html", text: "White Paper" }),
+          el("a.btn", { href: "whitepaper-2.html", text: "White Paper II" }),
           el("a.btn", { href: "docs/html/index.html", text: "All documentation" })
         ]),
         el("p", {
           style: "margin-top:12px",
-          text: "The Field Guide is a ten-minute tour and the fastest way to learn what the numbers mean. It also explains Protocol Prime — the reason the X-Dates panel carries a ☉ Today button."
+          text: "The Field Guide is a ten-minute tour and the fastest way to learn what the numbers mean. It also explains Protocol Prime — the reason the X-Dates panel carries a ☉ Today button. The White Paper covers how the original was rebuilt exactly; White Paper II covers what was built on top since."
         })
       ]),
       // The instrument can be argued into a state that shows nothing -- T-Dates
