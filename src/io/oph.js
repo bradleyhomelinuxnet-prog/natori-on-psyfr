@@ -25,6 +25,7 @@ import {
 import { normaliseSortType } from '../core/ophis/sort.js';
 import {
   makeIsoEvent, makeXDate, clampDayStart, ISO_EVENT_KEYS, CHART_OPTIONS, PROJECTION_KIND, isSubjective,
+  PP_FIELD, protocolPrimeDate, ppDateText,
 } from '../state/iso-event.js';
 import { FILTER_DEFAULTS } from '../core/ophis/filters.js';
 import { packOperations, DEFAULT_OPHIS_PACK } from '../data/packs-ophis.js';
@@ -39,7 +40,7 @@ export const APP_VERSION = '13.0.0';
  * view-source for a function name, which is fragile, needs developer tools, and
  * tells you nothing when it fails. Bump this whenever you ship a build.
  */
-export const BUILD_TAG = '2026-10-21 · Save As button';
+export const BUILD_TAG = '2026-11-01 · Protocol Prime replaces';
 export const SCHEMA_VERSION = 1;
 
 /** `strict` rejects anything unrecognised; `loose` repairs and warns. */
@@ -216,6 +217,13 @@ function readIsoEvent(raw, index, out, mode) {
   } else if (raw.projection_kind !== undefined && raw.projection_kind !== PROJECTION_KIND.OBJECTIVE) {
     out.warnings.push(`unrecognised projection kind ${raw.projection_kind}; reading it as objective`);
   }
+  // Which X-Date is Protocol Prime. Absent in every file written before the
+  // record existed; those load with no record, and none is guessed.
+  if (raw[PP_FIELD] !== undefined) {
+    const pp = protocolPrimeDate({ [PP_FIELD]: raw[PP_FIELD] });
+    if (pp) ev[PP_FIELD] = ppDateText(pp);
+    else out.warnings.push(`unrecognised Protocol Prime date ${JSON.stringify(raw[PP_FIELD])}; ignoring it`);
+  }
   ev.t_dates = Array.isArray(raw.t_dates)
     ? raw.t_dates.map((x) => readXDate(x, out)).filter(Boolean)
     : [];
@@ -327,7 +335,10 @@ function minifyEvent(ev, index) {
     });
   }
 
-  if (isSubjective(ev)) out.projection_kind = PROJECTION_KIND.SUBJECTIVE;
+  if (isSubjective(ev)) {
+    out.projection_kind = PROJECTION_KIND.SUBJECTIVE;
+    if (protocolPrimeDate(ev)) out[PP_FIELD] = ev[PP_FIELD];
+  }
 
   // Notes and names are user text and are kept by the loop above whenever
   // they differ from the defaults — which is the only case that needs a byte.
@@ -347,7 +358,10 @@ function fullEvent(ev) {
     equation: o.equation, weight: o.weight, enabled: o.enabled,
   }));
   // Not in ISO_EVENT_KEYS on purpose; see PROJECTION_KIND.
-  if (isSubjective(ev)) out.projection_kind = PROJECTION_KIND.SUBJECTIVE;
+  if (isSubjective(ev)) {
+    out.projection_kind = PROJECTION_KIND.SUBJECTIVE;
+    if (protocolPrimeDate(ev)) out[PP_FIELD] = ev[PP_FIELD];
+  }
   return out;
 }
 
@@ -402,7 +416,7 @@ function v12Event(ev, index, notes) {
     sort = SORT_TYPE.DATE;
   }
   if (isSubjective(ev)) {
-    notes.push(`${label}: v12 has no Objective / Subjective switch; the file keeps today's X-Date but not the label`);
+    notes.push(`${label}: v12 has no Objective / Subjective switch; the file keeps today's X-Date but not the label, nor which X-Date is Protocol Prime`);
   }
   let type = ev.type;
   if (!V12_EVENT_TYPES.includes(type)) {

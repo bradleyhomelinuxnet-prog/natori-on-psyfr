@@ -697,6 +697,13 @@ a { color: var(--cyan); text-underline-offset: 2px; }
   color: var(--gold);
   min-width: 22px;
 }
+.row .tag.pp {
+  min-width: 0;
+  padding: 1px 5px;
+  border: 1px solid color-mix(in srgb, var(--gold) 55%, transparent);
+  border-radius: 3px;
+  cursor: help;
+}
 .row .grow { flex: 1 1 auto; min-width: 0; }
 .row .sub { font-size: 11px; color: var(--dim); }
 
@@ -3191,14 +3198,39 @@ table.matrix td.faint { color: var(--faint); }
   }
   var PROJECTION_KIND = { OBJECTIVE: "objective", SUBJECTIVE: "subjective" };
   var isSubjective = (ev) => ev?.projection_kind === PROJECTION_KIND.SUBJECTIVE;
+  var PP_FIELD = "protocol_prime_date";
+  var pad2 = (n) => String(n).padStart(2, "0");
+  var ppDateText = ({ y, m, d }) => `${pad2(m)}/${pad2(d)}/${String(y).padStart(4, "0")}`;
+  function protocolPrimeDate(ev) {
+    const p = parseXDate(ev?.[PP_FIELD]);
+    return p ? { y: p.y, m: p.m, d: p.d } : null;
+  }
+  var sameDay = (a, b) => a.y === b.y && a.m === b.m && a.d === b.d;
+  var dayNumber = ({ y, m, d }) => Date.UTC(y, m - 1, d);
+  function protocolPrimeIndex(ev) {
+    const pp = protocolPrimeDate(ev);
+    return pp ? ev.x_dates.findIndex((x) => sameDay(x, pp)) : -1;
+  }
   function addTodayAsXDate(ev, nowMs) {
     const t = new Date(nowMs);
-    const y = t.getUTCFullYear();
-    const m = t.getUTCMonth() + 1;
-    const d = t.getUTCDate();
-    const at = ev.x_dates.findIndex((x) => x.enabled && x.y === y && x.m === m && x.d === d);
-    if (at !== -1) return { added: false, index: at };
-    return { added: true, index: insertXDateInOrder(ev.x_dates, makeXDate(y, m, d), ev) };
+    const today = { y: t.getUTCFullYear(), m: t.getUTCMonth() + 1, d: t.getUTCDate() };
+    const pp = protocolPrimeDate(ev);
+    let replaced = null;
+    if (pp && dayNumber(pp) < dayNumber(today)) {
+      const at2 = ev.x_dates.findIndex((x) => sameDay(x, pp));
+      if (at2 !== -1) {
+        ev.x_dates.splice(at2, 1);
+        replaced = ppDateText(pp);
+      }
+    }
+    if (!pp || dayNumber(pp) <= dayNumber(today)) ev[PP_FIELD] = ppDateText(today);
+    const at = ev.x_dates.findIndex((x) => x.enabled && sameDay(x, today));
+    if (at !== -1) return { added: false, index: at, replaced };
+    return {
+      added: true,
+      index: insertXDateInOrder(ev.x_dates, makeXDate(today.y, today.m, today.d), ev),
+      replaced
+    };
   }
   var clampDayStart = (ms) => {
     const v = Number(ms);
@@ -3209,7 +3241,7 @@ table.matrix td.faint { color: var(--faint); }
 
   // src/io/oph.js
   var APP_VERSION = "13.0.0";
-  var BUILD_TAG = "2026-10-21 · Save As button";
+  var BUILD_TAG = "2026-11-01 · Protocol Prime replaces";
   var SCHEMA_VERSION = 1;
   var VALIDATION = { STRICT: "strict", LOOSE: "loose" };
   var isObj = (v) => v !== null && typeof v === "object" && !Array.isArray(v);
@@ -3351,6 +3383,11 @@ table.matrix td.faint { color: var(--faint); }
     } else if (raw.projection_kind !== void 0 && raw.projection_kind !== PROJECTION_KIND.OBJECTIVE) {
       out.warnings.push(`unrecognised projection kind ${raw.projection_kind}; reading it as objective`);
     }
+    if (raw[PP_FIELD] !== void 0) {
+      const pp = protocolPrimeDate({ [PP_FIELD]: raw[PP_FIELD] });
+      if (pp) ev[PP_FIELD] = ppDateText(pp);
+      else out.warnings.push(`unrecognised Protocol Prime date ${JSON.stringify(raw[PP_FIELD])}; ignoring it`);
+    }
     ev.t_dates = Array.isArray(raw.t_dates) ? raw.t_dates.map((x) => readXDate(x, out)).filter(Boolean) : [];
     return ev;
   }
@@ -3423,7 +3460,10 @@ table.matrix td.faint { color: var(--faint); }
         return t;
       });
     }
-    if (isSubjective(ev)) out.projection_kind = PROJECTION_KIND.SUBJECTIVE;
+    if (isSubjective(ev)) {
+      out.projection_kind = PROJECTION_KIND.SUBJECTIVE;
+      if (protocolPrimeDate(ev)) out[PP_FIELD] = ev[PP_FIELD];
+    }
     return out;
   }
   function fullEvent(ev) {
@@ -3436,7 +3476,10 @@ table.matrix td.faint { color: var(--faint); }
       weight: o.weight,
       enabled: o.enabled
     }));
-    if (isSubjective(ev)) out.projection_kind = PROJECTION_KIND.SUBJECTIVE;
+    if (isSubjective(ev)) {
+      out.projection_kind = PROJECTION_KIND.SUBJECTIVE;
+      if (protocolPrimeDate(ev)) out[PP_FIELD] = ev[PP_FIELD];
+    }
     return out;
   }
   function serialiseDocument(doc, { prettify = true, minify = false } = {}) {
@@ -3480,7 +3523,7 @@ table.matrix td.faint { color: var(--faint); }
       sort = SORT_TYPE.DATE;
     }
     if (isSubjective(ev)) {
-      notes.push(`${label}: v12 has no Objective / Subjective switch; the file keeps today's X-Date but not the label`);
+      notes.push(`${label}: v12 has no Objective / Subjective switch; the file keeps today's X-Date but not the label, nor which X-Date is Protocol Prime`);
     }
     let type = ev.type;
     if (!V12_EVENT_TYPES.includes(type)) {
@@ -4102,14 +4145,14 @@ table.matrix td.faint { color: var(--faint); }
         for (const [k, v] of rows()) dl.append(el("dt", { text: k }), el("dd", { text: v }));
         tip.replaceChildren(dl);
         tip.dataset.show = "true";
-        const pad2 = 12;
+        const pad3 = 12;
         const r = tip.getBoundingClientRect();
-        let x = e.clientX + pad2;
-        let y = e.clientY + pad2;
-        if (x + r.width > innerWidth - pad2) x = e.clientX - r.width - pad2;
-        if (y + r.height > innerHeight - pad2) y = e.clientY - r.height - pad2;
-        tip.style.left = `${Math.max(pad2, x)}px`;
-        tip.style.top = `${Math.max(pad2, y)}px`;
+        let x = e.clientX + pad3;
+        let y = e.clientY + pad3;
+        if (x + r.width > innerWidth - pad3) x = e.clientX - r.width - pad3;
+        if (y + r.height > innerHeight - pad3) y = e.clientY - r.height - pad3;
+        tip.style.left = `${Math.max(pad3, x)}px`;
+        tip.style.top = `${Math.max(pad3, y)}px`;
       }, TIP_DELAY);
     };
     const hide = () => {
@@ -4221,9 +4264,12 @@ table.matrix td.faint { color: var(--faint); }
       const lastDay = last ? Date.UTC(last.x.y, last.x.m - 1, last.x.d) : null;
       if (lastDay !== today) {
         const has = enabled.some(({ x }) => Date.UTC(x.y, x.m - 1, x.d) === today);
+        const pp = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(ev.protocol_prime_date ?? "");
+        const ppDay = pp ? Date.UTC(+pp[3], +pp[1] - 1, +pp[2]) : null;
+        const stale = !has && ppDay !== null && ppDay < today && enabled.some(({ x }) => Date.UTC(x.y, x.m - 1, x.d) === ppDay);
         out.push({
           id: "protocol-prime",
-          text: has ? `Subjective: today (${fmtDate(today)}) is an X-Date but not the last one. Protocol Prime wants the day the projection is run as the LAST X-Date, so later dates are outside it.` : `Subjective: today (${fmtDate(today)}) is not an X-Date. Protocol Prime wants the day the projection is run as the last X-Date; ☉ Today adds it.`
+          text: has ? `Subjective: today (${fmtDate(today)}) is an X-Date but not the last one. Protocol Prime wants the day the projection is run as the LAST X-Date, so later dates are outside it.` : stale ? `Subjective: the Protocol Prime date is still ${fmtDate(ppDay)}, the day this was last run, not today (${fmtDate(today)}). PP is only the day the prediction is made; ☉ Today replaces the old date with today.` : `Subjective: today (${fmtDate(today)}) is not an X-Date. Protocol Prime wants the day the projection is run as the last X-Date; ☉ Today adds it.`
         });
       }
     }
@@ -4730,6 +4776,7 @@ table.matrix td.faint { color: var(--faint); }
     const list = ev[key];
     const hhmm = ev.scope === EVENT_SCOPE.HH_MM;
     const prefix = key === "x_dates" ? "X" : "T";
+    const ppAt = key === "x_dates" ? protocolPrimeIndex(ev) : -1;
     const rows = list.map((x, i) => {
       const box = el("input", {
         type: "checkbox",
@@ -4759,6 +4806,13 @@ table.matrix td.faint { color: var(--faint); }
         }
       });
       const children = [box, el("span.tag", { text: `${prefix}${i + 1}` }), el("div.grow", {}, [dateField])];
+      if (i === ppAt) {
+        children.push(el("span.tag.pp", {
+          text: "PP",
+          title: "Protocol Prime: the date this prediction was made. It is replaced each time you re-run.",
+          "aria-label": "Protocol Prime date"
+        }));
+      }
       if (hhmm) {
         children.push(
           el("input", {
@@ -4794,8 +4848,14 @@ table.matrix td.faint { color: var(--faint); }
       touch();
     };
     const addToday = () => {
-      const { added } = addTodayAsXDate(ev, now());
+      const { added, replaced, index } = addTodayAsXDate(ev, now());
+      if (replaced) {
+        touch();
+        toast(`Protocol Prime moved from ${replaced} to ${ppDateText(ev.x_dates[index])}.`);
+        return;
+      }
       if (!added) {
+        touch();
         toast("Today is already a control.");
         return;
       }
@@ -4805,9 +4865,9 @@ table.matrix td.faint { color: var(--faint); }
     const setKind = (kind) => {
       if (kind === PROJECTION_KIND.SUBJECTIVE) {
         ev.projection_kind = PROJECTION_KIND.SUBJECTIVE;
-        const { added } = addTodayAsXDate(ev, now());
+        const { added, replaced, index } = addTodayAsXDate(ev, now());
         touch();
-        toast(added ? "Subjective: today added as an X-Date, per Protocol Prime." : "Subjective: today is already an X-Date.");
+        toast(replaced ? `Protocol Prime moved from ${replaced} to ${ppDateText(ev.x_dates[index])}.` : added ? "Subjective: today added as an X-Date, per Protocol Prime." : "Subjective: today is already an X-Date.");
       } else {
         delete ev.projection_kind;
         touch();
@@ -4858,7 +4918,7 @@ table.matrix td.faint { color: var(--faint); }
           el("div.segmented", {
             role: "group",
             "aria-label": "Objective or subjective projection",
-            title: "Protocol Prime. Objective: dates not personally tied to you — a market, a team. Subjective: your own or a client’s dates, which must end with the day the projection is run as the last X-Date. Choosing Subjective adds today."
+            title: "Protocol Prime. Objective: dates not personally tied to you — a market, a team. Subjective: your own or a client’s dates, which must end with the day the projection is run as the last X-Date. Choosing Subjective adds today, and on a later day replaces the earlier Protocol Prime date with today."
           }, [
             [PROJECTION_KIND.OBJECTIVE, "Objective"],
             [PROJECTION_KIND.SUBJECTIVE, "Subjective"]
@@ -4875,7 +4935,7 @@ table.matrix td.faint { color: var(--faint); }
           el("button.btn", {
             type: "button",
             text: "☉ Today · Protocol Prime",
-            title: "The author’s operating procedure: enter the date the projection is being conducted as a control alongside the historical dates. Three controls give three spans — and three times the projections.",
+            title: "The author’s operating procedure: enter the date the projection is being conducted as a control alongside the historical dates. Three controls give three spans — and three times the projections. Protocol Prime is only the day the prediction is made: re-run on a later day, it replaces the earlier PP date.",
             onclick: addToday
           })
         ]) : null,

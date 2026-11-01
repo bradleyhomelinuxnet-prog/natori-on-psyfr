@@ -19,7 +19,7 @@ import {
 import { ECLIPSE_SOURCES, setEclipseSource } from '../../core/eclipses.js';
 import {
   parseXDate, CHART_OPTIONS, clampDayStart, insertXDateInOrder,
-  addTodayAsXDate, isSubjective, PROJECTION_KIND,
+  addTodayAsXDate, isSubjective, PROJECTION_KIND, protocolPrimeIndex, ppDateText,
 } from '../../state/iso-event.js';
 import { sopWarnings } from '../../core/ophis/sop.js';
 import { FILTER_ROWS, FILTER_DEFAULTS } from '../../core/ophis/filters.js';
@@ -150,6 +150,8 @@ function datesPanel({ key, title, note, addLabel }) {
   const hhmm = ev.scope === EVENT_SCOPE.HH_MM;
   const prefix = key === 'x_dates' ? 'X' : 'T';
 
+  const ppAt = key === 'x_dates' ? protocolPrimeIndex(ev) : -1;
+
   const rows = list.map((x, i) => {
     const box = el('input', {
       type: 'checkbox',
@@ -181,6 +183,13 @@ function datesPanel({ key, title, note, addLabel }) {
     });
 
     const children = [box, el('span.tag', { text: `${prefix}${i + 1}` }), el('div.grow', {}, [dateField])];
+    if (i === ppAt) {
+      children.push(el('span.tag.pp', {
+        text: 'PP',
+        title: 'Protocol Prime: the date this prediction was made. It is replaced each time you re-run.',
+        'aria-label': 'Protocol Prime date',
+      }));
+    }
 
     if (hhmm) {
       children.push(
@@ -234,8 +243,15 @@ function datesPanel({ key, title, note, addLabel }) {
    * now, so the Current-date override carries through.
    */
   const addToday = () => {
-    const { added } = addTodayAsXDate(ev, now());
+    const { added, replaced, index } = addTodayAsXDate(ev, now());
+    if (replaced) {
+      touch();
+      toast(`Protocol Prime moved from ${replaced} to ${ppDateText(ev.x_dates[index])}.`);
+      return;
+    }
     if (!added) {
+      // The record may still have moved (an older file had none), so re-render.
+      touch();
       toast('Today is already a control.');
       return;
     }
@@ -246,17 +262,20 @@ function datesPanel({ key, title, note, addLabel }) {
   /**
    * Objective or subjective (Protocol Prime, docs/reverse/23 §1). Choosing
    * subjective adds today through the same path as ☉ Today, so the two can
-   * never disagree. Choosing objective removes nothing: today may be a date
-   * the user wants, and deleting an anchor behind their back moves results.
+   * never disagree — including replacing an older PP date on a re-run.
+   * Choosing objective removes nothing: today may be a date the user wants,
+   * and deleting an anchor behind their back moves results.
    */
   const setKind = (kind) => {
     if (kind === PROJECTION_KIND.SUBJECTIVE) {
       ev.projection_kind = PROJECTION_KIND.SUBJECTIVE;
-      const { added } = addTodayAsXDate(ev, now());
+      const { added, replaced, index } = addTodayAsXDate(ev, now());
       touch();
-      toast(added
-        ? 'Subjective: today added as an X-Date, per Protocol Prime.'
-        : 'Subjective: today is already an X-Date.');
+      toast(replaced
+        ? `Protocol Prime moved from ${replaced} to ${ppDateText(ev.x_dates[index])}.`
+        : added
+          ? 'Subjective: today added as an X-Date, per Protocol Prime.'
+          : 'Subjective: today is already an X-Date.');
     } else {
       delete ev.projection_kind;
       touch();
@@ -325,7 +344,8 @@ function datesPanel({ key, title, note, addLabel }) {
               title:
                 'Protocol Prime. Objective: dates not personally tied to you — a market, a team. ' +
                 'Subjective: your own or a client’s dates, which must end with the day the ' +
-                'projection is run as the last X-Date. Choosing Subjective adds today.',
+                'projection is run as the last X-Date. Choosing Subjective adds today, and on a ' +
+                'later day replaces the earlier Protocol Prime date with today.',
             }, [
               [PROJECTION_KIND.OBJECTIVE, 'Objective'],
               [PROJECTION_KIND.SUBJECTIVE, 'Subjective'],
@@ -347,7 +367,8 @@ function datesPanel({ key, title, note, addLabel }) {
               title:
                 'The author’s operating procedure: enter the date the projection is being ' +
                 'conducted as a control alongside the historical dates. Three controls give ' +
-                'three spans — and three times the projections.',
+                'three spans — and three times the projections. Protocol Prime is only the day ' +
+                'the prediction is made: re-run on a later day, it replaces the earlier PP date.',
               onclick: addToday,
             }),
           ])

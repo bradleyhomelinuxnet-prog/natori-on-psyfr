@@ -73,7 +73,9 @@ export function sopWarnings(ev, nowMs, { subjective = false } = {}) {
     });
   }
 
-  // 3 — Protocol Prime. A subjective projection must END with the day it is run.
+  // 3 — Protocol Prime. A subjective projection must END with the day it is
+  // run, and PP is ONLY that day: a re-run on a later day replaces the old PP
+  // date rather than keeping both (PSYFR tutorial, 7 Aug 2025).
   if (subjective) {
     const d = new Date(nowMs);
     const today = Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate());
@@ -81,13 +83,22 @@ export function sopWarnings(ev, nowMs, { subjective = false } = {}) {
     const lastDay = last ? Date.UTC(last.x.y, last.x.m - 1, last.x.d) : null;
     if (lastDay !== today) {
       const has = enabled.some(({ x }) => Date.UTC(x.y, x.m - 1, x.d) === today);
+      // `protocol_prime_date` is MM/DD/YYYY; see PP_FIELD in state/iso-event.js.
+      const pp = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(ev.protocol_prime_date ?? '');
+      const ppDay = pp ? Date.UTC(+pp[3], +pp[1] - 1, +pp[2]) : null;
+      const stale = !has && ppDay !== null && ppDay < today &&
+        enabled.some(({ x }) => Date.UTC(x.y, x.m - 1, x.d) === ppDay);
       out.push({
         id: 'protocol-prime',
         text: has
           ? `Subjective: today (${fmtDate(today)}) is an X-Date but not the last one. Protocol Prime ` +
             'wants the day the projection is run as the LAST X-Date, so later dates are outside it.'
-          : `Subjective: today (${fmtDate(today)}) is not an X-Date. Protocol Prime wants the day the ` +
-            'projection is run as the last X-Date; ☉ Today adds it.',
+          : stale
+            ? `Subjective: the Protocol Prime date is still ${fmtDate(ppDay)}, the day this was last ` +
+              `run, not today (${fmtDate(today)}). PP is only the day the prediction is made; ` +
+              '☉ Today replaces the old date with today.'
+            : `Subjective: today (${fmtDate(today)}) is not an X-Date. Protocol Prime wants the day the ` +
+              'projection is run as the last X-Date; ☉ Today adds it.',
       });
     }
   }

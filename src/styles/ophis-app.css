@@ -317,6 +317,13 @@ a { color: var(--cyan); text-underline-offset: 2px; }
   color: var(--gold);
   min-width: 22px;
 }
+.row .tag.pp {
+  min-width: 0;
+  padding: 1px 5px;
+  border: 1px solid color-mix(in srgb, var(--gold) 55%, transparent);
+  border-radius: 3px;
+  cursor: help;
+}
 .row .grow { flex: 1 1 auto; min-width: 0; }
 .row .sub { font-size: 11px; color: var(--dim); }
 

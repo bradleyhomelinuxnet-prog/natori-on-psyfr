@@ -22,7 +22,7 @@ import { SOP_MIN_DAYS_BETWEEN, SOP_MAX_AGE_YEARS, SOP_MIN_X_DATES_WHEN_OLD } fro
 import { eclipseNear, ECL_TYPE_NAME } from '../core/eclipses.js';
 import { phoenixInfo, isMetonic, am } from '../core/cycles.js';
 import { jdn, isPalindrome } from '../core/jdn.js';
-import { makeIsoEvent, makeXDate, PROJECTION_KIND } from '../state/iso-event.js';
+import { makeIsoEvent, makeXDate, PROJECTION_KIND, PP_FIELD, ppDateText } from '../state/iso-event.js';
 import { PLATES, PHOENIX_PLATES, plateUrl } from '../data/chronotecture.js';
 import { newDocumentOperations } from '../data/packs-ophis.js';
 
@@ -74,7 +74,13 @@ export function buildEvent({ name = '', dates = [], includeToday = false, now })
     // opens there with the numbers this page showed.
     operations: newDocumentOperations(),
   };
-  if (includeToday) overrides.projection_kind = PROJECTION_KIND.SUBJECTIVE;
+  if (includeToday) {
+    overrides.projection_kind = PROJECTION_KIND.SUBJECTIVE;
+    // Record which X-Date is Protocol Prime, so a re-run in the full app on a
+    // later day replaces it instead of keeping both (docs/reverse/23 §1).
+    const t = new Date(today);
+    overrides[PP_FIELD] = ppDateText({ y: t.getUTCFullYear(), m: t.getUTCMonth() + 1, d: t.getUTCDate() });
+  }
   return makeIsoEvent(0, overrides);
 }
 

@@ -35,6 +35,30 @@ subjective projection is unique to the day it is run. The SOP adds that skipping
 **Consequence.** natori-on-psyfr has a ☉ Today button that appends the date. Ophis Web has none, and
 neither build asks whether a cast is objective or subjective.
 
+### 1.1 · PP is only the day the prediction is made
+
+The author made the rule explicit in the PSYFR tutorial of 7 August 2025
+([video](https://www.youtube.com/watch?v=QzD8R_w5X5s)), as relayed in the users' group: **Protocol
+Prime is only the date the prediction is made.** When a subjective prediction is re-run on a later
+day, the old PP date is **dropped and replaced** by the new day's date. It is never kept alongside
+it, because it was never a past occurrence of the event; it was the act of measuring on that day.
+
+**What the rebuild does.** The event records which X-Date it added as PP, in a
+`protocol_prime_date` field (`MM/DD/YYYY`), written to `.oph` only for a subjective event so every
+other file stays byte-identical. When Subjective is chosen, or ☉ Today pressed:
+
+| Situation | Result |
+|---|---|
+| Recorded PP date is earlier than today | That X-Date is removed (if it still exists and still has that date), today goes in in date order, the record moves. A toast says "Protocol Prime moved from *old* to *today*." |
+| Recorded PP date is today | Nothing changes |
+| No record (a file from before this) | Today is added and recorded. Which earlier date was PP is never guessed |
+| The user has since retyped the PP X-Date | It is theirs now and is not removed |
+| Recorded PP date is later than today (the Current-date override set back) | Left alone; PP never moves backwards |
+
+The PP X-Date carries a small **PP** badge in the X-Dates list. The SOP warning names a stale PP
+date when one is still in the list. "Save for Ophis v12" leaves the record out, and says so, as it
+does for the Subjective label. Pinned in `tests/sop.test.mjs`.
+
 ## 2 · The filter rules that 22 §6 recorded as undisclosed
 
 22 §6 lists the internals of the Fibonacci, Geodetic Chronometry and IntraDecimal filters as

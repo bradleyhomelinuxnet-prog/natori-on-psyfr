@@ -141,23 +141,81 @@ export const PROJECTION_KIND = { OBJECTIVE: 'objective', SUBJECTIVE: 'subjective
 export const isSubjective = (ev) => ev?.projection_kind === PROJECTION_KIND.SUBJECTIVE;
 
 /**
- * Protocol Prime: add the day the projection is run as an X-Date.
+ * Which X-Date is the Protocol Prime date, as `MM/DD/YYYY`.
+ *
+ * The author's rule (PSYFR tutorial, 7 Aug 2025; docs/reverse/23 §1): PP is
+ * ONLY the date the prediction is made. Re-running a subjective prediction on
+ * a later day DROPS the old PP date and puts the new day in its place; the two
+ * are never kept side by side. To do that without guessing, the event records
+ * which date it added. Like `projection_kind` it is not in ISO_EVENT_KEYS, and
+ * the writer adds it only for a subjective event, so every other file stays
+ * byte-identical.
+ */
+export const PP_FIELD = 'protocol_prime_date';
+
+const pad2 = (n) => String(n).padStart(2, '0');
+/** `MM/DD/YYYY` for an XDate-shaped {y, m, d}. */
+export const ppDateText = ({ y, m, d }) => `${pad2(m)}/${pad2(d)}/${String(y).padStart(4, '0')}`;
+
+/** The recorded PP date as {y, m, d}, or null when there is no usable record. */
+export function protocolPrimeDate(ev) {
+  const p = parseXDate(ev?.[PP_FIELD]);
+  return p ? { y: p.y, m: p.m, d: p.d } : null;
+}
+
+const sameDay = (a, b) => a.y === b.y && a.m === b.m && a.d === b.d;
+const dayNumber = ({ y, m, d }) => Date.UTC(y, m - 1, d);
+
+/** Index of the X-Date that is the recorded PP date, or -1. */
+export function protocolPrimeIndex(ev) {
+  const pp = protocolPrimeDate(ev);
+  return pp ? ev.x_dates.findIndex((x) => sameDay(x, pp)) : -1;
+}
+
+/**
+ * Protocol Prime: make the day the projection is run an X-Date.
  *
  * "Today" is the engine's injected now, so the Current-date override carries
- * through. Refuses a duplicate. Goes in at its place in date order, never
- * appended (see insertXDateInOrder) — which is the LAST place whenever every
- * historical date is in the past, as the author intends.
+ * through. Goes in at its place in date order, never appended (see
+ * insertXDateInOrder) — which is the LAST place whenever every historical date
+ * is in the past, as the author intends.
  *
- * @returns {{added: boolean, index: number}} index of today in the list
+ * - A recorded PP date earlier than today: that X-Date is removed (only if it
+ *   still exists and still carries that date — an X-Date the user has since
+ *   edited is theirs, not PP), today goes in, and the record moves to today.
+ * - Recorded as today already: nothing changes (unless the user deleted it, in
+ *   which case it goes back in).
+ * - No record (an older file): today goes in and is recorded. Which existing
+ *   date was PP is never guessed.
+ * - A recorded date LATER than today (the Current-date override set back)
+ *   is left alone: replacing it would move PP backwards in time.
+ *
+ * @returns {{added: boolean, index: number, replaced: string|null}}
+ *   index of today in the list; `replaced` is the old PP date when one was
+ *   dropped
  */
 export function addTodayAsXDate(ev, nowMs) {
   const t = new Date(nowMs);
-  const y = t.getUTCFullYear();
-  const m = t.getUTCMonth() + 1;
-  const d = t.getUTCDate();
-  const at = ev.x_dates.findIndex((x) => x.enabled && x.y === y && x.m === m && x.d === d);
-  if (at !== -1) return { added: false, index: at };
-  return { added: true, index: insertXDateInOrder(ev.x_dates, makeXDate(y, m, d), ev) };
+  const today = { y: t.getUTCFullYear(), m: t.getUTCMonth() + 1, d: t.getUTCDate() };
+  const pp = protocolPrimeDate(ev);
+
+  let replaced = null;
+  if (pp && dayNumber(pp) < dayNumber(today)) {
+    const at = ev.x_dates.findIndex((x) => sameDay(x, pp));
+    if (at !== -1) {
+      ev.x_dates.splice(at, 1);
+      replaced = ppDateText(pp);
+    }
+  }
+  if (!pp || dayNumber(pp) <= dayNumber(today)) ev[PP_FIELD] = ppDateText(today);
+
+  const at = ev.x_dates.findIndex((x) => x.enabled && sameDay(x, today));
+  if (at !== -1) return { added: false, index: at, replaced };
+  return {
+    added: true,
+    index: insertXDateInOrder(ev.x_dates, makeXDate(today.y, today.m, today.d), ev),
+    replaced,
+  };
 }
 
 /** `location_enabled` is derived, never independently true. */
