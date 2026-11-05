@@ -1,5 +1,5 @@
 /**
- * Application state for the Ophis working surface.
+ * Application state for the Natorion working surface.
  *
  * A plain object plus subscribe/notify — no framework, no build step. Panels
  * subscribe and re-render; `set()` shallow-merges and notifies once.

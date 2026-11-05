@@ -1,8 +1,8 @@
-# OPHIS · Pattern-Recognition Event Prediction
+# NATORION · Pattern-Recognition Event Prediction
 
 [![tests](https://github.com/bradleyhomelinuxnet-prog/natori-on-psyfr/actions/workflows/test.yml/badge.svg)](https://github.com/bradleyhomelinuxnet-prog/natori-on-psyfr/actions/workflows/test.yml) [![Live site](https://img.shields.io/badge/live-site-d8a943)](https://bradleyhomelinuxnet-prog.github.io/natori-on-psyfr/) [![license: CC BY-NC-SA 4.0](https://img.shields.io/badge/license-CC%20BY--NC--SA%204.0-3d6fb4)](https://github.com/bradleyhomelinuxnet-prog/natori-on-psyfr/blob/main/LICENSE) ![No dependencies](https://img.shields.io/badge/dependencies-none-7faa5a) ![Works offline](https://img.shields.io/badge/works-offline-54b8c9)
 
-A ground-up rebuild of **Ophis v12** — Jason M. Breshears' date-projection instrument — reverse
+A ground-up rebuild of **the original v12** — Jason M. Breshears' date-projection instrument — reverse
 engineered from the shipped Windows application with the owner's permission, and verified
 bit-exact against it.
 
@@ -25,8 +25,8 @@ It’s a browser app with no server and no install. You open index.html (or the 
 
 The folder actually holds two generations of the same tool:
 
-ophis/ is the original OPHIS app: older jQuery code with charting, map and astronomy libraries. Your docs/reverse/ notes show it was taken apart from a desktop (Electron) build, versions 9 through 12.
-src/ is your clean rebuild of that engine, plus the Natorion/PSYFR cipher layer on top.
+ophis/ is the original v12 app: older jQuery code with charting, map and astronomy libraries. Your docs/reverse/ notes show it was taken apart from a desktop (Electron) build, versions 9 through 12.
+src/ is your clean rebuild of that engine, plus the Natorion/Natorion cipher layer on top.
 How a prediction run works
 You describe a recurring event. For example, “job changes.” You list the past dates it happened (the app calls these X-dates) and pick a location on a built-in offline world map.
 It sanity-checks your dates. Before calculating, it warns you if dates are too close together, too old, or too few. These are the “SOP warnings.”
@@ -35,7 +35,7 @@ It anchors each day to sunset, not midnight. It calculates local sunset for your
 It checks the sky. Each candidate date is compared against moon phase and two eclipse tables (solar and lunar). Dates that fall within a few days of an eclipse or a key lunar phase get flagged.
 It scores and tags. Each hit gets a score, a strength rating from the MSRF magnitude system, and pattern tags such as Fibonacci spacing, daily-rhythm (diurnal) markers, and geographic (geodetic) markers. Top-strength results are marked “alpha.”
 It filters and groups. Your filter settings trim the list. Nearby hits are bundled into time windows, so a cluster of agreeing formulas stands out as one strong window.
-You see the results. They appear as a sortable table, a timeline chart, and points on the map. You can export them or save the whole session as a .oph file. The examples/ folder has ready-made ones, including 04-even-spacing-19-138.oph. Copies in the older v12 format, in examples/v12/, open in the original Ophis v12 desktop app.
+You see the results. They appear as a sortable table, a timeline chart, and points on the map. You can export them or save the whole session as a .oph file. The examples/ folder has ready-made ones, including 04-even-spacing-19-138.oph. Copies in the older v12 format, in examples/v12/, open in the original v12 desktop app.
 The Natorion / Chronicon layer
 
 The other half of src/ (app.js, plus the panels for anchors, wheels, convergence and ledger) is the cipher-and-cycles side. It converts dates to Julian Day Numbers and checks those numbers for palindromes. It also places each date within long cycles:
@@ -221,7 +221,7 @@ worked example and the score distribution in it are computed by the engine, not 
 **[docs/WHITEPAPER.md](docs/WHITEPAPER.md)** — *Rebuilding a Closed Prediction Engine Without
 Breaking It.*
 
-**[docs/WHITEPAPER-2.md](docs/WHITEPAPER-2.md)** — *After Parity: What the Ophis Rebuild Became.*
+**[docs/WHITEPAPER-2.md](docs/WHITEPAPER-2.md)** — *After Parity: What the Natorion Rebuild Became.*
 The follow-up (November 2026): Protocol Prime as a switch, 36 operations, the Lab and the optional
 tags, and the round trip to the original v12 app.
 
@@ -229,12 +229,12 @@ tags, and the round trip to the original v12 app.
 
 ## Also here
 
-Three separate instruments live beside the Ophis app. None of them is part of it, none shares its
+Three separate instruments live beside the Natorion app. None of them is part of it, none shares its
 engine beyond the equation grammar, and none is linked from inside it.
 
 | File | What it is |
 |---|---|
-| `chronicon.html` | The Chronicon calendrics engine — the Ophis grammar crossed with the Breshears cycle lattice |
+| `chronicon.html` | The Chronicon calendrics engine — the Natorion grammar crossed with the Breshears cycle lattice |
 | `natori-on-cyphr.html` | The Cyphr build of the same idea: a four-cycle lattice (Phoenix 138 · Nemesis 792 · NER 600 · Metonic 19), two switchable scoring lenses, a convergence table and the wheels. Carries no eclipse tables by design |
 | `PSYFR1.html` / `PSYFR2.html` | The preserved single-file engine and field guide the Chronicon line grew from |
 

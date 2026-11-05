@@ -97,7 +97,7 @@ const PHASE_NAMES = [
 
 /**
  * Mean-synodic moon phase. No observer location and no perturbations — good to
- * within a few hours, which is all the wheels need. The desktop Ophis used real
+ * within a few hours, which is all the wheels need. The original v12 desktop app used real
  * ephemeris libraries for its eclipse/moon overlays; this is the cheap read.
  */
 export function moonInfo(astroYear, month, day) {

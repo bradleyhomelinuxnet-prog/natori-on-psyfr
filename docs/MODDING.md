@@ -1,4 +1,4 @@
-# Modding Ophis
+# Modding Natorion
 
 The whole point of the rebuild is that each kind of change touches **one file**. This is that list,
 with a worked example for each.
@@ -259,5 +259,5 @@ npm run serve   # then http://localhost:8777/
 
 `chronicon.html` is a different instrument with its own data files — `src/data/packs.js`,
 `msrf.js`, `ledger.js`, `lattice.js`, `src/core/scoring/`, `src/styles/tokens.css`. It shares the
-equation engine and nothing else. Editing an Ophis file will not change it, and editing a chronicon
-file will not change Ophis.
+equation engine and nothing else. Editing a Natorion file will not change it, and editing a chronicon
+file will not change Natorion.

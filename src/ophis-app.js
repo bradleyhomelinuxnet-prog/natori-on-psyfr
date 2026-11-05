@@ -38,8 +38,8 @@ function safely(name, fn) {
 /**
  * Save As: write the whole document to an .oph file the user names and places.
  *
- * The file is the original Ophis v12 form (MM/DD/YYYY dates, app_version "12"),
- * the same bytes as Export → Save for Ophis v12, so it opens in the desktop
+ * The file is the original v12 form (MM/DD/YYYY dates, app_version "12"),
+ * the same bytes as Export → Save for the original v12, so it opens in the desktop
  * .exe and in this app alike. Where the browser offers a real save dialog
  * (Chrome, Edge) the user picks the folder and name; elsewhere it falls back to
  * a download under a name taken from the first Iso-Event.
@@ -59,7 +59,7 @@ async function saveAs(render) {
   }
 
   const first = state.document?.iso_events?.[0]?.name;
-  const suggested = `${safeFilename(first, 'Ophis')}.oph`;
+  const suggested = `${safeFilename(first, 'Natorion')}.oph`;
   const blob = new Blob([text], { type: 'application/json' });
   let written = suggested;
 
@@ -67,7 +67,7 @@ async function saveAs(render) {
     try {
       const handle = await window.showSaveFilePicker({
         suggestedName: suggested,
-        types: [{ description: 'Ophis document', accept: { 'application/json': ['.oph'] } }],
+        types: [{ description: 'Natorion document', accept: { 'application/json': ['.oph'] } }],
       });
       const out = await handle.createWritable();
       await out.write(blob);

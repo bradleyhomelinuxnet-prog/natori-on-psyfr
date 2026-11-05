@@ -74,7 +74,7 @@ function parseISODate(text) {
 const isoOf = (ms) => new Date(ms).toISOString().slice(0, 10);
 /**
  * The dates as the engine should see them. "After sunset" moves one to the next
- * calendar day: Ophis counts days by the Earth's rotation, and the author's input
+ * calendar day: Natorion counts days by the Earth's rotation, and the author's input
  * notes (docs/reverse/24 §3) have the operator enter the following date by hand.
  */
 const typedDates = () =>
@@ -249,7 +249,7 @@ function stepDates() {
         el('span.ord', { text: ordinal(i) }),
         input,
         remove,
-        el('label.late', { title: 'Ophis counts days by sunset. An evening event is entered as the next day.' }, [
+        el('label.late', { title: 'Natorion counts days by sunset. An evening event is entered as the next day.' }, [
           late,
           ' After sunset (around 6 PM or later): count it as the next day',
         ]),
@@ -338,7 +338,7 @@ function workingLine(w) {
     `${how} gives `,
     el('strong', { text: `${w.after} days after your ${ordinal(w.from)} date` }),
     '. ',
-    el('code', { text: w.equation, title: 'The formula as Ophis writes it' }),
+    el('code', { text: w.equation, title: 'The formula as Natorion writes it' }),
   ]);
 }
 
@@ -440,8 +440,8 @@ function stepResults() {
     el('section.next', {}, [
       el('h3', { text: 'Where to next' }),
       el('div.nextgrid', {}, [
-        nextCard('See the full workings', 'Open these dates in the full Ophis app: every result, the timeline chart, filters and the audit of each step. Your dates are added; nothing you had there is replaced.',
-          el('button.btn.primary', { type: 'button', text: 'Open in Ophis →', onclick: () => handOff(ev) })),
+        nextCard('See the full workings', 'Open these dates in the full Natorion app: every result, the timeline chart, filters and the audit of each step. Your dates are added; nothing you had there is replaced.',
+          el('button.btn.primary', { type: 'button', text: 'Open in Natorion →', onclick: () => handOff(ev) })),
         nextCard('The big cycles', 'Natori-on-Cyphr shows where any date sits in the Phoenix, Nemesis, NER and Metonic cycles, and where they line up.',
           el('a.btn', { href: 'natori-on-cyphr.html', text: 'Open Cyphr →' })),
         nextCard('Your dates in the Great Pyramid', 'The 3D Pyramid Chronograph puts these dates on Breshears’ Great Step chronometer, one pyramid inch to the year from 1902. Turn it, zoom in, click anything.',

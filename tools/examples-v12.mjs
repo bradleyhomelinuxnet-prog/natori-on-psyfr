@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 /**
- * Write v12-format copies of the pre-worked examples, so the original Ophis
+ * Write v12-format copies of the pre-worked examples, so the original v12
  * v12 desktop app can open them too.
  *
  * Every `examples/*.oph` is in this app's own (v13) form, with X-Dates as
  * `{y, m, d}`. v12 only reads `{date: "MM/DD/YYYY"}` and, in its default loose
  * mode, silently drops every date it cannot parse -- the event opens empty. So
  * each file is read with `parseDocument` and re-written with
- * `serialiseDocumentV12`, the same writer as Export → "Save for Ophis v12", to
+ * `serialiseDocumentV12`, the same writer as Export → "Save for the original v12", to
  * `examples/v12/<name>_v12.oph`.
  *
  * Run with `npm run examples:v12` after `npm run examples`.

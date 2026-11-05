@@ -4,9 +4,9 @@
  * MOD POINT — add a constant here and it is immediately usable in equations,
  * in every pack, and in the equation editor's autocomplete. Nothing else changes.
  *
- * These values are the ones the original Ophis shipped. Two of them are not the
+ * These values are the ones the original v12 shipped. Two of them are not the
  * textbook figures and that is deliberate: OPH_PI is the truncated 3.14 rather
- * than Math.PI, and OPH_CRV is Ophis's own "curve" constant. Substituting more
+ * than Math.PI, and OPH_CRV is Natorion's own "curve" constant. Substituting more
  * precise values silently changes every projection, so they stay as-is.
  */
 export const CONSTANTS = {

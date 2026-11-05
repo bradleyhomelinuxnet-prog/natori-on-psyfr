@@ -177,7 +177,7 @@ test('the real repository boots: index.html, an engine module, a map tile', asyn
   try {
     const page = await s.get('/index.html');
     assert.equal(page.status, 200);
-    assert.match(await page.text(), /<title>OPHIS/);
+    assert.match(await page.text(), /<title>NATORION/);
 
     const engine = await s.get('/src/core/ophis/run.js');
     assert.equal(engine.status, 200);

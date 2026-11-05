@@ -1,5 +1,5 @@
 /**
- * Lexer for the Ophis operation grammar.
+ * Lexer for the Natorion operation grammar.
  *
  * The grammar is deliberately tiny:
  *

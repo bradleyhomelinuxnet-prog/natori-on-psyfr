@@ -506,7 +506,7 @@ function chartPanel() {
    *
    * An app preference, not an event field: it persists with the options and
    * does NOT dirty the document, because nothing about the event changed. For
-   * Ophis this is purely what gets drawn -- the Ophis engine never reads the
+   * Natorion this is purely what gets drawn -- the Natorion engine never reads the
    * eclipse tables -- so a re-render is all that is owed.
    */
   const LABEL = {
@@ -743,7 +743,7 @@ export function renderRail(host) {
       title: 'X-Dates',
       addLabel: '+ X-Date',
       note:
-        'X-Dates are the primary type of input to the Ophis algorithms. At least 2 are required ' +
+        'X-Dates are the primary type of input to the Natorion algorithms. At least 2 are required ' +
         'to generate output. Every pair of them gives one Y.',
     }),
     scopePanel(),

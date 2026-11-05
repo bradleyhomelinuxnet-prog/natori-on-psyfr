@@ -3,7 +3,7 @@
  *
  * Two formats are understood:
  *   - `.json` — this app's native format (round-trips everything).
- *   - `.oph`  — the original Ophis v12 desktop preset, imported best-effort.
+ *   - `.oph`  — the original v12 desktop preset, imported best-effort.
  *
  * Nothing loaded from a file is ever executed. Operation equations go through
  * the same parser as anything typed by hand, and one that fails to parse is
@@ -47,7 +47,7 @@ export function saveConfig() {
 const OPH_DATE = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/;
 
 /**
- * Convert an Ophis v12 `.oph` preset.
+ * Convert the original v12 `.oph` preset.
  *
  * Only the first event is imported — this app holds one working set at a time,
  * where the desktop app kept several. The desktop-only fields (lat/long, sunset
@@ -96,7 +96,7 @@ function fromOph(doc) {
     // The desktop scoring systems don't map onto the Chronicon lenses, so fall
     // back to the default rather than guessing.
     lens: DEFAULT_LENS,
-    packName: `Imported · ${ev.name || 'Ophis preset'}`,
+    packName: `Imported · ${ev.name || 'Natorion preset'}`,
     skipped,
     source: 'oph',
   };

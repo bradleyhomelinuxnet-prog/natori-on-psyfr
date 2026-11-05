@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <base target="_blank">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OPHIS · Pattern-Recognition Event Prediction</title>
-<meta name="description" content="Ophis — a relativity-based date-projection instrument. Seed the controls, cast them through the operation table, and read which projections survive the filters. Runs entirely offline.">
+<title>NATORION · Pattern-Recognition Event Prediction</title>
+<meta name="description" content="Natorion — a relativity-based date-projection instrument. Seed the controls, cast them through the operation table, and read which projections survive the filters. Runs entirely offline.">
 
 <!--
   No 'unsafe-eval': the equation engine is a real tokeniser and parser, not
@@ -22,7 +22,7 @@
 
 <style>
 /* ============================================================================
-   OPHIS · typefaces, served from this repository
+   NATORION · typefaces, served from this repository
    ----------------------------------------------------------------------------
    These were fetched from Google Fonts on every page load until 2026-09-30,
    which contradicted the two things this instrument says about itself:
@@ -173,7 +173,7 @@
 </style>
 <style>
 /* ============================================================================
-   OPHIS · design tokens
+   NATORION · design tokens
    ----------------------------------------------------------------------------
    MOD POINT — this file is the whole palette and the whole type scale. Every
    colour, size and duration in the app resolves through a variable here, so a
@@ -379,7 +379,7 @@
 </style>
 <style>
 /* ============================================================================
-   OPHIS · components
+   NATORION · components
    ----------------------------------------------------------------------------
    Everything here resolves through a token in ophis-tokens.css. No literal
    colour appears below except where a value encodes data rather than style.
@@ -1372,9 +1372,9 @@ table.matrix td.faint { color: var(--faint); }
 <div id="app">
 
   <header class="topbar">
-    <div class="brand">OPHIS <small>Pattern-Recognition Event Prediction</small></div>
+    <div class="brand">NATORION <small>Pattern-Recognition Event Prediction</small></div>
     <button id="saveAsBtn" class="btn primary saveas" type="button"
-            title="Save the document as an .oph file the original Ophis v12 app can open (Ctrl+Shift+S)">Save As…</button>
+            title="Save the document as an .oph file the original v12 app can open (Ctrl+Shift+S)">Save As…</button>
     <nav class="screens" id="screenNav" aria-label="Screens"></nav>
     <div class="chrome">
       <div class="zoomctl" role="group" aria-label="Text size">
@@ -2078,7 +2078,7 @@ table.matrix td.faint { color: var(--faint); }
     /** The desktop lineage, reproduced exactly as it shipped. */
     ophis: {
       id: "ophis",
-      label: "Ophis",
+      label: "Natorion",
       constants: OPHIS_CONSTANTS,
       functions: OPHIS_FUNCTIONS,
       constantNotes: {
@@ -3037,7 +3037,7 @@ table.matrix td.faint { color: var(--faint); }
   var OPHIS_PACKS = {
     "ophis-gte-v10": {
       id: "ophis-gte-v10",
-      label: "Ophis v10+ · 16 operations",
+      label: "v10+ · 16 operations",
       note: "The live default. Adds the two hepta-cycle operations to the v8 table.",
       operations: GTE_V10.map(row("ophis-gte-v10"))
     },
@@ -3049,7 +3049,7 @@ table.matrix td.faint { color: var(--faint); }
      */
     "ophis-gte-v8": {
       id: "ophis-gte-v8",
-      label: "Ophis v8-v9 · 15 operations",
+      label: "v8-v9 · 15 operations",
       note: "The v9 default. The v12 table is this plus the X2 hepta-cycle, and nothing else.",
       operations: GTE_V10.slice(0, 15).map(row("ophis-gte-v8"))
     },
@@ -3066,7 +3066,7 @@ table.matrix td.faint { color: var(--faint); }
      */
     "ophis-lte-v7": {
       id: "ophis-lte-v7",
-      label: "Ophis v7 and earlier · 15 operations",
+      label: "v7 and earlier · 15 operations",
       note: "The v7 table: the first fifteen, with #5 and #9 still at weight 0.5.",
       operations: GTE_V10.slice(0, 15).map(([eq, w, note], i) => [eq, i === 5 || i === 9 ? 0.5 : w, note]).map(row("ophis-lte-v7"))
     },
@@ -3249,7 +3249,7 @@ table.matrix td.faint { color: var(--faint); }
 
   // src/io/oph.js
   var APP_VERSION = "13.0.0";
-  var BUILD_TAG = "2026-11-01 · White Paper II";
+  var BUILD_TAG = "2026-11-05 · Natorion";
   var SCHEMA_VERSION = 1;
   var VALIDATION = { STRICT: "strict", LOOSE: "loose" };
   var isObj = (v) => v !== null && typeof v === "object" && !Array.isArray(v);
@@ -5246,7 +5246,7 @@ table.matrix td.faint { color: var(--faint); }
         key: "x_dates",
         title: "X-Dates",
         addLabel: "+ X-Date",
-        note: "X-Dates are the primary type of input to the Ophis algorithms. At least 2 are required to generate output. Every pair of them gives one Y."
+        note: "X-Dates are the primary type of input to the Natorion algorithms. At least 2 are required to generate output. Every pair of them gives one Y."
       }),
       scopePanel(),
       datesPanel({
@@ -6162,7 +6162,7 @@ table.matrix td.faint { color: var(--faint); }
   }
 
   // src/ui/ophis/disclaimer.js
-  var DISCLAIMER = "Ophis is a prediction tool, not a betting tool. How you use its dates is your decision and your responsibility; there are no guarantees. Never wager money you and your family can’t live without.";
+  var DISCLAIMER = "Natorion is a prediction tool, not a betting tool. How you use its dates is your decision and your responsibility; there are no guarantees. Never wager money you and your family can’t live without.";
   var disclaimerLine = () => el("p.disclaimer", { text: DISCLAIMER });
 
   // src/ui/ophis/results.js
@@ -7320,7 +7320,7 @@ stream
       return out;
     };
     let p1 = "";
-    p1 += line("OPHIS - Z-Date Projection Report", 22, true, 30);
+    p1 += line("NATORION - Z-Date Projection Report", 22, true, 30);
     p1 += line(`Iso-Event: ${isoEvent.name || "(unnamed)"}`, 12, true, 22);
     p1 += line(`${rows.length} projections, filtered from ${Object.keys(results.z_structs).length} distinct dates.`, 10, false, 24);
     p1 += line("The controls", 13, true, 18);
@@ -7949,8 +7949,8 @@ stream
           }),
           el("button.btn", {
             type: "button",
-            text: "Save for Ophis v12",
-            title: "A file the original Ophis v12 desktop app can open: dates as MM/DD/YYYY, app_version 12",
+            text: "Save for the original v12",
+            title: "A file the original v12 desktop app can open: dates as MM/DD/YYYY, app_version 12",
             onclick: async () => {
               const { text, notes } = serialiseDocumentV12(state.document, { prettify: opts.prettify_oph_files });
               if (notes.length) {
@@ -7970,7 +7970,7 @@ stream
         ]),
         el("p.note", {
           style: "margin-top:12px",
-          text: "Export file writes this app’s own format. The original Ophis v12 desktop app cannot read its dates and opens such a file with no X-Dates, so use Save for Ophis v12 for anything going there."
+          text: "Export file writes this app’s own format. The original v12 desktop app cannot read its dates and opens such a file with no X-Dates, so use Save for the original v12 for anything going there."
         })
       ])
     ]);
@@ -8142,7 +8142,7 @@ stream
         }),
         el("h2", { text: "What this is" }),
         el("p", {
-          text: "Ophis is a relativity-based date-projection instrument. You give it two or more dates on which similar events occurred; it measures the distance between every pair of them in axial rotations of the Earth, runs each distance through a table of operations, and projects the results forward. The filters then remove the projections that bear no arithmetic relationship to the controls."
+          text: "Natorion is a relativity-based date-projection instrument. You give it two or more dates on which similar events occurred; it measures the distance between every pair of them in axial rotations of the Earth, runs each distance through a table of operations, and projects the results forward. The filters then remove the projections that bear no arithmetic relationship to the controls."
         }),
         el("h2", { text: "Using its dates" }),
         el("p", { text: DISCLAIMER }),
@@ -8167,7 +8167,7 @@ stream
       el("div.doc", { style: "margin-top:20px" }, [
         el("h2", { text: "Provenance" }),
         el("p", {
-          text: "A ground-up rebuild of Ophis v12, reverse-engineered with the owner’s permission and verified against the original: the operation outputs, the resonance classification, the scoring arithmetic and a complete end-to-end cast are pinned by the test suite."
+          text: "A ground-up rebuild of the original v12, reverse-engineered with the owner’s permission and verified against the original: the operation outputs, the resonance classification, the scoring arithmetic and a complete end-to-end cast are pinned by the test suite."
         }),
         el("h2", { text: "Further reading" }),
         el("div.btnrow", {}, [
@@ -8464,14 +8464,14 @@ stream
       if (!ok) return;
     }
     const first = state.document?.iso_events?.[0]?.name;
-    const suggested = `${safeFilename(first, "Ophis")}.oph`;
+    const suggested = `${safeFilename(first, "Natorion")}.oph`;
     const blob = new Blob([text], { type: "application/json" });
     let written = suggested;
     if (typeof window.showSaveFilePicker === "function") {
       try {
         const handle = await window.showSaveFilePicker({
           suggestedName: suggested,
-          types: [{ description: "Ophis document", accept: { "application/json": [".oph"] } }]
+          types: [{ description: "Natorion document", accept: { "application/json": [".oph"] } }]
         });
         const out = await handle.createWritable();
         await out.write(blob);

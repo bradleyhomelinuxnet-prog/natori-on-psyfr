@@ -290,7 +290,7 @@ export function toPDF(isoEvent, results, assets = {}) {
   };
 
   let p1 = '';
-  p1 += line('OPHIS - Z-Date Projection Report', 22, true, 30);
+  p1 += line('NATORION - Z-Date Projection Report', 22, true, 30);
   p1 += line(`Iso-Event: ${isoEvent.name || '(unnamed)'}`, 12, true, 22);
   p1 += line(`${rows.length} projections, filtered from ${Object.keys(results.z_structs).length} distinct dates.`, 10, false, 24);
 

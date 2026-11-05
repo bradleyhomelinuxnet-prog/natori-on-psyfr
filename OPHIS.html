@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <base target="_blank">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ophis v12 · Field Guide &amp; Reverse-Engineering Codex</title>
+<title>Natorion · v12 Field Guide &amp; Reverse-Engineering Codex</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -281,7 +281,7 @@
 <body>
 
 <nav class="top">
-  <div class="brand">OPHIS v12 <span>· Field Guide</span></div>
+  <div class="brand">NATORION v12 <span>· Field Guide</span></div>
   <div class="links">
     <a target="_self" href="#quick" data-go="quick">Quick Tour</a>
     <a target="_self" href="#vocab" data-go="vocab">Vocabulary</a>
@@ -292,8 +292,8 @@
     <a target="_self" href="#examples" data-go="examples">Examples</a>
     <a target="_self" href="#under" data-go="under">Under the Hood</a>
     <a target="_self" href="#faq" data-go="faq">FAQ</a>
-    <a href="PSYFR1.html" target="_blank" rel="noopener" style="color:var(--gold2)">↗ PSYFR Engine</a>
-    <a href="PSYFR2.html" target="_blank" rel="noopener" style="color:var(--gold2)">↗ PSYFR Guide</a>
+    <a href="PSYFR1.html" target="_blank" rel="noopener" style="color:var(--gold2)">↗ Natorion Engine</a>
+    <a href="PSYFR2.html" target="_blank" rel="noopener" style="color:var(--gold2)">↗ Natorion Guide</a>
   </div>
   <div class="navctl">
     <div class="tsize" role="group" aria-label="Text size">
@@ -312,7 +312,7 @@
   <h1>The serpent<br>coiled around <em style="font-style:italic">time</em>.</h1>
   <div class="tagline">how the engine reads · what the formulas mean · the 138 &amp; 19 lattice underneath</div>
   <p class="sub">
-    Ophis v12 ships as a 100&nbsp;MB portable Windows program — Electron&nbsp;39 with its own Chromium runtime, and a sign-in gate that is
+    The original v12 ships as a 100&nbsp;MB portable Windows program — Electron&nbsp;39 with its own Chromium runtime, and a sign-in gate that is
     switched off. Under the wrapper: an un-obfuscated app running a hand-rolled formula engine over Y — the axial-rotation count between
     two anchor dates. This guide reads it out: the sixteen operations v12 runs by default, the constants that drive them (π, φ, curvature,
     hepta), how to extend the grammar with your own 138 and 19 resonance operations, and a live cast you can drive from this page.
@@ -330,11 +330,11 @@
 <!-- =================================================================== -->
 <section id="quick">
   <div class="sec-no">§1 · Quick Tour</div>
-  <h2>How Ophis actually works, in four moves</h2>
+  <h2>How Natorion actually works, in four moves</h2>
   <div class="steps">
     <div class="step"><div>
       <h4>Two anchor dates in</h4>
-      <p>You give Ophis two dates — the source calls them <b class="c">X-Dates</b>. Anything from Bitcoin halvings to your first
+      <p>You give Natorion two dates — the source calls them <b class="c">X-Dates</b>. Anything from Bitcoin halvings to your first
       passage into the Great Pyramid. Two is the minimum; more anchors mean more interval pairs to project from.</p>
     </div></div>
     <div class="step"><div>
@@ -356,7 +356,7 @@
     </div></div>
   </div>
   <div class="note-card"><h4>The one thing the source doesn't shout at you</h4>
-    <p>Ophis's power isn't the individual projection — any single Y·φ or Y·π estimate is easy to dismiss. The signal is
+    <p>Natorion's power isn't the individual projection — any single Y·φ or Y·π estimate is easy to dismiss. The signal is
     <b>convergence</b>: when four different operations from different anchor pairs all land on the same date. That's what the
     convergence panel is looking for, and it's what your custom operations (§4) should be tuned to reveal.</p>
   </div>
@@ -383,7 +383,7 @@
 <section id="cookbook">
   <div class="sec-no">§3 · The Formula Cookbook</div>
   <h2>The sixteen v12 operations, translated</h2>
-  <p class="lead">Every formula below is a real Ophis v12 default — extracted verbatim from <code>ophis_model__params.js:65–138</code>.
+  <p class="lead">Every formula below is a real v12 default — extracted verbatim from <code>ophis_model__params.js:65–138</code>.
   Tap any formula to copy it. Paste into the operations table inside the app. <b>α · Alpha</b> operations weight higher on match
   than <b>β · Beta</b>. In v12 <b>all sixteen run</b>: the v8+ default switches every operation on and promotes two to alpha
   (the half-Y golden step and the full radius projection), and the v10+ default adds the hepta-cycle on X2.</p>
@@ -499,12 +499,12 @@
 <!-- =================================================================== -->
 <section id="lattice">
   <div class="sec-no">§4 · The 138 / 19 Lattice</div>
-  <h2>Extending Ophis with Chronicon resonance</h2>
+  <h2>Extending Natorion with Chronicon resonance</h2>
   <p class="lead">
-    Ophis ships with four constants — π, φ, κ, η — because those are the ones the original author saw. But the grammar is open:
+    The original v12 ships with four constants — π, φ, κ, η — because those are the ones the original author saw. But the grammar is open:
     any custom operation you paste in gets validated and compiled the same way. Below are the operations that read the
     <b class="g">138-Phoenix lattice</b> and the <b class="c">19-Metonic gear</b> — the pair that makes the Chronicon come alive
-    inside the Ophis engine.
+    inside the Natorion engine.
   </p>
   <p class="lead">
     The heaviest fingerprint of the lattice: <b>Jan 19 2023 → Aug 2 2027 = 1,656 days = 138 × 12 = the Flood span (AM 1656)</b>.
@@ -585,7 +585,7 @@
     <div class="frow"><div class="fcode">
       <code>X2+Y+792</code>
       <button class="copybtn">copy</button>
-    </div><div class="fdesc"><b>Nemesis step.</b> Y + 792. The cataclysm interval — appears in Ophis's MSRF sets as a resonance value.</div></div>
+    </div><div class="fdesc"><b>Nemesis step.</b> Y + 792. The cataclysm interval — appears in Natorion's MSRF sets as a resonance value.</div></div>
     <div class="frow"><div class="fcode">
       <code>X2+Y*360/365.2422</code>
       <button class="copybtn">copy</button>
@@ -604,7 +604,7 @@
   <table>
     <thead><tr><th style="width:180px">Token</th><th>Meaning</th></tr></thead>
     <tbody>
-      <tr><td class="mono">X1 / X2</td><td>The <b>earlier</b> / <b>later</b> anchor of the pair. Your equation begins with one of them, plus an offset. Ophis picks the anchor by inspecting the prefix — no run-time choice.</td></tr>
+      <tr><td class="mono">X1 / X2</td><td>The <b>earlier</b> / <b>later</b> anchor of the pair. Your equation begins with one of them, plus an offset. Natorion picks the anchor by inspecting the prefix — no run-time choice.</td></tr>
       <tr><td class="mono">Y</td><td>The interval between the two anchors, in <b>days</b>. Signed positive for X1 → X2 order.</td></tr>
       <tr><td class="mono">OPH_PI</td><td>Archaix π — <b>3.14</b> (two-decimal precision).</td></tr>
       <tr><td class="mono">OPH_PHI</td><td>Golden ratio — <b>1.618</b> (three-decimal exception).</td></tr>
@@ -735,7 +735,7 @@
       <li>But now watch the operations pack. <code>X2+YxOPH_PHI</code> lands on <b>2022-05-13</b>. <code>X1+YxOPH_PI</code> lands on <b>2024-03-31</b>.</li>
     </ol>
     <div class="result"><h5>What you'll see</h5>
-      <p>The 2024-03-31 result — <span class="big">X1 + Y × π</span> — lands 17 days after Bitcoin's all-time high of 14 March 2024 (about $73,800) and 20 days before the fourth halving on 20 April 2024. Under Ophis's tolerance windows, that lands inside a "convergence" if any other operation from the same anchor pair projects within ±30 days. It's the kind of thing the tool is built to hunt for. It's also easy to see how one such hit per anchor pair becomes a whole practice.</p>
+      <p>The 2024-03-31 result — <span class="big">X1 + Y × π</span> — lands 17 days after Bitcoin's all-time high of 14 March 2024 (about $73,800) and 20 days before the fourth halving on 20 April 2024. Under Natorion's tolerance windows, that lands inside a "convergence" if any other operation from the same anchor pair projects within ±30 days. It's the kind of thing the tool is built to hunt for. It's also easy to see how one such hit per anchor pair becomes a whole practice.</p>
       <p><em>Interpretation is on you. The engine only counts.</em></p>
     </div>
   </div>
@@ -890,12 +890,12 @@
   </div></details>
 
   <details><summary>Why does the 138·12 = 1656 date lock feel so heavy?</summary><div class="faqbody">
-    <p>Because it's the <b>same interval as the Genesis Flood-count</b> (Anno Mundi 1656 in the biblical chronology). The engine doesn't know that — Ophis has no theology. But when your input dates happen to be spaced 1656 days apart, every isometric-style operation produces multiples of that number, and the 138-lattice operations light up at every hop.</p>
+    <p>Because it's the <b>same interval as the Genesis Flood-count</b> (Anno Mundi 1656 in the biblical chronology). The engine doesn't know that — Natorion has no theology. But when your input dates happen to be spaced 1656 days apart, every isometric-style operation produces multiples of that number, and the 138-lattice operations light up at every hop.</p>
     <p>It's the numerological equivalent of finding your keys — the meaning is in the coincidence, not the machinery.</p>
   </div></details>
 
   <details><summary>Can I add my own operations to the shipping app?</summary><div class="faqbody">
-    <p>Yes, that's the primary way to use it. Open any Iso-Event → Operations settings → paste your equation into a new row. It's validated live as you type; if it passes the strip → math.js check it becomes a real compiled function on the next cast. That's how every operation in §4 above is meant to be added — Ophis's grammar is open by design.</p>
+    <p>Yes, that's the primary way to use it. Open any Iso-Event → Operations settings → paste your equation into a new row. It's validated live as you type; if it passes the strip → math.js check it becomes a real compiled function on the next cast. That's how every operation in §4 above is meant to be added — Natorion's grammar is open by design.</p>
     <p>The 138 and 19 lattice operations aren't in the shipping defaults, but every one of them satisfies the grammar rules in §5 and will be accepted verbatim.</p>
   </div></details>
 
@@ -909,7 +909,7 @@
     <p>Second: your operations all use the same anchor. If every op begins with <code>X2+</code>, every Z-Date lives after X2. Mix <code>X1+</code> and <code>X2+</code> to get projections on both sides of the interval.</p>
   </div></details>
 
-  <details><summary>Is Ophis paid software?</summary><div class="faqbody">
+  <details><summary>Is Natorion paid software?</summary><div class="faqbody">
     <p>The sign-in gate suggests it once was, but v12 — like v9 before it — ships with that gate disabled with a comment reading "fake security camera." So the current build runs open. The developer's intent — commercial, evaluation copy, or free release — isn't stated in the source.</p>
     <p>This guide is a reverse-engineering study of a legally obtained copy, focused on how the tool works. Nothing in it circumvents anything the shipping build hasn't already left open.</p>
   </div></details>
@@ -920,7 +920,7 @@
 </div>
 
 <footer>
-  <b>Ophis v12 · Field Guide.</b> Reverse-engineered from <code>Ophis_v12_Windows.exe</code> (104,638,743 bytes). Compute engine and the 16 default operations are ported verbatim from <code>ophis_model__params.js</code> and <code>ophis_model__validation.js</code>. The 138/19 lattice extensions in §4 are custom operations authored against Ophis's own grammar — accepted by the shipping app as user operations, not by the shipping defaults. Presented as a companion to the <em>Phoenix CODEX 138 Palindromic</em> and the Archaix chronology work of Jason Breshears, not as established science.
+  <b>Natorion · v12 Field Guide.</b> Reverse-engineered from <code>Ophis_v12_Windows.exe</code> (104,638,743 bytes). Compute engine and the 16 default operations are ported verbatim from <code>ophis_model__params.js</code> and <code>ophis_model__validation.js</code>. The 138/19 lattice extensions in §4 are custom operations authored against Natorion's own grammar — accepted by the shipping app as user operations, not by the shipping defaults. Presented as a companion to the <em>Phoenix CODEX 138 Palindromic</em> and the Archaix chronology work of Jason Breshears, not as established science.
   <br><span style="opacity:.7">Earlier edition: the <a href="https://bradleyhomelinuxnet-prog.github.io/NatorionCipherPredictiveEngine/Ophis_v9_Explained.html" rel="nofollow">v9 Field Guide</a>, kept as a historical record.</span>
 </footer>
 </div>
@@ -931,7 +931,7 @@
 const $ = id => document.getElementById(id);
 function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),1700);}
 
-/* ---------- OPHIS CONSTANTS (from ophis_config.js, expected-precision path) ---------- */
+/* ---------- NATORION CONSTANTS (from ophis_config.js, expected-precision path) ---------- */
 const OPH_PI  = 3.14;
 const OPH_PHI = 1.618;
 const OPH_CRV = 5.08;      // π · φ rounded
@@ -1087,7 +1087,7 @@ render();
 
 /* ---------- COPY BUTTONS ---------- */
 function copyText(txt,btn){
-  const done=()=>{toast('Copied — paste into Ophis Custom Operation');if(btn){const o=btn.textContent;btn.textContent='copied ✓';btn.classList.add('done');setTimeout(()=>{btn.textContent=o;btn.classList.remove('done');},1300);}};
+  const done=()=>{toast('Copied — paste into Natorion Custom Operation');if(btn){const o=btn.textContent;btn.textContent='copied ✓';btn.classList.add('done');setTimeout(()=>{btn.textContent=o;btn.classList.remove('done');},1300);}};
   if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(done).catch(()=>fb(txt,done));}else fb(txt,done);
 }
 function fb(txt,done){try{const ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);done();}catch(e){toast('Copy failed');}}
@@ -1104,7 +1104,7 @@ document.querySelectorAll('[data-go]').forEach(a=>a.onclick=e=>{
   const el=$(a.dataset.go);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
 });
 
-/* ---------- THEME + ZOOM (shared localStorage keys with the PSYFR family) ---------- */
+/* ---------- THEME + ZOOM (shared localStorage keys with the Natorion family) ---------- */
 const _root=document.documentElement;
 function applyTheme(t){_root.setAttribute('data-theme',t);const b=$('themeBtn');b.textContent=t==='light'?'☀ Light':'☾ Dark';b.setAttribute('aria-pressed',t==='light'?'true':'false');try{localStorage.setItem('ophion-theme',t);}catch(e){}}
 function applyZoom(z){_root.style.setProperty('--zoom',z);try{localStorage.setItem('ophion-zoom',String(z));}catch(e){}}

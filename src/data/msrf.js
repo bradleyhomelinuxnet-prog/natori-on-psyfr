@@ -1,6 +1,6 @@
 // MSRF resonance number set.
 // Extracted verbatim from the reference PSYFR1 build by tools/extract-data.mjs.
-// Ophis NORMAL+IMPORTANT key members, plus 19. A projected date scores an MSRF hit when either the interval Y or the day-offset appears here.
+// Natorion NORMAL+IMPORTANT key members, plus 19. A projected date scores an MSRF hit when either the interval Y or the day-offset appears here.
 // This file is DATA. Edit it freely — nothing else needs to change.
 
 import { MSRF_FULL } from './msrf-tiers.js';
@@ -20,8 +20,8 @@ export const MSRF = new Set(MSRF_NUMBERS);
  * author's MSRF document — far wider, and it carries a tier per number.
  */
 export const MSRF_SETS = {
-  'PSYFR 87': { label: 'PSYFR · 87', numbers: MSRF, tiered: false },
-  'Ophis full': { label: 'Ophis · full tiered', numbers: MSRF_FULL, tiered: true },
+  'PSYFR 87': { label: 'Natorion · 87', numbers: MSRF, tiered: false },
+  'Ophis full': { label: 'Natorion · full tiered', numbers: MSRF_FULL, tiered: true },
 };
 
 export const DEFAULT_MSRF_SET = 'PSYFR 87';

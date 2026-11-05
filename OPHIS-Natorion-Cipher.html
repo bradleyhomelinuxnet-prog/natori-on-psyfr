@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <base target="_blank">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OPHIS · Pattern-Recognition Event Prediction</title>
-<meta name="description" content="Ophis — a relativity-based date-projection instrument. Seed the controls, cast them through the operation table, and read which projections survive the filters. Runs entirely offline.">
+<title>NATORION · Pattern-Recognition Event Prediction</title>
+<meta name="description" content="Natorion — a relativity-based date-projection instrument. Seed the controls, cast them through the operation table, and read which projections survive the filters. Runs entirely offline.">
 
 <!--
   No 'unsafe-eval': the equation engine is a real tokeniser and parser, not
@@ -98,7 +98,7 @@
 
 <style>
 /* ============================================================================
-   OPHIS · design tokens
+   NATORION · design tokens
    ----------------------------------------------------------------------------
    MOD POINT — this file is the whole palette and the whole type scale. Every
    colour, size and duration in the app resolves through a variable here, so a
@@ -311,7 +311,7 @@
 </style>
 <style>
 /* ============================================================================
-   OPHIS · components
+   NATORION · components
    ----------------------------------------------------------------------------
    Everything here resolves through a token in ophis-tokens.css. No literal
    colour appears below except where a value encodes data rather than style.
@@ -1205,7 +1205,7 @@ pre.blob {
 <div id="app">
 
   <header class="topbar">
-    <div class="brand">OPHIS <small>Pattern-Recognition Event Prediction</small></div>
+    <div class="brand">NATORION <small>Pattern-Recognition Event Prediction</small></div>
     <nav class="screens" id="screenNav" aria-label="Screens"></nav>
     <div class="chrome">
       <div class="zoomctl" role="group" aria-label="Text size">
@@ -1213,7 +1213,7 @@ pre.blob {
         <button id="zoomReset" type="button" aria-label="Default text size" title="Default text size">A</button>
         <button id="zoomUp" type="button" aria-label="Larger text" title="Larger text">A+</button>
       </div>
-      <a class="btn" href="PSYFR1.html" title="The chronology engine: the same cast read against the Chronicon">↗ PSYFR</a>
+      <a class="btn" href="PSYFR1.html" title="The chronology engine: the same cast read against the Chronicon">↗ Natorion</a>
       <button id="themeBtn" class="btn" type="button" aria-label="Change theme">☾ Dark</button>
       <span id="savedBadge" class="savedbadge" role="status">Saved</span>
     </div>
@@ -1896,7 +1896,7 @@ pre.blob {
     /** The desktop lineage, reproduced exactly as it shipped. */
     ophis: {
       id: "ophis",
-      label: "Ophis",
+      label: "Natorion",
       constants: OPHIS_CONSTANTS,
       functions: OPHIS_FUNCTIONS,
       constantNotes: {
@@ -2855,7 +2855,7 @@ pre.blob {
   var OPHIS_PACKS = {
     "ophis-gte-v10": {
       id: "ophis-gte-v10",
-      label: "Ophis v10+ \xB7 16 operations",
+      label: "v10+ \xB7 16 operations",
       note: "The live default. Adds the two hepta-cycle operations to the v8 table.",
       operations: GTE_V10.map(row("ophis-gte-v10"))
     },
@@ -2867,7 +2867,7 @@ pre.blob {
      */
     "ophis-gte-v8": {
       id: "ophis-gte-v8",
-      label: "Ophis v8-v9 \xB7 15 operations",
+      label: "v8-v9 \xB7 15 operations",
       note: "The v9 default. The v12 table is this plus the X2 hepta-cycle, and nothing else.",
       operations: GTE_V10.slice(0, 15).map(row("ophis-gte-v8"))
     },
@@ -2884,7 +2884,7 @@ pre.blob {
      */
     "ophis-lte-v7": {
       id: "ophis-lte-v7",
-      label: "Ophis v7 and earlier \xB7 15 operations",
+      label: "v7 and earlier \xB7 15 operations",
       note: "The v7 table: the first fifteen, with #5 and #9 still at weight 0.5.",
       operations: GTE_V10.slice(0, 15).map(([eq, w, note], i) => [eq, i === 5 || i === 9 ? 0.5 : w, note]).map(row("ophis-lte-v7"))
     },
@@ -4697,7 +4697,7 @@ pre.blob {
         key: "x_dates",
         title: "X-Dates",
         addLabel: "+ X-Date",
-        note: "X-Dates are the primary type of input to the Ophis algorithms. At least 2 are required to generate output. Every pair of them gives one Y."
+        note: "X-Dates are the primary type of input to the Natorion algorithms. At least 2 are required to generate output. Every pair of them gives one Y."
       }),
       scopePanel(),
       datesPanel({
@@ -5866,7 +5866,7 @@ stream
       return out;
     };
     let p1 = "";
-    p1 += line("OPHIS - Z-Date Projection Report", 22, true, 30);
+    p1 += line("NATORION - Z-Date Projection Report", 22, true, 30);
     p1 += line(`Iso-Event: ${isoEvent.name || "(unnamed)"}`, 12, true, 22);
     p1 += line(`${rows.length} projections, filtered from ${Object.keys(results.z_structs).length} distinct dates.`, 10, false, 24);
     p1 += line("The controls", 13, true, 18);
@@ -6627,7 +6627,7 @@ stream
         }),
         el("h2", { text: "What this is" }),
         el("p", {
-          text: "Ophis is a relativity-based date-projection instrument. You give it two or more dates on which similar events occurred; it measures the distance between every pair of them in axial rotations of the Earth, runs each distance through a table of operations, and projects the results forward. The filters then remove the projections that bear no arithmetic relationship to the controls."
+          text: "Natorion is a relativity-based date-projection instrument. You give it two or more dates on which similar events occurred; it measures the distance between every pair of them in axial rotations of the Earth, runs each distance through a table of operations, and projects the results forward. The filters then remove the projections that bear no arithmetic relationship to the controls."
         }),
         el("h2", { text: "How a score is built" }),
         el("p", {
@@ -6650,7 +6650,7 @@ stream
       el("div.doc", { style: "margin-top:20px" }, [
         el("h2", { text: "Provenance" }),
         el("p", {
-          text: "A ground-up rebuild of Ophis v12, reverse-engineered with the owner\u2019s permission and verified against the original: the operation outputs, the resonance classification, the scoring arithmetic and a complete end-to-end cast are pinned by the test suite."
+          text: "A ground-up rebuild of the original v12, reverse-engineered with the owner\u2019s permission and verified against the original: the operation outputs, the resonance classification, the scoring arithmetic and a complete end-to-end cast are pinned by the test suite."
         }),
         el("h2", { text: "Two eclipse tables" }),
         el("p", {
@@ -6663,7 +6663,7 @@ stream
         el("div.btnrow", {}, [
           el("a.btn", { href: "https://bradleyhomelinuxnet-prog.github.io/NatorionCipherPredictiveEngine/OPHIS.html", text: "Field Guide" }),
           el("a.btn", { href: "https://bradleyhomelinuxnet-prog.github.io/NatorionCipherPredictiveEngine/Ophis_v12_ReverseEngineering_Report.html", text: "v12 Report" }),
-          el("a.btn", { href: "https://bradleyhomelinuxnet-prog.github.io/NatorionCipherPredictiveEngine/PSYFR1.html", text: "PSYFR" })
+          el("a.btn", { href: "https://bradleyhomelinuxnet-prog.github.io/NatorionCipherPredictiveEngine/PSYFR1.html", text: "Natorion" })
         ]),
         el("p", {
           style: "margin-top:12px",

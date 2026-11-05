@@ -7,7 +7,7 @@
  */
 
 /**
- * Digit reversal, as Ophis defines it.
+ * Digit reversal, as Natorion defines it.
  *
  * The decimal point is re-inserted at the index it occupied in the ORIGINAL
  * string, not at the mirrored position — so this is not simply "reverse the

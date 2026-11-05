@@ -7,7 +7,7 @@
 import { el } from '../dom.js';
 
 export const DISCLAIMER =
-  'Ophis is a prediction tool, not a betting tool. How you use its dates is your decision and ' +
+  'Natorion is a prediction tool, not a betting tool. How you use its dates is your decision and ' +
   'your responsibility; there are no guarantees. Never wager money you and your family can’t ' +
   'live without.';
 

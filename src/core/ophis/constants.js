@@ -32,7 +32,7 @@ export const LONG_LIMIT = 180;
 
 export const TIMESTAMP_TO_USE_WITHOUT_HH_MM_SCOPE = '00:00';
 
-/** Ophis's own synodic month — NOT the chronicon one (29.530588853). */
+/** Natorion's own synodic month — NOT the chronicon one (29.530588853). */
 export const SYNODIC_MONTH = 29.53058770576;
 export const LUNAR_DATE_MATCH_TOLERANCE = 86_400_000;
 /** ±1.25 days. The v12 tooltips said "1 day"; the code said this. The code wins. */

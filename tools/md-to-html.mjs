@@ -295,7 +295,7 @@ function page({ title, body, toc, prefix }) {
 <body>
 
 <div class="doc-top">
-  <div class="brand">OPHIS <small>${esc(title)}</small></div>
+  <div class="brand">NATORION <small>${esc(title)}</small></div>
   <a class="btn" href="${prefix}index.html">Open the instrument &rarr;</a>
 </div>
 

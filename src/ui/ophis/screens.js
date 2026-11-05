@@ -634,8 +634,8 @@ export function renderExport(host) {
         }),
         el('button.btn', {
           type: 'button',
-          text: 'Save for Ophis v12',
-          title: 'A file the original Ophis v12 desktop app can open: dates as MM/DD/YYYY, app_version 12',
+          text: 'Save for the original v12',
+          title: 'A file the original v12 desktop app can open: dates as MM/DD/YYYY, app_version 12',
           onclick: async () => {
             const { text, notes } = serialiseDocumentV12(state.document, { prettify: opts.prettify_oph_files });
             if (notes.length) {
@@ -657,8 +657,8 @@ export function renderExport(host) {
       el('p.note', {
         style: 'margin-top:12px',
         text:
-          'Export file writes this app’s own format. The original Ophis v12 desktop app cannot read its ' +
-          'dates and opens such a file with no X-Dates, so use Save for Ophis v12 for anything going there.',
+          'Export file writes this app’s own format. The original v12 desktop app cannot read its ' +
+          'dates and opens such a file with no X-Dates, so use Save for the original v12 for anything going there.',
       }),
     ]),
   ]);
@@ -871,7 +871,7 @@ export function renderAbout(host) {
       el('h2', { text: 'What this is' }),
       el('p', {
         text:
-          'Ophis is a relativity-based date-projection instrument. You give it two or more dates on ' +
+          'Natorion is a relativity-based date-projection instrument. You give it two or more dates on ' +
           'which similar events occurred; it measures the distance between every pair of them in ' +
           'axial rotations of the Earth, runs each distance through a table of operations, and ' +
           'projects the results forward. The filters then remove the projections that bear no ' +
@@ -922,7 +922,7 @@ export function renderAbout(host) {
       el('h2', { text: 'Provenance' }),
       el('p', {
         text:
-          'A ground-up rebuild of Ophis v12, reverse-engineered with the owner’s permission and ' +
+          'A ground-up rebuild of the original v12, reverse-engineered with the owner’s permission and ' +
           'verified against the original: the operation outputs, the resonance classification, the ' +
           'scoring arithmetic and a complete end-to-end cast are pinned by the test suite.',
       }),

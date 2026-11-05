@@ -49,11 +49,11 @@ Bold = a Mirror.
 
 | App | Repo | How to add |
 |---|---|---|
-| OPHIS · Pattern-Recognition Event Prediction (`index.html` + `src/`, and its single-file build `ophis-single.html`) | natori-on-psyfr | Mirrors, in the pack bar on the Operations screen |
+| NATORION · Pattern-Recognition Event Prediction (`index.html` + `src/`, and its single-file build `ophis-single.html`) | natori-on-psyfr | Mirrors, in the pack bar on the Operations screen |
 | `ophis-single.html` (older single-file build) | OPHIS-Pattern-Recognition-Event-Prediction_files | Mirrors pack button |
 | Natorion Cipher (`natorion/`) | NatorionCipherPredictiveEngine | **Add mirrors** button |
-| Ophis Web (`web/`) | NatorionCipherPredictiveEngine | **Mirrors** button; listed as O27–O36 in the formula reference |
+| Natorion Web (`web/`) | NatorionCipherPredictiveEngine | **Mirrors** button; listed as O27–O36 in the formula reference |
 | `OPHIS-Natorion-Cipher.html` | NatorionCipherPredictiveEngine · natori-on-psyfr | Mirrors pack, beside Extras |
 | `index.html`, `ophis-psyfy-natorion-cipher.html` | OPHIS-Pattern-Recognition-Event-Prediction_files | Mirrors pack button |
 
-To open all 36 in the original Ophis v12 desktop app, use **Export → Save for Ophis v12** in natori-on-psyfr.
+To open all 36 in the original v12 desktop app, use **Export → Save for the original v12** in natori-on-psyfr.

@@ -1,5 +1,5 @@
 /**
- * The Ophis operation packs.
+ * The Natorion operation packs.
  *
  * ORDINAL ORDER IS LOAD-BEARING. `operation_ordinal` indexes this array
  * everywhere — in the score attribution, in the `O<n>` pill labels, in the audit
@@ -79,7 +79,7 @@ const MIRRORS = [
 export const OPHIS_PACKS = {
   'ophis-gte-v10': {
     id: 'ophis-gte-v10',
-    label: 'Ophis v10+ · 16 operations',
+    label: 'v10+ · 16 operations',
     note: 'The live default. Adds the two hepta-cycle operations to the v8 table.',
     operations: GTE_V10.map(row('ophis-gte-v10')),
   },
@@ -92,7 +92,7 @@ export const OPHIS_PACKS = {
    */
   'ophis-gte-v8': {
     id: 'ophis-gte-v8',
-    label: 'Ophis v8-v9 · 15 operations',
+    label: 'v8-v9 · 15 operations',
     note: 'The v9 default. The v12 table is this plus the X2 hepta-cycle, and nothing else.',
     operations: GTE_V10.slice(0, 15).map(row('ophis-gte-v8')),
   },
@@ -110,7 +110,7 @@ export const OPHIS_PACKS = {
    */
   'ophis-lte-v7': {
     id: 'ophis-lte-v7',
-    label: 'Ophis v7 and earlier · 15 operations',
+    label: 'v7 and earlier · 15 operations',
     note: 'The v7 table: the first fifteen, with #5 and #9 still at weight 0.5.',
     operations: GTE_V10.slice(0, 15)
       .map(([eq, w, note], i) => [eq, i === 5 || i === 9 ? 0.5 : w, note])

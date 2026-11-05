@@ -79,7 +79,7 @@ export const RECKONINGS = {
   /** The desktop lineage, reproduced exactly as it shipped. */
   ophis: {
     id: 'ophis',
-    label: 'Ophis',
+    label: 'Natorion',
     constants: OPHIS_CONSTANTS,
     functions: OPHIS_FUNCTIONS,
     constantNotes: {

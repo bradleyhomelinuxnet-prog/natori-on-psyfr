@@ -1,5 +1,5 @@
 /**
- * NATORI-ON-PSYFR — bootstrap.
+ * NATORION — bootstrap.
  *
  * Wires the panels to the DOM and to each other. Each panel owns its own region
  * of the page and subscribes to the store independently, so one that fails does

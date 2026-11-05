@@ -1,7 +1,7 @@
 # Your Own Dates: a plain-English manual
 
 **Who this is for.** You have some dates from your own life. You want to put them
-into Ophis, press the button, and understand what comes back. You do not want to
+into Natorion, press the button, and understand what comes back. You do not want to
 read a specification first.
 
 That is this document. No maths background assumed. Ten minutes to your first
@@ -24,7 +24,7 @@ section of this manual walks through:
 | [`04-even-spacing-19-138.oph`](../examples/04-even-spacing-19-138.oph) | Dates 138 days apart from the 19th: lights up, and why that proves nothing | §8 |
 | [`manual-examples.oph`](../examples/manual-examples.oph) | All four in one file, as Iso-Events E1–E4 | — |
 
-Each file also has a v12-format copy in [`examples/v12/`](../examples/v12/) (`<name>_v12.oph`) that opens in the original Ophis v12 desktop app.
+Each file also has a v12-format copy in [`examples/v12/`](../examples/v12/) (`<name>_v12.oph`) that opens in the original v12 desktop app.
 
 Open the **Import** screen → **☰ Open .oph file…** → pick one → **Load**. Each
 file's **Settings → S1 Misc. Notes** says what you should see. They give the
@@ -439,7 +439,7 @@ clones one, `✕` deletes it. Each event keeps its own dates, filters and
 settings. The **Transfer** screen copies chosen parts — X-Dates, Filters,
 T-Dates, Operations and so on — from one event onto others.
 
-**Operations.** The formulas, editable: the sixteen Ophis shipped with, then the
+**Operations.** The formulas, editable: the sixteen the original v12 shipped with, then the
 ten Extras and the ten Mirrors that a new document also starts with. Untick one to leave it out of
 the cast; change its weight to move it between Alpha (1 or more) and Beta.
 Changing these changes every score, so note what you did.
@@ -461,7 +461,7 @@ fresh, and clearing site data erases it.
 **Saved** after. It is about files, not the browser copy.
 
 **To keep a run for good: Export → Export file.** That writes an `.oph` file
-(plain text; the **Export** screen also shows it for **Copy**). **Save for Ophis
+(plain text; the **Export** screen also shows it for **Copy**). **Save for Natorion
 v12** writes the older format the original desktop app reads — the plain export
 opens there with no X-Dates.
 
@@ -531,7 +531,7 @@ is stated inside the app too.
 
 ---
 
-*Ophis performs arithmetic on the dates it is given and ranks the results by how
+*Natorion performs arithmetic on the dates it is given and ranks the results by how
 many independent operations and number patterns agree. It knows nothing about
 your event and has no access to anything beyond those dates. Presented as the
 Archaix thesis of Jason Breshears, not as established science. Not affiliated
