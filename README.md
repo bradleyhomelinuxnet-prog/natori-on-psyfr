@@ -19,6 +19,8 @@ future days worth watching, in plain English. It runs the same engine and hands 
 full app when you want every row. Each date also links out to the Chronotecture plates that name its
 year or numbers.
 
+> **One app.** The main Natorion app now lives at [the Natorion Cipher site](https://bradleyhomelinuxnet-prog.github.io/NatorionCipherPredictiveEngine/natorion/) ([repo](https://github.com/bradleyhomelinuxnet-prog/NatorionCipherPredictiveEngine)). This site is its companion and keeps the tools not yet folded in: the map picker, Lab, Audit and the PDF report. The plan is in that repo's [CONSOLIDATION.md](https://github.com/bradleyhomelinuxnet-prog/NatorionCipherPredictiveEngine/blob/main/CONSOLIDATION.md).
+
 ---What it is
 
 It’s a browser app with no server and no install. You open index.html (or the all-in-one ophis-single.html) and everything runs on your own machine. It also deploys as a plain GitHub Pages site. REA found no network calls in the core code, so nothing you enter leaves your computer. Your work is saved in the browser’s own storage, and you can also save it to a .oph file.
